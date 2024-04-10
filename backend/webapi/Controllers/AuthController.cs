@@ -13,6 +13,7 @@ namespace chiffon_back.Controllers
         private MapperConfiguration config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Models.User, Context.User>();
+                cfg.CreateMap<Context.User, Models.User>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
@@ -68,7 +69,7 @@ namespace chiffon_back.Controllers
             {
 
             }
-            return NotFound(); //?Forbid()?;
+            return NotFound(); //?Forbid()?; 
         }
 
         [HttpPost("check-account")]

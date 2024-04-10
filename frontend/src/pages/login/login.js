@@ -100,14 +100,14 @@ const Login = (props) => {
     // Log in a user using email and password
     const signUp = () => {
 
-        let passwordHash = stringToHash(password)
+        let passwordhash = stringToHash(password)
 
         fetch("https://localhost:3080/Auth/signup", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
               },
-            body: JSON.stringify({email, passwordHash})
+            body: JSON.stringify({Email: email, PasswordHash: passwordhash+''})
         })
         .then(r => r.json())
         .then(r => {
