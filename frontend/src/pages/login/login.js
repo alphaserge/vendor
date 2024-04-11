@@ -11,12 +11,7 @@ const Login = (props) => {
     const navigate = useNavigate();
         
     const onButtonClick = () => {
-
-
-        console.log('hash:')
-        let hash = stringToHash('1112')
-        console.log(hash)
-    
+  
         // Set initial error values to empty
         setEmailError("")
         setPasswordError("")
@@ -53,8 +48,6 @@ const Login = (props) => {
                     signUp()
                 }
         })        
-  
-
     }
 
     // Call the server API to check if the given email ID already exists
@@ -75,7 +68,7 @@ const Login = (props) => {
     // Log in a user using email and password
     const logIn = () => {
 
-        let passwordHash = stringToHash(password)
+        let passwordHash = stringToHash(password)+''
 
         fetch("https://localhost:3080/Auth/auth", {
             method: "POST",
@@ -84,9 +77,13 @@ const Login = (props) => {
               },
             body: JSON.stringify({email, passwordHash})
         })
-        .then(r => r.json())
+        //.then(r => r.json())
+        .then(response => response.ok
+            ? response.json()
+            : Promise.reject(response)  //throw if not 200-OK
+        )
         .then(r => {
-            if ('success' === r.message) {
+            if (r.token != '') {
                 localStorage.setItem("user", JSON.stringify({email, token: r.token}))
                 props.setLoggedIn(true)
                 props.setEmail(email)
@@ -95,23 +92,26 @@ const Login = (props) => {
                 window.alert("Wrong email or password")
             }
         })
+        .catch((error) => {
+            window.alert("Wrong email or password")
+          })
     }
 
     // Log in a user using email and password
     const signUp = () => {
 
-        let passwordhash = stringToHash(password)
+        let passwordhash = stringToHash(password)+''
 
         fetch("https://localhost:3080/Auth/signup", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
               },
-            body: JSON.stringify({Email: email, PasswordHash: passwordhash+''})
+            body: JSON.stringify({Email: email, PasswordHash: passwordhash})
         })
         .then(r => r.json())
         .then(r => {
-            if ('success' === r.message) {
+            if (r.id >= 1) {
                 localStorage.setItem("user", JSON.stringify({email, token: r.token}))
                 props.setLoggedIn(true)
                 props.setEmail(email)

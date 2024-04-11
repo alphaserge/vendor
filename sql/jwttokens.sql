@@ -1,0 +1,30 @@
+USE [chiffon]
+GO
+
+/****** Object:  Table [dbo].[Users]    Script Date: 11.04.2024 16:26:10 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[JwtTokens](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Token] [varchar](512) NOT NULL,
+	[UserId] [int] NOT NULL,
+	[ExpiresAt] [datetime] NOT NULL,
+ CONSTRAINT [PK_JwtTokens] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[JwtTokens]  WITH CHECK ADD  CONSTRAINT [FK_JwtTokens_Users] FOREIGN KEY([UserId])
+REFERENCES [dbo].[Users] ([Id])
+GO
+
+ALTER TABLE [dbo].[JwtTokens] CHECK CONSTRAINT [FK_JwtTokens_Users]
+GO
+
+

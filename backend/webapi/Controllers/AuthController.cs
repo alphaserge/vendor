@@ -1,8 +1,13 @@
 ﻿using AutoMapper;
+using chiffon_back.Context;
+using chiffon_back.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Security.Claims;
 
 namespace chiffon_back.Controllers
 {
@@ -14,6 +19,7 @@ namespace chiffon_back.Controllers
             {
                 cfg.CreateMap<Models.User, Context.User>();
                 cfg.CreateMap<Context.User, Models.User>();
+                cfg.CreateMap<Context.JwtToken, Models.JwtToken>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
@@ -25,24 +31,54 @@ namespace chiffon_back.Controllers
             _logger = logger;
         }
 
+        private string CreateToken(string email)
+        {
+            var claims = new List<Claim> { new Claim(ClaimTypes.Name, email) };
+            // создаем JWT-токен
+            var jwt = new JwtSecurityToken(
+                    issuer: AuthOptions.ISSUER,
+                    audience: AuthOptions.AUDIENCE,
+                    claims: claims,
+                    expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(2)),
+                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
+        }
 
         [HttpPost("auth")]
-        public ActionResult<Models.SignIn> SignIn(Models.SignIn user)
+        public ActionResult<Models.User> SignIn(Models.SignIn user)
         {
             try
             {
-                if (ctx.Users.FirstOrDefault(x=>
-                    x.Email==user.Email &&
-                    x.PasswordHash==user.PasswordHash)!=null)
+                Context.User? us = ctx.Users.FirstOrDefault(x =>
+                                   x.Email == user.Email &&
+                                   x.PasswordHash == user.PasswordHash);
+                if (us!=null)
                 {
-                    return Ok();
+                    var dbToken = ctx.JwtTokens.FirstOrDefault(x => x.UserId == us.Id && x.ExpiresAt >= DateTime.Now);
+                    if (dbToken == null)
+                    {
+                        dbToken = new Context.JwtToken()
+                        {
+                            ExpiresAt = DateTime.Now.AddDays(14),
+                            Token = CreateToken(user.Email),
+                            UserId = us.Id
+                        };
+                        ctx.JwtTokens.Add(dbToken);
+                        ctx.SaveChanges();
+                    }
+
+                    Models.User mdUser = config.CreateMapper()
+                        .Map<Models.User>(us);
+
+                    mdUser.Token = dbToken.Token;
+
+                    return Ok(mdUser);
                 }
             }
-            catch (Exception ex)
-            {
-                
-            }
-            return NotFound(); //?Forbid()?;
+            catch (Exception ex) {}
+
+            return NotFound(new Models.JwtToken());
         }
 
         [HttpPost("signup")]
@@ -60,9 +96,20 @@ namespace chiffon_back.Controllers
                 ctx.Users.Add(dbUser);
                 ctx.SaveChanges();
 
+                Context.JwtToken dbToken = new Context.JwtToken()
+                {
+                    ExpiresAt = DateTime.Now.AddDays(14),
+                    Token = CreateToken(dbUser.Email),
+                    UserId = dbUser.Id
+                };
+                ctx.JwtTokens.Add(dbToken);
+                ctx.SaveChanges();
+
                 Models.User newUser =  config.CreateMapper()
                     .Map<Models.User>(dbUser);
                 
+                newUser.Token = dbToken.Token;
+
                 return Ok(newUser);
             }
             catch (Exception ex)
