@@ -13,6 +13,7 @@
         public int? VendorId { get; set; }
         public DateTime? Created { get; set; }
         public string? Token { get; set; }
+        public string? Roles { get; set; }
         //public virtual Vendor? Vendor { get; set; }
     }
 }

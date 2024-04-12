@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -43,6 +44,28 @@ namespace chiffon_back.Controllers
                     signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
+        }
+
+        private ClaimsIdentity GetIdentity(Models.SignIn user)
+        {
+            Context.User? us = ctx.Users.FirstOrDefault(x =>
+                               x.Email == user.Email &&
+                               x.PasswordHash == user.PasswordHash);
+            if (us != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, us.FirstName),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, us.Roles.Split(new char[] {','}).FirstOrDefault())
+                };
+                ClaimsIdentity claimsIdentity =
+                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                    ClaimsIdentity.DefaultRoleClaimType);
+                return claimsIdentity;
+            }
+
+            // если пользователя не найдено
+            return null;
         }
 
         [HttpPost("auth")]
