@@ -6,7 +6,6 @@ using System.Net;
 
 namespace chiffon_back.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class ProductsController : ControllerBase
@@ -51,6 +50,7 @@ namespace chiffon_back.Controllers
             _logger = logger;
         }
 
+        [Authorize]
         [HttpGet(Name = "Products")]
         public IEnumerable<Models.Product> Get()
         {
