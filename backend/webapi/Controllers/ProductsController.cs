@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -49,6 +50,7 @@ namespace chiffon_back.Controllers
             _logger = logger;
         }
 
+        [Authorize]
         [HttpGet(Name = "Products")]
         public IEnumerable<Models.Product> Get()
         {

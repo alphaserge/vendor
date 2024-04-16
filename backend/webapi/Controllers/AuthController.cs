@@ -5,9 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Security.Principal;
+using System.Text;
 
 namespace chiffon_back.Controllers
 {
@@ -19,7 +24,6 @@ namespace chiffon_back.Controllers
             {
                 cfg.CreateMap<Models.User, Context.User>();
                 cfg.CreateMap<Context.User, Models.User>();
-                cfg.CreateMap<Context.JwtToken, Models.JwtToken>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
@@ -45,36 +49,66 @@ namespace chiffon_back.Controllers
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
+        private ClaimsIdentity GetIdentity(Models.SignIn signIn, out Models.User user)
+        {
+            Context.User? ctxUser = ctx.Users.FirstOrDefault(x =>
+                               x.Email == signIn.Email &&
+                               x.PasswordHash == signIn.PasswordHash);
+
+            if (ctxUser != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, ctxUser.FirstName),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, ctxUser.Roles.Split(new char[] {','}).FirstOrDefault())
+                };
+                ClaimsIdentity claimsIdentity =
+                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+
+                user = config.CreateMapper().Map<Models.User>(ctxUser);
+                return claimsIdentity;
+            }
+
+            // если пользователь не найден
+            user = new Models.User();
+            return null;
+        }
+
         [HttpPost("auth")]
-        public ActionResult<Models.User> SignIn(Models.SignIn user)
+        public ActionResult<Models.User> SignIn(Models.SignIn signIn)
         {
             try
             {
-                Context.User? us = ctx.Users.FirstOrDefault(x =>
-                                   x.Email == user.Email &&
-                                   x.PasswordHash == user.PasswordHash);
-                if (us!=null)
-                {
-                    var dbToken = ctx.JwtTokens.FirstOrDefault(x => x.UserId == us.Id && x.ExpiresAt >= DateTime.Now);
-                    if (dbToken == null)
-                    {
-                        dbToken = new Context.JwtToken()
-                        {
-                            ExpiresAt = DateTime.Now.AddDays(14),
-                            Token = CreateToken(user.Email),
-                            UserId = us.Id
-                        };
-                        ctx.JwtTokens.Add(dbToken);
-                        ctx.SaveChanges();
-                    }
+                Models.User mdUser = new Models.User();
+                ClaimsIdentity identity = GetIdentity(signIn, out mdUser);
 
+                if (identity == null)
+                {
+                    return BadRequest(new { errorText = "Invalid username or password." });
+                }
+
+                var now = DateTime.UtcNow;
+                // создаем JWT-токен
+                var jwt = new JwtSecurityToken(
+                        issuer: AuthOptions.ISSUER,
+                        audience: AuthOptions.AUDIENCE,
+                        notBefore: now,
+                        claims: identity.Claims,
+                        expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                        signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+                var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+                mdUser.Token = encodedJwt;
+
+                return Ok(mdUser);
+
+                /*if (us!=null)
+                {
                     Models.User mdUser = config.CreateMapper()
                         .Map<Models.User>(us);
 
-                    mdUser.Token = dbToken.Token;
-
                     return Ok(mdUser);
-                }
+                }*/
             }
             catch (Exception ex) {}
 
@@ -86,29 +120,45 @@ namespace chiffon_back.Controllers
         {
             try
             {
+                // создаем hash для регистрации
+                string hash;
+                using (MD5 hashMD5 = MD5.Create())
+                {
+                    hash = String.Join
+                    (
+                        "",
+                        from ba in hashMD5.ComputeHash
+                        (
+                            Encoding.UTF8.GetBytes(new DateTime().ToString("yyyy-MM-dd_T_HH::mm::ss..fffffffK"))
+                        )
+                        select ba.ToString("x2")
+                    );
+                }
+
                 Context.User dbUser = config.CreateMapper()
                     .Map<Context.User>(mdUser);
 
                 dbUser.Created = DateTime.Now;
-                dbUser.VendorId = 1;
-                dbUser.FirstName = mdUser.Email;
-                dbUser.IsLocked = false;
+                //dbUser.VendorId = 1;
+                dbUser.RegistrationHash = hash;
+                dbUser.IsLocked = true; // разблокируем на confirm
                 ctx.Users.Add(dbUser);
-                ctx.SaveChanges();
-
-                Context.JwtToken dbToken = new Context.JwtToken()
-                {
-                    ExpiresAt = DateTime.Now.AddDays(14),
-                    Token = CreateToken(dbUser.Email),
-                    UserId = dbUser.Id
-                };
-                ctx.JwtTokens.Add(dbToken);
                 ctx.SaveChanges();
 
                 Models.User newUser =  config.CreateMapper()
                     .Map<Models.User>(dbUser);
-                
-                newUser.Token = dbToken.Token;
+
+                MailAddress from = new MailAddress("sdevmoscow@gmail.com", "Sergie");
+                MailAddress to = new MailAddress(mdUser.Email);
+                MailMessage m = new MailMessage(from, to);
+                m.Subject = "Confirm your registration";
+                m.Body = $"<h2>Hello, {mdUser.Email}!</h2><p> Please confirm your registration: <a href='https://localhost:3080/Auth/confirm?token={hash}'></a></p>";
+                m.IsBodyHtml = true;
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                smtp.Credentials = new NetworkCredential("sdevmoscow@gmail.com", "JH506cvX");
+                smtp.EnableSsl = true;
+                smtp.Send(m);
+                Console.Read();
 
                 return Ok(newUser);
             }
@@ -116,7 +166,7 @@ namespace chiffon_back.Controllers
             {
 
             }
-            return NotFound(); //?Forbid()?; 
+            return NotFound(); //?Forbid()?;
         }
 
         [HttpPost("check-account")]
