@@ -19,6 +19,7 @@ CREATE TABLE [dbo].[Users](
 	[IsLocked] [bit] NOT NULL DEFAULT 0,
 	[VendorId] [int] NOT NULL,
 	[Created] [datetime] NOT NULL,
+	[RegistrationHash] [varchar](32) NULL,
  CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

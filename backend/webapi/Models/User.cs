@@ -14,6 +14,8 @@
         public DateTime? Created { get; set; }
         public string? Token { get; set; }
         public string? Roles { get; set; }
+        public string? RegistrationHash { get; set; }
+
         //public virtual Vendor? Vendor { get; set; }
     }
 }

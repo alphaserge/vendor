@@ -11,9 +11,25 @@ using Microsoft.Extensions.Hosting;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using System.Security.Cryptography;
 
 
-
+//MD5 hash = MD5.Create();
+string result;
+using (MD5 hash = MD5.Create())
+{
+    result = String.Join
+    (
+        "",
+        from ba in hash.ComputeHash
+        (
+            Encoding.UTF8.GetBytes(new DateTime().ToString("yyyy-MM-dd_T_HH::mm::ss.fffffffK"))
+        )
+        select ba.ToString("x2")
+    );
+}
+//string? h = hash.ToString();
+int a = result.Length;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -95,6 +111,7 @@ public class AuthOptions
     public const string ISSUER = "AngelikaJSC"; // издатель токена
     public const string AUDIENCE = "AngelikaClient"; // потребитель токена
     const string KEY = "angelicakey4a_vendor_angelikacvbgh!!766";   // ключ для шифрации
+    public const int LIFETIME = 60*24*14; // время жизни токена - 14 дней
     public static SymmetricSecurityKey GetSymmetricSecurityKey() =>
         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(KEY));
 }
