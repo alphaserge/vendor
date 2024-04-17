@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Mail;
@@ -57,10 +58,15 @@ namespace chiffon_back.Controllers
 
             if (ctxUser != null)
             {
+                string[] roles = new string[] { "user" };
+                if (ctxUser.Roles != null)
+                {
+                    roles = ctxUser.Roles.Split(new char[] { ',' });
+                }
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, ctxUser.FirstName),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, ctxUser.Roles.Split(new char[] {','}).FirstOrDefault())
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, roles.FirstOrDefault())
                 };
                 ClaimsIdentity claimsIdentity =
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
@@ -171,6 +177,31 @@ namespace chiffon_back.Controllers
 
         [HttpPost("check-account")]
         public ActionResult<Models.User> CheckAccount(Models.User mdUser)
+        {
+            try
+            {
+                if (ctx.Users.FirstOrDefault(x => x.Email == mdUser.Email) != null)
+                {
+                    return Ok(new
+                    {
+                        status = "User exists",
+                        userExists = true,
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return Ok(new
+            {
+                status = "User does not exists",
+                userExists = false,
+            });
+        }
+
+        [HttpPost("verify")]
+        public ActionResult<Models.User> Verify(Models.User mdUser)
         {
             try
             {

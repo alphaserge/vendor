@@ -1,0 +1,14 @@
+{
+    "api": "https://localhost:3080",
+
+    "map": {
+        "lat": 56.142680,
+        "lng": 34.986996
+    },
+
+    "app": {
+        "title": "app"
+    },
+
+    "stepMs" : 500
+}

@@ -1,12 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Button from '@mui/material/Button';
+
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+
+import axios from 'axios'
+
 import { stringToHash } from '../../functions/hash'
 import config from "../../config.json"
 
 const Login = (props) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const [vendors, setVendors] = useState(null)
+    const [vendorList, setVendorList] = useState([])
+    const [vendor, setVendor] = useState("")
     const [emailError, setEmailError] = useState("")
     const [passwordError, setPasswordError] = useState("")
     
@@ -124,11 +135,34 @@ const Login = (props) => {
         })
     }
 
-    useEffect(() => {
+    /*useEffect(() => {
         fetch(config.api + '/Vendors')
           .then(response => response.json())
           .then(json => setVendors(json))
           .catch(error => console.error(error));
+      }, []);*/
+
+      const vendorChange = (event) => {
+        setVendor(event.target.value)
+        console.log('new vendor:' + event.target.value)
+      };
+    
+      const VendorsData = () => {
+        axios.get(config.api + '/Vendors')
+        .then(function (res) {
+          try {
+            var result = res.data;
+            console.log(result)
+            setVendorList(result)
+          }
+          catch (error) {
+            console.log(error)
+          }
+        })
+      }      
+
+      useEffect(() => {
+        VendorsData()
       }, []);
 
     return <div className={"mainContainer"}>
@@ -136,14 +170,25 @@ const Login = (props) => {
             <div>Login</div>
         </div>
         <br />
-        <div className={"inputContainer"}>
-            <input
-                value={email}
-                placeholder="Enter your email here"
-                onChange={ev => setEmail(ev.target.value)}
-                className={"inputBox"} />
-            <label className="errorLabel">{emailError}</label>
-        </div>
+        {/* <Button variant="contained">Hello world</Button> */}
+        <Box sx={{ minWidth: 120 }}>
+            <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={vendor}
+                label="Age"
+                onChange={vendorChange}>
+                {vendorList.map((data) => (
+                <MenuItem key={data.id} value={data.id}>{data.vendorName}</MenuItem>
+                ))}                    
+                {/* <MenuItem value={10}>Ten</MenuItem>
+                <MenuItem value={20}>Twenty</MenuItem>
+                <MenuItem value={30}>Thirty</MenuItem> */}
+                </Select>
+            </FormControl>
+        </Box>
         <br />
         <div className={"inputContainer"}>
             <input
