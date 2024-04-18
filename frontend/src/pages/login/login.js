@@ -7,6 +7,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
 
 import axios from 'axios'
 
@@ -171,22 +172,21 @@ const Login = (props) => {
         </div>
         <br />
         {/* <Button variant="contained">Hello world</Button> */}
-        <Box sx={{ minWidth: 120 }}>
-            <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Age</InputLabel>
+        <Box sx={{ minWidth: 120 }}  >
+            <FormControl fullWidth> 
+                <InputLabel id="demo-simple-select-label">Company</InputLabel>
                 <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={vendor}
-                label="Age"
-                onChange={vendorChange}>
-                {vendorList.map((data) => (
-                <MenuItem key={data.id} value={data.id}>{data.vendorName}</MenuItem>
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={vendor}
+                    label="Company"
+                    variant="outlined"
+                    onChange={vendorChange}>
+                    {vendorList.map((data) => (
+                    <MenuItem key={data.id} value={data.id}>{data.vendorName}</MenuItem>
                 ))}                    
-                {/* <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem> */}
                 </Select>
+                <TextField id="outlined-basic" label="Outlined" variant="outlined" />
             </FormControl>
         </Box>
         <br />
