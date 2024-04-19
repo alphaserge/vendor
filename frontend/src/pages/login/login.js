@@ -173,7 +173,7 @@ const Login = (props) => {
         <br />
         {/* <Button variant="contained">Hello world</Button> */}
         <Box sx={{ minWidth: 120 }}  >
-            <FormControl fullWidth> 
+            <FormControl fullWidth sx={{display: 'flex', gap: 2}} > 
                 <InputLabel id="demo-simple-select-label">Company</InputLabel>
                 <Select
                     labelId="demo-simple-select-label"
