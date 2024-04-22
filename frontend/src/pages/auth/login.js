@@ -148,31 +148,6 @@ export default function Login(props) {
         })
   }
 
-  // Log in a user using email and password
-  const signUp = () => {
-
-      let passwordhash = stringToHash(password)+''
-
-      fetch("https://localhost:3080/Auth/signup", {
-          method: "POST",
-          headers: {
-              'Content-Type': 'application/json'
-            },
-          body: JSON.stringify({Email: email, PasswordHash: passwordhash})
-      })
-      .then(r => r.json())
-      .then(r => {
-          if (r.id >= 1) {
-              localStorage.setItem("user", JSON.stringify({email, token: r.token}))
-              props.setLoggedIn(true)
-              props.setEmail(email)
-              navigate("/")
-          } else {
-              window.alert("Wrong email or password")
-          }
-      })
-  }
-
   /*useEffect(() => {
       fetch(config.api + '/Vendors')
         .then(response => response.json())
@@ -238,28 +213,34 @@ export default function Login(props) {
                     <MenuItem key={data.id} value={data.id}>{data.vendorName}</MenuItem>
                 ))}                    
                 </Select>
-                <TextField id="outlined-basic" label="Outlined" variant="outlined" />
+                {/* <TextField id="outlined-basic" label="Outlined" variant="outlined" /> */}
             </FormControl>
             <TextField
               margin="normal"
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Enter your email here"
               name="email"
+              value={email}
+              onChange={ev => setEmail(ev.target.value)}
               autoComplete="email"
               autoFocus
             />
+            <label className="errorLabel">{emailError}</label>
             <TextField
               margin="normal"
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Enter your password here"
               type="password"
               id="password"
               autoComplete="current-password"
+              value={password}
+              onChange={ev => setPassword(ev.target.value)}
             />
+            <label className="errorLabel">{passwordError}</label>
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
@@ -268,9 +249,10 @@ export default function Login(props) {
               type="submit"
               fullWidth
               variant="contained"
+              onClick={onButtonClick}
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Log In
             </Button>
             <Grid container>
               <Grid item xs>
