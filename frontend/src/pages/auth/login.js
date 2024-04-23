@@ -29,8 +29,8 @@ function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="https://silkroad-angelika.com/">
+        JSC Angelika Fashion
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -96,7 +96,7 @@ export default function Login(props) {
           else
           // Else, ask user if they want to create a new account and if yes, then log in
               if (window.confirm("An account does not exist with this email address: " + email + ". Do you want to create a new account?")) {
-                  signUp()
+                  //signUp()
               }
       })        
   }
@@ -137,7 +137,7 @@ export default function Login(props) {
           if (r.token != '') {
               localStorage.setItem("user", JSON.stringify({email, token: r.token}))
               props.setLoggedIn(true)
-              props.setEmail(email)
+              props.setUser(r)
               navigate("/")
           } else {
               window.alert("Wrong email or password")
@@ -188,8 +188,7 @@ export default function Login(props) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-          }}
-        >
+          }} >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
@@ -254,7 +253,7 @@ export default function Login(props) {
             >
               Log In
             </Button>
-            <Grid container>
+            {/* <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
                   Forgot password?
@@ -265,7 +264,7 @@ export default function Login(props) {
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
-            </Grid>
+            </Grid> */}
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

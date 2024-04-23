@@ -1,12 +1,13 @@
 import React from "react"
 import { useNavigate } from "react-router-dom";
 
-const Home = (props) => {
-    const { loggedIn, email } = props
+//const Home = (props) => {
+export default function Home(props) {    
+    //const { loggedIn, user } = props
     const navigate = useNavigate();
     
     const onButtonClick = () => {
-        if (loggedIn) {
+        if (props.loggedIn) {
             localStorage.removeItem("user")
             props.setLoggedIn(false)
         } else {
@@ -14,6 +15,9 @@ const Home = (props) => {
         }
     }
 
+
+    console.log('props:')
+    console.log(props)
 
     return <div className="mainContainer">
         <div className={"titleContainer"}>
@@ -27,9 +31,9 @@ const Home = (props) => {
                 className={"inputButton"}
                 type="button"
                 onClick={onButtonClick}
-                value={loggedIn ? "Log out" : "Log in"} />
-            {(loggedIn ? <div>
-                Your email address is {email}
+                value={props.loggedIn ? "Log out" : "Log in"} />
+            {(props.loggedIn ? <div>
+                Your email address is {props.user.email}
             </div> : <div/>)}
         </div>
 
@@ -37,4 +41,4 @@ const Home = (props) => {
     </div>
 }
 
-export default Home
+//export default Home

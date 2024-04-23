@@ -7,7 +7,17 @@ import { useEffect, useState } from 'react';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false)
-  const [email, setEmail] = useState("")
+  const [user, setUser] = useState({
+    Id: 0,
+    FirstName: "",
+    LastName: "",
+    Email: "",
+    Phones: "",
+    Roles: [],
+    IsLocked: true,
+    VendorId: 0,
+    Vendor: ""
+  })
 
   useEffect(() => {
     // Fetch the user email and token from local storage
@@ -37,8 +47,9 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
-          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
+          <Route path="/" element={<Home user={user} loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
+          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setUser={setUser} />} />
+          <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setUser={setUser} />} />
         </Routes>
       </BrowserRouter>
     </div>
