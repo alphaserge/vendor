@@ -7,6 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import FormHelperText from '@mui/material/FormHelperText';
 
 import axios from 'axios'
 
@@ -54,20 +55,35 @@ export default function Register(props) {
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [vendorList, setVendorList] = useState([])
   const [vendor, setVendor] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [phone, setPhone] = useState("")
+
+  const [companyError, setCompanyError] = useState("")
   const [emailError, setEmailError] = useState("")
   const [passwordError, setPasswordError] = useState("")
+  const [confirmPasswordError, setConfirmPasswordError] = useState("")
+  const [firstNameError, setFirstNameError] = useState("")
+  
   
   const navigate = useNavigate();
       
   const onButtonClick = () => {
 
-      // Set initial error values to empty
+      setCompanyError("")
       setEmailError("")
       setPasswordError("")
+      setConfirmPasswordError("")
+      setFirstNameError("")
 
-      // Check if the user has entered both fields correctly
+      if ("" === vendor) {
+        setCompanyError("Please select a Company")
+        return
+      }
+
       if ("" === email) {
           setEmailError("Please enter your email")
           return
@@ -88,17 +104,17 @@ export default function Register(props) {
           return
       }
 
-      // Check if email has an account associated with it
-      checkAccountExists(accountExists => {
-          // If yes, log in 
-          if (accountExists)
-              logIn()
-          else
-          // Else, ask user if they want to create a new account and if yes, then log in
-              if (window.confirm("An account does not exist with this email address: " + email + ". Do you want to create a new account?")) {
-                  signUp()
-              }
-      })        
+      if (password != confirmPassword) {
+        setConfirmPasswordError("The passwords are different")
+        return
+      }
+
+      if ("" === firstName) {
+        setFirstNameError("Please enter a Your first name")
+        return
+      }
+
+    signUp()
   }
 
   // Call the server API to check if the given email ID already exists
@@ -126,7 +142,14 @@ export default function Register(props) {
           headers: {
               'Content-Type': 'application/json'
             },
-          body: JSON.stringify({Email: email, PasswordHash: passwordhash})
+          body: JSON.stringify({
+            Email: email, 
+            PasswordHash: passwordhash,
+            VendorId: vendor,
+            FirstName: firstName,
+            LastName: lastName,
+            Phone: phone
+          })
       })
       .then(r => r.json())
       .then(r => {
@@ -150,7 +173,6 @@ export default function Register(props) {
 
     const vendorChange = (event) => {
       setVendor(event.target.value)
-      console.log('new vendor:' + event.target.value)
     };
   
     const VendorsData = () => {
@@ -158,7 +180,6 @@ export default function Register(props) {
       .then(function (res) {
         try {
           var result = res.data;
-          console.log(result)
           setVendorList(result)
         }
         catch (error) {
@@ -173,44 +194,46 @@ export default function Register(props) {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
+      <Container component="main" maxWidth="xs" sx={{ mt: -3, mb: 0 }}>
+        {/* <CssBaseline /> */}
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 0,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+          {/* <Avatar sx={{ m: 0, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
+          </Avatar> */}
+          <Typography component="h1" variant="h5" sx={{mb:2}}>
+            Sign Up
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <FormControl fullWidth sx={{display: 'flex', gap: 2}} > 
+            <FormControl 
+              fullWidth
+              error={ companyError + emailError + passwordError + confirmPasswordError + firstNameError != "" }
+              required > 
                 <InputLabel 
                   id="demo-simple-select-label">
-                  Company
+                  Your Company
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={vendor}
-                  label="Company"
-                  variant="outlined"
+                  label="Your Company"
+                  // variant="outlined"
                   onChange={vendorChange}>
                   { vendorList.map((data) => (
                     <MenuItem key={data.id} value={data.id}>{data.vendorName}</MenuItem>
                 ))}                    
                 </Select>
+                <FormHelperText>{companyError}</FormHelperText>
                 {/* <TextField id="outlined-basic" label="Outlined" variant="outlined" /> */}
-            </FormControl>
             <TextField
               margin="normal"
-              required
               fullWidth
               id="email"
               label="Enter your email here"
@@ -220,24 +243,63 @@ export default function Register(props) {
               autoComplete="email"
               autoFocus
             />
-            <label className="errorLabel">{emailError}</label>
+            <FormHelperText>{emailError}</FormHelperText>
             <TextField
               margin="normal"
               required
               fullWidth
               name="password"
-              label="Enter your password here"
+              label="Your password"
               type="password"
               id="password"
               autoComplete="current-password"
               value={password}
               onChange={ev => setPassword(ev.target.value)}
             />
-            <label className="errorLabel">{passwordError}</label>
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+            <FormHelperText>{passwordError}</FormHelperText>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="confirmPassword"
+              label="Confirm password"
+              type="password"
+              id="confirmPassword"
+              autoComplete="current-password"
+              value={confirmPassword}
+              onChange={ev => setConfirmPassword(ev.target.value)}
             />
+            <FormHelperText>{confirmPasswordError}</FormHelperText>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="firstName"
+              label="First name"
+              id="firstName"
+              value={firstName}
+              onChange={ev => setFirstName(ev.target.value)}
+            />
+            <FormHelperText>{firstNameError}</FormHelperText>
+            <TextField
+              margin="normal"
+              fullWidth
+              name="lastName"
+              label="Last name"
+              id="lastName"
+              value={lastName}
+              onChange={ev => setLastName(ev.target.value)}
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              name="phone"
+              label="Phone"
+              id="phone"
+              value={phone}
+              onChange={ev => setPhone(ev.target.value)}
+            />
+            </FormControl>
             <Button
               type="submit"
               fullWidth
@@ -245,20 +307,8 @@ export default function Register(props) {
               onClick={onButtonClick}
               sx={{ mt: 3, mb: 2 }}
             >
-              Log In
+              Sign Up
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />

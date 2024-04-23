@@ -7,6 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import FormHelperText from '@mui/material/FormHelperText';
 
 import axios from 'axios'
 
@@ -54,8 +55,6 @@ export default function Login(props) {
 
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [vendorList, setVendorList] = useState([])
-  const [vendor, setVendor] = useState("")
   const [emailError, setEmailError] = useState("")
   const [passwordError, setPasswordError] = useState("")
   
@@ -88,8 +87,9 @@ export default function Login(props) {
           return
       }
 
+      logIn()
       // Check if email has an account associated with it
-      checkAccountExists(accountExists => {
+      /*checkAccountExists(accountExists => {
           // If yes, log in 
           if (accountExists)
               logIn()
@@ -98,7 +98,7 @@ export default function Login(props) {
               if (window.confirm("An account does not exist with this email address: " + email + ". Do you want to create a new account?")) {
                   //signUp()
               }
-      })        
+      })*/        
   }
 
   // Call the server API to check if the given email ID already exists
@@ -155,27 +155,8 @@ export default function Login(props) {
         .catch(error => console.error(error));
     }, []);*/
 
-    const vendorChange = (event) => {
-      setVendor(event.target.value)
-      console.log('new vendor:' + event.target.value)
-    };
-  
-    const VendorsData = () => {
-      axios.get(config.api + '/Vendors')
-      .then(function (res) {
-        try {
-          var result = res.data;
-          console.log(result)
-          setVendorList(result)
-        }
-        catch (error) {
-          console.log(error)
-        }
-      })
-    }      
-
-    useEffect(() => {
-      VendorsData()
+  useEffect(() => {
+      //VendorsData()
     }, []);
 
   return (
@@ -196,24 +177,9 @@ export default function Login(props) {
             Sign in
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <FormControl fullWidth sx={{display: 'flex', gap: 2}} > 
-                <InputLabel 
-                  id="demo-simple-select-label">
-                  Company
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={vendor}
-                  label="Company"
-                  variant="outlined"
-                  onChange={vendorChange}>
-                  { vendorList.map((data) => (
-                    <MenuItem key={data.id} value={data.id}>{data.vendorName}</MenuItem>
-                ))}                    
-                </Select>
-                {/* <TextField id="outlined-basic" label="Outlined" variant="outlined" /> */}
-            </FormControl>
+            <FormControl 
+             fullWidth 
+             sx={{display: 'flex'}} > 
             <TextField
               margin="normal"
               required
@@ -226,7 +192,7 @@ export default function Login(props) {
               autoComplete="email"
               autoFocus
             />
-            <label className="errorLabel">{emailError}</label>
+            <FormHelperText>{emailError}</FormHelperText>
             <TextField
               margin="normal"
               required
@@ -239,11 +205,12 @@ export default function Login(props) {
               value={password}
               onChange={ev => setPassword(ev.target.value)}
             />
-            <label className="errorLabel">{passwordError}</label>
+            <FormHelperText>{passwordError}</FormHelperText>
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
+            </FormControl>
             <Button
               type="submit"
               fullWidth
