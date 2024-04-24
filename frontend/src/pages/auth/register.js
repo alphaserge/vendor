@@ -148,7 +148,7 @@ export default function Register(props) {
             VendorId: vendor,
             FirstName: firstName,
             LastName: lastName,
-            Phone: phone
+            Phones: phone
           })
       })
       .then(r => r.json())

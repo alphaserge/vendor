@@ -154,6 +154,36 @@ namespace chiffon_back.Controllers
                 Models.User newUser =  config.CreateMapper()
                     .Map<Models.User>(dbUser);
 
+                using (MailMessage mess = new MailMessage())
+                {
+                    //SmtpClient client = new SmtpClient("smtp.mail.ru", Convert.ToInt32(587))
+                    
+                    SmtpClient client = new SmtpClient("smtp.go1.unisender.ru", Convert.ToInt32(587))
+                    {
+                        //Credentials = new NetworkCredential("elizarov.sa@mail.ru", "tg95r9xnYiE7wqhdhjSk"),
+                        Credentials = new NetworkCredential("6697678", "tg95r9xnYiE7wqhdhjSk"),
+                        EnableSsl = true,
+                        DeliveryMethod = SmtpDeliveryMethod.Network
+                    };
+                    mess.From = new MailAddress("elizarov.sa@mail.ru");
+                    mess.To.Add(new MailAddress(mdUser.Email));
+                    mess.Subject = "Confirm your registration";
+                    mess.SubjectEncoding = Encoding.UTF8;
+                    mess.Body = $"<h2>Hello, {mdUser.Email}!</h2><p> Please confirm your registration: <a href='https://localhost:3080/Auth/confirm?token={hash}'></a></p>";
+                    mess.IsBodyHtml = true;
+                    #region Add Files
+                    try
+                    {
+                        //mess.Attachments.Add(new Attachment(какой файл добавлять для отправки));
+                    }
+                    catch { }
+                    #endregion Add Files
+                    client.Send(mess);
+                    mess.Dispose();
+                    client.Dispose();
+                }
+
+                /*
                 MailAddress from = new MailAddress("sdevmoscow@gmail.com", "Sergie");
                 MailAddress to = new MailAddress(mdUser.Email);
                 MailMessage m = new MailMessage(from, to);
@@ -163,7 +193,8 @@ namespace chiffon_back.Controllers
                 SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
                 smtp.Credentials = new NetworkCredential("sdevmoscow@gmail.com", "JH506cvX");
                 smtp.EnableSsl = true;
-                smtp.Send(m);
+                smtp.UseDefaultCredentials = false;
+                smtp.Send(m); */
                 Console.Read();
 
                 return Ok(newUser);
