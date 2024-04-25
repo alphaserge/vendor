@@ -126,6 +126,15 @@ namespace chiffon_back.Controllers
         {
             try
             {
+                if (ctx.Users.FirstOrDefault(x => x.Email == mdUser.Email) != null)
+                {
+                    return BadRequest(new
+                    {
+                        status = "User with email already exists",
+                        userExists = true,
+                    });
+                }
+
                 // создаем hash для регистрации
                 string hash;
                 using (MD5 hashMD5 = MD5.Create())
@@ -135,7 +144,7 @@ namespace chiffon_back.Controllers
                         "",
                         from ba in hashMD5.ComputeHash
                         (
-                            Encoding.UTF8.GetBytes(new DateTime().ToString("yyyy-MM-dd_T_HH::mm::ss..fffffffK"))
+                            Encoding.UTF8.GetBytes(DateTime.Now.ToString("yyyy-MM-dd_T_HH::mm::ss..fffffffK"))
                         )
                         select ba.ToString("x2")
                     );
@@ -145,7 +154,6 @@ namespace chiffon_back.Controllers
                     .Map<Context.User>(mdUser);
 
                 dbUser.Created = DateTime.Now;
-                //dbUser.VendorId = 1;
                 dbUser.RegistrationHash = hash;
                 dbUser.IsLocked = true; // разблокируем на confirm
                 ctx.Users.Add(dbUser);
@@ -156,14 +164,12 @@ namespace chiffon_back.Controllers
 
                 using (MailMessage mess = new MailMessage())
                 {
-                    //SmtpClient client = new SmtpClient("smtp.mail.ru", Convert.ToInt32(587))
-                    
-                    SmtpClient client = new SmtpClient("smtp.go1.unisender.ru", Convert.ToInt32(587))
+                    SmtpClient client = new SmtpClient("smtp.mail.ru", Convert.ToInt32(587))
                     {
-                        //Credentials = new NetworkCredential("elizarov.sa@mail.ru", "tg95r9xnYiE7wqhdhjSk"),
-                        Credentials = new NetworkCredential("6697678", "tg95r9xnYiE7wqhdhjSk"),
+                        Credentials = new NetworkCredential("elizarov.sa@mail.ru", "KZswYNWrd9eY1xVfvkre"),
                         EnableSsl = true,
-                        DeliveryMethod = SmtpDeliveryMethod.Network
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                        Timeout = 5000
                     };
                     mess.From = new MailAddress("elizarov.sa@mail.ru");
                     mess.To.Add(new MailAddress(mdUser.Email));
@@ -171,31 +177,15 @@ namespace chiffon_back.Controllers
                     mess.SubjectEncoding = Encoding.UTF8;
                     mess.Body = $"<h2>Hello, {mdUser.Email}!</h2><p> Please confirm your registration: <a href='https://localhost:3080/Auth/confirm?token={hash}'></a></p>";
                     mess.IsBodyHtml = true;
-                    #region Add Files
-                    try
+                    /*try
                     {
-                        //mess.Attachments.Add(new Attachment(какой файл добавлять для отправки));
+                        mess.Attachments.Add(new Attachment(какой файл добавлять для отправки));
                     }
-                    catch { }
-                    #endregion Add Files
+                    catch { }*/
                     client.Send(mess);
                     mess.Dispose();
                     client.Dispose();
                 }
-
-                /*
-                MailAddress from = new MailAddress("sdevmoscow@gmail.com", "Sergie");
-                MailAddress to = new MailAddress(mdUser.Email);
-                MailMessage m = new MailMessage(from, to);
-                m.Subject = "Confirm your registration";
-                m.Body = $"<h2>Hello, {mdUser.Email}!</h2><p> Please confirm your registration: <a href='https://localhost:3080/Auth/confirm?token={hash}'></a></p>";
-                m.IsBodyHtml = true;
-                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-                smtp.Credentials = new NetworkCredential("sdevmoscow@gmail.com", "JH506cvX");
-                smtp.EnableSsl = true;
-                smtp.UseDefaultCredentials = false;
-                smtp.Send(m); */
-                Console.Read();
 
                 return Ok(newUser);
             }
@@ -204,6 +194,63 @@ namespace chiffon_back.Controllers
 
             }
             return NotFound(); //?Forbid()?;
+        }
+
+        [HttpGet("confirm")]
+        public ActionResult<Models.User> Confirm(string token)
+        {
+            try
+            {
+                var user = ctx.Users.FirstOrDefault(x => x.RegistrationHash == token);
+
+                if (user == null)
+                {
+                    return BadRequest(new
+                    {
+                        status = "User not found",
+                        userExists = true,
+                    });
+                }
+
+
+                user.IsLocked = false; // разблокируем
+                user.RegistrationHash = null;
+                ctx.SaveChanges();
+
+                Models.User newUser = config.CreateMapper().Map<Models.User>(user);
+
+                /*using (MailMessage mess = new MailMessage())
+                {
+                    SmtpClient client = new SmtpClient("smtp.mail.ru", Convert.ToInt32(587))
+                    {
+                        Credentials = new NetworkCredential("elizarov.sa@mail.ru", "KZswYNWrd9eY1xVfvkre"),
+                        EnableSsl = true,
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                        Timeout = 5000
+                    };
+                    mess.From = new MailAddress("elizarov.sa@mail.ru");
+                    mess.To.Add(new MailAddress(mdUser.Email));
+                    mess.Subject = "Confirm your registration";
+                    mess.SubjectEncoding = Encoding.UTF8;
+                    mess.Body = $"<h2>Hello, {mdUser.Email}!</h2><p> Please confirm your registration: <a href='https://localhost:3080/Auth/confirm?token={hash}'></a></p>";
+                    mess.IsBodyHtml = true;
+                    //try
+                    //{
+                    //    mess.Attachments.Add(new Attachment(какой файл добавлять для отправки));
+                    //}
+                    //catch { }
+                    client.Send(mess);
+                    mess.Dispose();
+                    client.Dispose();
+                }*/
+
+                return Ok(newUser);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return NotFound();
         }
 
         [HttpPost("check-account")]
