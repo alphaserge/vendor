@@ -175,7 +175,7 @@ namespace chiffon_back.Controllers
                     mess.To.Add(new MailAddress(mdUser.Email));
                     mess.Subject = "Confirm your registration";
                     mess.SubjectEncoding = Encoding.UTF8;
-                    mess.Body = $"<h2>Hello, {mdUser.Email}!</h2><p> Please confirm your registration: <a href='https://localhost:3080/Auth/confirm?token={hash}'></a></p>";
+                    mess.Body = $"<h2>Hello, {mdUser.Email}!</h2><p> Please confirm your registration: <a href='https://localhost:3000/confirm?token={hash}'>Confirmation link</a></p>";
                     mess.IsBodyHtml = true;
                     /*try
                     {

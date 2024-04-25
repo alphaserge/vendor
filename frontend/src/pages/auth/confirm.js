@@ -1,0 +1,119 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import FormHelperText from '@mui/material/FormHelperText';
+
+import axios from 'axios'
+
+import { stringToHash } from '../../functions/hash'
+import config from "../../config.json"
+
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+function Copyright(props) {
+  return (
+    <Typography variant="body2" color="text.secondary" align="center" {...props}>
+      {'Copyright © '}
+      <Link color="inherit" href="https://mui.com/">
+        Your Website
+      </Link>{' '}
+      {new Date().getFullYear()}
+      {'.'}
+    </Typography>
+  );
+}
+
+// TODO remove, this demo shouldn't need to reset the theme.
+const defaultTheme = createTheme();
+
+const onButtonClick = () => {
+}
+
+export default function Confirm(props) {
+
+  const [email, setEmail] = useState("")
+
+  //const urlParams = new URLSearchParams(this.props.location.search)
+  
+  const navigate = useNavigate();
+      
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    console.log(data);
+  };
+
+  // Log in a user using email and password
+  const confirm = () => {
+
+      axios.get(config.api + '/Auth/confirm?token=')
+      .then(function (res) {
+        try {
+          var result = res.data;
+          //setVendorList(result)
+        }
+       catch (error) {
+          console.log(error)
+        }
+      })
+      .catch (error => {
+        console.log(error)
+      })
+    }      
+
+    useEffect(() => {
+      confirm()
+    }, []);
+
+  return (
+    <ThemeProvider theme={defaultTheme}>
+      <Container component="main" maxWidth="xs" sx={{ mt: -3, mb: 0 }}>
+        {/* <CssBaseline /> */}
+        <Box
+          sx={{
+            marginTop: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          {/* <Avatar sx={{ m: 0, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar> */}
+          <Typography component="h1" variant="h5" sx={{mb:2}}>
+            Account confirmation
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+            <FormControl fullWidth > 
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              onClick={onButtonClick}
+              sx={{ mt: 3, mb: 2 }} >
+              Confirm
+            </Button>
+             </FormControl>
+          </Box>
+        </Box>
+        <Copyright sx={{ mt: 8, mb: 4 }} />
+      </Container>
+    </ThemeProvider>
+  );
+}

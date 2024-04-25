@@ -182,9 +182,12 @@ export default function Register(props) {
           var result = res.data;
           setVendorList(result)
         }
-        catch (error) {
+       catch (error) {
           console.log(error)
         }
+      })
+      .catch (error => {
+        console.log(error)
       })
     }      
 

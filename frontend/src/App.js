@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/home/home';
 import Login from './pages/auth/login';
 import Register from './pages/auth/register';
+import Confirm from './pages/auth/confirm';
 import './App.css';
 import { useEffect, useState } from 'react';
 
@@ -50,6 +51,7 @@ function App() {
           <Route path="/" element={<Home user={user} loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setUser={setUser} />} />
           <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setUser={setUser} />} />
+          <Route path="/confirm" element={<Confirm setLoggedIn={setLoggedIn} setUser={setUser} />} />
         </Routes>
       </BrowserRouter>
     </div>
