@@ -154,10 +154,10 @@ export default function Register(props) {
       .then(r => r.json())
       .then(r => {
           if (r.id >= 1) {
-              localStorage.setItem("user", JSON.stringify({email, token: r.token}))
-              props.setLoggedIn(true)
-              props.setEmail(email)
-              navigate("/")
+              localStorage.setItem("user", JSON.stringify({r, token: r.token}))
+              // props.setLoggedIn(true)
+              // props.setUser(r)
+              navigate("/info")
           } else {
               window.alert("Wrong email or password")
           }

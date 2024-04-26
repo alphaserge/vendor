@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
@@ -42,31 +42,34 @@ function Copyright(props) {
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-const onButtonClick = () => {
-}
-
 export default function Confirm(props) {
 
   const [email, setEmail] = useState("")
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  //const urlParams = new URLSearchParams(this.props.location.search)
-  
   const navigate = useNavigate();
       
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log(data);
+    //const data = new FormData(event.currentTarget);
+    //console.log(data);
   };
 
+  const onButtonClick = () => {
+    confirm()
+  }
+  
   // Log in a user using email and password
   const confirm = () => {
 
-      axios.get(config.api + '/Auth/confirm?token=')
-      .then(function (res) {
+      axios.get(config.api + '/Auth/confirm?token=' + searchParams.get("token"))
+      .then(function (r) {
         try {
-          var result = res.data;
-          //setVendorList(result)
+          //var result = res.data;
+          props.setLoggedIn(true)
+          props.setUser(r)
+          navigate("/success")
+      //setVendorList(result)
         }
        catch (error) {
           console.log(error)
@@ -78,7 +81,7 @@ export default function Confirm(props) {
     }      
 
     useEffect(() => {
-      confirm()
+      //confirm()
     }, []);
 
   return (
@@ -107,7 +110,7 @@ export default function Confirm(props) {
               variant="contained"
               onClick={onButtonClick}
               sx={{ mt: 3, mb: 2 }} >
-              Confirm
+              Confirm your account
             </Button>
              </FormControl>
           </Box>
