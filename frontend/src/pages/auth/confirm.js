@@ -2,42 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import TextField from '@mui/material/TextField';
-import FormHelperText from '@mui/material/FormHelperText';
-
-import axios from 'axios'
-
-import { stringToHash } from '../../functions/hash'
-import config from "../../config.json"
-
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import axios from 'axios'
+
+import Copyright from '../copyright';
+import config from "../../config.json"
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -65,18 +39,19 @@ export default function Confirm(props) {
       axios.get(config.api + '/Auth/confirm?token=' + searchParams.get("token"))
       .then(function (r) {
         try {
-          //var result = res.data;
           props.setLoggedIn(true)
           props.setUser(r)
           navigate("/success")
-      //setVendorList(result)
+          //setVendorList(result)
         }
        catch (error) {
+          navigate("/error")
           console.log(error)
         }
       })
       .catch (error => {
-        console.log(error)
+          navigate("/error")
+          console.log(error)
       })
     }      
 

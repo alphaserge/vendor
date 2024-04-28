@@ -8,14 +8,14 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import ErrorIcon from '@mui/icons-material/Error';
 
 import Copyright from '../copyright';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function Info(props) {
+export default function Error(props) {
 
   const navigate = useNavigate();
 
@@ -37,14 +37,14 @@ export default function Info(props) {
           }}
         >
           <Avatar sx={{ mb: 2, bgcolor: 'secondary.main' }}>
-            <VpnKeyIcon />
+            <ErrorIcon />
           </Avatar>
           <Typography component="h1" variant="h5" sx={{mb:2}}>
             Account confirmation
           </Typography>
           <Box component="form" noValidate sx={{ mt: 1 }}>
             <FormControl fullWidth > 
-            <p>A letter has been sent to your email with an account activation link. Please check your email and activate your account.</p>
+            <p>An error occurred during account registration. Please try again or contact the site owner.</p>
              </FormControl>
           </Box>
         </Box>

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Data;
+using System.Diagnostics.Metrics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Mail;
@@ -14,6 +15,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace chiffon_back.Controllers
 {
@@ -31,9 +33,11 @@ namespace chiffon_back.Controllers
 
         private readonly ILogger<AuthController> _logger;
 
-        public AuthController(ILogger<AuthController> logger)
+        private IConfiguration _configuration;
+        public AuthController(ILogger<AuthController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         private string CreateToken(string email)
@@ -171,11 +175,12 @@ namespace chiffon_back.Controllers
                         DeliveryMethod = SmtpDeliveryMethod.Network,
                         Timeout = 5000
                     };
+                    string? frontendUrl = _configuration.GetValue<string>("Url:Frontend");
                     mess.From = new MailAddress("elizarov.sa@mail.ru");
                     mess.To.Add(new MailAddress(mdUser.Email));
                     mess.Subject = "Confirm your registration";
                     mess.SubjectEncoding = Encoding.UTF8;
-                    mess.Body = $"<h2>Hello, {mdUser.Email}!</h2><p> Please confirm your registration: <a href='https://localhost:3000/confirm?token={hash}'>Confirmation link</a></p>";
+                    mess.Body = $"<h2>Hello, {mdUser.FirstName}!</h2><p>You received this letter because this address was used when creating an account on the Anzhelika company website</p><p>To complete your account creation, click <a href='{frontendUrl}/confirm?token={hash}'>this link</a></p>";
                     mess.IsBodyHtml = true;
                     /*try
                     {

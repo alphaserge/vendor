@@ -2,42 +2,22 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import FormHelperText from '@mui/material/FormHelperText';
-
-import axios from 'axios'
-
-import { stringToHash } from '../../functions/hash'
-import config from "../../config.json"
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://silkroad-angelika.com/">
-        JSC Angelika Fashion
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import Copyright from '../copyright';
+import { stringToHash } from '../../functions/hash'
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -86,19 +66,7 @@ export default function Login(props) {
           setPasswordError("The password must be 8 characters or longer")
           return
       }
-
       logIn()
-      // Check if email has an account associated with it
-      /*checkAccountExists(accountExists => {
-          // If yes, log in 
-          if (accountExists)
-              logIn()
-          else
-          // Else, ask user if they want to create a new account and if yes, then log in
-              if (window.confirm("An account does not exist with this email address: " + email + ". Do you want to create a new account?")) {
-                  //signUp()
-              }
-      })*/        
   }
 
   // Call the server API to check if the given email ID already exists
@@ -153,11 +121,11 @@ export default function Login(props) {
         .then(response => response.json())
         .then(json => setVendors(json))
         .catch(error => console.error(error));
-    }, []);*/
+    }, []);
 
   useEffect(() => {
-      //VendorsData()
-    }, []);
+      VendorsData()
+    }, []);*/
 
   return (
     <ThemeProvider theme={defaultTheme}>

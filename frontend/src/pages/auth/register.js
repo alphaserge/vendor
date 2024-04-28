@@ -11,33 +11,16 @@ import FormHelperText from '@mui/material/FormHelperText';
 
 import axios from 'axios'
 
-import { stringToHash } from '../../functions/hash'
-import config from "../../config.json"
-
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import Copyright from '../copyright';
+import config from "../../config.json"
+import { stringToHash } from '../../functions/hash'
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -159,8 +142,13 @@ export default function Register(props) {
               // props.setUser(r)
               navigate("/info")
           } else {
-              window.alert("Wrong email or password")
+            console.log(r)
+            navigate("/error")
           }
+      })
+      .catch (error => {
+        console.log(error)
+        navigate("/error")
       })
   }
 
@@ -207,9 +195,9 @@ export default function Register(props) {
             alignItems: 'center',
           }}
         >
-          {/* <Avatar sx={{ m: 0, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ mb: 2, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
-          </Avatar> */}
+          </Avatar>
           <Typography component="h1" variant="h5" sx={{mb:2}}>
             Sign Up
           </Typography>
@@ -219,12 +207,14 @@ export default function Register(props) {
               error={ companyError + emailError + passwordError + confirmPasswordError + firstNameError != "" }
               required > 
                 <InputLabel 
-                  id="demo-simple-select-label">
+                  id="demo-simple-select-label"
+                  size="small" >
                   Your Company
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
+                  size="small" 
                   value={vendor}
                   label="Your Company"
                   // variant="outlined"
@@ -238,6 +228,7 @@ export default function Register(props) {
             <TextField
               margin="normal"
               fullWidth
+              size="small" 
               id="email"
               label="Enter your email here"
               name="email"
@@ -251,6 +242,7 @@ export default function Register(props) {
               margin="normal"
               required
               fullWidth
+              size="small" 
               name="password"
               label="Your password"
               type="password"
@@ -264,6 +256,7 @@ export default function Register(props) {
               margin="normal"
               required
               fullWidth
+              size="small" 
               name="confirmPassword"
               label="Confirm password"
               type="password"
@@ -277,6 +270,7 @@ export default function Register(props) {
               margin="normal"
               required
               fullWidth
+              size="small" 
               name="firstName"
               label="First name"
               id="firstName"
@@ -287,6 +281,7 @@ export default function Register(props) {
             <TextField
               margin="normal"
               fullWidth
+              size="small" 
               name="lastName"
               label="Last name"
               id="lastName"
@@ -296,6 +291,7 @@ export default function Register(props) {
             <TextField
               margin="normal"
               fullWidth
+              size="small" 
               name="phone"
               label="Phone"
               id="phone"
@@ -306,6 +302,7 @@ export default function Register(props) {
             <Button
               type="submit"
               fullWidth
+              size="small" 
               variant="contained"
               onClick={onButtonClick}
               sx={{ mt: 3, mb: 2 }}

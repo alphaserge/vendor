@@ -6,20 +6,11 @@ import FormControl from '@mui/material/FormControl';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import Copyright from '../copyright';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -30,7 +21,7 @@ export default function Success(props) {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs" sx={{ mt: -3, mb: 0 }}>
+      <Container component="main" maxWidth="xs" >
         {/* <CssBaseline /> */}
         <Box
           sx={{
@@ -40,15 +31,15 @@ export default function Success(props) {
             alignItems: 'center',
           }}
         >
-          {/* <Avatar sx={{ m: 0, bgcolor: 'secondary.main' }}>
+          <Avatar sx={{ mb: 3, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
-          </Avatar> */}
+          </Avatar> 
           <Typography component="h1" variant="h5" sx={{mb:2}}>
             Account confirmation
           </Typography>
           <Box component="form" noValidate sx={{ mt: 1 }}>
             <FormControl fullWidth > 
-            <p>Your account successfully created</p>
+            <p>Your account has been verified. In the future, use your email address and password to log into the site.</p>
             <Link href="/">Go to main page</Link>
              </FormControl>
           </Box>
