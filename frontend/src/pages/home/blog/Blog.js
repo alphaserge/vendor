@@ -1,22 +1,20 @@
-import React from "react"
-import { useNavigate } from "react-router-dom";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import XIcon from '@mui/icons-material/X';
+import * as React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
-
-import Header from './blog/Header';
-import MainFeaturedPost from './blog/MainFeaturedPost';
-import FeaturedPost from './blog/FeaturedPost';
-import Main from './blog/Main';
-import Sidebar from './blog/Sidebar';
-import Footer from './blog/Footer';
-import post1 from './blog/blog-post.1.md';
-import post2 from './blog/blog-post.2.md';
-import post3 from './blog/blog-post.3.md';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import XIcon from '@mui/icons-material/X';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Header from './Header';
+import MainFeaturedPost from './MainFeaturedPost';
+import FeaturedPost from './FeaturedPost';
+import Main from './Main';
+import Sidebar from './Sidebar';
+import Footer from './Footer';
+import post1 from './blog-post.1.md';
+import post2 from './blog-post.2.md';
+import post3 from './blog-post.3.md';
 
 const sections = [
   { title: 'Technology', url: '#' },
@@ -85,23 +83,10 @@ const sidebar = {
   ],
 };
 
-
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function Home(props) {
-
-    const navigate = useNavigate();
-    
-    const onButtonClick = () => {
-        if (props.loggedIn) {
-            localStorage.removeItem("user")
-            props.setLoggedIn(false)
-        } else {
-            navigate("/login")
-        }
-    }
-
+export default function Blog() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />

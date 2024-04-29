@@ -1,5 +1,6 @@
 {
     "api": "https://localhost:3080",
+    "company": "JSC Angelika",
 
     "map": {
         "lat": 56.142680,
