@@ -1,12 +1,13 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/home/home';
+import AddProduct from './pages/home/addproduct';
 import Login from './pages/auth/login';
 import Register from './pages/auth/register';
 import Confirm from './pages/auth/confirm';
 import Info from './pages/auth/info';
 import Success from './pages/auth/success';
-import Blog from './pages/home/blog/Blog';
 import PrimarySearchAppBar from './pages/home/header';
+import Blog from './pages/home/blog/Blog';
 
 import './App.css';
 import { useEffect, useState } from 'react';
@@ -60,7 +61,8 @@ function App() {
           <Route path="/info" element={<Info />} />
           <Route path="/success" element={<Success />} />
           <Route path="/blog" element={<Blog />} />
-          <Route path="/header" element={<PrimarySearchAppBar />} />
+          <Route path="/addproduct" element={<AddProduct />} />
+          {/* <Route path="/header" element={<PrimarySearchAppBar />} /> */}
         </Routes>
       </BrowserRouter>
     </div>
