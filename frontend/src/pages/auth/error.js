@@ -44,7 +44,7 @@ export default function Error(props) {
           </Typography>
           <Box component="form" noValidate sx={{ mt: 1 }}>
             <FormControl fullWidth > 
-            <p>An error occurred during account registration. Please try again or contact the site owner.</p>
+            <p>An <b>error</b> occurred during account registration. Please <Link href="/register">try again</Link> or contact the site owner.</p>
              </FormControl>
           </Box>
         </Box>
