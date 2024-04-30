@@ -8,7 +8,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 
-import Header from './blog/Header';
+import Header from './header';
 import MainFeaturedPost from './blog/MainFeaturedPost';
 import FeaturedPost from './blog/FeaturedPost';
 import Main from './blog/Main';

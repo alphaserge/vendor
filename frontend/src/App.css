@@ -4,6 +4,14 @@
 }
 
 
+.color_select_item {
+  display: none;
+}
+
+li > .color_select_item {
+  display: inline;
+}
+
 /* .mainContainer {
   flex-direction: column;
   display: flex;

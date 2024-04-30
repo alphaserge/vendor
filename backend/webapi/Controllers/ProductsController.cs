@@ -50,15 +50,43 @@ namespace chiffon_back.Controllers
             _logger = logger;
         }
 
-        [Authorize]
+        // временно [Authorize]
         [HttpGet(Name = "Products")]
         public IEnumerable<Models.Product> Get()
         {
-            return ctx.Products
+            var query = from p in ctx.Products
+                        select new Models.Product
+                        {
+                            Id = p.Id,
+                            RefNo = p.RefNo,
+                            ArtNo = p.ArtNo,
+                            ItemName = p.ItemName,
+                            Design = p.Design,
+                            ColorNo = p.ColorNo,
+                            ColorName = p.ColorName,
+                            PhotoDir = p.PhotoDir,
+                            Price = p.Price,
+                            Weight = p.Weight,
+                            Width = p.Width,
+                            ProductStyleId = p.ProductStyleId,
+                            ProductTypeId = p.ProductTypeId,
+                            VendorId = p.VendorId,
+                            Vendor = p.Vendor.VendorName,
+                            ProductStyle = p.ProductStyle.StyleName,
+                            ProductType = p.ProductType.TypeName,
+                            Colors = p.ProductsInColors.Select(x => new Models.Color { Id = x.ColorId, ColorName = x.Color.ColorName }).ToArray(),
+                            DesignTypes = p.ProductsInDesignTypes.Select(x => new Models.DesignType { Id = x.DesignTypeId, DesignName = x.DesignType.DesignName }).ToArray(),
+                            OverWorkTypes = p.ProductsInOverWorkTypes.Select(x => new Models.OverWorkType { Id = x.OverWorkTypeId, OverWorkName = x.OverWorkType.OverWorkName }).ToArray(),
+                            Seasons = p.ProductsInSeasons.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
+                        };
+
+            return query.ToList();
+
+            /*return ctx.Products
                 .Select(x =>
                     config.CreateMapper()
                         .Map<Models.Product>(x))
-                .ToList();
+                .ToList();*/
 
 
             /*return Enumerable.Range(1, 5).Select(index => new Product

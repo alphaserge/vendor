@@ -8,42 +8,42 @@ namespace chiffon_back.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProductStylesController : ControllerBase
+    public class OverWorkTypesController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Models.ProductStyle, Context.ProductStyle>();
-                cfg.CreateMap<Context.ProductStyle, Models.ProductStyle>();
+                cfg.CreateMap<Models.OverWorkType, Context.OverWorkType>();
+                cfg.CreateMap<Context.OverWorkType, Models.OverWorkType>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
 
-        private readonly ILogger<ProductStylesController> _logger;
+        private readonly ILogger<OverWorkTypesController> _logger;
 
-        public ProductStylesController(ILogger<ProductStylesController> logger)
+        public OverWorkTypesController(ILogger<OverWorkTypesController> logger)
         {
             _logger = logger;
         }
 
-        [HttpGet(Name = "ProductStyles")]
-        public IEnumerable<Models.ProductStyle> Get()
+        [HttpGet(Name = "OverWorkTypes")]
+        public IEnumerable<Models.OverWorkType> Get()
         {
-            return ctx.ProductStyles.OrderBy(x => x.StyleName)
+            return ctx.OverWorkTypes.OrderBy(x => x.OverWorkName)
                 .Select(x =>
                     config.CreateMapper()
-                        .Map<Models.ProductStyle>(x))
+                        .Map<Models.OverWorkType>(x))
                 .ToList();
         }
 
-        [HttpPost(Name = "ProductStyles")]
-        public ActionResult<Models.Vendor> Post(Models.ProductStyle Vendor)
+        [HttpPost(Name = "OverWorkTypes")]
+        public ActionResult<Models.Vendor> Post(Models.OverWorkType Vendor)
         {
             try
             {
-                Context.ProductStyle vendor = config.CreateMapper()
-                    .Map<Context.ProductStyle>(Vendor);
+                Context.OverWorkType vendor = config.CreateMapper()
+                    .Map<Context.OverWorkType>(Vendor);
 
-                ctx.ProductStyles.Add(vendor);
+                ctx.OverWorkTypes.Add(vendor);
                 ctx.SaveChanges();
 
                 return CreatedAtAction(nameof(Get), new { id = vendor.Id }, vendor);

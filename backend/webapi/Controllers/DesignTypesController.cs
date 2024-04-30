@@ -8,42 +8,42 @@ namespace chiffon_back.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProductStylesController : ControllerBase
+    public class DesignTypesController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Models.ProductStyle, Context.ProductStyle>();
-                cfg.CreateMap<Context.ProductStyle, Models.ProductStyle>();
+                cfg.CreateMap<Models.DesignType, Context.DesignType>();
+                cfg.CreateMap<Context.DesignType, Models.DesignType>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
 
-        private readonly ILogger<ProductStylesController> _logger;
+        private readonly ILogger<DesignTypesController> _logger;
 
-        public ProductStylesController(ILogger<ProductStylesController> logger)
+        public DesignTypesController(ILogger<DesignTypesController> logger)
         {
             _logger = logger;
         }
 
-        [HttpGet(Name = "ProductStyles")]
-        public IEnumerable<Models.ProductStyle> Get()
+        [HttpGet(Name = "DesignTypes")]
+        public IEnumerable<Models.DesignType> Get()
         {
-            return ctx.ProductStyles.OrderBy(x => x.StyleName)
+            return ctx.DesignTypes.OrderBy(x => x.DesignName)
                 .Select(x =>
                     config.CreateMapper()
-                        .Map<Models.ProductStyle>(x))
+                        .Map<Models.DesignType>(x))
                 .ToList();
         }
 
-        [HttpPost(Name = "ProductStyles")]
-        public ActionResult<Models.Vendor> Post(Models.ProductStyle Vendor)
+        [HttpPost(Name = "DesignTypes")]
+        public ActionResult<Models.Vendor> Post(Models.DesignType Vendor)
         {
             try
             {
-                Context.ProductStyle vendor = config.CreateMapper()
-                    .Map<Context.ProductStyle>(Vendor);
+                Context.DesignType vendor = config.CreateMapper()
+                    .Map<Context.DesignType>(Vendor);
 
-                ctx.ProductStyles.Add(vendor);
+                ctx.DesignTypes.Add(vendor);
                 ctx.SaveChanges();
 
                 return CreatedAtAction(nameof(Get), new { id = vendor.Id }, vendor);

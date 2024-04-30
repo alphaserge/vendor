@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate, redirect } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -27,9 +28,10 @@ function FabricIcon(props) {
   );
   }
 
-function ResponsiveAppBar() {
+function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -49,6 +51,25 @@ function ResponsiveAppBar() {
   const handleMenuClick = (event) => {
     let value = event.currentTarget.dataset.menuValue;
     console.log(value)
+    if (value == "My Products") { 
+      console.log('redir')
+      redirect("/")
+      //navigate("/") 
+      return
+    }
+    if (value == "Add Product") { 
+      console.log('>>addproduct')
+      //redirect("/addproduct")
+      navigate("/addproduct") 
+      return
+    }
+    if (value == "Contacts") { navigate("/contacts") }
+    if (value == "Profile") { navigate("/profile") }
+    if (value == "Account") { navigate("/account") }
+    if (value == "Dashboard") { navigate("/dashboard") }
+    if (value == "Logout") { navigate("/logout") }
+
+    //['My Products', 'Add Product', 'Contacts' ]
     setAnchorElUser(null);
     setAnchorElNav(null);
   };
@@ -184,4 +205,4 @@ function ResponsiveAppBar() {
     </AppBar>
   );
 }
-export default ResponsiveAppBar;
+export default Header;

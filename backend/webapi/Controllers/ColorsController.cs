@@ -8,42 +8,42 @@ namespace chiffon_back.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ProductStylesController : ControllerBase
+    public class ColorsController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Models.ProductStyle, Context.ProductStyle>();
-                cfg.CreateMap<Context.ProductStyle, Models.ProductStyle>();
+                cfg.CreateMap<Models.Color, Context.Color>();
+                cfg.CreateMap<Context.Color, Models.Color>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
 
-        private readonly ILogger<ProductStylesController> _logger;
+        private readonly ILogger<ColorsController> _logger;
 
-        public ProductStylesController(ILogger<ProductStylesController> logger)
+        public ColorsController(ILogger<ColorsController> logger)
         {
             _logger = logger;
         }
 
-        [HttpGet(Name = "ProductStyles")]
-        public IEnumerable<Models.ProductStyle> Get()
+        [HttpGet(Name = "Colors")]
+        public IEnumerable<Models.Color> Get()
         {
-            return ctx.ProductStyles.OrderBy(x => x.StyleName)
+            return ctx.Colors.OrderBy(x => x.ColorName)
                 .Select(x =>
                     config.CreateMapper()
-                        .Map<Models.ProductStyle>(x))
+                        .Map<Models.Color>(x))
                 .ToList();
         }
 
-        [HttpPost(Name = "ProductStyles")]
-        public ActionResult<Models.Vendor> Post(Models.ProductStyle Vendor)
+        [HttpPost(Name = "Colors")]
+        public ActionResult<Models.Vendor> Post(Models.Color Vendor)
         {
             try
             {
-                Context.ProductStyle vendor = config.CreateMapper()
-                    .Map<Context.ProductStyle>(Vendor);
+                Context.Color vendor = config.CreateMapper()
+                    .Map<Context.Color>(Vendor);
 
-                ctx.ProductStyles.Add(vendor);
+                ctx.Colors.Add(vendor);
                 ctx.SaveChanges();
 
                 return CreatedAtAction(nameof(Get), new { id = vendor.Id }, vendor);

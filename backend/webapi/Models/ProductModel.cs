@@ -1,8 +1,6 @@
-﻿using chiffon_back.Context;
-
-namespace chiffon_back.Models
+﻿namespace chiffon_back.Models
 {
-    public class Product
+    public class ProductModel
     {
         public int? Id { get; set; }
         public string? ItemName { get; set; }
@@ -19,15 +17,6 @@ namespace chiffon_back.Models
         public int? ProductStyleId { get; set; }
         public int? ProductTypeId { get; set; }
         public int? VendorId { get; set; }
-
-        public string? Vendor { get; set; }
-        public string? ProductStyle { get; set; }
-        public string? ProductType { get; set; }
-
-        public Color[]? Colors { get; set; }
-        public DesignType[]? DesignTypes { get; set; }
-        public OverWorkType[]? OverWorkTypes { get; set; }
-        public Season[]? Seasons { get; set; }
 
         /*public virtual ProductStyle? ProductStyle { get; set; }
         public virtual ProductType? ProductType { get; set; }

@@ -56,7 +56,7 @@ function Header(props) {
 
   const handleMenuClick = (event) => {
     let value = event.currentTarget.dataset.menuValue;
-    console.log(value)
+    console.log(value+"111")
     setAnchorElUser(null);
     setAnchorElNav(null);
   };

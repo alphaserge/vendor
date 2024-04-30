@@ -8,33 +8,33 @@ namespace chiffon_back.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class VendorsController : ControllerBase
+    public class SeasonsController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Models.Vendor, Context.Vendor>();
-                cfg.CreateMap<Context.Vendor, Models.Vendor>();
+                cfg.CreateMap<Models.Season, Context.Season>();
+                cfg.CreateMap<Context.Season, Models.Season>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
 
-        private readonly ILogger<VendorsController> _logger;
+        private readonly ILogger<SeasonsController> _logger;
 
-        public VendorsController(ILogger<VendorsController> logger)
+        public SeasonsController(ILogger<SeasonsController> logger)
         {
             _logger = logger;
         }
 
-        [HttpGet(Name = "Vendors")]
-        public IEnumerable<Models.Vendor> Get()
+        [HttpGet(Name = "Seasons")]
+        public IEnumerable<Models.Season> Get()
         {
-            return ctx.Vendors.OrderBy(x => x.VendorName)
+            return ctx.Seasons.OrderBy(x => x.SeasonName)
                 .Select(x =>
                     config.CreateMapper()
-                        .Map<Models.Vendor>(x))
+                        .Map<Models.Season>(x))
                 .ToList();
 
-            /*return Enumerable.Range(1, 5).Select(index => new Vendor
+            /*return Enumerable.Range(1, 5).Select(index => new Season
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                 TemperatureC = Random.Shared.Next(-20, 55),
@@ -44,15 +44,15 @@ namespace chiffon_back.Controllers
         }
 
 
-        [HttpPost(Name = "Vendors")]
-        public ActionResult<Models.Vendor> Post1(Models.Vendor Vendor)
+        [HttpPost(Name = "Seasons")]
+        public ActionResult<Models.Season> Post1(Models.Season Season)
         {
             try
             {
-                Context.Vendor vendor = config.CreateMapper()
-                    .Map<Context.Vendor>(Vendor);
+                Context.Season vendor = config.CreateMapper()
+                    .Map<Context.Season>(Season);
 
-                ctx.Vendors.Add(vendor);
+                ctx.Seasons.Add(vendor);
                 ctx.SaveChanges();
 
                 return CreatedAtAction(nameof(Get), new { id = vendor.Id }, vendor);
