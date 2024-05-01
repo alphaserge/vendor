@@ -18,6 +18,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FormHelperText from '@mui/material/FormHelperText';
 import { useTheme } from '@mui/material/styles';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import Fab from '@mui/material/Fab';
 
 import axios from 'axios'
 
@@ -33,6 +34,7 @@ import Footer from './blog/Footer';
 const defaultTheme = createTheme()
 const itemStyle = { width: 400, m: 2 }
 const labelStyle = { m: 2 }
+const buttonStyle = { width: 200, m: 2 }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -79,6 +81,8 @@ export default function AddProduct(props) {
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
 
+    const [selectedFile, setSelectedFile] = useState(null)
+  
 // #region handlers; 
     const colorChangeNotUsed = (event) => {
       setColor(event.target.value)
@@ -225,6 +229,81 @@ export default function AddProduct(props) {
         console.log(error)
       })
     }      
+
+  // On file select (from the pop up)
+  const onFileChange = (event) => {
+      // Update the state
+      setSelectedFile(event.target.files[0])
+  }
+  
+
+  const importFile= async (e) => {
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    console.log(config.api + "/Importfile");
+    try {
+      const res = await axios.post(config.api + "/Products/ImportFile", formData);
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+  // On file upload (click the upload button)
+  const onFileUpload = () => {
+      // Create an object of formData
+      const formData = new FormData();
+
+      // Update the formData object
+      formData.append(
+          "file",
+          selectedFile,
+          selectedFile.name
+      );
+
+      // Details of the uploaded file
+      console.log(selectedFile);
+
+      // Request made to the backend api
+      // Send formData object
+      axios.post("api/uploadfile", formData);
+  };
+
+  // File content to be displayed after
+  // file upload is complete
+  const fileData = () => {
+      if (selectedFile) {
+          return (
+              <div>
+                  <h2>File Details:</h2>
+                  <p>
+                      File Name:{" "}
+                      {selectedFile.name}
+                  </p>
+
+                  <p>
+                      File Type:{" "}
+                      {selectedFile.type}
+                  </p>
+
+                  <p>
+                      Last Modified:{" "}
+                      {selectedFile.lastModifiedDate.toDateString()}
+                  </p>
+              </div>
+          );
+      } else {
+          return (
+              <div>
+                  <br />
+                  <h4>
+                      Choose before Pressing the Upload
+                      button
+                  </h4>
+              </div>
+          );
+      }
+  };
+
+  
 
 // #endregion
 
@@ -504,6 +583,37 @@ export default function AddProduct(props) {
                  ))}
                 </Select>
                 </FormControl>
+<br/>
+                <FormControl>
+                <Button
+                  variant="contained"
+                  component="label"
+                  style={buttonStyle}
+                  >
+                  Select Photo
+                  <input
+                    type="file"
+                    onChange={onFileChange}
+                    hidden
+                  />
+                  
+                </Button>
+                <Box sx={{}}>File :{" "} { selectedFile ? selectedFile.name : "not selected"}</Box>
+                <Button onClick={importFile}>
+                        Upload!
+                    </Button>
+                {/* <div>
+                    <input
+                        type="file"
+                        onChange={onFileChange}
+                    /> 
+                    <Button onClick={onFileUpload}>
+                        Upload!
+                    </Button>
+                </div> */}
+                {/* {fileData()} */}
+                </FormControl>
+
           </Grid>
           </Box>
         </main>

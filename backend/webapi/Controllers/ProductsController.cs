@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Net.Http;
 
 namespace chiffon_back.Controllers
 {
@@ -98,25 +100,46 @@ namespace chiffon_back.Controllers
             .ToArray();*/
         }
 
-        
-/*        [HttpPost(Name = "Products")]
-        public ActionResult<Models.Product> Post(Models.Product product)
+
+        /*        [HttpPost(Name = "Products")]
+                public ActionResult<Models.Product> Post(Models.Product product)
+                {
+                    try
+                    {
+                        Context.Product prod = config.CreateMapper()
+                            .Map<Context.Product>(product);
+
+                        ctx.Products.Add(prod);
+                        ctx.SaveChanges();
+
+                        return CreatedAtAction(nameof(Get), new { id = prod.Id }, prod);
+                    }
+                    catch (Exception ex)
+                    {
+                        return CreatedAtAction(nameof(Get), new { id = -1 }, null);
+                    }
+                }*/
+
+        [HttpPost("ImportFile")]
+        public /*async*/ ActionResult ImportFile([FromForm] IFormFile file)
         {
             try
             {
-                Context.Product prod = config.CreateMapper()
-                    .Map<Context.Product>(product);
-
-                ctx.Products.Add(prod);
-                ctx.SaveChanges();
-
-                return CreatedAtAction(nameof(Get), new { id = prod.Id }, prod);
+                string name = file.FileName;
+                string extension = Path.GetExtension(file.FileName);
+                //read the file
+                using (var memoryStream = new MemoryStream())
+                {
+                    file.CopyTo(memoryStream);
+                }
+                //do something with the file here
+                return CreatedAtAction(nameof(Get), new { id = -1 }, true);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                return CreatedAtAction(nameof(Get), new { id = -1 }, null);
+                return CreatedAtAction(nameof(Get), new { id = -1 }, false);
             }
-        }*/
+        }
 
         [HttpPost(Name = "Products")]
         public ActionResult<Models.Product> Post1(Models.Product product)
