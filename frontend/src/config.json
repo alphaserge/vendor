@@ -1,5 +1,5 @@
 {
-    "api": "https://localhost:3080",
+    "api": "https://192.168.2.81:3080",
     "company": "JSC Angelika",
 
     "map": {
