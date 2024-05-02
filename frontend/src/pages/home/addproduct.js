@@ -160,7 +160,13 @@ export default function AddProduct(props) {
     };
 
     const seasonsData = () => {
-      axios.get(config.api + '/Seasons')
+      axios.get(config.api + '/Seasons'
+      /*,{
+        headers: {
+          'Access-Control-Allow-Origin' : '*',
+          'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+        }
+      }*/)
       .then(function (res) {
         try {
           var result = res.data;

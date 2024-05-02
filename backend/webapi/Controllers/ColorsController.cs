@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -8,6 +9,7 @@ namespace chiffon_back.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [EnableCors("Chiffon_AllowAllOrigins")]
     public class ColorsController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>

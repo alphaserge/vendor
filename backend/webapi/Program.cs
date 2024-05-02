@@ -70,17 +70,17 @@ string CORSPolicyName = "Chiffon_AllowAllOrigins";
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: CORSPolicyName,
+    options.AddDefaultPolicy(//name: CORSPolicyName,
                       builder =>
                       {
+                          // builder.WithOrigins("http://localhost:3000")
                           builder
-                            //.WithOrigins("http://localhost:3000")
-                            .AllowAnyOrigin()
-                            .AllowAnyMethod()
-                            //.WithMethods("GET")
-                            .AllowAnyHeader();
+                          .AllowAnyOrigin() 
+                          .AllowAnyMethod() //.WithMethods("GET")
+                          .AllowAnyHeader()
+                          .Build();
                       });
-});
+    });
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -97,10 +97,24 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-app.UseCors(CORSPolicyName);
-
+//app.UseStaticFiles();
+//app.UseRouting();
+app.UseCors();// CORSPolicyName);
 app.UseAuthorization();
+
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+    context.Response.Headers.Add("Access-Control-Allow-Methods", "*");
+    context.Response.Headers.Add("Access-Control-Allow-Headers", "*");
+    context.Response.Headers.Add("Access-Control-Max-Age", "86400");
+
+    /*context.Response.Headers.Add("Access-Control-Allow-Headers", "X-PINGOTHER, Host, User-Agent, Accept, Accept: application/json, application/json, Accept-Language, Accept-Encoding, Access-Control-Request-Method, Access-Control-Request-Headers, Origin, Connection, Content-Type, Content-Type: application/json, Authorization, Connection, Origin, Referer");
+    context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
+    //context.Response.Headers.Add("Access-Control-Allow-Headers", "content-type, accept, X-PINGOTHER");*/
+
+    await next.Invoke();
+});
 
 app.MapControllers();
 
