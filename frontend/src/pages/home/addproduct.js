@@ -14,6 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FormHelperText from '@mui/material/FormHelperText';
 import { useTheme } from '@mui/material/styles';
@@ -22,7 +23,9 @@ import Fab from '@mui/material/Fab';
 
 import axios from 'axios'
 
-import Button from '@mui/material/Button';
+//import randomUUID from 'crypto';
+
+import { v4 as uuid } from 'uuid'
 
 import Copyright from '../copyright';
 import config from "../../config.json"
@@ -34,7 +37,7 @@ import Footer from './blog/Footer';
 const defaultTheme = createTheme()
 const itemStyle = { width: 400, m: 2 }
 const labelStyle = { m: 2 }
-const buttonStyle = { width: 200, m: 2 }
+const buttonStyle = { width: 160, m: 2 }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -83,7 +86,7 @@ export default function AddProduct(props) {
 
     const [selectedFile, setSelectedFile] = useState(null)
   
-// #region handlers; 
+    // #region handlers; 
     const colorChangeNotUsed = (event) => {
       setColor(event.target.value)
     };
@@ -303,7 +306,6 @@ export default function AddProduct(props) {
       }
   };
 
-  
 
 // #endregion
 
@@ -584,7 +586,9 @@ export default function AddProduct(props) {
                 </Select>
                 </FormControl>
 <br/>
-                <FormControl>
+                {/* <FormControl sx = {{width: 400, m: 2 }}  > */}
+                <div style={{ width: 400, m: 2, display: "inline-flex", textAlign: "center" }}>
+                  <div style={{ margin: "0 auto" }}>
                 <Button
                   variant="contained"
                   component="label"
@@ -596,23 +600,25 @@ export default function AddProduct(props) {
                     onChange={onFileChange}
                     hidden
                   />
-                  
                 </Button>
-                <Box sx={{}}>File :{" "} { selectedFile ? selectedFile.name : "not selected"}</Box>
-                <Button onClick={importFile}>
+
+                <Box sx={{display:"inline", m: 1}}>{ selectedFile ? "File: "+ selectedFile.name : "File: "}</Box>
+                {/* </FormControl> */}
+                </div>
+                </div>
+
+                {/* <FormControl sx = {{itemStyle}} > */}
+                <div style={{ width: 400, m: 2, display: "inline-flex", textAlign: "center" }}>
+                  <Button 
+                    variant="contained"
+                    style={buttonStyle}
+                    sx={{margin: "0 auto"}}
+                    onClick={importFile} >
                         Upload!
+                    
                     </Button>
-                {/* <div>
-                    <input
-                        type="file"
-                        onChange={onFileChange}
-                    /> 
-                    <Button onClick={onFileUpload}>
-                        Upload!
-                    </Button>
-                </div> */}
-                {/* {fileData()} */}
-                </FormControl>
+                    </div>
+                {/* </FormControl> */}
 
           </Grid>
           </Box>
