@@ -16,6 +16,7 @@ namespace chiffon_back.Controllers
             {
                 /**/
                 cfg.CreateMap<Models.Product, Context.Product>();
+                cfg.CreateMap<Models.PostProduct, Context.Product>();
                 cfg.CreateMap<Models.Color, Context.Color>();
                 cfg.CreateMap<Models.Season, Context.Season>();
                 cfg.CreateMap<Models.DesignType, Context.DesignType>();
@@ -121,17 +122,39 @@ namespace chiffon_back.Controllers
                 }*/
 
         [HttpPost("ImportFile")]
-        public /*async*/ ActionResult ImportFile([FromForm] IFormFile file)
+        public /*async*/ ActionResult ImportFile([FromForm] IFormFile formFile, [FromForm] string uid)
         {
             try
             {
-                string name = file.FileName;
-                string extension = Path.GetExtension(file.FileName);
+                string name = formFile.FileName;
+                string extension = Path.GetExtension(formFile.FileName);
+
+                if (formFile.Length > 0)
+                {
+                    var filePath = uid + extension;// Path.GetTempFileName();
+
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        //await formFile.CopyToAsync(stream);
+                        formFile.CopyTo(stream);
+                    }
+                }
+                return CreatedAtAction(nameof(Get), new { id = -1 }, true);
+
                 //read the file
                 using (var memoryStream = new MemoryStream())
                 {
-                    file.CopyTo(memoryStream);
+                    formFile.CopyTo(memoryStream);
+                    using (FileStream file = new FileStream(uid + "." + extension, FileMode.Create, System.IO.FileAccess.Write))
+                    {
+                        byte[] bytes = new byte[memoryStream.Length];
+                        memoryStream.Read(bytes, 0, (int)memoryStream.Length);
+                        file.Write(bytes, 0, bytes.Length);
+                        memoryStream.Close();
+                        file.Close();
+                    }
                 }
+
                 //do something with the file here
                 return CreatedAtAction(nameof(Get), new { id = -1 }, true);
             }
@@ -142,7 +165,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost(Name = "Products")]
-        public ActionResult<Models.Product> Post1(Models.Product product)
+        public ActionResult Post(Models.PostProduct product)
         {
             try
             {

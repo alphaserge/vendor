@@ -4,7 +4,7 @@
     "api1": "https://localhost:44398",
     "api2": "https://10c9-109-252-86-244.ngrok-free.app",
     "api3": "https://localhost:3080",
-    "api": "http://192.168.2.81:12928",
+    "api" : "https://localhost:3080",    
     "company": "JSC Angelika",
 
     "map": {

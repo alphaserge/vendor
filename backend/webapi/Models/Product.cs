@@ -23,7 +23,7 @@ namespace chiffon_back.Models
         public string? Vendor { get; set; }
         public string? ProductStyle { get; set; }
         public string? ProductType { get; set; }
-
+        public string? Uuid { get; set; }
         public Color[]? Colors { get; set; }
         public DesignType[]? DesignTypes { get; set; }
         public OverWorkType[]? OverWorkTypes { get; set; }
@@ -38,4 +38,31 @@ namespace chiffon_back.Models
         public virtual ICollection<ProductsInDesignTypes>? ProductsInDesignTypes { get; set; }
         public virtual ICollection<ProductsInColors>? ProductsInColors { get; set; }*/
     }
+
+    public class PostProduct
+    {
+        public int? Id { get; set; }
+        public string? ItemName { get; set; }
+        public string? RefNo { get; set; }
+        public string? ArtNo { get; set; }
+        public string? Design { get; set; }
+        public int? ColorNo { get; set; }
+        public decimal? Price { get; set; }
+        public int? Weight { get; set; }
+        public int? Width { get; set; }
+
+        public int? ProductStyleId { get; set; }
+        public int? ProductTypeId { get; set; }
+        public int? VendorId { get; set; }
+
+        public string? ProductStyle { get; set; }
+        public string? ProductType { get; set; }
+        public string? Uuid { get; set; }
+        public int[]? Colors { get; set; }
+        public int[]? DesignTypes { get; set; }
+        public int[]? OverWorkTypes { get; set; }
+        public int []? Seasons { get; set; }
+
+    }
+
 }

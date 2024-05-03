@@ -37,7 +37,7 @@ import Footer from './blog/Footer';
 const defaultTheme = createTheme()
 const itemStyle = { width: 400, m: 2 }
 const labelStyle = { m: 2 }
-const buttonStyle = { width: 160, m: 2 }
+const buttonStyle = { width: 180, m: 2 }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -75,9 +75,10 @@ export default function AddProduct(props) {
     const [overworkType, setOverworkType] = useState([])
     const [seasonList, setSeasonList] = useState([])
     const [season, setSeason] = useState([])
-    const [itemName, setItemName] = useState([])
+    const [itemName, setItemName] = useState("")
     const [refNo, setRefNo] = useState("")
     const [artNo, setArtNo] = useState("")
+    const [uid, setUid] = useState(uuid())
     const [design, setDesign] = useState("")
     const [colorNo, setColorNo] = useState("")
     const [price, setPrice] = useState("")
@@ -245,17 +246,90 @@ export default function AddProduct(props) {
       setSelectedFile(event.target.files[0])
   }
   
-
-  const importFile= async (e) => {
+  const importFile = async (e) => {
     const formData = new FormData();
-    formData.append("file", selectedFile);
-    console.log(config.api + "/Importfile");
+    formData.append("formFile", selectedFile);
+    formData.append("uid", uid);
+    //console.log(config.api + "/Importfile");
     try {
       const res = await axios.post(config.api + "/Products/ImportFile", formData);
     } catch (ex) {
       console.log(ex);
     }
   };
+
+  const postProduct = async (e) => {
+    console.log(config.api + '/Products')
+
+    fetch(config.api + '/Products', {
+      method: "POST",
+      headers: {
+          'Content-Type': 'application/json'
+        },
+      body: JSON.stringify({
+        itemName: itemName,
+        refNo: refNo,
+        artNo: artNo,
+        design: design,
+        colorNo: colorNo,
+        //colorName: colorName,
+        price: Number(price),
+        weight: Number(weight),
+        width: Number(width),
+        productStyleId: Number(productStyle),
+        productTypeId: Number(productType),
+        vendorId: 1,
+        //vendor: vendorId,
+        //productStyle: productStyle,
+        //productType: productType,
+        uuid: uid,
+        colors: color,
+        seasons: season,
+        designTypes: designType,
+        overWorkTypes: overworkType,
+        })
+  })
+  .then(r => r.json())
+  .then(r => {
+    console.log(r);
+    importFile();
+})
+  .catch (error => {
+    console.log(error)
+    //navigate("/error")
+  })
+return;
+    const res = await axios.post(config.api + '/Products', {
+      itemName: itemName,
+      refNo: refNo,
+      artNo: artNo,
+      design: design,
+      colorNo: colorNo,
+      //colorName: colorName,
+      price: Number(price),
+      weight: Number(weight),
+      width: Number(width),
+      productStyleId: Number(productStyle),
+      productTypeId: Number(productType),
+      vendorId: 1,
+      //vendor: vendorId,
+      //productStyle: productStyle,
+      //productType: productType,
+      uuid: uid,
+      colors: color,
+      seasons: season,
+      designTypes: designType,
+      overWorkTypes: overworkType,
+    })
+    .then(function (response) {
+      console.log(response);
+      importFile();
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  };
+
   // On file upload (click the upload button)
   const onFileUpload = () => {
       // Create an object of formData
@@ -592,15 +666,16 @@ export default function AddProduct(props) {
                 </Select>
                 </FormControl>
 <br/>
+<br/>
                 {/* <FormControl sx = {{width: 400, m: 2 }}  > */}
-                <div style={{ width: 400, m: 2, display: "inline-flex", textAlign: "center" }}>
+                <div style={{  textAlign: "center" }}>
                   <div style={{ margin: "0 auto" }}>
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   component="label"
                   style={buttonStyle}
                   >
-                  Select Photo
+                  { selectedFile ?  "Photo is selected" : "Select Photo"}
                   <input
                     type="file"
                     onChange={onFileChange}
@@ -608,20 +683,19 @@ export default function AddProduct(props) {
                   />
                 </Button>
 
-                <Box sx={{display:"inline", m: 1}}>{ selectedFile ? "File: "+ selectedFile.name : "File: "}</Box>
+                {/* <Box sx={{display:"inline", m: 1}}>{ selectedFile ? "File: "+ selectedFile.name : "File: "}</Box> */}
                 {/* </FormControl> */}
                 </div>
                 </div>
-
+<br/>
                 {/* <FormControl sx = {{itemStyle}} > */}
-                <div style={{ width: 400, m: 2, display: "inline-flex", textAlign: "center" }}>
+                <div style={{  textAlign: "center" }}>
                   <Button 
                     variant="contained"
                     style={buttonStyle}
                     sx={{margin: "0 auto"}}
-                    onClick={importFile} >
-                        Upload!
-                    
+                    onClick={postProduct} >
+                        Save
                     </Button>
                     </div>
                 {/* </FormControl> */}
