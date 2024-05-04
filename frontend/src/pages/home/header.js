@@ -53,7 +53,7 @@ function Header() {
     console.log(value)
     if (value == "My Products") { 
       console.log('redir')
-      redirect("/")
+      navigate("/listproduct")
       //navigate("/") 
       return
     }

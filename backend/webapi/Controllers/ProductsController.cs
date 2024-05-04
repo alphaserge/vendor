@@ -74,6 +74,7 @@ namespace chiffon_back.Controllers
                             ProductStyleId = p.ProductStyleId,
                             ProductTypeId = p.ProductTypeId,
                             VendorId = p.VendorId,
+                            Uuid = p.Uuid,
                             Vendor = p.Vendor.VendorName,
                             ProductStyle = p.ProductStyle.StyleName,
                             ProductType = p.ProductType.TypeName,
@@ -131,7 +132,7 @@ namespace chiffon_back.Controllers
 
                 if (formFile.Length > 0)
                 {
-                    var filePath = uid + extension;// Path.GetTempFileName();
+                    var filePath = "images/" + uid + extension;// Path.GetTempFileName();
 
                     using (var stream = System.IO.File.Create(filePath))
                     {

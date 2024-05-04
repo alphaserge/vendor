@@ -86,6 +86,7 @@ export default function AddProduct(props) {
     const [width, setWidth] = useState("")
 
     const [selectedFile, setSelectedFile] = useState(null)
+    
   
     // #region handlers; 
     const colorChangeNotUsed = (event) => {
@@ -293,6 +294,8 @@ export default function AddProduct(props) {
   .then(r => {
     console.log(r);
     importFile();
+    props.setLastAction("Product has been added")
+    navigate("/menu")
 })
   .catch (error => {
     console.log(error)

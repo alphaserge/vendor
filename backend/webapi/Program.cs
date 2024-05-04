@@ -12,6 +12,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using System.Security.Cryptography;
+using Microsoft.Extensions.FileProviders;
 
 
 //MD5 hash = MD5.Create();
@@ -96,8 +97,23 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+string dir = Path.Combine(Directory.GetCurrentDirectory(), @"images");
 app.UseHttpsRedirection();
-//app.UseStaticFiles();
+app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions()
+{
+    
+    FileProvider = new PhysicalFileProvider(
+    dir), //Path.Combine(Directory.GetCurrentDirectory(), @"images")),
+    RequestPath = new PathString("/images")
+}); ; ;
+
+app.UseDirectoryBrowser(new DirectoryBrowserOptions()
+{
+    FileProvider = new PhysicalFileProvider(
+    dir), //Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images")),
+    RequestPath = new PathString("/images")
+});
 //app.UseRouting();
 app.UseCors();// CORSPolicyName);
 app.UseAuthorization();

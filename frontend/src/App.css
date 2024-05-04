@@ -69,3 +69,37 @@ li > .color_select_item {
   border: 1px solid grey;
   padding-left: 8px;
 } */
+
+
+.product-img {
+  width: 190px;
+  height: 150px;
+  float: left;
+}
+
+.product-item {
+  font-size: 14px;
+  width: 200px;
+  height: 26px;
+  margin-left: 20px;
+  text-align: left;
+}
+
+.product-item.price {
+  /* text-align: right; */
+  font-family: "YS Text", Helvetica, Arial, sans-serif;
+  font-size: 28px;
+  /* font-weight: 500; */
+  color: darkgreen;
+  margin-top: 20px;
+}
+
+.product-item.price > span {
+  background-color: #eee;
+  padding: 4px;
+}
+
+.product-img img {
+  height: 100%;
+  width: 100%;
+}

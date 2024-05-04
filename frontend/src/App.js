@@ -1,6 +1,8 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/home/home';
 import AddProduct from './pages/home/addproduct';
+import ListProduct from './pages/home/listproduct';
+import Menu from './pages/home/menu';
 import Login from './pages/auth/login';
 import Register from './pages/auth/register';
 import Confirm from './pages/auth/confirm';
@@ -26,6 +28,8 @@ function App() {
     VendorId: 0,
     Vendor: ""
   })
+
+  const [lastAction, setLastAction] = useState("")
 
   useEffect(() => {
     // Fetch the user email and token from local storage
@@ -63,7 +67,9 @@ function App() {
           <Route path="/success" element={<Success />} />
           <Route path="/error" element={<Error />} />
           <Route path="/blog" element={<Blog />} />
-          <Route path="/addproduct" element={<AddProduct />} />
+          <Route path="/addproduct" element={<AddProduct lastAction={lastAction} setLastAction={setLastAction} />} />
+          <Route path="/listproduct" element={<ListProduct lastAction={lastAction} setLastAction={setLastAction} />} />
+          <Route path="/menu" element={<Menu lastAction={lastAction} setLastAction={setLastAction} />} />
           {/* <Route path="/header" element={<PrimarySearchAppBar />} /> */}
         </Routes>
       </BrowserRouter>
