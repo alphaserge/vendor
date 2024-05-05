@@ -27,6 +27,7 @@ import axios from 'axios'
 
 import { v4 as uuid } from 'uuid'
 
+import MySelect from '../../components/myselect';
 import Copyright from '../copyright';
 import config from "../../config.json"
 
@@ -638,6 +639,16 @@ return;
                 </Select>
                 </FormControl>
 
+                <MySelect 
+                  id="addproduct-designtype"
+                  url="DesignTypes"
+                  title="Design type"
+                  valueName="designName"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
+                  MenuProps={MenuProps}
+                />
+
                 <FormControl  error={ false } required > 
                 <InputLabel 
                   id="demo-simple-select-label6"
@@ -707,10 +718,7 @@ return;
           </Box>
         </main>
       </Container>
-      <Footer
-        title="Footer"
-        description="Something here to give the footer a purpose!"
-      />
+      <Copyright sx={{ mt: 0, mb: 2 }} />
     </ThemeProvider>
   );
 }

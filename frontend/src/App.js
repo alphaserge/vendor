@@ -68,7 +68,7 @@ function App() {
           <Route path="/error" element={<Error />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/addproduct" element={<AddProduct lastAction={lastAction} setLastAction={setLastAction} />} />
-          <Route path="/listproduct" element={<ListProduct lastAction={lastAction} setLastAction={setLastAction} />} />
+          <Route path="/listproduct" element={<ListProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/menu" element={<Menu lastAction={lastAction} setLastAction={setLastAction} />} />
           {/* <Route path="/header" element={<PrimarySearchAppBar />} /> */}
         </Routes>

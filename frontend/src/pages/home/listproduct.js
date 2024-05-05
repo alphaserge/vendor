@@ -61,13 +61,14 @@ export default function ListProduct(props) {
     useEffect(() => {
       loadProducts()
       console.log('load products')
+      console.log(props.user)
     }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Container maxWidth="lg">
-        <Header title="Blog" />
+        <Header user={props.user} title={props.title} />
         <main>
           {/* <Avatar sx={{ mb: 2, bgcolor: 'secondary.main' }}>
             <AddCircleIcon />
@@ -104,11 +105,9 @@ export default function ListProduct(props) {
           </Grid>
           </Box>
         </main>
-      </Container>
-      <Footer
-        title="Footer"
-        description="Something here to give the footer a purpose!"
-      />
+        <Copyright sx={{ mt: 0, mb: 2 }} />
+              </Container>
+              
     </ThemeProvider>
   );
 }

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from "react";
 import { useNavigate, redirect } from "react-router-dom";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -19,7 +19,7 @@ import { Icon } from '@mui/material';
 import config from "../../config.json"
 
 const pages = ['My Products', 'Add Product', 'Contacts' ];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Account', 'Dashboard', 'Login', 'Logout', 'Register'];
 
 function FabricIcon(props) {
   return (
@@ -28,7 +28,7 @@ function FabricIcon(props) {
   );
   }
 
-function Header() {
+export default function Header(props) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
@@ -63,16 +63,25 @@ function Header() {
       navigate("/addproduct") 
       return
     }
-    if (value == "Contacts") { navigate("/contacts") }
-    if (value == "Profile") { navigate("/profile") }
-    if (value == "Account") { navigate("/account") }
-    if (value == "Dashboard") { navigate("/dashboard") }
-    if (value == "Logout") { navigate("/logout") }
+    if (value == "Contacts") { navigate("/contacts"); return; }
+    if (value == "Profile") { navigate("/profile"); return; }
+    if (value == "Account") { navigate("/account"); return; }
+    if (value == "Dashboard") { navigate("/dashboard"); return; }
+    if (value == "Login") { navigate("/login"); return; }
+    if (value == "Logout") { navigate("/logout"); return; }
+    if (value == "Register") { navigate("/register"); return; }
 
     //['My Products', 'Add Product', 'Contacts' ]
     setAnchorElUser(null);
     setAnchorElNav(null);
   };
+
+  useEffect(() => {
+    //console.log('props.title')
+    //console.log(props.title)
+  }, []);
+
+  
 
   return (
     <AppBar position="static">
@@ -83,7 +92,7 @@ function Header() {
             //variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -169,10 +178,13 @@ function Header() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            <Tooltip title={props.user != undefined? props.user.firstName: ""}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                
               </IconButton>
+              <div onClick={handleOpenUserMenu}>{props.user != undefined? props.user.firstName: ""}</div>
+              
             </Tooltip>
             <Menu
               sx={{ mt: '45px' }}
@@ -205,4 +217,4 @@ function Header() {
     </AppBar>
   );
 }
-export default Header;
+//export default Header;
