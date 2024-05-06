@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -132,7 +133,11 @@ namespace chiffon_back.Controllers
 
                 if (formFile.Length > 0)
                 {
-                    var filePath = "images/" + uid + extension;// Path.GetTempFileName();
+                    //var filePath = "images/" + uid + extension;// Path.GetTempFileName();
+                    //var filePath = Path.Combine(webRootPath, "images/" + uid + extension);
+                    string dir = Path.Combine(Directory.GetCurrentDirectory(), @"images");
+                    chiffon_back.Code.DirectoryHelper.CreateDirectoryIfMissing(dir);
+                    var filePath = dir + "/" + uid + extension;// Path.GetTempFileName();
 
                     using (var stream = System.IO.File.Create(filePath))
                     {

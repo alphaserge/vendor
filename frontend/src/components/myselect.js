@@ -4,18 +4,30 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 
 import axios from 'axios'
 
 import config from "../config.json"
 
-function getStyles(name, personName, theme) {
-    return {
+function getStyles(name, values, theme) {
+  /* let names = values;//.map(a => a[field]);
+  console.log("names - name")
+  console.log(names)
+  console.log(name)
+  console.log(names.indexOf(name))
+  console.log("------------------")*/
+  
+return {
       fontWeight:
-        personName.indexOf(name) === -1
+       values.indexOf(name) === -1
           ? theme.typography.fontWeightRegular
-          : theme.typography.fontWeightMedium,
+          : theme.typography.fontWeightBold,
+          /*backgroundColor:
+          names.indexOf(name) === -1
+          ? "#F00"
+          : "#F0F"*/
     };
   }
 
@@ -27,7 +39,8 @@ export default function MySelect(props) {
 
     const dataChange = (event) => {
         const { target: { value }, } = event;
-        setSelectedValue( typeof value === 'string' ? value.split(',') : value );// On autofill we get a stringified value.
+        setSelectedValue( value );
+        props.setValueFn( value );
       };
   
       const loadData = () => {
@@ -60,18 +73,22 @@ return (
         label={props.title}
         //variant="outlined"
         multiple
-        value={selectedValue}
+        value={props.valueVariable}
         sx = {props.itemStyle}
         onChange={dataChange}
         input={<OutlinedInput label={props.title} />}
         MenuProps={props.MenuProps}
     >
-    { data.map((data) => (
+    { data.map((elem) => (
         <MenuItem 
-            key={data.id} 
-            value={data.id}
-            style={getStyles(data[props.valueName], selectedValue, theme)}>
-            {data[props.valueName]}
+            key={elem.id} 
+            value={elem[props.valueName]}
+            style={getStyles(elem[props.valueName], selectedValue, theme)}>
+               {props.rgbField != undefined &&
+                 <Box component="span" className="color_select_item" sx={{ backgroundColor: "#" + elem[props.rgbField], border: "1px solid #bbb", height: "24px", width: "24px",  mr: 2 }}>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                 </Box>}
+                 {elem[props.valueName]} 
             </MenuItem>
     ))}
     </Select>

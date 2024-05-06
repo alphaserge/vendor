@@ -70,7 +70,6 @@ export default function AddProduct(props) {
     const [productType, setProductType] = useState("")
     const [colorList, setColorList] = useState([])
     const [color, setColor] = useState([])
-    const [designTypeList, setDesignTypeList] = useState([])
     const [designType, setDesignType] = useState([])
     const [overworkTypeList, setOverworkTypeList] = useState([])
     const [overworkType, setOverworkType] = useState([])
@@ -115,26 +114,26 @@ export default function AddProduct(props) {
       })
     }      
 
-    const designTypeChange = (event) => {
-      const { target: { value }, } = event;
-      setDesignType( typeof value === 'string' ? value.split(',') : value );// On autofill we get a stringified value.
-    };
+    // const designTypeChange = (event) => {
+    //   const { target: { value }, } = event;
+    //   setDesignType( typeof value === 'string' ? value.split(',') : value );// On autofill we get a stringified value.
+    // };
 
-    const designTypesData = () => {
-      axios.get(config.api + '/DesignTypes')
-      .then(function (res) {
-        try {
-          var result = res.data;
-          setDesignTypeList(result)
-        }
-       catch (error) {
-          console.log(error)
-        }
-      })
-      .catch (error => {
-        console.log(error)
-      })
-    }      
+    // const designTypesData = () => {
+    //   axios.get(config.api + '/DesignTypes')
+    //   .then(function (res) {
+    //     try {
+    //       var result = res.data;
+    //       setDesignTypeList(result)
+    //     }
+    //    catch (error) {
+    //       console.log(error)
+    //     }
+    //   })
+    //   .catch (error => {
+    //     console.log(error)
+    //   })
+    // }      
 
     const overworkTypeChange = (event) => {
       const { target: { value }, } = event;
@@ -399,7 +398,7 @@ return;
       colorsData()
       seasonsData()
       overworkTypesData()
-      designTypesData()
+      //designTypesData()
     }, []);
 
   return (
@@ -608,7 +607,7 @@ return;
                 </Select>
                 </FormControl>
 
-                <FormControl  error={ false } required > 
+                {/* <FormControl  error={ false } required > 
                 <InputLabel 
                   id="demo-simple-select-label5"
                   size="small" 
@@ -637,9 +636,22 @@ return;
                           </MenuItem>
                  ))}
                 </Select>
-                </FormControl>
+                </FormControl> */}
 
                 <MySelect 
+                  id="addproduct-color"
+                  url="Colors"
+                  title="Color"
+                  valueName="colorName"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
+                  MenuProps={MenuProps}
+                  valueVariable={color}
+                  setValueFn={setColor}
+                  rgbField="rgb"
+                />
+
+                {/* <MySelect 
                   id="addproduct-designtype"
                   url="DesignTypes"
                   title="Design type"
@@ -647,7 +659,9 @@ return;
                   labelStyle={labelStyle}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
-                />
+                  valueVariable={designType}
+                  setValueFn={setDesignType}
+                /> */}
 
                 <FormControl  error={ false } required > 
                 <InputLabel 

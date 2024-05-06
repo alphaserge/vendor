@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using System.Security.Cryptography;
 using Microsoft.Extensions.FileProviders;
 
-
 //MD5 hash = MD5.Create();
 string result;
 using (MD5 hash = MD5.Create())
@@ -98,6 +97,8 @@ if (app.Environment.IsDevelopment())
 }
 
 string dir = Path.Combine(Directory.GetCurrentDirectory(), @"images");
+chiffon_back.Code.DirectoryHelper.CreateDirectoryIfMissing(dir);
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions()
