@@ -546,38 +546,6 @@ return;
 
                 <FormControl  error={ false } required > 
                 <InputLabel 
-                  id="demo-simple-select-label3"
-                  size="small" 
-                  sx={labelStyle} >
-                  Color
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label3"
-                  id="demo-simple-select3"
-                  size="small" 
-                  label="Color"
-                  //variant="outlined"
-                  multiple
-                  value={color}
-                  sx = {itemStyle}
-                  onChange={colorChange}
-                  input={<OutlinedInput label="Name" />}
-                  MenuProps={MenuProps}
-                  >
-                   { colorList.map((data) => (
-                     <MenuItem 
-                        key={data.id} 
-                        value={data.id}
-                        style={getStyles(data.colorName, color, theme)}>
-                          <Box component="span" className="color_select_item" sx={{ backgroundColor: "#" + data.rgb, border: "1px solid #bbb", height: "24px", width: "24px",  mr: 2 }}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Box>{data.colorName} 
-                          {/* {data.colorName} */}
-                          </MenuItem>
-                 ))}
-                </Select>
-                </FormControl>
-
-                <FormControl  error={ false } required > 
-                <InputLabel 
                   id="demo-simple-select-label4"
                   size="small" 
                   sx={labelStyle} >
@@ -607,37 +575,6 @@ return;
                 </Select>
                 </FormControl>
 
-                {/* <FormControl  error={ false } required > 
-                <InputLabel 
-                  id="demo-simple-select-label5"
-                  size="small" 
-                  sx={labelStyle} >
-                  Design type
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label5"
-                  id="demo-simple-select5"
-                  size="small" 
-                  label="Design type"
-                  //variant="outlined"
-                  multiple
-                  value={designType}
-                  sx = {itemStyle}
-                  onChange={designTypeChange}
-                  input={<OutlinedInput label="Design type" />}
-                  MenuProps={MenuProps}
-                  >
-                   { designTypeList.map((data) => (
-                     <MenuItem 
-                        key={data.id} 
-                        value={data.id}
-                        style={getStyles(data.designName, designType, theme)}>
-                          {data.designName}
-                          </MenuItem>
-                 ))}
-                </Select>
-                </FormControl> */}
-
                 <MySelect 
                   id="addproduct-color"
                   url="Colors"
@@ -651,7 +588,7 @@ return;
                   rgbField="rgb"
                 />
 
-                {/* <MySelect 
+                <MySelect 
                   id="addproduct-designtype"
                   url="DesignTypes"
                   title="Design type"
@@ -661,7 +598,7 @@ return;
                   MenuProps={MenuProps}
                   valueVariable={designType}
                   setValueFn={setDesignType}
-                /> */}
+                />
 
                 <FormControl  error={ false } required > 
                 <InputLabel 
