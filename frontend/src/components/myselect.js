@@ -33,6 +33,7 @@ return {
 
 export default function MySelect(props) {
 
+    let multiple = props.multiple;
     const [selectedValue, setSelectedValue] = useState([])
     const [data, setData] = useState([])
     const theme = useTheme();
@@ -72,7 +73,7 @@ return (
         size="small" 
         label={props.title}
         //variant="outlined"
-        multiple
+        multiple = {Array.isArray(props.valueVariable)}
         value={props.valueVariable}
         sx = {props.itemStyle}
         onChange={dataChange}

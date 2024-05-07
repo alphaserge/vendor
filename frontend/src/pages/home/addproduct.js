@@ -7,23 +7,13 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Box from '@mui/material/Box';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import FormHelperText from '@mui/material/FormHelperText';
 import { useTheme } from '@mui/material/styles';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import Fab from '@mui/material/Fab';
 
 import axios from 'axios'
-
-//import randomUUID from 'crypto';
 
 import { v4 as uuid } from 'uuid'
 
@@ -64,16 +54,11 @@ export default function AddProduct(props) {
     const navigate = useNavigate();
     const theme = useTheme();
 
-    const [productStyleList, setProductStyleList] = useState([])
     const [productStyle, setProductStyle] = useState("")
-    const [productTypeList, setProductTypeList] = useState([])
     const [productType, setProductType] = useState("")
-    const [colorList, setColorList] = useState([])
     const [color, setColor] = useState([])
     const [designType, setDesignType] = useState([])
-    const [overworkTypeList, setOverworkTypeList] = useState([])
     const [overworkType, setOverworkType] = useState([])
-    const [seasonList, setSeasonList] = useState([])
     const [season, setSeason] = useState([])
     const [itemName, setItemName] = useState("")
     const [refNo, setRefNo] = useState("")
@@ -86,111 +71,8 @@ export default function AddProduct(props) {
     const [width, setWidth] = useState("")
 
     const [selectedFile, setSelectedFile] = useState(null)
-    
   
     // #region handlers; 
-    const colorChangeNotUsed = (event) => {
-      setColor(event.target.value)
-    };
-  
-    const colorChange = (event) => {
-      const { target: { value }, } = event;
-      setColor( typeof value === 'string' ? value.split(',') : value );// On autofill we get a stringified value.
-    };
-
-    const colorsData = () => {
-      axios.get(config.api + '/Colors')
-      .then(function (res) {
-        try {
-          var result = res.data;
-          setColorList(result)
-        }
-       catch (error) {
-          console.log(error)
-        }
-      })
-      .catch (error => {
-        console.log(error)
-      })
-    }      
-
-    // const designTypeChange = (event) => {
-    //   const { target: { value }, } = event;
-    //   setDesignType( typeof value === 'string' ? value.split(',') : value );// On autofill we get a stringified value.
-    // };
-
-    // const designTypesData = () => {
-    //   axios.get(config.api + '/DesignTypes')
-    //   .then(function (res) {
-    //     try {
-    //       var result = res.data;
-    //       setDesignTypeList(result)
-    //     }
-    //    catch (error) {
-    //       console.log(error)
-    //     }
-    //   })
-    //   .catch (error => {
-    //     console.log(error)
-    //   })
-    // }      
-
-    const overworkTypeChange = (event) => {
-      const { target: { value }, } = event;
-      setOverworkType( typeof value === 'string' ? value.split(',') : value );// On autofill we get a stringified value.
-    };
-
-    const overworkTypesData = () => {
-      axios.get(config.api + '/OverWorkTypes')
-      .then(function (res) {
-        try {
-          var result = res.data;
-          setOverworkTypeList(result)
-        }
-       catch (error) {
-          console.log(error)
-        }
-      })
-      .catch (error => {
-        console.log(error)
-      })
-    }          
-
-    const seasonChange = (event) => {
-      const { target: { value }, } = event;
-      setSeason( typeof value === 'string' ? value.split(',') : value );// On autofill we get a stringified value.
-    };
-
-    const seasonsData = () => {
-      axios.get(config.api + '/Seasons'
-      /*,{
-        headers: {
-          'Access-Control-Allow-Origin' : '*',
-          'Access-Control-Allow-Methods':'GET,PUT,POST,DELETE,PATCH,OPTIONS'
-        }
-      }*/)
-      .then(function (res) {
-        try {
-          var result = res.data;
-          setSeasonList(result)
-        }
-       catch (error) {
-          console.log(error)
-        }
-      })
-      .catch (error => {
-        console.log(error)
-      })
-    }      
-
-    const onButtonClick = () => {
-        if (props.loggedIn) {
-            localStorage.removeItem("user")
-            props.setLoggedIn(false)
-        } else {
-            navigate("/login")
-        }
-    }
 
     const handleSubmit = (event) => {
       event.preventDefault();
@@ -201,49 +83,7 @@ export default function AddProduct(props) {
       });
     };
   
-    const productStyleChange = (event) => {
-      setProductStyle(event.target.value)
-    };
-  
-    const productStylesData = () => {
-      axios.get(config.api + '/ProductStyles')
-      .then(function (res) {
-        try {
-          var result = res.data;
-          setProductStyleList(result)
-        }
-       catch (error) {
-          console.log(error)
-        }
-      })
-      .catch (error => {
-        console.log(error)
-      })
-    }      
-
-    const productTypeChange = (event) => {
-      setProductType(event.target.value)
-    };
-  
-    const productTypesData = () => {
-      axios.get(config.api + '/ProductTypes')
-      .then(function (res) {
-        try {
-          var result = res.data;
-          setProductTypeList(result)
-        }
-       catch (error) {
-          console.log(error)
-        }
-      })
-      .catch (error => {
-        console.log(error)
-      })
-    }      
-
-  // On file select (from the pop up)
   const onFileChange = (event) => {
-      // Update the state
       setSelectedFile(event.target.files[0])
   }
   
@@ -251,7 +91,6 @@ export default function AddProduct(props) {
     const formData = new FormData();
     formData.append("formFile", selectedFile);
     formData.append("uid", uid);
-    //console.log(config.api + "/Importfile");
     try {
       const res = await axios.post(config.api + "/Products/ImportFile", formData);
     } catch (ex) {
@@ -273,26 +112,21 @@ export default function AddProduct(props) {
         artNo: artNo,
         design: design,
         colorNo: colorNo,
-        //colorName: colorName,
         price: Number(price),
         weight: Number(weight),
         width: Number(width),
         productStyleId: Number(productStyle),
         productTypeId: Number(productType),
-        vendorId: 1,
-        //vendor: vendorId,
-        //productStyle: productStyle,
-        //productType: productType,
+        vendorId: 1, //!!props.user ? props.user.vendorId : null,
         uuid: uid,
         colors: color,
         seasons: season,
         designTypes: designType,
         overWorkTypes: overworkType,
-        })
+      })
   })
   .then(r => r.json())
   .then(r => {
-    console.log(r);
     importFile();
     props.setLastAction("Product has been added")
     navigate("/menu")
@@ -301,104 +135,12 @@ export default function AddProduct(props) {
     console.log(error)
     //navigate("/error")
   })
-return;
-    const res = await axios.post(config.api + '/Products', {
-      itemName: itemName,
-      refNo: refNo,
-      artNo: artNo,
-      design: design,
-      colorNo: colorNo,
-      //colorName: colorName,
-      price: Number(price),
-      weight: Number(weight),
-      width: Number(width),
-      productStyleId: Number(productStyle),
-      productTypeId: Number(productType),
-      vendorId: 1,
-      //vendor: vendorId,
-      //productStyle: productStyle,
-      //productType: productType,
-      uuid: uid,
-      colors: color,
-      seasons: season,
-      designTypes: designType,
-      overWorkTypes: overworkType,
-    })
-    .then(function (response) {
-      console.log(response);
-      importFile();
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  };
 
-  // On file upload (click the upload button)
-  const onFileUpload = () => {
-      // Create an object of formData
-      const formData = new FormData();
-
-      // Update the formData object
-      formData.append(
-          "file",
-          selectedFile,
-          selectedFile.name
-      );
-
-      // Details of the uploaded file
-      console.log(selectedFile);
-
-      // Request made to the backend api
-      // Send formData object
-      axios.post("api/uploadfile", formData);
-  };
-
-  // File content to be displayed after
-  // file upload is complete
-  const fileData = () => {
-      if (selectedFile) {
-          return (
-              <div>
-                  <h2>File Details:</h2>
-                  <p>
-                      File Name:{" "}
-                      {selectedFile.name}
-                  </p>
-
-                  <p>
-                      File Type:{" "}
-                      {selectedFile.type}
-                  </p>
-
-                  <p>
-                      Last Modified:{" "}
-                      {selectedFile.lastModifiedDate.toDateString()}
-                  </p>
-              </div>
-          );
-      } else {
-          return (
-              <div>
-                  <br />
-                  <h4>
-                      Choose before Pressing the Upload
-                      button
-                  </h4>
-              </div>
-          );
-      }
-  };
-
+};
 
 // #endregion
 
     useEffect(() => {
-      productStylesData()
-      productTypesData()
-      colorsData()
-      seasonsData()
-      overworkTypesData()
-      //designTypesData()
     }, []);
 
   return (
@@ -496,84 +238,42 @@ return;
                 value={colorNo}
                 onChange={ev => setColorNo(ev.target.value)}
               />
-              <FormControl  error={ false } required > 
-                <InputLabel 
-                  id="demo-simple-select-label"
-                  size="small" 
-                  sx={labelStyle} >
-                  Product type
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  size="small" 
-                  value={productType}
-                  label="Product style"
-                  //variant="outlined"
-                  sx = {itemStyle}
-                  onChange={productTypeChange}>
-                   { productTypeList.map((data) => (
-                     <MenuItem key={data.id} value={data.id}>{data.typeName}</MenuItem>
-                 ))}
-                </Select>
-                </FormControl>
-                {/* <FormHelperText>{companyError}</FormHelperText> */}
-                {/* <TextField id="outlined-basic" label="Outlined" variant="outlined" /> */}
 
-                <FormControl  error={ false } required > 
-                <InputLabel 
-                  id="demo-simple-select-label2"
-                  size="small" 
-                  sx={labelStyle} >
-                  Product style
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label2"
-                  id="demo-simple-select2"
-                  size="small" 
-                  value={productStyle}
-                  label="Product style"
-                  //variant="outlined"
-                  sx = {itemStyle}
-                  onChange={productStyleChange}>
-                   { productStyleList.map((data) => (
-                     <MenuItem key={data.id} value={data.id}>{data.styleName}</MenuItem>
-                 ))}
-                </Select>
-                </FormControl>
-                {/* <FormHelperText>{companyError}</FormHelperText> */}
-                {/* <TextField id="outlined-basic" label="Outlined" variant="outlined" /> */}
-
-                <FormControl  error={ false } required > 
-                <InputLabel 
-                  id="demo-simple-select-label4"
-                  size="small" 
-                  sx={labelStyle} >
-                  Season
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label4"
-                  id="demo-simple-select4"
-                  size="small" 
-                  label="Season"
-                  //variant="outlined"
-                  multiple
-                  value={season}
-                  sx = {itemStyle}
-                  onChange={seasonChange}
-                  input={<OutlinedInput label="Name" />}
+                <MySelect 
+                  id="addproduct-producttype"
+                  url="ProductTypes"
+                  title="Product Type"
+                  valueName="typeName"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
                   MenuProps={MenuProps}
-                  >
-                   { seasonList.map((data) => (
-                     <MenuItem 
-                        key={data.id} 
-                        value={data.id}
-                        style={getStyles(data.seasonName, season, theme)}>
-                          {data.seasonName}
-                          </MenuItem>
-                 ))}
-                </Select>
-                </FormControl>
+                  valueVariable={productType}
+                  setValueFn={setProductType}
+                />
+
+                <MySelect 
+                  id="addproduct-productstyle"
+                  url="ProductStyles"
+                  title="Product Style"
+                  valueName="styleName"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
+                  MenuProps={MenuProps}
+                  valueVariable={productStyle}
+                  setValueFn={setProductStyle}
+                />
+
+                <MySelect 
+                  id="addproduct-season"
+                  url="Seasons"
+                  title="Season"
+                  valueName="seasonName"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
+                  MenuProps={MenuProps}
+                  valueVariable={season}
+                  setValueFn={setSeason}
+                />
 
                 <MySelect 
                   id="addproduct-color"
@@ -600,36 +300,17 @@ return;
                   setValueFn={setDesignType}
                 />
 
-                <FormControl  error={ false } required > 
-                <InputLabel 
-                  id="demo-simple-select-label6"
-                  size="small" 
-                  sx={labelStyle} >
-                  Overwork type
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-label6"
-                  id="demo-simple-select6"
-                  size="small" 
-                  label="Overwork type"
-                  variant="outlined"
-                  multiple
-                  value={overworkType}
-                  sx = {itemStyle}
-                  onChange={overworkTypeChange}
-                  input={<OutlinedInput label="Overwork type" />}
+                <MySelect 
+                  id="addproduct-overworktype"
+                  url="OverWorkTypes"
+                  title="Overwork type"
+                  valueName="overWorkName"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
                   MenuProps={MenuProps}
-                  >
-                   { overworkTypeList.map((data) => (
-                     <MenuItem 
-                        key={data.id} 
-                        value={data.id}
-                        style={getStyles(data.overWorkName, overworkType, theme)}>
-                          {data.overWorkName}
-                          </MenuItem>
-                 ))}
-                </Select>
-                </FormControl>
+                  valueVariable={overworkType}
+                  setValueFn={setOverworkType}
+                />
 <br/>
 <br/>
                 {/* <FormControl sx = {{width: 400, m: 2 }}  > */}
