@@ -32,7 +32,7 @@ export default function HomeMenu(props) {
     }
 
     const onListButtonClick = (e) => {
-      navigate("/")
+      navigate("/listproduct")
     }
 
     useEffect(() => {

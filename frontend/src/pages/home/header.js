@@ -84,7 +84,7 @@ export default function Header(props) {
   
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{backgroundColor: "#047a74" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <ApiIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />

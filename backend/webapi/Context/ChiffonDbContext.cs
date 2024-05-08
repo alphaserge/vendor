@@ -14,6 +14,8 @@ namespace chiffon_back.Context
         }
 
         public DbSet<Color> Colors { get; set; }
+        public DbSet<ColorVariant> ColorVariants { get; set; }
+        public DbSet<ColorVariantsInColors> ColorVariantsInColors { get; set; }
         public DbSet<DesignType> DesignTypes { get; set; }
         public DbSet<OverWorkType> OverWorkTypes { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -30,6 +32,8 @@ namespace chiffon_back.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Color>().ToTable("Colors");
+            modelBuilder.Entity<ColorVariant>().ToTable("ColorVariants");
+            modelBuilder.Entity<ColorVariantsInColors>().ToTable("ColorVariantsInColors");
             modelBuilder.Entity<DesignType>().ToTable("DesignTypes");
             modelBuilder.Entity<OverWorkType>().ToTable("OverWorkTypes");
             modelBuilder.Entity<Product>().ToTable("Products");

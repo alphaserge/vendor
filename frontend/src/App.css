@@ -88,14 +88,14 @@ li > .color_select_item {
 .product-item.price {
   /* text-align: right; */
   font-family: "YS Text", Helvetica, Arial, sans-serif;
-  font-size: 28px;
-  /* font-weight: 500; */
+  font-size: 22px;
+  font-weight: 600; 
   color: darkgreen;
   margin-top: 20px;
 }
 
 .product-item.price > span {
-  background-color: #eee;
+  /* background-color: #eee; */
   padding: 4px;
 }
 

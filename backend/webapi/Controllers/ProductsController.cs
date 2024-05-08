@@ -181,6 +181,31 @@ namespace chiffon_back.Controllers
                 ctx.Products.Add(prod);
                 ctx.SaveChanges();
 
+                foreach (int id in product.Colors)
+                {
+                    ctx.ProductsInColors.Add(new Context.ProductsInColors { ProductId=prod.Id, ColorId=id });
+                }
+                foreach (int id in product.Seasons)
+                {
+                    ctx.ProductsInSeasons.Add(new Context.ProductsInSeasons { ProductId = prod.Id, SeasonId = id });
+                }
+                foreach (int id in product.DesignTypes)
+                {
+                    ctx.ProductsInDesignTypes.Add(new Context.ProductsInDesignTypes{ ProductId = prod.Id, DesignTypeId = id });
+                }
+                foreach (int id in product.OverWorkTypes)
+                {
+                    ctx.ProductsInOverWorkTypes.Add(new Context.ProductsInOverWorkTypes { ProductId = prod.Id, OverWorkTypeId = id });
+                }
+
+                if (  product.Colors.Length 
+                    + product.Seasons.Length 
+                    + product.DesignTypes.Length 
+                    + product.OverWorkTypes.Length > 0 ) 
+                {
+                    ctx.SaveChanges();
+                }
+
                 return CreatedAtAction(nameof(Get), new { id = prod.Id }, prod);
             }
             catch (Exception ex)

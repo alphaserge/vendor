@@ -18,18 +18,28 @@ function getStyles(name, values, theme) {
   console.log(name)
   console.log(names.indexOf(name))
   console.log("------------------")*/
-  
-return {
-      fontWeight:
-       values.indexOf(name) === -1
-          ? theme.typography.fontWeightRegular
-          : theme.typography.fontWeightBold,
-          /*backgroundColor:
-          names.indexOf(name) === -1
-          ? "#F00"
-          : "#F0F"*/
-    };
+  try {
+    if (Array.isArray(values)) {
+      return {
+        fontWeight:
+        values.indexOf(name) === -1
+            ? theme.typography.fontWeightRegular
+            : theme.typography.fontWeightBold,
+            /*backgroundColor:
+            names.indexOf(name) === -1
+            ? "#F00"
+            : "#F0F"*/
+      }
+    } else {
+      return {}
+    }
   }
+  catch(exc)
+  {
+    let a = exc
+  }
+  }
+
 
 export default function MySelect(props) {
 
@@ -83,8 +93,8 @@ return (
     { data.map((elem) => (
         <MenuItem 
             key={elem.id} 
-            value={elem[props.valueName]}
-            style={getStyles(elem[props.valueName], selectedValue, theme)}>
+            value={elem.id}
+            style={getStyles(elem.id, selectedValue, theme)}>  
                {props.rgbField != undefined &&
                  <Box component="span" className="color_select_item" sx={{ backgroundColor: "#" + elem[props.rgbField], border: "1px solid #bbb", height: "24px", width: "24px",  mr: 2 }}>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
