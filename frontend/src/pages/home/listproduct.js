@@ -83,7 +83,7 @@ export default function ListProduct(props) {
               <FormControl  sx={{ mb: 2, width: 440 }} > 
                <div style={{ marginBottom: "20px" }}>
                       <div class="product-img">
-                      <img src={"https://localhost:3080/images/" + data.uuid + ".jpg"}  />
+                      <img src={"https://localhost:3080/" + data.imagePath}  />
                       </div>
                      <Box 
                         key={data.id} 

@@ -24,6 +24,8 @@ namespace chiffon_back.Models
         public string? ProductStyle { get; set; }
         public string? ProductType { get; set; }
         public string? Uuid { get; set; }
+        public string? FileName { get; set; }
+        public string? ImagePath { get; set; }
         public Color[]? Colors { get; set; }
         public DesignType[]? DesignTypes { get; set; }
         public OverWorkType[]? OverWorkTypes { get; set; }

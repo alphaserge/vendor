@@ -87,7 +87,7 @@ export default function AddProduct(props) {
       setSelectedFile(event.target.files[0])
   }
   
-  const importFile = async (e) => {
+  const postFile = async (e) => {
     const formData = new FormData();
     formData.append("formFile", selectedFile);
     formData.append("uid", uid);
@@ -127,7 +127,9 @@ export default function AddProduct(props) {
   })
   .then(r => r.json())
   .then(r => {
-    importFile();
+    if (!!selectedFile) {
+      postFile();
+    }
     props.setLastAction("Product has been added")
     navigate("/menu")
 })

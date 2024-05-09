@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Net;
 using System.Net.Http;
 
@@ -76,6 +77,7 @@ namespace chiffon_back.Controllers
                             ProductTypeId = p.ProductTypeId,
                             VendorId = p.VendorId,
                             Uuid = p.Uuid,
+                            ImagePath = Code.DirectoryHelper.ComputeFileUrl(p.Uuid, p.FileName),
                             Vendor = p.Vendor.VendorName,
                             ProductStyle = p.ProductStyle.StyleName,
                             ProductType = p.ProductType.TypeName,
@@ -133,17 +135,24 @@ namespace chiffon_back.Controllers
 
                 if (formFile.Length > 0)
                 {
-                    //var filePath = "images/" + uid + extension;// Path.GetTempFileName();
-                    //var filePath = Path.Combine(webRootPath, "images/" + uid + extension);
-                    string dir = Path.Combine(Directory.GetCurrentDirectory(), @"images");
-                    chiffon_back.Code.DirectoryHelper.CreateDirectoryIfMissing(dir);
-                    var filePath = dir + "/" + uid + extension;// Path.GetTempFileName();
+                    var dirPath = Code.DirectoryHelper.ComputeDirectory(uid);
+                    Code.DirectoryHelper.CreateDirectoryIfMissing(dirPath);
+                    var fileNumber = Directory.GetFiles(dirPath, "*.*").Count() + 1;
+                    string fileName = $"{fileNumber}{extension}";
+                    string filePath = Path.Combine(dirPath, fileName); //Code.DirectoryHelper.ComputeFilePath(uid, extension);
 
                     using (var stream = System.IO.File.Create(filePath))
                     {
                         //await formFile.CopyToAsync(stream);
                         formFile.CopyTo(stream);
                     }
+
+                    Context.Product? prod = ctx.Products.FirstOrDefault(x => x.Uuid == uid);
+                    if (prod != null)
+                    {
+                        prod.FileName = fileName;
+                    }
+                    ctx.SaveChanges();
                 }
                 return CreatedAtAction(nameof(Get), new { id = -1 }, true);
 

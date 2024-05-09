@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using System.Security.Cryptography;
 using Microsoft.Extensions.FileProviders;
+using System;
 
 //MD5 hash = MD5.Create();
 string result;
