@@ -60,7 +60,7 @@ export default function Header(props) {
     if (value == "Add Product") { 
       console.log('>>addproduct')
       //redirect("/addproduct")
-      navigate("/addproduct") 
+      navigate("/addproduct")
       return
     }
     if (value == "Contacts") { navigate("/contacts"); return; }
