@@ -2,33 +2,23 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Avatar from '@mui/material/Avatar';
-import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
 import Button from '@mui/material/Button';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useTheme } from '@mui/material/styles';
 
-import axios from 'axios'
-
-import { v4 as uuid } from 'uuid'
 
 import MySelect from '../../components/myselect';
-import Copyright from '../copyright';
-import config from "../../config.json"
-
-import Header from './header';
-import Footer from './blog/Footer';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
-const itemStyle = { width: 400, m: 2 }
-const labelStyle = { m: 2 }
-const buttonStyle = { width: 180, m: 2 }
+const itemStyle = { width: 350, mb: 3, ml: 2 }
+const labelStyle = { mb: 3, ml: 2 }
+const buttonStyle = { width: 160, height: 32, m: 2 }
+const textStyle = { width: 76, m: 2 }
+const divStyle = { width: 370, mb: 3, ml: 2, mr: 2, backgroundColor: "#eee" }
+const flexStyle = { display: "flex", justifyContent: "space-between", alignContent: "space-between", alignItems: "center", mr: 22 }
+//display: "flex", alignItems: "center", justifyContent: "space-between", alignContent: "space-between", marginRight: "22px"
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -55,7 +45,7 @@ export default function ColorVariant(props) {
     const theme = useTheme();
 
     const [color, setColor] = useState([])
-    const [colorNo, setColorNo] = useState("")
+    const [colorNo, setColorNo] = useState(props.cv.colorNo)
     const [selectedFile, setSelectedFile] = useState(null)
   
   const onFileChange = (event) => {
@@ -67,39 +57,50 @@ export default function ColorVariant(props) {
     }, []);
 
   return (
-    <FormControl  error={ false } required > 
-    <InputLabel 
-        id={props.id + "-label"}
+    
+
+      
+      <FormControl sx={divStyle}> 
+
+      <div style={flexStyle}>
+      <TextField
+        margin="normal"
         size="small" 
-        sx={props.labelStyle} >
-        {props.title}
-    </InputLabel>
-    <Select
-        labelId={props.id + "-label"}
-        id={props.id}
-        size="small" 
-        label={props.title}
-        //variant="outlined"
-        multiple = {Array.isArray(props.valueVariable)}
-        value={props.valueVariable}
-        sx = {props.itemStyle}
-        onChange={dataChange}
-        input={<OutlinedInput label={props.title} />}
-        MenuProps={props.MenuProps}
-    >
-    { data.map((elem) => (
-        <MenuItem 
-            key={elem.id} 
-            value={elem.id}
-            style={getStyles(elem.id, selectedValue, theme)}>  
-               {props.rgbField != undefined &&
-                 <Box component="span" className="color_select_item" sx={{ backgroundColor: "#" + elem[props.rgbField], border: "1px solid #bbb", height: "24px", width: "24px",  mr: 2 }}>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                 </Box>}
-                 {elem[props.valueName]} 
-            </MenuItem>
-    ))}
-    </Select>
-  </FormControl>
+        id="colorNo"
+        label="Color No"
+        name="colorNo"
+        sx = {textStyle}
+        value={colorNo}
+        onChange={ev => setColorNo(ev.target.value)}
+      />
+        <Button
+          variant="outlined"
+          component="label"
+          style={buttonStyle}
+          >
+          { selectedFile ?  "Photo is selected" : "Select Photo"}
+          <input
+            type="file"
+            onChange={onFileChange}
+            hidden
+          />
+        </Button>
+      </div>
+      
+
+      <MySelect 
+        id="addproduct-colorvariant"
+        url="Colors"
+        title="Color"
+        valueName="colorName"
+        labelStyle={labelStyle}
+        itemStyle={itemStyle}
+        MenuProps={MenuProps}
+        valueVariable={color}
+        setValueFn={setColor}
+        rgbField="rgb"
+      />
+       
+       </FormControl>
   );
 }

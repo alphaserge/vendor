@@ -18,6 +18,7 @@ import axios from 'axios'
 import { v4 as uuid } from 'uuid'
 
 import MySelect from '../../components/myselect';
+import ColorVariant from './colorvariant';
 import Copyright from '../copyright';
 import config from "../../config.json"
 
@@ -26,7 +27,7 @@ import Footer from './blog/Footer';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
-const itemStyle = { width: 400, m: 2 }
+const itemStyle = { width: 370, m: 2 }
 const labelStyle = { m: 2 }
 const buttonStyle = { width: 180, m: 2 }
 
@@ -69,6 +70,38 @@ export default function AddProduct(props) {
     const [price, setPrice] = useState("")
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
+    const [colorVariant, setColorVariant] = useState([
+      {
+        colorNo: 1,
+        colorName: "",
+        colorId: null
+      },
+      {
+        colorNo: 2,
+        colorName: "",
+        colorId: null
+      },
+      {
+        colorNo: 3,
+        colorName: "",
+        colorId: null
+      },
+      {
+        colorNo: 4,
+        colorName: "",
+        colorId: null
+      },
+      {
+        colorNo: 5,
+        colorName: "",
+        colorId: null
+      },
+      {
+        colorNo: 6,
+        colorName: "",
+        colorId: null
+      },
+    ])
 
     const [selectedFile, setSelectedFile] = useState(null)
   
@@ -313,6 +346,12 @@ export default function AddProduct(props) {
                   valueVariable={overworkType}
                   setValueFn={setOverworkType}
                 />
+
+
+                { colorVariant.map((cv) => (
+                    <ColorVariant cv={cv} />
+                 ))}
+
 <br/>
 <br/>
                 {/* <FormControl sx = {{width: 400, m: 2 }}  > */}
