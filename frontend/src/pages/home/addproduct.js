@@ -29,10 +29,11 @@ import Footer from './blog/Footer';
 const defaultTheme = createTheme()
 const itemStyle = { width: 370, m: 2 }
 const labelStyle = { m: 2 }
-const buttonStyle = { width: 180, m: 2 }
+const buttonStyle = { width: 90, m: 2 }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
+
 const MenuProps = {
   PaperProps: {
     style: {
@@ -72,36 +73,53 @@ export default function AddProduct(props) {
     const [width, setWidth] = useState("")
     const [colorVariant, setColorVariant] = useState([
       {
+        id: 1,
         colorNo: 1,
-        colorName: "",
-        colorId: null
+        colorName: [],
+        colorId: [],
+        selectedFile: null,
       },
       {
+        id: 2,
         colorNo: 2,
-        colorName: "",
-        colorId: null
+        colorName: [],
+        colorId: [],
+        selectedFile: null,
       },
       {
+        id: 3,
         colorNo: 3,
-        colorName: "",
-        colorId: null
+        colorName: [],
+        colorId: [],
+        selectedFile: null,
       },
       {
+        id: 4,
         colorNo: 4,
-        colorName: "",
-        colorId: null
+        colorName: [],
+        colorId: [],
+        selectedFile: null,
       },
       {
+        id: 5,
         colorNo: 5,
-        colorName: "",
-        colorId: null
+        colorName: [],
+        colorId: [],
+        selectedFile: null,
       },
       {
+        id: 6,
         colorNo: 6,
-        colorName: "",
-        colorId: null
+        colorName: [],
+        colorId: [],
+        selectedFile: null,
       },
     ])
+
+    const setColorVariantItem = (i, item) => {
+      let cv = colorVariant.map(el=>el.id==i? item:el)
+      setColorVariant(cv)
+    }
 
     const [selectedFile, setSelectedFile] = useState(null)
   
@@ -133,6 +151,7 @@ export default function AddProduct(props) {
 
   const postProduct = async (e) => {
     console.log(config.api + '/Products')
+    console.log(colorVariant)
 
     fetch(config.api + '/Products', {
       method: "POST",
@@ -153,6 +172,7 @@ export default function AddProduct(props) {
         vendorId: 1, //!!props.user ? props.user.vendorId : null,
         uuid: uid,
         colors: color,
+        colorVariants: colorVariant,
         seasons: season,
         designTypes: designType,
         overWorkTypes: overworkType,
@@ -349,14 +369,14 @@ export default function AddProduct(props) {
 
 
                 { colorVariant.map((cv) => (
-                    <ColorVariant cv={cv} />
+                    <ColorVariant cv={cv} setColorItem={setColorVariantItem}  />
                  ))}
 
 <br/>
 <br/>
-                {/* <FormControl sx = {{width: 400, m: 2 }}  > */}
-                <div style={{  textAlign: "center" }}>
-                  <div style={{ margin: "0 auto" }}>
+                
+                {/* <div style={{  textAlign: "center" }}>
+                <div style={{ margin: "0 auto" }}>
                 <Button
                   variant="outlined"
                   component="label"
@@ -370,17 +390,22 @@ export default function AddProduct(props) {
                   />
                 </Button>
 
-                {/* <Box sx={{display:"inline", m: 1}}>{ selectedFile ? "File: "+ selectedFile.name : "File: "}</Box> */}
-                {/* </FormControl> */}
                 </div>
                 </div>
-<br/>
+<br/> */}
                 {/* <FormControl sx = {{itemStyle}} > */}
                 <div style={{  textAlign: "center" }}>
                   <Button 
                     variant="contained"
                     style={buttonStyle}
-                    sx={{margin: "0 auto"}}
+                    //sx={{margin: "0 auto"}}
+                    onClick={postProduct} >
+                        Save
+                    </Button>
+                    <Button 
+                    variant="contained"
+                    style={buttonStyle}
+                    //sx={{margin: "0 auto"}}
                     onClick={postProduct} >
                         Save
                     </Button>
