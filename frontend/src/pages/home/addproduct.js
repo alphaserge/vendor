@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { json, useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
@@ -73,44 +73,44 @@ export default function AddProduct(props) {
     const [width, setWidth] = useState("")
     const [colorVariant, setColorVariant] = useState([
       {
-        id: 1,
+        id: uuid(),
         colorNo: 1,
-        colorName: [],
+        colorIds: [],
         colorId: [],
         selectedFile: null,
       },
       {
-        id: 2,
+        id: uuid(),
         colorNo: 2,
-        colorName: [],
+        colorIds: [],
         colorId: [],
         selectedFile: null,
       },
       {
-        id: 3,
+        id: uuid(),
         colorNo: 3,
-        colorName: [],
+        colorIds: [],
         colorId: [],
         selectedFile: null,
       },
       {
-        id: 4,
+        id: uuid(),
         colorNo: 4,
-        colorName: [],
+        colorIds: [],
         colorId: [],
         selectedFile: null,
       },
       {
-        id: 5,
+        id: uuid(),
         colorNo: 5,
-        colorName: [],
+        colorIds: [],
         colorId: [],
         selectedFile: null,
       },
       {
-        id: 6,
+        id: uuid(),
         colorNo: 6,
-        colorName: [],
+        colorIds: [],
         colorId: [],
         selectedFile: null,
       },
@@ -149,9 +149,26 @@ export default function AddProduct(props) {
     }
   };
 
+  const moreVariants = async (e) => {
+    let cv = colorVariant.slice()
+    let num = cv.length
+    let i=num+1
+    while (i<num+7){
+      cv.push({
+        id: uuid(),
+        colorNo: i,
+        colorIds: [],
+        colorId: [],
+        selectedFile: null,
+      })
+      i++
+    }
+    setColorVariant(cv)
+  }
+
   const postProduct = async (e) => {
-    console.log(config.api + '/Products')
-    console.log(colorVariant)
+
+    let jsonCv = JSON.stringify(colorVariant)
 
     fetch(config.api + '/Products', {
       method: "POST",
@@ -159,23 +176,23 @@ export default function AddProduct(props) {
           'Content-Type': 'application/json'
         },
       body: JSON.stringify({
-        itemName: itemName,
-        refNo: refNo,
-        artNo: artNo,
-        design: design,
-        colorNo: colorNo,
-        price: Number(price),
-        weight: Number(weight),
-        width: Number(width),
-        productStyleId: Number(productStyle),
-        productTypeId: Number(productType),
-        vendorId: 1, //!!props.user ? props.user.vendorId : null,
-        uuid: uid,
-        colors: color,
-        colorVariants: colorVariant,
-        seasons: season,
-        designTypes: designType,
-        overWorkTypes: overworkType,
+        ItemName: itemName,
+        RefNo: refNo,
+        ArtNo: artNo,
+        Design: design,
+        //ColorNo: colorNo,
+        Price: Number(price),
+        Weight: Number(weight),
+        Width: Number(width),
+        ProductStyleId: Number(productStyle),
+        ProductTypeId: Number(productType),
+        VendorId: 1, //!!props.user ? props.user.vendorId : null,
+        Uuid: uid,
+        //Colors: color,
+        ColorVariants: colorVariant,
+        Seasons: season,
+        DesignTypes: designType,
+        OverWorkTypes: overworkType,
       })
   })
   .then(r => r.json())
@@ -334,7 +351,7 @@ export default function AddProduct(props) {
                   id="addproduct-color"
                   url="Colors"
                   title="Color"
-                  valueName="colorName"
+                  valueName="colorIds"
                   labelStyle={labelStyle}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
@@ -398,16 +415,16 @@ export default function AddProduct(props) {
                   <Button 
                     variant="contained"
                     style={buttonStyle}
-                    //sx={{margin: "0 auto"}}
+                    sx={{margin: "0 10px", height: 70}}
                     onClick={postProduct} >
                         Save
                     </Button>
                     <Button 
                     variant="contained"
                     style={buttonStyle}
-                    //sx={{margin: "0 auto"}}
-                    onClick={postProduct} >
-                        Save
+                    sx={{margin: "0 10px", height: 70}}
+                    onClick={moreVariants} >
+                        More colors
                     </Button>
                     </div>
                 {/* </FormControl> */}

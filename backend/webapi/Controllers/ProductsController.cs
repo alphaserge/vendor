@@ -190,7 +190,7 @@ namespace chiffon_back.Controllers
                 ctx.Products.Add(prod);
                 ctx.SaveChanges();
 
-                foreach (int id in product.Colors)
+                /*foreach (int id in product.Colors)
                 {
                     ctx.ProductsInColors.Add(new Context.ProductsInColors { ProductId=prod.Id, ColorId=id });
                 }
@@ -213,7 +213,7 @@ namespace chiffon_back.Controllers
                     + product.OverWorkTypes.Length > 0 ) 
                 {
                     ctx.SaveChanges();
-                }
+                }*/
 
                 return CreatedAtAction(nameof(Get), new { id = prod.Id }, prod);
             }
