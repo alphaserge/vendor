@@ -65,11 +65,13 @@ export default function ColorVariant(props) {
     const setColorName = (value) => {
       let cv1 = props.cv;
       cv1.colorIds = value
+      props.cv.colorNo = props.cv.no
       props.setColorItem(cv1.id, cv1)
     }
 
     const setSelectedFile = (value) => {
       props.cv.selectedFile = value
+      props.cv.colorNo = props.cv.no
       props.setColorItem(props.cv.id, props.cv)
     }
     
@@ -92,7 +94,7 @@ export default function ColorVariant(props) {
         margin="normal"
         size="small" 
         id="colorNo"
-        label="No"
+        //label="No"
         name="colorNo"
         sx = {textStyle}
         value={props.cv.colorNo}

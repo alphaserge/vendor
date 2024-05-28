@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using chiffon_back.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -135,7 +136,7 @@ namespace chiffon_back.Controllers
 
                 if (formFile.Length > 0)
                 {
-                    var dirPath = Code.DirectoryHelper.ComputeDirectory(uid);
+                    var dirPath = Code.DirectoryHelper.ComputeDirectory(@"colors", uid);
                     Code.DirectoryHelper.CreateDirectoryIfMissing(dirPath);
                     var fileNumber = Directory.GetFiles(dirPath, "*.*").Count() + 1;
                     string fileName = $"{fileNumber}{extension}";
@@ -189,6 +190,31 @@ namespace chiffon_back.Controllers
 
                 ctx.Products.Add(prod);
                 ctx.SaveChanges();
+
+                if (product.ColorVariants != null)
+                {
+                    foreach (var item in product.ColorVariants)
+                    {
+                        Context.ColorVariant cv = new Context.ColorVariant()
+                        {
+                            ProductId = prod.Id,
+                            Uuid = product.Uuid,
+                        };
+
+                        ctx.ColorVariants.Add(cv);
+                        ctx.SaveChanges(true);
+
+                        foreach (var colorId in item.ColorIds != null ? item.ColorIds : [])
+                        {
+                            ctx.ColorVariantsInColors.Add(new Context.ColorVariantsInColors()
+                            {
+                                ColorVariantId = cv.Id,
+                                ColorId = colorId,
+                            });
+                        }
+                        ctx.SaveChanges(true);
+                    }
+                }
 
                 /*foreach (int id in product.Colors)
                 {

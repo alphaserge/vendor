@@ -74,42 +74,48 @@ export default function AddProduct(props) {
     const [colorVariant, setColorVariant] = useState([
       {
         id: uuid(),
-        colorNo: 1,
+        no: 1,
+        colorNo: null,
         colorIds: [],
         colorId: [],
         selectedFile: null,
       },
       {
         id: uuid(),
-        colorNo: 2,
+        no: 2,
+        colorNo: null,
         colorIds: [],
         colorId: [],
         selectedFile: null,
       },
       {
         id: uuid(),
-        colorNo: 3,
+        no: 3,
+        colorNo: null,
         colorIds: [],
         colorId: [],
         selectedFile: null,
       },
       {
         id: uuid(),
-        colorNo: 4,
+        no: 4,
+        colorNo: null,
         colorIds: [],
         colorId: [],
         selectedFile: null,
       },
       {
         id: uuid(),
-        colorNo: 5,
+        no: 5,
+        colorNo: null,
         colorIds: [],
         colorId: [],
         selectedFile: null,
       },
       {
         id: uuid(),
-        colorNo: 6,
+        no: 6,
+        colorNo: null,
         colorIds: [],
         colorId: [],
         selectedFile: null,
@@ -138,10 +144,10 @@ export default function AddProduct(props) {
       setSelectedFile(event.target.files[0])
   }
   
-  const postFile = async (e) => {
+  const postFile = async (cv) => {
     const formData = new FormData();
-    formData.append("formFile", selectedFile);
-    formData.append("uid", uid);
+    formData.append("formFile", cv.selectedFile);
+    formData.append("uid", cv.id);
     try {
       const res = await axios.post(config.api + "/Products/ImportFile", formData);
     } catch (ex) {
@@ -156,7 +162,8 @@ export default function AddProduct(props) {
     while (i<num+7){
       cv.push({
         id: uuid(),
-        colorNo: i,
+        no: i,
+        colorNo: null,
         colorIds: [],
         colorId: [],
         selectedFile: null,
@@ -197,9 +204,16 @@ export default function AddProduct(props) {
   })
   .then(r => r.json())
   .then(r => {
-    if (!!selectedFile) {
-      postFile();
-    }
+    let cvs1 = colorVariant.filter(e=>!!e.colorNo)
+    let cvs2 = colorVariant.filter(e=>e.colorNo!=null)
+    let cvs3 = colorVariant.filter(function(e) { return e.colorNo!=null})
+
+    colorVariant.filter(e=>!!e.colorNo).forEach(cv => {
+      if (!!cv.selectedFile) {
+        postFile(cv);
+      }    
+    });
+    
     props.setLastAction("Product has been added")
     navigate("/menu")
 })
