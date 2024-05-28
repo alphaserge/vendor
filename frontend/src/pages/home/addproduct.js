@@ -177,6 +177,46 @@ export default function AddProduct(props) {
 
     let jsonCv = JSON.stringify(colorVariant)
 
+    let cv = colorVariant.map(function(item) { 
+      delete item.selectedFile; 
+      delete item.no;
+      delete item.colorId;
+      item.colorIds = JSON.stringify(item.colorIds);
+      //delete item.colorIds;
+      //delete item.id;
+      return item; 
+  });
+
+    fetch(config.api + '/Products', {
+      method: "POST",
+      headers: {
+          'Content-Type': 'application/json'
+        },
+      body: JSON.stringify(cv[0])
+  })
+  .then(r => r.json())
+  .then(r => {
+    let o = 0;
+  })
+  .catch (error => {
+    console.log(error)
+    //navigate("/error")
+  })
+
+};
+
+
+  const postProduct1 = async (e) => {
+
+    let jsonCv = JSON.stringify(colorVariant)
+
+    let cv = colorVariant.map(function(item) { 
+      delete item.selectedFile; 
+      delete item.no;
+      delete item.colorId;
+      return item; 
+  });
+
     fetch(config.api + '/Products', {
       method: "POST",
       headers: {
@@ -196,7 +236,7 @@ export default function AddProduct(props) {
         VendorId: 1, //!!props.user ? props.user.vendorId : null,
         Uuid: uid,
         //Colors: color,
-        ColorVariants: colorVariant,
+        ColorVariants: cv,
         Seasons: season,
         DesignTypes: designType,
         OverWorkTypes: overworkType,
@@ -314,7 +354,7 @@ export default function AddProduct(props) {
                 value={width}
                 onChange={ev => setWidth(ev.target.value)}
               />
-            <TextField
+            {/* <TextField
                 margin="normal"
                 size="small" 
                 id="colorNo"
@@ -323,7 +363,7 @@ export default function AddProduct(props) {
                 sx = {itemStyle}
                 value={colorNo}
                 onChange={ev => setColorNo(ev.target.value)}
-              />
+              /> */}
 
                 <MySelect 
                   id="addproduct-producttype"
@@ -361,18 +401,18 @@ export default function AddProduct(props) {
                   setValueFn={setSeason}
                 />
 
-                <MySelect 
+                {/* <MySelect 
                   id="addproduct-color"
                   url="Colors"
                   title="Color"
-                  valueName="colorIds"
+                  valueName="colorName"
                   labelStyle={labelStyle}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
                   valueVariable={color}
                   setValueFn={setColor}
                   rgbField="rgb"
-                />
+                /> */}
 
                 <MySelect 
                   id="addproduct-designtype"

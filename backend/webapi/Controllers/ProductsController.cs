@@ -180,9 +180,17 @@ namespace chiffon_back.Controllers
             }
         }
 
-        [HttpPost(Name = "Products")]
-        public ActionResult Post(Models.PostProduct product)
+        /*[HttpPost(Name = "ColorVariant")]
+        public ActionResult PostColorVariant(Models.PostColorVariant colVar)
         {
+            return CreatedAtAction(nameof(Get), new { id = -1 }, null);
+        }*/
+
+        [HttpPost(Name = "Products")]
+        public ActionResult Post(Models.PostColorVariant colVar)// Models.PostProduct product)
+        {
+            return CreatedAtAction(nameof(Get), new { id = -1 }, null);
+            /*
             try
             {
                 Context.Product prod = config.CreateMapper()
@@ -204,7 +212,7 @@ namespace chiffon_back.Controllers
                         ctx.ColorVariants.Add(cv);
                         ctx.SaveChanges(true);
 
-                        foreach (var colorId in item.ColorIds != null ? item.ColorIds : [])
+                        foreach (var colorId in item.colorIds != null ? item.colorIds : [])
                         {
                             ctx.ColorVariantsInColors.Add(new Context.ColorVariantsInColors()
                             {
@@ -216,37 +224,12 @@ namespace chiffon_back.Controllers
                     }
                 }
 
-                /*foreach (int id in product.Colors)
-                {
-                    ctx.ProductsInColors.Add(new Context.ProductsInColors { ProductId=prod.Id, ColorId=id });
-                }
-                foreach (int id in product.Seasons)
-                {
-                    ctx.ProductsInSeasons.Add(new Context.ProductsInSeasons { ProductId = prod.Id, SeasonId = id });
-                }
-                foreach (int id in product.DesignTypes)
-                {
-                    ctx.ProductsInDesignTypes.Add(new Context.ProductsInDesignTypes{ ProductId = prod.Id, DesignTypeId = id });
-                }
-                foreach (int id in product.OverWorkTypes)
-                {
-                    ctx.ProductsInOverWorkTypes.Add(new Context.ProductsInOverWorkTypes { ProductId = prod.Id, OverWorkTypeId = id });
-                }
-
-                if (  product.Colors.Length 
-                    + product.Seasons.Length 
-                    + product.DesignTypes.Length 
-                    + product.OverWorkTypes.Length > 0 ) 
-                {
-                    ctx.SaveChanges();
-                }*/
-
                 return CreatedAtAction(nameof(Get), new { id = prod.Id }, prod);
             }
             catch (Exception ex)
             {
                 return CreatedAtAction(nameof(Get), new { id = -1 }, null);
-            }
+            }*/
         }
     }
 }

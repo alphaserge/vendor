@@ -41,13 +41,6 @@ namespace chiffon_back.Models
         public virtual ICollection<ProductsInColors>? ProductsInColors { get; set; }*/
     }
 
-    public class PostColorVariant
-    {
-        public int ColorNo { get; set; }
-        public int[]? ColorIds { get; set; }
-        public string? id { get; set; }
-    }
-
     public class PostProduct
     {
         public int? Id { get; set; }
