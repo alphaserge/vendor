@@ -73,57 +73,57 @@ export default function AddProduct(props) {
     const [width, setWidth] = useState("")
     const [colorVariant, setColorVariant] = useState([
       {
-        id: uuid(),
-        no: 1,
-        colorNo: null,
-        colorIds: [],
-        colorId: [],
-        selectedFile: null,
+        Id: uuid(),
+        No: 1,
+        ColorNo: null,
+        ColorIds: [],
+        ColorId: [],
+        SelectedFile: null,
       },
       {
-        id: uuid(),
-        no: 2,
-        colorNo: null,
-        colorIds: [],
-        colorId: [],
-        selectedFile: null,
+        Id: uuid(),
+        No: 2,
+        ColorNo: null,
+        ColorIds: [],
+        ColorId: [],
+        SelectedFile: null,
       },
       {
-        id: uuid(),
-        no: 3,
-        colorNo: null,
-        colorIds: [],
-        colorId: [],
-        selectedFile: null,
+        Id: uuid(),
+        No: 3,
+        ColorNo: null,
+        ColorIds: [],
+        ColorId: [],
+        SelectedFile: null,
       },
       {
-        id: uuid(),
-        no: 4,
-        colorNo: null,
-        colorIds: [],
-        colorId: [],
-        selectedFile: null,
+        Id: uuid(),
+        No: 4,
+        ColorNo: null,
+        ColorIds: [],
+        ColorId: [],
+        SelectedFile: null,
       },
       {
-        id: uuid(),
-        no: 5,
-        colorNo: null,
-        colorIds: [],
-        colorId: [],
-        selectedFile: null,
+        Id: uuid(),
+        No: 5,
+        ColorNo: null,
+        ColorIds: [],
+        ColorId: [],
+        SelectedFile: null,
       },
       {
-        id: uuid(),
-        no: 6,
-        colorNo: null,
-        colorIds: [],
-        colorId: [],
-        selectedFile: null,
+        Id: uuid(),
+        No: 6,
+        ColorNo: null,
+        ColorIds: [],
+        ColorId: [],
+        SelectedFile: null,
       },
     ])
 
     const setColorVariantItem = (i, item) => {
-      let cv = colorVariant.map(el=>el.id==i? item:el)
+      let cv = colorVariant.map(el=>el.Id==i? item:el)
       setColorVariant(cv)
     }
 
@@ -161,12 +161,12 @@ export default function AddProduct(props) {
     let i=num+1
     while (i<num+7){
       cv.push({
-        id: uuid(),
-        no: i,
-        colorNo: null,
-        colorIds: [],
-        colorId: [],
-        selectedFile: null,
+        Id: uuid(),
+        No: i,
+        ColorNo: null,
+        ColorIds: [],
+        ColorId: [],
+        SelectedFile: null,
       })
       i++
     }
@@ -175,47 +175,14 @@ export default function AddProduct(props) {
 
   const postProduct = async (e) => {
 
-    let jsonCv = JSON.stringify(colorVariant)
+    // let cv = colorVariant.map(function(item) { 
+    //   delete item.SelectedFile; 
+    //   delete item.No;
+    //   delete item.ColorId;
+    //   return item; 
+    // });
 
-    let cv = colorVariant.map(function(item) { 
-      delete item.selectedFile; 
-      delete item.no;
-      delete item.colorId;
-      item.colorIds = JSON.stringify(item.colorIds);
-      //delete item.colorIds;
-      //delete item.id;
-      return item; 
-  });
-
-    fetch(config.api + '/Products', {
-      method: "POST",
-      headers: {
-          'Content-Type': 'application/json'
-        },
-      body: JSON.stringify(cv[0])
-  })
-  .then(r => r.json())
-  .then(r => {
-    let o = 0;
-  })
-  .catch (error => {
-    console.log(error)
-    //navigate("/error")
-  })
-
-};
-
-
-  const postProduct1 = async (e) => {
-
-    let jsonCv = JSON.stringify(colorVariant)
-
-    let cv = colorVariant.map(function(item) { 
-      delete item.selectedFile; 
-      delete item.no;
-      delete item.colorId;
-      return item; 
-  });
+    let cv = colorVariant.filter(item => !!item.ColorNo && item.ColorIds.length > 0 && !!item.SelectedFile)
 
     fetch(config.api + '/Products', {
       method: "POST",
@@ -227,7 +194,7 @@ export default function AddProduct(props) {
         RefNo: refNo,
         ArtNo: artNo,
         Design: design,
-        //ColorNo: colorNo,
+         //ColorNo: colorNo,
         Price: Number(price),
         Weight: Number(weight),
         Width: Number(width),
@@ -236,7 +203,7 @@ export default function AddProduct(props) {
         VendorId: 1, //!!props.user ? props.user.vendorId : null,
         Uuid: uid,
         //Colors: color,
-        ColorVariants: cv,
+        ColorVariants: cv, 
         Seasons: season,
         DesignTypes: designType,
         OverWorkTypes: overworkType,
@@ -244,12 +211,12 @@ export default function AddProduct(props) {
   })
   .then(r => r.json())
   .then(r => {
-    let cvs1 = colorVariant.filter(e=>!!e.colorNo)
-    let cvs2 = colorVariant.filter(e=>e.colorNo!=null)
-    let cvs3 = colorVariant.filter(function(e) { return e.colorNo!=null})
+    let cvs1 = colorVariant.filter(e=>!!e.ColorNo)
+    let cvs2 = colorVariant.filter(e=>e.ColorNo!=null)
+    let cvs3 = colorVariant.filter(function(e) { return e.ColorNo!=null})
 
     colorVariant.filter(e=>!!e.colorNo).forEach(cv => {
-      if (!!cv.selectedFile) {
+      if (!!cv.SelectedFile) {
         postFile(cv);
       }    
     });

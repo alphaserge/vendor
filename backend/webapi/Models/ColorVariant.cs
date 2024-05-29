@@ -3,10 +3,11 @@
 
     public class PostColorVariant
     {
-        public int colorNo { get; set; }
-        //public int[]? colorIds { get; set; }
-        public string? colorIds { get; set; }
-        public string? id { get; set; }
+        public int ColorNo { get; set; }
+        public int[]? ColorIds { get; set; }
+        public string? Id { get; set; }
+        //public PostColorVariant[]? ColorVariants { get; set; }
+        
     }
 
     public class ColorVariant

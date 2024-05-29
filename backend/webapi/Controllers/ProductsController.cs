@@ -68,8 +68,8 @@ namespace chiffon_back.Controllers
                             ArtNo = p.ArtNo,
                             ItemName = p.ItemName,
                             Design = p.Design,
-                            ColorNo = p.ColorNo,
-                            ColorName = p.ColorName,
+                            //ColorNo = p.ColorNo,
+                            //ColorName = p.ColorName,
                             PhotoDir = p.PhotoDir,
                             Price = p.Price,
                             Weight = p.Weight,
@@ -78,11 +78,11 @@ namespace chiffon_back.Controllers
                             ProductTypeId = p.ProductTypeId,
                             VendorId = p.VendorId,
                             Uuid = p.Uuid,
-                            ImagePath = Code.DirectoryHelper.ComputeFileUrl(p.Uuid, p.FileName),
+                            ImagePath = Code.DirectoryHelper.GetFirstFileUrl(ctx.ColorVariants.FirstOrDefault(x=>x.ProductId==x.Id).Uuid),// p.Uuid),  //Code.DirectoryHelper.ComputeFileUrl(p.Uuid, p.FileName),
                             Vendor = p.Vendor.VendorName,
                             ProductStyle = p.ProductStyle.StyleName,
                             ProductType = p.ProductType.TypeName,
-                            Colors = p.ProductsInColors.Select(x => new Models.Color { Id = x.ColorId, ColorName = x.Color.ColorName }).ToArray(),
+                            //Colors = p.ProductsInColors.Select(x => new Models.Color { Id = x.ColorId, ColorName = x.Color.ColorName }).ToArray(),
                             DesignTypes = p.ProductsInDesignTypes.Select(x => new Models.DesignType { Id = x.DesignTypeId, DesignName = x.DesignType.DesignName }).ToArray(),
                             OverWorkTypes = p.ProductsInOverWorkTypes.Select(x => new Models.OverWorkType { Id = x.OverWorkTypeId, OverWorkName = x.OverWorkType.OverWorkName }).ToArray(),
                             Seasons = p.ProductsInSeasons.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
@@ -107,25 +107,6 @@ namespace chiffon_back.Controllers
         }
 
 
-        /*        [HttpPost(Name = "Products")]
-                public ActionResult<Models.Product> Post(Models.Product product)
-                {
-                    try
-                    {
-                        Context.Product prod = config.CreateMapper()
-                            .Map<Context.Product>(product);
-
-                        ctx.Products.Add(prod);
-                        ctx.SaveChanges();
-
-                        return CreatedAtAction(nameof(Get), new { id = prod.Id }, prod);
-                    }
-                    catch (Exception ex)
-                    {
-                        return CreatedAtAction(nameof(Get), new { id = -1 }, null);
-                    }
-                }*/
-
         [HttpPost("ImportFile")]
         public /*async*/ ActionResult ImportFile([FromForm] IFormFile formFile, [FromForm] string uid)
         {
@@ -148,11 +129,11 @@ namespace chiffon_back.Controllers
                         formFile.CopyTo(stream);
                     }
 
-                    Context.Product? prod = ctx.Products.FirstOrDefault(x => x.Uuid == uid);
+                    /*Context.ColorVariant? prod = ctx.ColorVariants.FirstOrDefault(x => x.Uuid == uid);
                     if (prod != null)
                     {
                         prod.FileName = fileName;
-                    }
+                    }*/
                     ctx.SaveChanges();
                 }
                 return CreatedAtAction(nameof(Get), new { id = -1 }, true);
@@ -180,17 +161,9 @@ namespace chiffon_back.Controllers
             }
         }
 
-        /*[HttpPost(Name = "ColorVariant")]
-        public ActionResult PostColorVariant(Models.PostColorVariant colVar)
-        {
-            return CreatedAtAction(nameof(Get), new { id = -1 }, null);
-        }*/
-
         [HttpPost(Name = "Products")]
-        public ActionResult Post(Models.PostColorVariant colVar)// Models.PostProduct product)
+        public ActionResult Post(Models.PostProduct product)
         {
-            return CreatedAtAction(nameof(Get), new { id = -1 }, null);
-            /*
             try
             {
                 Context.Product prod = config.CreateMapper()
@@ -206,13 +179,13 @@ namespace chiffon_back.Controllers
                         Context.ColorVariant cv = new Context.ColorVariant()
                         {
                             ProductId = prod.Id,
-                            Uuid = product.Uuid,
+                            Uuid = item.Id,
                         };
 
                         ctx.ColorVariants.Add(cv);
                         ctx.SaveChanges(true);
 
-                        foreach (var colorId in item.colorIds != null ? item.colorIds : [])
+                        foreach (var colorId in item.ColorIds != null ? item.ColorIds : [])
                         {
                             ctx.ColorVariantsInColors.Add(new Context.ColorVariantsInColors()
                             {
@@ -229,7 +202,7 @@ namespace chiffon_back.Controllers
             catch (Exception ex)
             {
                 return CreatedAtAction(nameof(Get), new { id = -1 }, null);
-            }*/
+            }
         }
     }
 }

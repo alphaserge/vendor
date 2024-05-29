@@ -58,21 +58,21 @@ export default function ColorVariant(props) {
 
     const setColorNo = (value) => {
       let cv = props.cv;
-      cv.colorNo = parseInt(value)
-      props.setColorItem(cv.id, cv)
+      cv.ColorNo = parseInt(value)
+      props.setColorItem(cv.Id, cv)
     }
 
     const setColorName = (value) => {
       let cv1 = props.cv;
-      cv1.colorIds = value
-      props.cv.colorNo = props.cv.no
-      props.setColorItem(cv1.id, cv1)
+      cv1.ColorIds = value
+      props.cv.ColorNo = props.cv.No
+      props.setColorItem(cv1.Id, cv1)
     }
 
     const setSelectedFile = (value) => {
-      props.cv.selectedFile = value
-      props.cv.colorNo = props.cv.no
-      props.setColorItem(props.cv.id, props.cv)
+      props.cv.SelectedFile = value
+      props.cv.ColorNo = props.cv.No
+      props.setColorItem(props.cv.Id, props.cv)
     }
     
     const onFileChange = (event) => {
@@ -97,7 +97,7 @@ export default function ColorVariant(props) {
         //label="No"
         name="colorNo"
         sx = {textStyle}
-        value={props.cv.colorNo}
+        value={props.cv.ColorNo}
         onChange={ev => setColorNo(ev.target.value) }
       />
       <MySelect 
@@ -108,19 +108,19 @@ export default function ColorVariant(props) {
         labelStyle={labelStyle}
         itemStyle={itemStyle}
         MenuProps={MenuProps}
-        valueVariable={props.cv.colorIds}
+        valueVariable={props.cv.ColorIds}
         setValueFn={setColorName}
         rgbField="rgb"
       />
 
-        <label htmlFor={"icon-button-file-"+props.cv.id}>
-        <Input accept="image/*" id={"icon-button-file-"+props.cv.id} type="file" onChange={onFileChange} />
+        <label htmlFor={"icon-button-file-"+props.cv.Id}>
+        <Input accept="image/*" id={"icon-button-file-"+props.cv.Id} type="file" onChange={onFileChange} />
         <IconButton
           color="primary"
           aria-label="upload picture"
           component="span">
-              {!props.cv.selectedFile && <AddAPhotoIcon />}
-              { props.cv.selectedFile && <CameraswitchOutlinedIcon />}
+              {!props.cv.SelectedFile && <AddAPhotoIcon />}
+              { props.cv.SelectedFile && <CameraswitchOutlinedIcon />}
         </IconButton>
       </label>      
       {/* <input

@@ -9,8 +9,8 @@ namespace chiffon_back.Models
         public string? RefNo { get; set; }
         public string? ArtNo { get; set; }
         public string? Design { get; set; }
-        public int? ColorNo { get; set; }
-        public string? ColorName { get; set; }
+        //public int? ColorNo { get; set; }
+        //public string? ColorName { get; set; }
         public string? PhotoDir { get; set; }
         public decimal? Price { get; set; }
         public int? Weight { get; set; }
@@ -26,19 +26,10 @@ namespace chiffon_back.Models
         public string? Uuid { get; set; }
         public string? FileName { get; set; }
         public string? ImagePath { get; set; }
-        public Color[]? Colors { get; set; }
+        //public Color[]? Colors { get; set; }
         public DesignType[]? DesignTypes { get; set; }
         public OverWorkType[]? OverWorkTypes { get; set; }
         public Season[]? Seasons { get; set; }
-
-        /*public virtual ProductStyle? ProductStyle { get; set; }
-        public virtual ProductType? ProductType { get; set; }
-        public virtual Vendor? Vendor { get; set; }*/
-
-        /*public virtual ICollection<ProductsInSeasons>? ProductsInSeasons { get; set; }
-        public virtual ICollection<ProductsInOverWorkTypes>? ProductsInOverWorkTypes { get; set; }
-        public virtual ICollection<ProductsInDesignTypes>? ProductsInDesignTypes { get; set; }
-        public virtual ICollection<ProductsInColors>? ProductsInColors { get; set; }*/
     }
 
     public class PostProduct
@@ -67,5 +58,4 @@ namespace chiffon_back.Models
         public PostColorVariant[]? ColorVariants { get; set; }
 
     }
-
 }
