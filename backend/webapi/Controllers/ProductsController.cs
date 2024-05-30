@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using chiffon_back.Code;
 using chiffon_back.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -77,8 +78,8 @@ namespace chiffon_back.Controllers
                             ProductStyleId = p.ProductStyleId,
                             ProductTypeId = p.ProductTypeId,
                             VendorId = p.VendorId,
-                            Uuid = p.Uuid,
-                            ImagePath = Code.DirectoryHelper.GetFirstFileUrl(ctx.ColorVariants.FirstOrDefault(x=>x.ProductId==x.Id).Uuid),// p.Uuid),  //Code.DirectoryHelper.ComputeFileUrl(p.Uuid, p.FileName),
+                            //Uuid = p.Uuid,
+                            //ImagePath = Code.DirectoryHelper.GetFirstFileUrl(ctx.ColorVariants.FirstOrDefault(x=>x.ProductId==x.Id).Uuid),// p.Uuid),  //Code.DirectoryHelper.ComputeFileUrl(p.Uuid, p.FileName),
                             Vendor = p.Vendor.VendorName,
                             ProductStyle = p.ProductStyle.StyleName,
                             ProductType = p.ProductType.TypeName,
@@ -88,24 +89,20 @@ namespace chiffon_back.Controllers
                             Seasons = p.ProductsInSeasons.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
                         };
 
-            return query.ToList();
+            var prods = query.ToList();
 
-            /*return ctx.Products
-                .Select(x =>
-                    config.CreateMapper()
-                        .Map<Models.Product>(x))
-                .ToList();*/
-
-
-            /*return Enumerable.Range(1, 5).Select(index => new Product
+            foreach(var p in prods)
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();*/
-        }
+                List<string> images = new List<string>();
+                foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == p.Id).ToList())
+                {
+                    images.AddRange(DirectoryHelper.GetImageFiles(cv.Uuid)); 
+                }
+                p.ImagePaths = images.ToArray();
+            }
 
+            return prods;
+        }
 
         [HttpPost("ImportFile")]
         public /*async*/ ActionResult ImportFile([FromForm] IFormFile formFile, [FromForm] string uid)

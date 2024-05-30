@@ -99,16 +99,17 @@ if (app.Environment.IsDevelopment())
 
 string dir = Path.Combine(Directory.GetCurrentDirectory(), @"images");
 chiffon_back.Code.DirectoryHelper.CreateDirectoryIfMissing(dir);
+dir = Path.Combine(Directory.GetCurrentDirectory(), @"colors");
+chiffon_back.Code.DirectoryHelper.CreateDirectoryIfMissing(dir);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions()
 {
     
-    FileProvider = new PhysicalFileProvider(
-    dir), //Path.Combine(Directory.GetCurrentDirectory(), @"images")),
-    RequestPath = new PathString("/images")
-}); ; ;
+    FileProvider = new PhysicalFileProvider(dir), //Path.Combine(Directory.GetCurrentDirectory(), @"images")),
+    RequestPath = new PathString("/colors")
+});
 
 app.UseDirectoryBrowser(new DirectoryBrowserOptions()
 {

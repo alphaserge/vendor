@@ -146,8 +146,8 @@ export default function AddProduct(props) {
   
   const postFile = async (cv) => {
     const formData = new FormData();
-    formData.append("formFile", cv.selectedFile);
-    formData.append("uid", cv.id);
+    formData.append("formFile", cv.SelectedFile);
+    formData.append("uid", cv.Id);
     try {
       const res = await axios.post(config.api + "/Products/ImportFile", formData);
     } catch (ex) {
@@ -215,7 +215,7 @@ export default function AddProduct(props) {
     let cvs2 = colorVariant.filter(e=>e.ColorNo!=null)
     let cvs3 = colorVariant.filter(function(e) { return e.ColorNo!=null})
 
-    colorVariant.filter(e=>!!e.colorNo).forEach(cv => {
+    colorVariant.filter(e=>!!e.ColorNo).forEach(cv => {
       if (!!cv.SelectedFile) {
         postFile(cv);
       }    

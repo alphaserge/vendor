@@ -27,17 +27,16 @@ namespace chiffon_back.Code
             string fileUrl = Path.Combine(@"images", dir, fileName);
             return Path.Combine(fileUrl);
         }
-        public static string GetFirstFileUrl(string uid)
+        public static List<string> GetImageFiles(string uid)
         {
-            string[] fileEntries = null;
             if (uid == null)
             {
-                return @"colors\nopictire.jpg";
+                return new List<string> { @"colors\nopicture.jpg" };
             }
             string dir = uid.Replace("-", "").Insert(6, "\\").Insert(4, "\\").Insert(2, "\\");
             string fileUrl = Path.Combine(@"colors", dir);
-            fileEntries = Directory.GetFiles(fileUrl);
-            return fileEntries.Length > 0 ? Path.Combine(fileEntries[0]) : String.Empty;
+            string[] fileEntries = Directory.GetFiles(Path.Combine(@"", fileUrl));
+            return fileEntries.Select(x => Path.Combine(x)).ToList();
         }
     }
 }
