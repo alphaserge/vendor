@@ -70,6 +70,16 @@ li > .color_select_item {
   padding-left: 8px;
 } */
 
+div.product-img-holder {
+  width:300px;
+  height:300px;    
+  overflow:hidden;
+  padding: 20px;
+}
+
+image.product-img {
+  min-width:100%;
+}
 
 .product-img {
   width: 190px;

@@ -38,15 +38,6 @@ const MenuProps = {
   },
 };
 
-function getStyles(name, personName, theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
-
 const Input = styled('input')({
   display: 'none',
 });
@@ -85,8 +76,6 @@ export default function ColorVariant(props) {
 
   return (
     
-
-      
       <FormControl sx={divStyle}> 
 
       <div style={flexStyle}>

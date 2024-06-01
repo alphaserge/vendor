@@ -8,6 +8,7 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import { useTheme } from '@mui/material/styles';
+import ItemProduct from './itemproduct';
 
 import axios from 'axios'
 
@@ -56,7 +57,7 @@ export default function ListProduct(props) {
       <CssBaseline />
       <Container maxWidth="lg">
         <Header user={props.user} title={props.title} />
-        <main>
+        <div>
           {/* <Avatar sx={{ mb: 2, bgcolor: 'secondary.main' }}>
             <AddCircleIcon />
           </Avatar>
@@ -67,31 +68,11 @@ export default function ListProduct(props) {
           <Box component="form" noValidate sx={{ mt: 1 }}>
           <Grid item xs={12} md={6} sx={{textAlign:"center"}} justifyContent={"center"} >
             { products.map((data) => (
-              <FormControl  sx={{ mb: 2, width: 440 }} > 
-               <div style={{ marginBottom: "20px" }}>
-                      <div class="product-img">
-                      <img src={"https://localhost:3080/" + data.imagePaths[0]}  />
-                      </div>
-                     <Box 
-                        key={data.id} 
-                        value={data.id}
-                        //sx = {itemStyle}
-                        sx={{ float: "left"}}
-                      >
-                        <div class="product-item">{data.itemName}</div>
-                        {/* <div class="product-item">{data.refNo}</div>*/}
-                        <div class="product-item">{data.artNo}</div> 
-                        <div class="product-item">{data.design}</div>
-                        <div class="product-item price"><span>&nbsp;${data.price}&nbsp;</span></div>
-                      </Box>
-                      <div style={{ clear: "left" }} >
-                      </div>
-                      </div>
-                      </FormControl>
+              <ItemProduct data={data} />
                  ))}
           </Grid>
           </Box>
-        </main>
+        </div>
         <Copyright sx={{ mt: 0, mb: 2 }} />
               </Container>
               
