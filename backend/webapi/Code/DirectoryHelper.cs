@@ -31,12 +31,20 @@ namespace chiffon_back.Code
         {
             if (uid == null)
             {
-                return new List<string> { @"colors\nopicture.jpg" };
+                return new List<string> { @"colors\nopicture.png" };
             }
             string dir = uid.Replace("-", "").Insert(6, "\\").Insert(4, "\\").Insert(2, "\\");
             string fileUrl = Path.Combine(@"colors", dir);
-            string[] fileEntries = Directory.GetFiles(Path.Combine(@"", fileUrl));
-            return fileEntries.Select(x => Path.Combine(x)).ToList();
+            fileUrl = Path.Combine(@"", fileUrl);
+            if (File.Exists(fileUrl))
+            {
+                string[] fileEntries = Directory.GetFiles(fileUrl);
+                return fileEntries.Select(x => Path.Combine(x)).ToList();
+            }
+            else
+            {
+                return new List<string> { @"colors\bad-picture.png" };
+            }
         }
     }
 }
