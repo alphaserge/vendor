@@ -113,3 +113,8 @@ image.product-img {
   height: 100%;
   width: 100%;
 }
+
+
+.my-select {
+  width: 150px;
+}

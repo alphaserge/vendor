@@ -27,8 +27,9 @@ import Footer from './blog/Footer';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
-const itemStyle = { width: 370, m: 2 }
-const labelStyle = { m: 2 }
+const itemStyle = { width: 340, m: 2, ml: 3, mr: 3 }
+const selectStyle = { width: 290, m: 2, ml: 3, mr: 3 }
+const labelStyle = { m: 2, ml: 3, mr: 3 }
 const buttonStyle = { width: 90, m: 2 }
 
 const ITEM_HEIGHT = 48;

@@ -66,7 +66,7 @@ export default function ListProduct(props) {
           </Typography> */}
 
           <Box component="form" noValidate sx={{ mt: 1 }}>
-          <Grid item xs={12} md={6} sx={{textAlign:"center"}} justifyContent={"center"} >
+          <Grid item xs={12} md={6} sx={{textAlign:"left"}} justifyContent={"center"} >
             { products.map((data) => (
               <ItemProduct data={data} />
                  ))}

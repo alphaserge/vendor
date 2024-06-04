@@ -19,11 +19,11 @@ import { AddAPhotoOutlined, PhotoCameraBackOutlined, PhotoCameraOutlined } from 
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
-const itemStyle = { width: 265 }
+const itemStyle = { width: 245 }
 const labelStyle = { mb: 3, ml: 0 }
 const buttonStyle = { width: 180, height: 32, m: 2 }
-const textStyle = { width: 50, m: 0, ml: 0 }
-const divStyle = { width: 370, mt: 3, ml: 2, mr: 2 }
+const textStyle = { width: 45, m: 0, ml: 0 }
+const divStyle = { width: 340, mt: 3, ml: 2, mr: 2 }
 const flexStyle = { display: "flex", justifyContent: "space-between", alignContent: "space-between", alignItems: "center", mr: 22 }
 //display: "flex", alignItems: "center", justifyContent: "space-between", alignContent: "space-between", marginRight: "22px"
 
