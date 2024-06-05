@@ -112,7 +112,6 @@ image.product-img {
   width: 100%;
 }
 
-
 .swiper {
   width: 100%;
   height: 100%;
@@ -134,4 +133,15 @@ image.product-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+@media (min-width: 1200px) {
+  .header-container {
+      max-width: 100% !important;
+      padding: 0 !important;
+  }
+  .header-menu {
+    max-width: 1200px;
+    padding: 0 !important;
+}
 }

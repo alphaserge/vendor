@@ -86,9 +86,9 @@ export default function Header(props) {
 
   return (
     <AppBar position="static" sx={{backgroundColor: APPEARANCE.BG_COLOR }}>
-      <Container maxWidth="xl">
+      <Container className="header-menu" >
         <Toolbar disableGutters>
-          <ApiIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          {/* <ApiIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
             //variant="h6"
             noWrap
@@ -97,15 +97,12 @@ export default function Header(props) {
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
-              //fontFamily: 'monospace',
-              //fontWeight: 700,
-              //letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
             }}
           >
-            {config.company}
-          </Typography>
+            {config.company}11
+          </Typography> */}
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton

@@ -55,7 +55,7 @@ export default function ListProduct(props) {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <Container sx={{width: "100%"}} >
+      <Container sx={{maxWidth: "100%", padding: 0 }} className="header-container" >
         <Header user={props.user} title={props.title} />
         <div>
           {/* <Avatar sx={{ mb: 2, bgcolor: 'secondary.main' }}>
@@ -65,8 +65,8 @@ export default function ListProduct(props) {
             Add product
           </Typography> */}
 
-          <Box component="form" noValidate sx={{ mt: 1 }}>
-          <Grid item xs={12} md={6} sx={{textAlign:"center"}} justifyContent={"center"} >
+          <Box component="form" noValidate sx={{ mt: 1 }}  >
+          <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto"}} justifyContent={"center"} className="header-menu"  >
             { products.map((data) => (
               <ItemProduct data={data} />
                  ))}
