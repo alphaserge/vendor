@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { json, useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
@@ -10,7 +9,6 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useTheme } from '@mui/material/styles';
 
 import axios from 'axios'
@@ -25,12 +23,14 @@ import config from "../../config.json"
 import Header from './header';
 import Footer from './blog/Footer';
 
+import { APPEARANCE } from '../../appearance';
+
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
-const itemStyle = { width: 340, m: 2, ml: 3, mr: 3 }
-const selectStyle = { width: 290, m: 2, ml: 3, mr: 3 }
-const labelStyle = { m: 2, ml: 3, mr: 3 }
-const buttonStyle = { width: 90, m: 2 }
+const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
+const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
+const labelStyle = { m: 2, ml: 4, mr: 4 }
+const buttonStyle = { width: 90, m: 2, backgroundColor: APPEARANCE.COLOR1 }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -240,18 +240,24 @@ export default function AddProduct(props) {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <Container maxWidth="lg">
-        <Header title="Blog" />
+      <Container sx={{maxWidth: "100%", padding: 0 }} className="header-container" >
+        <Header user={props.user} title={props.title} />
         <main>
-        <Avatar sx={{ mb: 2, bgcolor: 'secondary.main' }}>
+        {/* <Avatar sx={{ mb: 2, bgcolor: 'secondary.main' }}>
             <AddCircleIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5" sx={{mb:2}}>
-            Add product
+          </Avatar> */}
+          <Box sx={{ border: "1px solid #ddd", padding: "20px 10px", textAlign: "center", maxWidth: 900}} justifyContent={"center"} alignItems={"center"}>
+            
+          <Typography component="h1" variant="h6" color={APPEARANCE.COLOR4}>
+            Adding a product form
           </Typography>
+          <Typography component="p" variant="subtitle1" sx={{mb:2}}  color={APPEARANCE.COLOR1}>
+          Please fill out all fields and click the Save button
+          </Typography>
+          
 
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <Grid item xs={12} md={6} sx={{textAlign:"center"}} justifyContent={"center"} >
+          {/* <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}> */}
+          <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto" }} justifyContent={"center"} className="header-menu"  >
             <TextField
                 margin="normal"
                 size="small" 
@@ -433,7 +439,7 @@ export default function AddProduct(props) {
                 </div>
 <br/> */}
                 {/* <FormControl sx = {{itemStyle}} > */}
-                <div style={{  textAlign: "center" }}>
+                <Box sx={{ textAlign: "center", marginTop: 2 }}>
                   <Button 
                     variant="contained"
                     style={buttonStyle}
@@ -448,10 +454,11 @@ export default function AddProduct(props) {
                     onClick={moreVariants} >
                         More colors
                     </Button>
-                    </div>
+                    </Box>
                 {/* </FormControl> */}
 
           </Grid>
+          {/* </Box> */}
           </Box>
         </main>
       </Container>

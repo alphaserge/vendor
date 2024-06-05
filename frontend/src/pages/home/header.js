@@ -85,8 +85,8 @@ export default function Header(props) {
   
 
   return (
-    <AppBar position="static" sx={{backgroundColor: APPEARANCE.BG_COLOR }}>
-      <Container className="header-menu" >
+    <AppBar position="static" sx={{backgroundColor: APPEARANCE.COLOR1 }}>
+      <Container className="header-menu" sx={{width: "800px"}} >
         <Toolbar disableGutters>
           {/* <ApiIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
