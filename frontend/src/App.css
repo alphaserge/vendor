@@ -96,16 +96,14 @@ image.product-img {
 }
 
 .product-item.price {
-  /* text-align: right; */
   font-family: "YS Text", Helvetica, Arial, sans-serif;
   font-size: 22px;
   font-weight: 600; 
-  color: darkgreen;
-  margin-top: 20px;
+  margin-left: 10px;
+  width: 60px;
 }
 
 .product-item.price > span {
-  /* background-color: #eee; */
   padding: 4px;
 }
 
@@ -127,7 +125,7 @@ image.product-img {
 
   /* Center slide text vertically */
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
 }
 

@@ -5,18 +5,17 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import CustomSlider from "../../components/custom.slider";
-
 import "swiper/css";
+import { APPEARANCE } from '../../appearance';
 
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
 const itemStyle = { width: 265 }
 
@@ -46,15 +45,6 @@ export default function ItemProduct(props) {
   return (
     
     <FormControl  sx={{ mb: 2, width: 440 }} > 
-    {/* <div style={{ marginBottom: "20px" }} className="product-img" > */}
-           {/* <div class="product-img">
-           <img src={"https://localhost:3080/" + props.data.imagePaths[0]}  />
-           </div> */}
-          {/* <CustomSlider>
-            {props.data.imagePaths.map((image, index) => {
-              return <div className="product-img-holder" ><img key={index} src={"https://localhost:3080/"+image} alt={"photo"+(index+1)} className="product-img" /></div>;
-            })}
-          </CustomSlider> */}
           <>
           <Swiper className="mySwiper">
             {props.data.imagePaths.map((image, index) => {
@@ -64,18 +54,31 @@ export default function ItemProduct(props) {
               </SwiperSlide></>
             })}
             </Swiper>
-            </>
+          </>
 
           <Box 
              key={props.data.id}
              value={props.data.id}
              sx={{ float: "left"}}
            >
-             <div className="product-item">{props.data.itemName}</div>
-             {/* <div class="product-item">{props.data.refNo}</div>*/}
-             <div className="product-item">{props.data.artNo}</div> 
-             <div className="product-item">{props.data.design}</div>
-             <div className="product-item price"><span>&nbsp;${props.data.price}&nbsp;</span></div>
+            <Box display="flex">
+            <Box>
+                <Box className="product-item">{props.data.itemName}</Box>
+                {/* <div class="product-item">{props.data.refNo}</div>*/}
+                <Box className="product-item">{props.data.artNo}</Box> 
+                <Box className="product-item">{props.data.design}</Box>
+            </Box>
+            <Box display="flex">
+               <Box className="product-item price" sx={{color: APPEARANCE.BG_COLOR}} ><span>&nbsp;${props.data.price}&nbsp;</span></Box>
+               <IconButton
+                sx={{backgroundColor: APPEARANCE.BG_COLOR, color: "#fff", width: 40, height: 40 }}
+                aria-label="Add to cart"
+                 >
+              { true  && <AddShoppingCartIcon  />}
+              { false && <AddShoppingCartIcon />}
+              </IconButton>
+            </Box>
+           </Box>
            </Box>
            <div style={{ clear: "left" }} >
            </div>

@@ -15,6 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import ApiIcon from '@mui/icons-material/Api';
 import { Icon } from '@mui/material';
+import { APPEARANCE } from '../../appearance';
 
 import config from "../../config.json"
 
@@ -84,7 +85,7 @@ export default function Header(props) {
   
 
   return (
-    <AppBar position="static" sx={{backgroundColor: "#047a74" }}>
+    <AppBar position="static" sx={{backgroundColor: APPEARANCE.BG_COLOR }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <ApiIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
