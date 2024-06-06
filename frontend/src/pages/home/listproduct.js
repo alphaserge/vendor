@@ -6,7 +6,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import FormControl from '@mui/material/FormControl';
 import { useTheme } from '@mui/material/styles';
 import ItemProduct from './itemproduct';
 
@@ -19,7 +18,7 @@ import Copyright from '../copyright';
 import config from "../../config.json"
 
 import Header from './header';
-import Footer from './blog/Footer';
+import Footer from './footer';
 import { clear } from "@testing-library/user-event/dist/clear";
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -73,8 +72,8 @@ export default function ListProduct(props) {
           </Grid>
           </Box>
         </div>
-        <Copyright sx={{ mt: 0, mb: 2 }} />
-              </Container>
+        <Footer sx={{ mt: 2, mb: 2 }} />
+         </Container>
               
     </ThemeProvider>
   );

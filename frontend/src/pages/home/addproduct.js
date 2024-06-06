@@ -21,7 +21,7 @@ import Copyright from '../copyright';
 import config from "../../config.json"
 
 import Header from './header';
-import Footer from './blog/Footer';
+import Footer from './footer';
 
 import { APPEARANCE } from '../../appearance';
 
@@ -30,7 +30,7 @@ const defaultTheme = createTheme()
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
 const labelStyle = { m: 2, ml: 4, mr: 4 }
-const buttonStyle = { width: 90, m: 2, backgroundColor: APPEARANCE.COLOR1 }
+const buttonStyle = { width: 90, m: 2, backgroundColor: APPEARANCE.COL1, color: APPEARANCE.COL2 }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -248,7 +248,7 @@ export default function AddProduct(props) {
           </Avatar> */}
           <Box sx={{ border: "1px solid #ddd", padding: "20px 10px", textAlign: "center", maxWidth: 900}} justifyContent={"center"} alignItems={"center"}>
             
-          <Typography component="h1" variant="h6" color={APPEARANCE.COLOR4}>
+          <Typography component="h1" variant="h6" color={APPEARANCE.COLOR1}>
             Adding a product form
           </Typography>
           <Typography component="p" variant="subtitle1" sx={{mb:2}}  color={APPEARANCE.COLOR1}>
@@ -462,7 +462,7 @@ export default function AddProduct(props) {
           </Box>
         </main>
       </Container>
-      <Copyright sx={{ mt: 0, mb: 2 }} />
+      <Footer sx={{ mt: 2, mb: 2 }} />
     </ThemeProvider>
   );
 }

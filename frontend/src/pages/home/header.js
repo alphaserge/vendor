@@ -137,13 +137,14 @@ export default function Header(props) {
                 <MenuItem 
                   key={page} 
                   data-menu-value={page}
+                  sx={{ color: APPEARANCE.COLOR1}}
                   onClick={handleMenuClick}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
-          <ApiIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+          {/* <ApiIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
@@ -161,14 +162,14 @@ export default function Header(props) {
             }}
           >
             {config.company}
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: 4 }}>
+          </Typography> */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: 0 }}>
             {pages.map((page) => (
               <Button
                 key={page}
                 data-menu-value={page}
                 onClick={handleMenuClick}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{ my: 2, color: APPEARANCE.COL1, display: 'block' }}
               >
                 {page}
               </Button>
@@ -178,7 +179,7 @@ export default function Header(props) {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title={props.user != undefined? props.user.firstName: ""}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.COL1}} />
                 
               </IconButton>
               <div onClick={handleOpenUserMenu}>{props.user != undefined? props.user.firstName: ""}</div>

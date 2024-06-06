@@ -104,7 +104,7 @@ export default function ColorVariant(props) {
         <IconButton
           color="success"
           aria-label="upload picture"
-          sx={{color: APPEARANCE.COLOR1}}
+          sx={{color: APPEARANCE.COL1}}
           component="span">
               {!props.cv.SelectedFile && <AddAPhotoIcon />}
               { props.cv.SelectedFile && <CameraswitchOutlinedIcon />}

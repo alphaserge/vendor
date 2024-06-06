@@ -71,7 +71,7 @@ li > .color_select_item {
 } */
 
 div.product-img-holder {
-  width:300px;
+  width:310px;
   height:300px;    
   overflow:hidden;
   padding: 20px;
@@ -97,7 +97,7 @@ image.product-img {
 
 .product-item.price {
   font-family: "YS Text", Helvetica, Arial, sans-serif;
-  font-size: 22px;
+  font-size: 28px;
   font-weight: 600; 
   margin-left: 10px;
   width: 60px;
@@ -135,7 +135,7 @@ image.product-img {
   object-fit: cover;
 }
 
-@media (min-width: 1200px) {
+/*@media (min-width: 1200px) {
   .header-container {
       max-width: 100% !important;
       padding: 0 !important;
@@ -144,4 +144,4 @@ image.product-img {
     max-width: 1200px;
     padding: 0 !important;
 }
-}
+}*/
