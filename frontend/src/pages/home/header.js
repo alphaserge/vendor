@@ -19,7 +19,7 @@ import { APPEARANCE } from '../../appearance';
 
 import config from "../../config.json"
 
-const pages = ['My Products', 'Add Product', 'Contacts' ];
+const pages = ['My Products', 'Add Product', 'Categories', 'Contact Us' ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Login', 'Logout', 'Register'];
 
 function FabricIcon(props) {
@@ -85,8 +85,8 @@ export default function Header(props) {
   
 
   return (
-    <AppBar position="static" sx={{backgroundColor: APPEARANCE.COLOR1 }}>
-      <Container className="header-menu" sx={{width: "800px"}} >
+    <AppBar position="static" sx={{backgroundColor: APPEARANCE.NONE, boxShadow: "none" }}>
+      <Container className="header-menu" sx={{ backgroundColor: APPEARANCE.NONE  }} maxWidth={false}  >
         <Toolbar disableGutters>
           {/* <ApiIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
@@ -111,7 +111,7 @@ export default function Header(props) {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit"
+              color={APPEARANCE.BLACK}
             >
               <MenuIcon />
             </IconButton>
@@ -144,32 +144,14 @@ export default function Header(props) {
               ))}
             </Menu>
           </Box>
-          {/* <ApiIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            {config.company}
-          </Typography> */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: 0 }}>
+          
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: 2 }}>
             {pages.map((page) => (
               <Button
                 key={page}
                 data-menu-value={page}
                 onClick={handleMenuClick}
-                sx={{ my: 2, color: APPEARANCE.COL1, display: 'block' }}
+                sx={{ ml: 2, mr: 2, color: APPEARANCE.BLACK, display: 'block' }}
               >
                 {page}
               </Button>
@@ -177,9 +159,17 @@ export default function Header(props) {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
+          <Button
+                key="user"
+                data-menu-value="user"
+                onClick={handleMenuClick}
+                sx={{ ml: 2, mr: 2, color: APPEARANCE.BLACK, display: 'inline-block' }}
+              >
+                Admin
+              </Button>
             <Tooltip title={props.user != undefined? props.user.firstName: ""}>
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.COL1}} />
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 2, mr: 4 }}>
+                <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} />
                 
               </IconButton>
               <div onClick={handleOpenUserMenu}>{props.user != undefined? props.user.firstName: ""}</div>
@@ -211,6 +201,7 @@ export default function Header(props) {
               ))}
             </Menu>
           </Box>
+
         </Toolbar>
       </Container>
     </AppBar>

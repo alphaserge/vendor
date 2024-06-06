@@ -19,6 +19,7 @@ import config from "../../config.json"
 
 import Header from './header';
 import Footer from './footer';
+import MainBanner from './mainbanner';
 import { clear } from "@testing-library/user-event/dist/clear";
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -54,9 +55,11 @@ export default function ListProduct(props) {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <Container sx={{maxWidth: "100%", padding: 0 }} className="header-container" >
+      <Container sx={{padding: 0 }} className="header-container" >
         <Header user={props.user} title={props.title} />
+        <MainBanner user={props.user} title={props.title} />
         <div>
+        
           {/* <Avatar sx={{ mb: 2, bgcolor: 'secondary.main' }}>
             <AddCircleIcon />
           </Avatar>

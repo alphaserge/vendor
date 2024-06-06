@@ -135,7 +135,7 @@ image.product-img {
   object-fit: cover;
 }
 
-/*@media (min-width: 1200px) {
+@media (min-width: 1200px) {
   .header-container {
       max-width: 100% !important;
       padding: 0 !important;
@@ -144,4 +144,4 @@ image.product-img {
     max-width: 1200px;
     padding: 0 !important;
 }
-}*/
+}
