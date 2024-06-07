@@ -69,9 +69,9 @@ export default function ItemProduct(props) {
                 <Box className="product-item">{props.data.design}</Box>
             </Box>
             <Box display="flex" alignItems={"center"} justifyContent={"left"} >
-               <Box className="product-item price" sx={{color: APPEARANCE.COL1}} ><span>&nbsp;${props.data.price}&nbsp;</span></Box>
+               <Box className="product-item price" sx={{color: APPEARANCE.RED4}} >&nbsp;${props.data.price}&nbsp;</Box>
                <IconButton
-                sx={{backgroundColor: APPEARANCE.COL1, color: "#fff", width: 48, height: 48, mt: 1, ml:1 }}
+                sx={{backgroundColor: APPEARANCE.RED3, color: "#fff", width: 48, height: 48, mt: 1, ml:1 }}
                 aria-label="Add to cart"
                  >
               { true  && <AddShoppingCartIcon  />}

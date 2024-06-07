@@ -36,7 +36,7 @@ useEffect(() => {
   }, []);
 
   return (
-    <AppBar position="static" sx={{backgroundColor: APPEARANCE.COLOR3 }}>
+    <AppBar position="static" sx={{backgroundColor: APPEARANCE.RED2}} >
       <Box sx={{ flexGrow: 0 }}>
       <Typography variant="body2" color="#fff" align="center" {...props} >
         {'Copyright © JSC Angelka Moscow - '}

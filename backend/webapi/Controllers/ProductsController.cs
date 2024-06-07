@@ -12,6 +12,12 @@ using System.Net.Http;
 
 namespace chiffon_back.Controllers
 {
+    public class ProductsQuery
+    {
+        public string? foo { get; set; }
+        public int[]? colors { get; set; }
+    }
+
     [ApiController]
     [Route("[controller]")]
     public class ProductsController : ControllerBase
@@ -59,8 +65,10 @@ namespace chiffon_back.Controllers
 
         // временно [Authorize]
         [HttpGet(Name = "Products")]
-        public IEnumerable<Models.Product> Get()
+        public IEnumerable<Models.Product> Get([FromQuery] string colors, [FromQuery] string name) //ProductsQuery query1)
         {
+            var colors1 = HttpContext.Request.Query["colors"];//.ToString();
+
             var query = from p in ctx.Products
                         select new Models.Product
                         {

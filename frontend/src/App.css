@@ -135,6 +135,12 @@ image.product-img {
   object-fit: cover;
 }
 
+.action-button {
+  background-color: #000 !important;
+  border-radius: 0 !important;
+  color: #fff !important;
+}
+
 @media (min-width: 1200px) {
   .header-container {
       max-width: 100% !important;
@@ -144,4 +150,11 @@ image.product-img {
     max-width: 1200px;
     padding: 0 !important;
 }
+.filter {
+  max-width: 1000px;
+  padding: 0 !important;
+  margin: 30px auto;
+
+}
+
 }

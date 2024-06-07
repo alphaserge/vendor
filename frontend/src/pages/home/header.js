@@ -15,6 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import ApiIcon from '@mui/icons-material/Api';
 import { Icon } from '@mui/material';
+
 import { APPEARANCE } from '../../appearance';
 
 import config from "../../config.json"
@@ -48,6 +49,7 @@ export default function Header(props) {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
 
   const handleMenuClick = (event) => {
     let value = event.currentTarget.dataset.menuValue;
@@ -170,10 +172,8 @@ export default function Header(props) {
             <Tooltip title={props.user != undefined? props.user.firstName: ""}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 2, mr: 4 }}>
                 <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} />
-                
               </IconButton>
               <div onClick={handleOpenUserMenu}>{props.user != undefined? props.user.firstName: ""}</div>
-              
             </Tooltip>
             <Menu
               sx={{ mt: '45px' }}

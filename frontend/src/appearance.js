@@ -5,8 +5,9 @@ export const APPEARANCE = {
     BLACK1: "#111",
     BLACK2: "#222",
     BLACK3: "#333",
+    BLUE1: "#1976d2",
     
-    /*GREEN1: "#013e31",
+    GREEN1: "#013e31",
     GREEN2: "#13483c",
     GREEN3: "#02604a",
     GREEN4: "#2fb093",
@@ -22,6 +23,6 @@ export const APPEARANCE = {
     RED2: "#6a1c28",
     RED3: "#8d0319",
     RED4: "#c6354b",
-    RED5: "#c65b6c",*/
+    RED5: "#c65b6c",
 
 }
