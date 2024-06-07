@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using chiffon_back.Code;
 using chiffon_back.Context;
+using chiffon_back.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -65,10 +67,18 @@ namespace chiffon_back.Controllers
 
         // временно [Authorize]
         [HttpGet(Name = "Products")]
-        public IEnumerable<Models.Product> Get([FromQuery] string colors, [FromQuery] string name) //ProductsQuery query1)
+        public IEnumerable<Models.Product> Get()//[FromQuery] string colors, [FromQuery] string name) //ProductsQuery query1)
         {
-            var colors1 = HttpContext.Request.Query["colors"];//.ToString();
+            var name = HttpContext.Request.Query["name"].ToString();
+            var artNo = HttpContext.Request.Query["artno"].ToString();
+            var refNo = HttpContext.Request.Query["refno"].ToString();
+            var design = HttpContext.Request.Query["design"].ToString();
+            string colors = HttpContext.Request.Query["colors"].ToString();
+            string seasons = HttpContext.Request.Query["seasons"].ToString();
+            string overworks = HttpContext.Request.Query["overworks"].ToString();
+            string designTypes = HttpContext.Request.Query["designtypes"].ToString();
 
+            //var query = from p in ctx.Products select p;
             var query = from p in ctx.Products
                         select new Models.Product
                         {
@@ -97,6 +107,64 @@ namespace chiffon_back.Controllers
                             Seasons = p.ProductsInSeasons.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
                         };
 
+            if (!String.IsNullOrEmpty(name))
+            {
+                query = query.Where(x => x.ItemName.ToLower().Contains(name.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(artNo))
+            {
+                query = query.Where(x => x.ArtNo.ToLower().Contains(artNo.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(refNo))
+            {
+                query = query.Where(x => x.RefNo.ToLower().Contains(refNo.ToLower()));
+            }
+            if (!String.IsNullOrEmpty(design))
+            {
+                query = query.Where(x => x.Design.ToLower().Contains(design.ToLower()));
+            }
+
+            List<int?> colorsIds = new List<int?>();
+            if (!String.IsNullOrWhiteSpace(colors))
+            {
+                int?[] icolors = JsonConvert.DeserializeObject<int?[]>(colors);
+                if (icolors.Length > 0)
+                    colorsIds = (from cv in ctx.ColorVariants
+                                 join cc in ctx.ColorVariantsInColors on cv.Id equals cc.ColorVariantId
+                                 where icolors.Contains(cc.ColorId)
+                                 select cv.ProductId as int?).Distinct().ToList();
+                int a = 0;
+            }
+
+            List<int?> seasonsIds = new List<int?>();
+            if (!String.IsNullOrWhiteSpace(seasons))
+            {
+                int[] iseasons = JsonConvert.DeserializeObject<int[]>(seasons);
+                if (iseasons.Length > 0)
+                    seasonsIds = (from ps in ctx.ProductsInSeasons where iseasons.Contains(ps.SeasonId) select ps.ProductId as int?).Distinct().ToList();
+            }
+
+            List<int?> overworkIds = new List<int?>();
+            if (!String.IsNullOrWhiteSpace(overworks))
+            {
+                int[] ioverworks = JsonConvert.DeserializeObject<int[]>(overworks);
+                if (ioverworks.Length > 0)
+                    overworkIds = (from po in ctx.ProductsInOverWorkTypes where ioverworks.Contains(po.OverWorkTypeId) select po.ProductId as int?).Distinct().ToList();
+            }
+
+            List<int?> designTypesIds = new List<int?>();
+            if (!String.IsNullOrWhiteSpace(designTypes))
+            {
+                int[] idesignTypes = JsonConvert.DeserializeObject<int[]>(designTypes);
+                if (idesignTypes.Length > 0)
+                    designTypesIds = (from ps in ctx.ProductsInDesignTypes where idesignTypes.Contains(ps.DesignTypeId) select ps.ProductId as int?).Distinct().ToList();
+            }
+
+            List<int?> ids = colorsIds.Union(seasonsIds).Union(overworkIds).Union(designTypesIds).Distinct().ToList();
+
+            if (ids.Count > 0)
+                query = query.Where(x => ids.Contains(x.Id));
+            
             var prods = query.ToList();
 
             foreach(var p in prods)

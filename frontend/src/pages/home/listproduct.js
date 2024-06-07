@@ -8,7 +8,7 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import TextField from '@mui/material/TextField';
 import TuneIcon from '@mui/icons-material/Tune';
 
 import axios from 'axios'
@@ -58,20 +58,60 @@ export default function ListProduct(props) {
     const [designType, setDesignType] = useState([])
     const [overworkType, setOverworkType] = useState([])
     const [season, setSeason] = useState([])
+    const [itemName, setItemName] = useState("")
+    const [refNo, setRefNo] = useState("")
+    const [artNo, setArtNo] = useState("")
+    const [design, setDesign] = useState("")
 
     const handleShowHideFilter = (event) => {
       setFilter(!filter);
     };
 
-    const url = require('url');
-    const loadProducts = async (e) => {
+    const clearFilter = (e) => {
+      setProductStyle("")
+      setProductType("")
+      setColor([])
+      setDesignType([])
+      setOverworkType([])
+      setSeason([])
+      setItemName("")
+      setRefNo("")
+      setArtNo("")
+      setDesign("")
 
+      axios.get(config.api + '/Products', 
+        { params: 
+            { 
+            }})
+      .then(function (res) {
+          var result = res.data;
+          setProducts(result)
+      })
+      .catch (error => {
+        console.log(error)
+      })
+    }
+
+    const url = require('url');
+
+    const loadProducts = async (e) => {
       //const params = new URLSearchParams();
       //params.append(color, [1,2]);
 
       //const params = new url.URLSearchParams({ foo: 'bar' });      
 
-      axios.get(config.api + '/Products', { params: { colors: JSON.stringify([1,2]), name: 'WINSDOR' } })// params.toString())
+      axios.get(config.api + '/Products', 
+        { params: 
+            { 
+              name: itemName,
+              artno: artNo,
+              refno: refNo,
+              design: design,
+              colors: JSON.stringify(color),
+              seasons: JSON.stringify(season),
+              overworks: JSON.stringify(overworkType),
+              designtypes: JSON.stringify(designType),
+            }})
       .then(function (res) {
           var result = res.data;
           setProducts(result)
@@ -111,6 +151,46 @@ export default function ListProduct(props) {
 
           <Box sx={{ backgroundColor: "none", display: filter==true? "block": "none", textAlign: "center", mt: 3, mb: 3  }} className="filter" >
           <Box className="filter" >
+          <TextField
+                margin="normal"
+                size="small" 
+                id="itemName"
+                label="Item name"
+                name="itemName"
+                sx = {itemStyle}
+                value={itemName}
+                onChange={ev => setItemName(ev.target.value)}
+              />
+            <TextField
+                margin="normal"
+                size="small" 
+                id="refNo"
+                label="Ref No"
+                name="refNo"
+                sx = {itemStyle}
+                value={refNo}
+                onChange={ev => setRefNo(ev.target.value)}
+              />
+            <TextField
+                margin="normal"
+                size="small" 
+                id="artNo"
+                label="Art No"
+                name="artNo"
+                sx = {itemStyle}
+                value={artNo}
+                onChange={ev => setArtNo(ev.target.value)}
+              />
+            <TextField
+                margin="normal"
+                size="small" 
+                id="design"
+                label="Design"
+                name="design"
+                sx = {itemStyle}
+                value={design}
+                onChange={ev => setDesign(ev.target.value)}
+              />
                 <MySelect 
                   id="addproduct-producttype"
                   url="ProductTypes"
@@ -187,6 +267,9 @@ export default function ListProduct(props) {
           </Box>
                 <Button variant="contained" className="action-button" onClick={loadProducts} >
                   Apply
+                </Button>
+                <Button variant="outlined" className="clear-button" onClick={clearFilter} sx={{ml:2}} >
+                  Clear
                 </Button>
           </Box>
 

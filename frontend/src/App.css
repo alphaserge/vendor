@@ -141,6 +141,13 @@ image.product-img {
   color: #fff !important;
 }
 
+.clear-button {
+  background-color: #fff !important;
+  border-radius: 0 !important;
+  color: #000 !important;
+  border: 1px solid #000;
+}
+
 @media (min-width: 1200px) {
   .header-container {
       max-width: 100% !important;

@@ -36,8 +36,8 @@ useEffect(() => {
   }, []);
 
   return (
-    <Box sx={{ flexGrow: 0, backgroundColor: "#eee" }} >
-      <Box sx={{ backgroundImage: "url('red-1200-1.png')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPositionX: "center", height: "150px", maxWidth: "1200px", margin: "0 auto" }}  >
+    <Box sx={{ flexGrow: 0, backgroundColor: "#ebb2c3" }} >
+      <Box sx={{ backgroundImage: "url('pink-1200.png')", backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPositionX: "center", height: "150px", maxWidth: "1200px", margin: "0 auto" }}  >
       <Typography variant="body2" color="#fff" align="center" {...props} >
         {''}
         {/* <Link href="#" color="#fff">JSC Angelka Moscow</Link>{' '} */}
