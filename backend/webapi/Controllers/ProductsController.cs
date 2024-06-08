@@ -66,7 +66,41 @@ namespace chiffon_back.Controllers
         }
 
         // временно [Authorize]
-        [HttpGet(Name = "Products")]
+        [HttpGet("Product"), ActionName("product")]
+        public Models.Product GetProduct([FromQuery] string id)
+        {
+            var id1 = HttpContext.Request.Query["id"];
+
+            var query = from p in ctx.Products where p.Id.ToString() == id
+                        select new Models.Product
+                        {
+                            Id = p.Id,
+                            RefNo = p.RefNo,
+                            ArtNo = p.ArtNo,
+                            ItemName = p.ItemName,
+                            Design = p.Design,
+                            Price = p.Price,
+                            Weight = p.Weight,
+                            Width = p.Width,
+                            ProductStyleId = p.ProductStyleId,
+                            ProductTypeId = p.ProductTypeId,
+                            VendorId = p.VendorId,
+                            Vendor = p.Vendor.VendorName,
+                            ProductStyle = p.ProductStyleId.ToString(),
+                            ProductType = p.ProductTypeId.ToString(),
+                            DesignTypeIds = p.ProductsInDesignTypes.Select(x => x.DesignTypeId).ToArray(),
+                            OverWorkTypeIds = p.ProductsInOverWorkTypes.Select(x => x.OverWorkTypeId).ToArray(),
+                            SeasonIds = p.ProductsInSeasons.Select(x => x.SeasonId).ToArray(),
+                        };
+
+            var prods = query.FirstOrDefault();
+
+            return prods;
+        }
+
+
+        // временно [Authorize]
+        [HttpGet("Products"), ActionName("products")]
         public IEnumerable<Models.Product> Get()//[FromQuery] string colors, [FromQuery] string name) //ProductsQuery query1)
         {
             var name = HttpContext.Request.Query["name"].ToString();
@@ -164,15 +198,15 @@ namespace chiffon_back.Controllers
 
             if (ids.Count > 0)
                 query = query.Where(x => ids.Contains(x.Id));
-            
+
             var prods = query.ToList();
 
-            foreach(var p in prods)
+            foreach (var p in prods)
             {
                 List<string> images = new List<string>();
                 foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == p.Id).ToList())
                 {
-                    images.AddRange(DirectoryHelper.GetImageFiles(cv.Uuid)); 
+                    images.AddRange(DirectoryHelper.GetImageFiles(cv.Uuid));
                 }
                 p.ImagePaths = images.ToArray();
             }

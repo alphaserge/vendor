@@ -86,11 +86,12 @@ export default function ListProduct(props) {
       .then(function (res) {
           var result = res.data;
           setProducts(result)
-      })
+          setFilter(false)
+        })
       .catch (error => {
         console.log(error)
       })
-    }
+   }
 
     const url = require('url');
 
@@ -100,7 +101,7 @@ export default function ListProduct(props) {
 
       //const params = new url.URLSearchParams({ foo: 'bar' });      
 
-      axios.get(config.api + '/Products', 
+      axios.get(config.api + '/Products/Products', 
         { params: 
             { 
               name: itemName,
@@ -115,6 +116,7 @@ export default function ListProduct(props) {
       .then(function (res) {
           var result = res.data;
           setProducts(result)
+          setFilter(false)
       })
       .catch (error => {
         console.log(error)
@@ -123,8 +125,6 @@ export default function ListProduct(props) {
 
     useEffect(() => {
       loadProducts()
-      console.log('load products')
-      console.log(props.user)
     }, []);
 
   return (

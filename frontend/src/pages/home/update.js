@@ -10,6 +10,8 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
+import { useSearchParams } from 'react-router-dom';
+import EditIcon from '@mui/icons-material/Edit';
 
 import axios from 'axios'
 
@@ -30,7 +32,7 @@ const defaultTheme = createTheme()
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
 const labelStyle = { m: 2, ml: 4, mr: 4 }
-const buttonStyle = { width: 90, m: 2, backgroundColor: APPEARANCE.BLACK2, color: APPEARANCE.WHITE }
+const buttonStyle = { width: 90, m: 2, backgroundColor: APPEARANCE.GREEN2, color: APPEARANCE.WHITE }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -52,7 +54,7 @@ function getStyles(name, personName, theme) {
         : theme.typography.fontWeightMedium,
   };
 }
-export default function AddProduct(props) {
+export default function Update(props) {
 
     const navigate = useNavigate();
     const theme = useTheme();
@@ -72,56 +74,7 @@ export default function AddProduct(props) {
     const [price, setPrice] = useState("")
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
-    const [colorVariant, setColorVariant] = useState([
-      {
-        Id: uuid(),
-        No: 1,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 2,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 3,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 4,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 5,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 6,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-    ])
+    const [colorVariant, setColorVariant] = useState([])
 
     const setColorVariantItem = (i, item) => {
       let cv = colorVariant.map(el=>el.Id==i? item:el)
@@ -130,8 +83,6 @@ export default function AddProduct(props) {
 
     const [selectedFile, setSelectedFile] = useState(null)
   
-    // #region handlers; 
-
     const handleSubmit = (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
@@ -144,7 +95,7 @@ export default function AddProduct(props) {
   const onFileChange = (event) => {
       setSelectedFile(event.target.files[0])
   }
-  
+
   const postFile = async (cv) => {
     const formData = new FormData();
     formData.append("formFile", cv.SelectedFile);
@@ -195,7 +146,6 @@ export default function AddProduct(props) {
         RefNo: refNo,
         ArtNo: artNo,
         Design: design,
-         //ColorNo: colorNo,
         Price: Number(price),
         Weight: Number(weight),
         Width: Number(width),
@@ -203,7 +153,6 @@ export default function AddProduct(props) {
         ProductTypeId: Number(productType),
         VendorId: 1, //!!props.user ? props.user.vendorId : null,
         Uuid: uid,
-        //Colors: color,
         ColorVariants: cv, 
         Seasons: season,
         DesignTypes: designType,
@@ -229,12 +178,40 @@ export default function AddProduct(props) {
     console.log(error)
     //navigate("/error")
   })
-
 };
 
-// #endregion
+const loadProducts = async (e) => {
+
+  const search = window.location.search;
+  const params = new URLSearchParams(search);
+  const id = params.get('id');
+
+  axios.get(config.api + '/Products/Product?='+id, { params: { id: id }})
+  .then(function (res) {
+      setItemName(res.data.itemName)
+      setArtNo(res.data.artNo)
+      setRefNo(res.data.refNo)
+      setDesign(res.data.design)
+      setPrice(res.data.design)
+      setWidth(res.data.width)
+      setWeight(res.data.weight)
+      setProductStyle(res.data.productStyle)
+      setProductType(res.data.productType)
+      setSeason(res.data.seasonIds)
+      setOverworkType(res.data.overWorkTypeIds)
+      setDesignType(res.data.designTypeIds)
+  })
+  .catch (error => {
+    console.log(error)
+  })
+}      
 
     useEffect(() => {
+
+      loadProducts()
+
+
+
     }, []);
 
   return (
@@ -248,8 +225,9 @@ export default function AddProduct(props) {
           </Avatar> */}
           <Box sx={{ border: "1px solid #ddd", padding: "20px 10px", textAlign: "center", maxWidth: 900}} justifyContent={"center"} alignItems={"center"}>
             
-          <Typography component="h1" variant="h6" color={APPEARANCE.COLOR1}>
-            Adding a product form
+          <EditIcon sx={{ mr: 1, display: "inline"}} />
+          <Typography component="span" variant="h6" color={APPEARANCE.COLOR1} >
+            Change a product
           </Typography>
           <Typography component="p" variant="subtitle1" sx={{mb:2}}  color={APPEARANCE.COLOR1}>
           Please fill out all fields and click the Save button

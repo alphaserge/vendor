@@ -15,6 +15,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import { APPEARANCE } from '../../appearance';
+import { Link } from "@mui/material";
 
 const defaultTheme = createTheme()
 const itemStyle = { width: 265 }
@@ -45,7 +46,7 @@ export default function ItemProduct(props) {
   return (
     
     <FormControl  sx={{ mb: 2, width: 440 }} > 
-          <>
+          <Link href={"/update?id=" + props.data.id} >
           <Swiper className="mySwiper">
             {props.data.imagePaths.map((image, index) => {
               return <>
@@ -54,7 +55,7 @@ export default function ItemProduct(props) {
               </SwiperSlide></>
             })}
             </Swiper>
-          </>
+          </Link>
 
           <Box 
              key={props.data.id}
@@ -69,9 +70,9 @@ export default function ItemProduct(props) {
                 <Box className="product-item">{props.data.design}</Box>
             </Box>
             <Box display="flex" alignItems={"center"} justifyContent={"left"} >
-               <Box className="product-item price" sx={{color: APPEARANCE.RED4}} >&nbsp;${props.data.price}&nbsp;</Box>
+               <Box className="product-item price" sx={{color: APPEARANCE.LIGHT_GREEN1}} >&nbsp;${props.data.price}&nbsp;</Box>
                <IconButton
-                sx={{backgroundColor: APPEARANCE.RED3, color: "#fff", width: 48, height: 48, mt: 1, ml:1 }}
+                sx={{backgroundColor: APPEARANCE.LIGHT_GREEN1, color: "#fff", width: 48, height: 48, mt: 1, ml:1 }}
                 aria-label="Add to cart"
                  >
               { true  && <AddShoppingCartIcon  />}

@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/home/home';
+import Update from './pages/home/update';
 import AddProduct from './pages/home/addproduct';
 import ListProduct from './pages/home/listproduct';
 import Menu from './pages/home/menu';
@@ -68,6 +69,7 @@ function App() {
           <Route path="/error" element={<Error />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/addproduct" element={<AddProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
+          <Route path="/update" element={<Update user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/listproduct" element={<ListProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/menu" element={<Menu lastAction={lastAction} setLastAction={setLastAction} />} />
           {/* <Route path="/header" element={<PrimarySearchAppBar />} /> */}

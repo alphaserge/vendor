@@ -13,6 +13,12 @@ export const APPEARANCE = {
     GREEN4: "#2fb093",
     GREEN5: "#51b09a",
 
+    LIGHT_GREEN1: "#689f33",
+    LIGHT_GREEN2: "#9eb786",
+    LIGHT_GREEN3: "#c7f59c",
+    LIGHT_GREEN4: "#d7fab6",
+    LIGHT_GREEN5: "#e0fac8",
+
     ORANGE1: "#613d01",
     ORANGE2: "#70511e",
     ORANGE3: "#955e03",
@@ -24,5 +30,7 @@ export const APPEARANCE = {
     RED3: "#8d0319",
     RED4: "#c6354b",
     RED5: "#c65b6c",
+
+
 
 }
