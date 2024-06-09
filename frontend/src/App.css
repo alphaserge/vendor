@@ -77,6 +77,19 @@ div.product-img-holder {
   padding: 20px;
 }
 
+div.product-img-holder-thumb {
+  width:125px;
+  height:125px;    
+  overflow:hidden;
+  padding: 10px;
+}
+div.product-img-holder-item {
+  height:165px;    
+  overflow:hidden;
+  padding: 10px;
+}
+
+
 image.product-img {
   min-width:100%;
 }

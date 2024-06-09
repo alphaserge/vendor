@@ -26,6 +26,7 @@ import Header from './header';
 import Footer from './footer';
 
 import { APPEARANCE } from '../../appearance';
+import zIndex from "@mui/material/styles/zIndex";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -75,6 +76,8 @@ export default function Update(props) {
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
     const [colorVariant, setColorVariant] = useState([])
+    const [images, setImages] = useState([])
+    const [colors, setColors] = useState([])
 
     const setColorVariantItem = (i, item) => {
       let cv = colorVariant.map(el=>el.Id==i? item:el)
@@ -200,6 +203,10 @@ const loadProducts = async (e) => {
       setSeason(res.data.seasonIds)
       setOverworkType(res.data.overWorkTypeIds)
       setDesignType(res.data.designTypeIds)
+      setImages(res.data.imagePaths)
+      setColors(res.data.colors)
+
+      console.log(res.data.colors)
   })
   .catch (error => {
     console.log(error)
@@ -217,13 +224,15 @@ const loadProducts = async (e) => {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <Container sx={{maxWidth: "100%", padding: 0 }} className="header-container" >
+      <Container sx={{maxWidth: "100%", padding: 0 }} className="header-container" >  {/* justifyContent={"center"} alignItems={"center"} */}
         <Header user={props.user} title={props.title} />
+        <Box sx={{textAlign: "center", alignItems: "center", justifyContent: "center", display: "flex", mb: 3 }}>
+        <Box sx={{ border: "1px solid #ddd", padding: "20px 10px", maxWidth: 900}} >
         <main>
         {/* <Avatar sx={{ mb: 2, bgcolor: 'secondary.main' }}>
             <AddCircleIcon />
           </Avatar> */}
-          <Box sx={{ border: "1px solid #ddd", padding: "20px 10px", textAlign: "center", maxWidth: 900}} justifyContent={"center"} alignItems={"center"}>
+          <Box sx={{textAlign: "center", maxWidth: 900}} >
             
           <EditIcon sx={{ mr: 1, display: "inline"}} />
           <Typography component="span" variant="h6" color={APPEARANCE.COLOR1} >
@@ -306,16 +315,6 @@ const loadProducts = async (e) => {
                 value={width}
                 onChange={ev => setWidth(ev.target.value)}
               />
-            {/* <TextField
-                margin="normal"
-                size="small" 
-                id="colorNo"
-                label="Color No"
-                name="colorNo"
-                sx = {itemStyle}
-                value={colorNo}
-                onChange={ev => setColorNo(ev.target.value)}
-              /> */}
 
                 <MySelect 
                   id="addproduct-producttype"
@@ -353,19 +352,6 @@ const loadProducts = async (e) => {
                   setValueFn={setSeason}
                 />
 
-                {/* <MySelect 
-                  id="addproduct-color"
-                  url="Colors"
-                  title="Color"
-                  valueName="colorName"
-                  labelStyle={labelStyle}
-                  itemStyle={itemStyle}
-                  MenuProps={MenuProps}
-                  valueVariable={color}
-                  setValueFn={setColor}
-                  rgbField="rgb"
-                /> */}
-
                 <MySelect 
                   id="addproduct-designtype"
                   url="DesignTypes"
@@ -389,35 +375,32 @@ const loadProducts = async (e) => {
                   valueVariable={overworkType}
                   setValueFn={setOverworkType}
                 />
-
-
                 { colorVariant.map((cv) => (
                     <ColorVariant cv={cv} setColorItem={setColorVariantItem}  />
                  ))}
+          </Grid>
+          </Box>
+        </main>
+        <Box component={"div"} display={"flex"} justifyContent={"left"} alignItems={"left"} 
+          marginBottom={3} marginLeft={6} marginRight={6} 
+          paddingBottom={1} sx={{ backgroundColor: "#ddd" }} >
+            {images.map((image, index) => {
+              return <Box className="product-img-holder-item">
+                <Box className="product-img-holder-thumb" >
+                <Box 
+                  component={"img"} 
+                  key={index} 
+                  src={"https://localhost:3080/"+image} 
+                  alt={"photo"+(index+1)} 
+                  className="product-img" />
+                  <br/>
+                  </Box>
+                  <Box component={"div"} sx={{ mt: 1, backgroundColor: "#fff", ml: 1 }} textAlign={"center"} fontSize={"12px"} > { index<colors.length+1 && colors[index]}</Box>
 
-<br/>
-<br/>
-                
-                {/* <div style={{  textAlign: "center" }}>
-                <div style={{ margin: "0 auto" }}>
-                <Button
-                  variant="outlined"
-                  component="label"
-                  style={buttonStyle}
-                  >
-                  { selectedFile ?  "Photo is selected" : "Select Photo"}
-                  <input
-                    type="file"
-                    onChange={onFileChange}
-                    hidden
-                  />
-                </Button>
-
-                </div>
-                </div>
-<br/> */}
-                {/* <FormControl sx = {{itemStyle}} > */}
-                <Box sx={{ textAlign: "center", marginTop: 2 }}>
+              </Box>
+            })}
+        </Box>
+        <Box component={"div"} display={"flex"} justifyContent={"center"} alignItems={"center"} paddingBottom={3}>
                   <Button 
                     variant="contained"
                     style={buttonStyle}
@@ -433,12 +416,9 @@ const loadProducts = async (e) => {
                         More colors
                     </Button>
                     </Box>
-                {/* </FormControl> */}
 
-          </Grid>
-          {/* </Box> */}
-          </Box>
-        </main>
+        </Box>
+        </Box>
       </Container>
       <Footer sx={{ mt: 2, mb: 2 }} />
     </ThemeProvider>

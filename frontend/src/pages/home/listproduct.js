@@ -278,7 +278,7 @@ export default function ListProduct(props) {
               <ItemProduct data={data} />
                  ))}
           </Grid>
-          
+
           </Box>
         </div>
         <Footer sx={{ mt: 2, mb: 2 }} />
