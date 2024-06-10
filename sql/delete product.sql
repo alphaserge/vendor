@@ -27,12 +27,12 @@ SELECT TOP (1000) [Id]
   FROM [chiffon].[dbo].[ColorVariants] 
 
 
-   delete from ColorVariantsInColors where ColorVariantId in (select Id FROM [chiffon].[dbo].[ColorVariants] where ProductId in (64))
+   delete from ColorVariantsInColors where ColorVariantId in (select Id FROM [chiffon].[dbo].[ColorVariants] where ProductId in (66))
 
-   delete   FROM [chiffon].[dbo].[ColorVariants] where ProductId in (64)
+   delete   FROM [chiffon].[dbo].[ColorVariants] where ProductId in (66)
 
-   delete from ProductsInDesignTypes where ProductId in (64)
-   delete from ProductsInSeasons where ProductId in (64)
-   delete from ProductsInOverWorkTypes where ProductId in (64)
+   delete from ProductsInDesignTypes where ProductId in (66)
+   delete from ProductsInSeasons where ProductId in (66)
+   delete from ProductsInOverWorkTypes where ProductId in (66)
 
-   delete FROM [chiffon].[dbo].[Products] where Id in (64)
+   delete FROM [chiffon].[dbo].[Products] where Id in (66)

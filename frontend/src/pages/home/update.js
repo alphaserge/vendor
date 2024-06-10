@@ -81,6 +81,7 @@ export default function Update(props) {
     const [images, setImages] = useState([])
     const [colors, setColors] = useState([])
     const [cvNums, setCvNums] = useState([])
+    const [cvIds, setCvIds] = useState([])
 
     const setColorVariantItem = (i, item) => {
       let cv = colorVariant.map(el=>el.Id==i? item:el)
@@ -131,11 +132,11 @@ export default function Update(props) {
     setColorVariant(cv)
   }
 
-  const handleRemoveCv = async (num) => {
-    const search = window.location.search;
+  const handleRemoveCv = async (id) => {
+    /*const search = window.location.search;
     const params = new URLSearchParams(search);
     const id = params.get('id');
-    let a = id;
+    let a = id;*/
 
     fetch(config.api + '/Products/ProductRemoveCV', {
       method: "POST",
@@ -144,7 +145,7 @@ export default function Update(props) {
         },
       body: JSON.stringify({
         Id: id,
-        Num: num,
+        //Num: num,
       })
   })
   .then(r => r.json())
@@ -249,6 +250,7 @@ const loadProducts = async (e) => {
       setImages(res.data.imagePaths)
       setColors(res.data.colors)
       setCvNums(res.data.cvNums)
+      setCvIds(res.data.cvIds)
 
       console.log(res.data.colors)
   })
@@ -444,12 +446,12 @@ const loadProducts = async (e) => {
                     sx={{ mt: 1, ml: 1, height: "36px", width: "125px", wordBreak: "break-all", wordWrap: "break-word" }} 
                     textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > { index<colors.length+1 && (cvNums[index] + ' - ' + colors[index])}</Box>
 
-<IconButton
+          <IconButton
           color="success"
           aria-label="upload picture"
           sx={{color: APPEARANCE.BLACK2, pt: 0}}
           component="span"
-          onClick={ function() { handleRemoveCv(cvNums[index])}}
+          onClick={ function() { handleRemoveCv(cvIds[index])}}
           >
               {<DeleteIcon />}
         </IconButton>

@@ -100,15 +100,18 @@ namespace chiffon_back.Controllers
             List<string> images = new List<string>();
             List<string> colors = new List<string>();
             List<int> nums = new List<int>();
+            List<int> cvIds = new List<int>();
             foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == prod.Id).ToList())
             {
                 images.AddRange(DirectoryHelper.GetImageFiles(cv.Uuid));
                 colors.Add( String.Join(", ", ctx.Colors.Where(col => ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == cv.Id).Select(x => x.ColorId).ToList().Contains(col.Id)).Select(col=>col.ColorName)));
                 nums.Add(cv.Num);
+                cvIds.Add(cv.Id);
             }
             prod.ImagePaths = images.ToArray();
             prod.Colors = colors.ToArray();
             prod.CvNums = nums.ToArray();
+            prod.CvIds = cvIds.ToArray();
 
             return prod;
         }
@@ -302,6 +305,7 @@ namespace chiffon_back.Controllers
                         {
                             ProductId = prod.Id,
                             Uuid = item.Id,
+                            Num = item.No
                         };
 
                         ctx.ColorVariants.Add(cv);
@@ -480,7 +484,7 @@ namespace chiffon_back.Controllers
             try
             {
 
-                var cv = ctx.ColorVariants.FirstOrDefault(x => x.ProductId == c.Id && x.Num == c.Num);
+                var cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == c.Id);// && x.Num == c.Num);
                 if (cv != null)
                 {
                     var productsInCv = ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == cv.Id);
