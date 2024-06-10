@@ -79,7 +79,7 @@ export default function ListProduct(props) {
       setArtNo("")
       setDesign("")
 
-      axios.get(config.api + '/Products', 
+      axios.get(config.api + '/Products/Products', 
         { params: 
             { 
             }})

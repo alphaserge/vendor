@@ -185,7 +185,7 @@ export default function AddProduct(props) {
 
     let cv = colorVariant.filter(item => !!item.ColorNo && item.ColorIds.length > 0 && !!item.SelectedFile)
 
-    fetch(config.api + '/Products', {
+    fetch(config.api + '/Products/ProductAdd', {
       method: "POST",
       headers: {
           'Content-Type': 'application/json'
@@ -210,7 +210,7 @@ export default function AddProduct(props) {
         OverWorkTypes: overworkType,
       })
   })
-  .then(r => r.json())
+  //.then(r => r.json())
   .then(r => {
     let cvs1 = colorVariant.filter(e=>!!e.ColorNo)
     let cvs2 = colorVariant.filter(e=>e.ColorNo!=null)

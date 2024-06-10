@@ -12,6 +12,8 @@ import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
 import { useSearchParams } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import axios from 'axios'
 
@@ -78,6 +80,7 @@ export default function Update(props) {
     const [colorVariant, setColorVariant] = useState([])
     const [images, setImages] = useState([])
     const [colors, setColors] = useState([])
+    const [cvNums, setCvNums] = useState([])
 
     const setColorVariantItem = (i, item) => {
       let cv = colorVariant.map(el=>el.Id==i? item:el)
@@ -128,6 +131,41 @@ export default function Update(props) {
     setColorVariant(cv)
   }
 
+  const handleRemoveCv = async (num) => {
+    const search = window.location.search;
+    const params = new URLSearchParams(search);
+    const id = params.get('id');
+    let a = id;
+
+    fetch(config.api + '/Products/ProductRemoveCV', {
+      method: "POST",
+      headers: {
+          'Content-Type': 'application/json'
+        },
+      body: JSON.stringify({
+        Id: id,
+        Num: num,
+      })
+  })
+  .then(r => r.json())
+  .then(r => {
+    /*colorVariant.filter(e=>!!e.ColorNo).forEach(cv => {
+      if (!!cv.SelectedFile) {
+        postFile(cv);
+      }    
+    });*/
+    
+    props.setLastAction("Color variant has been removed")
+    navigate("/menu")
+})
+  .catch (error => {
+    console.log(error)
+    //navigate("/error")
+  })
+
+    
+  }
+
   const postProduct = async (e) => {
 
     // let cv = colorVariant.map(function(item) { 
@@ -137,14 +175,19 @@ export default function Update(props) {
     //   return item; 
     // });
 
+    const search = window.location.search;
+    const params = new URLSearchParams(search);
+    const id = params.get('id');
+  
     let cv = colorVariant.filter(item => !!item.ColorNo && item.ColorIds.length > 0 && !!item.SelectedFile)
 
-    fetch(config.api + '/Products', {
+    fetch(config.api + '/Products/ProductUpdate', {
       method: "POST",
       headers: {
           'Content-Type': 'application/json'
         },
       body: JSON.stringify({
+        Id: id,
         ItemName: itemName,
         RefNo: refNo,
         ArtNo: artNo,
@@ -195,7 +238,7 @@ const loadProducts = async (e) => {
       setArtNo(res.data.artNo)
       setRefNo(res.data.refNo)
       setDesign(res.data.design)
-      setPrice(res.data.design)
+      setPrice(res.data.price)
       setWidth(res.data.width)
       setWeight(res.data.weight)
       setProductStyle(res.data.productStyle)
@@ -205,6 +248,7 @@ const loadProducts = async (e) => {
       setDesignType(res.data.designTypeIds)
       setImages(res.data.imagePaths)
       setColors(res.data.colors)
+      setCvNums(res.data.cvNums)
 
       console.log(res.data.colors)
   })
@@ -383,10 +427,11 @@ const loadProducts = async (e) => {
         </main>
         <Box component={"div"} display={"flex"} justifyContent={"left"} alignItems={"left"} 
           marginBottom={3} marginLeft={6} marginRight={6} 
-          paddingBottom={1} sx={{ backgroundColor: "#ddd" }} >
+          paddingBottom={1} sx={{ backgroundColor: "#f1f1f1" }} >
             {images.map((image, index) => {
               return <Box className="product-img-holder-item">
                 <Box className="product-img-holder-thumb" >
+
                 <Box 
                   component={"img"} 
                   key={index} 
@@ -395,9 +440,23 @@ const loadProducts = async (e) => {
                   className="product-img" />
                   <br/>
                   </Box>
-                  <Box component={"div"} sx={{ mt: 1, backgroundColor: "#fff", ml: 1 }} textAlign={"center"} fontSize={"12px"} > { index<colors.length+1 && colors[index]}</Box>
+                  <Box component={"div"} 
+                    sx={{ mt: 1, ml: 1, height: "36px", width: "125px", wordBreak: "break-all", wordWrap: "break-word" }} 
+                    textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > { index<colors.length+1 && (cvNums[index] + ' - ' + colors[index])}</Box>
+
+<IconButton
+          color="success"
+          aria-label="upload picture"
+          sx={{color: APPEARANCE.BLACK2, pt: 0}}
+          component="span"
+          onClick={ function() { handleRemoveCv(cvNums[index])}}
+          >
+              {<DeleteIcon />}
+        </IconButton>
 
               </Box>
+
+
             })}
         </Box>
         <Box component={"div"} display={"flex"} justifyContent={"center"} alignItems={"center"} paddingBottom={3}>
@@ -415,8 +474,7 @@ const loadProducts = async (e) => {
                     onClick={moreVariants} >
                         More colors
                     </Button>
-                    </Box>
-
+        </Box>
         </Box>
         </Box>
       </Container>

@@ -66,7 +66,7 @@ namespace chiffon_back.Controllers
         }
 
         // временно [Authorize]
-        [HttpGet("Product"), ActionName("product")]
+        [HttpGet("Product")]
         public Models.Product GetProduct([FromQuery] string id)
         {
             var id1 = HttpContext.Request.Query["id"];
@@ -99,21 +99,23 @@ namespace chiffon_back.Controllers
 
             List<string> images = new List<string>();
             List<string> colors = new List<string>();
+            List<int> nums = new List<int>();
             foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == prod.Id).ToList())
             {
                 images.AddRange(DirectoryHelper.GetImageFiles(cv.Uuid));
                 colors.Add( String.Join(", ", ctx.Colors.Where(col => ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == cv.Id).Select(x => x.ColorId).ToList().Contains(col.Id)).Select(col=>col.ColorName)));
+                nums.Add(cv.Num);
             }
             prod.ImagePaths = images.ToArray();
             prod.Colors = colors.ToArray();
-
+            prod.CvNums = nums.ToArray();
 
             return prod;
         }
 
 
         // временно [Authorize]
-        [HttpGet("Products"), ActionName("products")]
+        [HttpGet("Products")]
         public IEnumerable<Models.Product> Get()//[FromQuery] string colors, [FromQuery] string name) //ProductsQuery query1)
         {
             var name = HttpContext.Request.Query["name"].ToString();
@@ -281,7 +283,7 @@ namespace chiffon_back.Controllers
             }
         }
 
-        [HttpPost(Name = "Products")]
+        [HttpPost("ProductAdd")]
         public ActionResult Post(Models.PostProduct product)
         {
             try
@@ -317,12 +319,188 @@ namespace chiffon_back.Controllers
                     }
                 }
 
-                return CreatedAtAction(nameof(Get), new { id = prod.Id }, prod);
+                if (product.DesignTypes!= null)
+                {
+                    foreach (var item in product.DesignTypes)
+                    {
+                        Context.ProductsInDesignTypes cv = new Context.ProductsInDesignTypes()
+                        {
+                            ProductId = prod.Id,
+                            DesignTypeId = item
+                        };
+
+                        ctx.ProductsInDesignTypes.Add(cv);
+                        ctx.SaveChanges(true);
+                    }
+                }
+
+                if (product.Seasons != null)
+                {
+                    foreach (var item in product.Seasons)
+                    {
+                        Context.ProductsInSeasons cv = new Context.ProductsInSeasons()
+                        {
+                            ProductId = prod.Id,
+                            SeasonId = item
+                        };
+
+                        ctx.ProductsInSeasons.Add(cv);
+                        ctx.SaveChanges(true);
+                    }
+                }
+
+                if (product.OverWorkTypes != null)
+                {
+                    foreach (var item in product.OverWorkTypes)
+                    {
+                        Context.ProductsInOverWorkTypes cv = new Context.ProductsInOverWorkTypes()
+                        {
+                            ProductId = prod.Id,
+                            OverWorkTypeId = item
+                        };
+
+                        ctx.ProductsInOverWorkTypes.Add(cv);
+                        ctx.SaveChanges(true);
+                    }
+                }
+
+                return CreatedAtAction(nameof(Get), new { id = prod.Id }, "");
             }
             catch (Exception ex)
             {
                 return CreatedAtAction(nameof(Get), new { id = -1 }, null);
             }
         }
+
+        [HttpPost("ProductUpdate")]
+        public ActionResult Update(Models.PostProduct product)
+        {
+            try
+            {
+                Context.Product prod = ctx.Products.Where(x => x.Id == product.Id).FirstOrDefault();
+                if (prod != null)
+                {
+                    prod.ArtNo = product.ArtNo;
+                    prod.RefNo = product.RefNo;
+                    prod.Design = product.Design;
+                    prod.ItemName = product.ItemName;
+                    prod.Price = product.Price;
+                    prod.ProductStyleId = product.ProductStyleId;
+                    prod.ProductTypeId = product.ProductTypeId;
+                    prod.VendorId = product.VendorId;
+                    prod.Weight = product.Weight;
+                    prod.Width = product.Width;
+                    ctx.SaveChanges();
+                }
+
+                if (product.ColorVariants != null)
+                {
+                    foreach (var item in product.ColorVariants)
+                    {
+                        Context.ColorVariant cv = new Context.ColorVariant()
+                        {
+                            ProductId = prod.Id,
+                            Uuid = item.Id,
+                        };
+
+                        ctx.ColorVariants.Add(cv);
+                        ctx.SaveChanges(true);
+
+                        foreach (var colorId in item.ColorIds != null ? item.ColorIds : [])
+                        {
+                            ctx.ColorVariantsInColors.Add(new Context.ColorVariantsInColors()
+                            {
+                                ColorVariantId = cv.Id,
+                                ColorId = colorId,
+                            });
+                        }
+                        ctx.SaveChanges(true);
+                    }
+                }
+
+                ctx.ProductsInDesignTypes.RemoveRange(ctx.ProductsInDesignTypes.Where(x=>x.ProductId==prod.Id));
+                if (product.DesignTypes != null)
+                {
+                    foreach (var item in product.DesignTypes)
+                    {
+                        Context.ProductsInDesignTypes cv = new Context.ProductsInDesignTypes()
+                        {
+                            ProductId = prod.Id,
+                            DesignTypeId = item
+                        };
+
+                        ctx.ProductsInDesignTypes.Add(cv);
+                        ctx.SaveChanges(true);
+                    }
+                }
+
+                ctx.ProductsInSeasons.RemoveRange(ctx.ProductsInSeasons.Where(x => x.ProductId == prod.Id));
+                if (product.Seasons != null)
+                {
+                    foreach (var item in product.Seasons)
+                    {
+                        Context.ProductsInSeasons cv = new Context.ProductsInSeasons()
+                        {
+                            ProductId = prod.Id,
+                            SeasonId = item
+                        };
+
+                        ctx.ProductsInSeasons.Add(cv);
+                        ctx.SaveChanges(true);
+                    }
+                }
+
+                ctx.ProductsInOverWorkTypes.RemoveRange(ctx.ProductsInOverWorkTypes.Where(x => x.ProductId == prod.Id));
+                if (product.OverWorkTypes != null)
+                {
+                    foreach (var item in product.OverWorkTypes)
+                    {
+                        Context.ProductsInOverWorkTypes cv = new Context.ProductsInOverWorkTypes()
+                        {
+                            ProductId = prod.Id,
+                            OverWorkTypeId = item
+                        };
+
+                        ctx.ProductsInOverWorkTypes.Add(cv);
+                        ctx.SaveChanges(true);
+                    }
+                }
+
+                return CreatedAtAction(nameof(Get), new { id = prod.Id }, "");
+            }
+            catch (Exception ex)
+            {
+                return CreatedAtAction(nameof(Get), new { id = -1 }, null);
+            }
+        }
+
+        [HttpPost("ProductRemoveCV")]
+        public ActionResult RemoveColorVariant(Models.PostCV c)
+        {
+            try
+            {
+
+                var cv = ctx.ColorVariants.FirstOrDefault(x => x.ProductId == c.Id && x.Num == c.Num);
+                if (cv != null)
+                {
+                    var productsInCv = ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == cv.Id);
+                    ctx.ColorVariantsInColors.RemoveRange(productsInCv);
+                    ctx.SaveChanges();
+                    if (cv != null)
+                    {
+                        ctx.ColorVariants.RemoveRange(cv);
+                        ctx.SaveChanges();
+                        
+                    }
+                }
+
+                return CreatedAtAction(nameof(Get), new { id = cv.Id }, "");
+            }
+            catch (Exception ex)
+            {
+                return CreatedAtAction(nameof(Get), new { id = -1 }, null);
+            }
+        }
+
     }
 }

@@ -8,5 +8,7 @@ namespace chiffon_back.Context
         public int Id { get; set; }
         public int ProductId { get; set; }
         public string? Uuid { get; set; }
+        public int Num { get; set; }
+
     }
 }
