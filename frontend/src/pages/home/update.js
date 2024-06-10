@@ -15,6 +15,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+import { useLocation } from 'react-router-dom';
+
 import axios from 'axios'
 
 import { v4 as uuid } from 'uuid'
@@ -82,6 +84,7 @@ export default function Update(props) {
     const [colors, setColors] = useState([])
     const [cvNums, setCvNums] = useState([])
     const [cvIds, setCvIds] = useState([])
+    let loc = useLocation()
 
     const setColorVariantItem = (i, item) => {
       let cv = colorVariant.map(el=>el.Id==i? item:el)
@@ -117,8 +120,9 @@ export default function Update(props) {
   const moreVariants = async (e) => {
     let cv = colorVariant.slice()
     let num = cv.length
-    let i=num+1
-    while (i<num+7){
+    let max = Math.max(...cvNums)
+    let i=max+1
+    while (i<max+7){
       cv.push({
         Id: uuid(),
         No: i,
@@ -155,9 +159,11 @@ export default function Update(props) {
         postFile(cv);
       }    
     });*/
+
+    loadProducts(0)
     
     props.setLastAction("Color variant has been removed")
-    navigate("/menu")
+    navigate(loc)
 })
   .catch (error => {
     console.log(error)
@@ -206,7 +212,7 @@ export default function Update(props) {
         OverWorkTypes: overworkType,
       })
   })
-  .then(r => r.json())
+  //.then(r => r.json())
   .then(r => {
     let cvs1 = colorVariant.filter(e=>!!e.ColorNo)
     let cvs2 = colorVariant.filter(e=>e.ColorNo!=null)
@@ -218,8 +224,11 @@ export default function Update(props) {
       }    
     });
     
-    props.setLastAction("Product has been added")
-    navigate("/menu")
+    props.setLastAction("Product has been modified")
+
+    navigate(loc)
+
+    //navigate("/menu")
 })
   .catch (error => {
     console.log(error)
@@ -260,11 +269,7 @@ const loadProducts = async (e) => {
 }      
 
     useEffect(() => {
-
       loadProducts()
-
-
-
     }, []);
 
   return (

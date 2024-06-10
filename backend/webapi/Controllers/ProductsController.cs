@@ -405,6 +405,7 @@ namespace chiffon_back.Controllers
                         {
                             ProductId = prod.Id,
                             Uuid = item.Id,
+                            Num = item.No
                         };
 
                         ctx.ColorVariants.Add(cv);
