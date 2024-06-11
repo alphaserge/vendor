@@ -79,16 +79,19 @@ export default function Update(props) {
     const [price, setPrice] = useState("")
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
+    const [stock, setStock] = useState("")
+    const [gramm_pm, setGramm_pm] = useState("")
     const [colorVariant, setColorVariant] = useState([])
-    const [images, setImages] = useState([])
-    const [colors, setColors] = useState([])
-    const [cvNums, setCvNums] = useState([])
-    const [cvIds, setCvIds] = useState([])
+    const [colorVariantPlus, setColorVariantPlus] = useState([])
+    //const [images, setImages] = useState([])
+    //const [colors, setColors] = useState([])
+    //const [cvNums, setCvNums] = useState([])
+    //const [cvIds, setCvIds] = useState([])
     let loc = useLocation()
 
     const setColorVariantItem = (i, item) => {
-      let cv = colorVariant.map(el=>el.Id==i? item:el)
-      setColorVariant(cv)
+      let cv = colorVariantPlus.map(el=>el.Id==i? item:el)
+      setColorVariantPlus(cv)
     }
 
     const [selectedFile, setSelectedFile] = useState(null)
@@ -118,8 +121,9 @@ export default function Update(props) {
   };
 
   const moreVariants = async (e) => {
-    let cv = colorVariant.slice()
+    let cv = colorVariantPlus.slice()
     let num = cv.length
+    let cvNums = colorVariant.map(x => x.cvNum);
     let max = Math.max(...cvNums)
     let i=max+1
     while (i<max+7){
@@ -133,7 +137,7 @@ export default function Update(props) {
       })
       i++
     }
-    setColorVariant(cv)
+    setColorVariantPlus(cv)
   }
 
   const handleRemoveCv = async (id) => {
@@ -141,8 +145,6 @@ export default function Update(props) {
     const params = new URLSearchParams(search);
     const id = params.get('id');
     let a = id;*/
-
-    let s = images;
 
     fetch(config.api + '/Products/ProductRemoveCV', {
       method: "POST",
@@ -188,7 +190,7 @@ export default function Update(props) {
     const params = new URLSearchParams(search);
     const id = params.get('id');
   
-    let cv = colorVariant.filter(item => !!item.ColorNo && item.ColorIds.length > 0 && !!item.SelectedFile)
+    let cv = colorVariantPlus.filter(item => !!item.ColorNo && item.ColorIds.length > 0 && !!item.SelectedFile)
 
     fetch(config.api + '/Products/ProductUpdate', {
       method: "POST",
@@ -216,11 +218,11 @@ export default function Update(props) {
   })
   //.then(r => r.json())
   .then(r => {
-    let cvs1 = colorVariant.filter(e=>!!e.ColorNo)
-    let cvs2 = colorVariant.filter(e=>e.ColorNo!=null)
-    let cvs3 = colorVariant.filter(function(e) { return e.ColorNo!=null})
+    let cvs1 = colorVariantPlus.filter(e=>!!e.ColorNo)
+    let cvs2 = colorVariantPlus.filter(e=>e.ColorNo!=null)
+    let cvs3 = colorVariantPlus.filter(function(e) { return e.ColorNo!=null})
 
-    colorVariant.filter(e=>!!e.ColorNo).forEach(cv => {
+    colorVariantPlus.filter(e=>!!e.ColorNo).forEach(cv => {
       if (!!cv.SelectedFile) {
         postFile(cv);
       }    
@@ -258,10 +260,12 @@ const loadProducts = async (e) => {
       setSeason(res.data.seasonIds)
       setOverworkType(res.data.overWorkTypeIds)
       setDesignType(res.data.designTypeIds)
-      setImages(res.data.imagePaths)
+      setColorVariant(res.data.colors)
+      setGramm_pm( parseInt(res.data.weight)*parseInt(res.data.width)/100)
+      /*setImages(res.data.imagePaths)
       setColors(res.data.colors)
       setCvNums(res.data.cvNums)
-      setCvIds(res.data.cvIds)
+      setCvIds(res.data.cvIds)*/
 
       console.log(res.data.colors)
   })
@@ -369,6 +373,28 @@ const loadProducts = async (e) => {
                 onChange={ev => setWidth(ev.target.value)}
               />
 
+            <TextField
+                margin="normal"
+                size="small" 
+                id="gramm_pm"
+                label="Gramm P/M"
+                name="gramm_pm"
+                sx = {itemStyle}
+                value={gramm_pm}
+                onChange={ev => setGramm_pm(ev.target.value)}
+              />
+
+            <TextField
+                margin="normal"
+                size="small" 
+                id="stock"
+                label="Stock Today"
+                name="stock"
+                sx = {itemStyle}
+                value={stock}
+                onChange={ev => setStock(ev.target.value)}
+              />
+
                 <MySelect 
                   id="addproduct-producttype"
                   url="ProductTypes"
@@ -428,7 +454,7 @@ const loadProducts = async (e) => {
                   valueVariable={overworkType}
                   setValueFn={setOverworkType}
                 />
-                { colorVariant.map((cv) => (
+                { colorVariantPlus.map((cv) => (
                     <ColorVariant cv={cv} setColorItem={setColorVariantItem}  />
                  ))}
           </Grid>
@@ -437,28 +463,28 @@ const loadProducts = async (e) => {
         <Box component={"div"} display={"flex"} justifyContent={"left"} alignItems={"left"} 
           marginBottom={3} marginLeft={6} marginRight={6} 
           paddingBottom={1} sx={{ backgroundColor: "#f1f1f1" }} >
-            {images.map((image, index) => {
+            {colorVariant.map((cv, index) => {
               return <Box className="product-img-holder-item">
                 <Box className="product-img-holder-thumb" >
 
                 <Box 
                   component={"img"} 
                   key={index} 
-                  src={"https://localhost:3080/"+image} 
+                  src={"https://localhost:3080/"+cv.imagePath} 
                   alt={"photo"+(index+1)} 
                   className="product-img" />
                   <br/>
                   </Box>
                   <Box component={"div"} 
                     sx={{ mt: 1, ml: 1, height: "36px", width: "125px", wordBreak: "break-all", wordWrap: "break-word" }} 
-                    textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > { index<colors.length+1 && (cvNums[index] + ' - ' + colors[index])}</Box>
+                    textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > { cv.cvNum + ' - ' + cv.color} </Box>
 
           <IconButton
           color="success"
           aria-label="upload picture"
           sx={{color: APPEARANCE.BLACK2, pt: 0}}
           component="span"
-          onClick={ function() { handleRemoveCv(cvIds[index])}}
+          onClick={ function() { handleRemoveCv(cv.cvId)}}
           >
               {<DeleteIcon />}
         </IconButton>

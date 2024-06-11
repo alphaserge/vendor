@@ -17,6 +17,7 @@ import { v4 as uuid } from 'uuid'
 
 import MySelect from '../../components/myselect';
 import ColorVariant from './colorvariant';
+import ProductColor from './productcolor';
 import Copyright from '../copyright';
 import config from "../../config.json"
 
@@ -72,6 +73,25 @@ export default function AddProduct(props) {
     const [price, setPrice] = useState("")
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
+    const [productColor, setProductColor] = useState([
+      {
+        Id: uuid(),
+        No: 1,
+        ColorNo: null,
+        ColorIds: [],
+        ColorId: [],
+        SelectedFile: null,
+      },
+      {
+        Id: uuid(),
+        No: 2,
+        ColorNo: null,
+        ColorIds: [],
+        ColorId: [],
+        SelectedFile: null,
+      },
+    ])
+
     const [colorVariant, setColorVariant] = useState([
       {
         Id: uuid(),
@@ -122,6 +142,12 @@ export default function AddProduct(props) {
         SelectedFile: null,
       },
     ])
+
+
+    const setColorProduct = (i, item) => {
+      let cv = productColor.map(el=>el.Id==i? item:el)
+      setProductColor(cv)
+    }
 
     const setColorVariantItem = (i, item) => {
       let cv = colorVariant.map(el=>el.Id==i? item:el)
@@ -411,6 +437,9 @@ export default function AddProduct(props) {
                   valueVariable={overworkType}
                   setValueFn={setOverworkType}
                 />
+
+                <ProductColor cv={productColor[0]} setColorItem={setColorProduct}  />
+                <ProductColor cv={productColor[1]} setColorItem={setColorProduct}  />
 
 
                 { colorVariant.map((cv) => (
