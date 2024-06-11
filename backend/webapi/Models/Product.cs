@@ -25,10 +25,13 @@ namespace chiffon_back.Models
         public string? ProductType { get; set; }
         public string? Uuid { get; set; }
         public string? FileName { get; set; }
-        public string[]? ImagePaths { get; set; }
+        public List<ProductColor> Colors { get; set; }
+        
+        /*public string[]? ImagePaths { get; set; }
         public string[]? Colors { get; set; }
         public int[]? CvNums { get; set; }
-        public int[]? CvIds { get; set; }
+        public int[]? CvIds { get; set; }*/
+
         public int[]? DesignTypeIds { get; set; }
         public int[]? OverWorkTypeIds { get; set; }
         public int[]? SeasonIds { get; set; }
@@ -41,6 +44,14 @@ namespace chiffon_back.Models
     {
         public int? Num { get; set; }
         public int? Id { get; set; }
+    }
+
+    public class ProductColor
+    {
+        public List<string> ImagePath { get; set; }
+        public string Color { get; set; }
+        public int? CvNum { get; set; }
+        public int? CvId { get; set; }
     }
     public class PostProduct
     {

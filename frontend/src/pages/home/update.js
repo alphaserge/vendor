@@ -142,6 +142,8 @@ export default function Update(props) {
     const id = params.get('id');
     let a = id;*/
 
+    let s = images;
+
     fetch(config.api + '/Products/ProductRemoveCV', {
       method: "POST",
       headers: {

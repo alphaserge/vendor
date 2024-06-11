@@ -91,27 +91,53 @@ namespace chiffon_back.Controllers
                             DesignTypeIds = p.ProductsInDesignTypes.Select(x => x.DesignTypeId).ToArray(),
                             OverWorkTypeIds = p.ProductsInOverWorkTypes.Select(x => x.OverWorkTypeId).ToArray(),
                             SeasonIds = p.ProductsInSeasons.Select(x => x.SeasonId).ToArray(),
-                            ImagePaths = new List<string>().ToArray(),
-                            Colors = new List<string>().ToArray()
+                            //ImagePaths = new List<string>().ToArray(),
+                            //Colors = new List<string>().ToArray()
                         };
 
             var prod = query.FirstOrDefault();
 
-            List<string> images = new List<string>();
-            List<string> colors = new List<string>();
-            List<int> nums = new List<int>();
-            List<int> cvIds = new List<int>();
+            //List<string> images = new List<string>();
+            //List<string> colors = new List<string>();
+            //List<int> nums = new List<int>();
+            //List<int> cvIds = new List<int>();
             foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == prod.Id).ToList())
             {
-                images.AddRange(DirectoryHelper.GetImageFiles(cv.Uuid));
-                colors.Add( String.Join(", ", ctx.Colors.Where(col => ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == cv.Id).Select(x => x.ColorId).ToList().Contains(col.Id)).Select(col=>col.ColorName)));
-                nums.Add(cv.Num);
-                cvIds.Add(cv.Id);
+                //images.AddRange(DirectoryHelper.GetImageFiles(cv.Uuid));
+                //colors.Add( );
+                //nums.Add(cv.Num);
+                //cvIds.Add(cv.Id);
+                string colors = String.Join(", ", 
+                    ctx.Colors.Where(col => 
+                        ctx.ColorVariantsInColors
+                        .Where(x => 
+                            x.ColorVariantId == cv.Id)
+                        .Select(x => x.ColorId)
+                        .ToList()
+                        .Contains(col.Id))
+                    .Select(col => col.ColorName));
+                prod.Colors.Add(new ProductColor()
+                {
+                    Color = colors,
+                    CvId = cv.Id,
+                    CvNum = cv.Num,
+                    ImagePath = DirectoryHelper.GetImageFiles(cv.Uuid)
+                });
             }
-            prod.ImagePaths = images.ToArray();
-            prod.Colors = colors.ToArray();
-            prod.CvNums = nums.ToArray();
-            prod.CvIds = cvIds.ToArray();
+            if (!String.IsNullOrWhiteSpace(prod.Uuid))
+            {
+                prod.Colors.Add(new ProductColor()
+                {
+                    Color = "COMMON",
+                    CvId = 0,
+                    CvNum = 0,
+                    ImagePath = DirectoryHelper.GetImageFiles(prod.Uuid)
+                });
+            }
+            //prod.ImagePaths = images.ToArray();
+            //prod.Colors = colors.ToArray();
+            //prod.CvNums = nums.ToArray();
+            //prod.CvIds = cvIds.ToArray();
 
             return prod;
         }
