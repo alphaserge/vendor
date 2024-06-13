@@ -274,8 +274,8 @@ export default function ListProduct(props) {
           </Box>
 
           <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" >
-            { products.map((data) => (
-              <ItemProduct data={data} />
+            { products.map((data, index) => (
+              <ItemProduct data={data} index={index} />
                  ))}
           </Grid>
 

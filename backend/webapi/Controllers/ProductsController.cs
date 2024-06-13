@@ -283,6 +283,11 @@ namespace chiffon_back.Controllers
                 }
             }
 
+            prods.AddRange(prods);
+            prods.AddRange(prods);
+            prods.AddRange(prods);
+            prods.AddRange(prods);
+
             return prods;
         }
 

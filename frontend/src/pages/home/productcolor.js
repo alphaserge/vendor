@@ -83,7 +83,7 @@ export default function ProductColor(props) {
         //label="No"
         name="colorNo"
         sx = {textStyle}
-        value={"PRODUCT COLOR"}
+        value={"PRODUCT PHOTO"}
       />
 
         <label htmlFor={"icon-button-file-0"}>

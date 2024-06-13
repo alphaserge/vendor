@@ -64,7 +64,7 @@ export default function ItemProduct(props) {
            >
             <Box display="flex">
             <Box>
-                <Box className="product-item">{props.data.itemName}</Box>
+                <Box className="product-item">{props.index + ". " + props.data.itemName}</Box>
                 {/* <div class="product-item">{props.data.refNo}</div>*/}
                 <Box className="product-item">{props.data.artNo}</Box> 
                 <Box className="product-item">{props.data.design}</Box>
