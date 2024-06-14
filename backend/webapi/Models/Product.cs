@@ -1,4 +1,8 @@
-﻿using chiffon_back.Context;
+﻿using chiffon_back.Code;
+using chiffon_back.Context;
+using chiffon_back.Models;
+using Newtonsoft.Json;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace chiffon_back.Models
 {
@@ -79,4 +83,5 @@ namespace chiffon_back.Models
         public PostColorVariant[]? ColorVariants { get; set; }
 
     }
+
 }
