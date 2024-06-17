@@ -1,37 +1,45 @@
-﻿namespace chiffon_back.Models
+﻿using chiffon_back.Code;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+
+namespace chiffon_back.Models
 {
     public class ProductFilter
     {
         public int? Id { get; set; }
-        public string? ItemName { get; set; }
-        public string? RefNo { get; set; }
-        public string? ArtNo { get; set; }
-        public string? Design { get; set; }
+        public string ItemName { get; set; }
+        public string RefNo { get; set; }
+        public string ArtNo { get; set; }
+        public string Design { get; set; }
         public decimal[] Price { get; set; }
         public int[] Weight { get; set; }
         public int[] Width { get; set; }
         public int? ProductStyleId { get; set; }
         public int? ProductTypeId { get; set; }
-        public int[] ColorId { get; set; }
-        public int[] DesignTypeId { get; set; }
-        public int[] SeasonId { get; set; }
-        public int[] OverworkId { get; set; }
+        public string Colors { get; set; }
+        public string DesignTypes { get; set; }
+        public string Seasons { get; set; }
+        public string Overworks { get; set; }
         public ProductFilter() 
         {
+            ItemName = String.Empty; 
+            RefNo = String.Empty; 
+            ArtNo = String.Empty; 
+            Design = String.Empty;
+            Colors = String.Empty;
+            Seasons = String.Empty;
+            Overworks = String.Empty;
+            DesignTypes = String.Empty;
             Price = Array.Empty<decimal>();
             Weight = Array.Empty<int>();
             Width = Array.Empty<int>();
-            ColorId = Array.Empty<int>();
-            DesignTypeId = Array.Empty<int>();
-            SeasonId = Array.Empty<int>();
-            OverworkId = Array.Empty<int>();
         }
     }
 
     public class ProductModel
     {
         private static readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
-        public static void Get(ProductFilter filter)
+        public static IEnumerable<Models.Product> Get(ProductFilter filter)
         {
             //var query = from p in ctx.Products select p;
             var query = from p in ctx.Products
@@ -63,28 +71,28 @@
                             Colors = new List<ProductColor>(),
                         };
 
-            if (!String.IsNullOrEmpty(name))
+            if (!String.IsNullOrEmpty(filter.ItemName))
             {
-                query = query.Where(x => x.ItemName.ToLower().Contains(name.ToLower()));
+                query = query.Where(x => x.ItemName!.ToLower().Contains(filter.ItemName.ToLower()));
             }
-            if (!String.IsNullOrEmpty(artNo))
+            if (!String.IsNullOrEmpty(filter.ArtNo))
             {
-                query = query.Where(x => x.ArtNo.ToLower().Contains(artNo.ToLower()));
+                query = query.Where(x => x.ArtNo!.ToLower().Contains(filter.ArtNo.ToLower()));
             }
-            if (!String.IsNullOrEmpty(refNo))
+            if (!String.IsNullOrEmpty(filter.RefNo))
             {
-                query = query.Where(x => x.RefNo.ToLower().Contains(refNo.ToLower()));
+                query = query.Where(x => x.RefNo!.ToLower().Contains(filter.RefNo.ToLower()));
             }
-            if (!String.IsNullOrEmpty(design))
+            if (!String.IsNullOrEmpty(filter.Design))
             {
-                query = query.Where(x => x.Design.ToLower().Contains(design.ToLower()));
+                query = query.Where(x => x.Design!.ToLower().Contains(filter.Design.ToLower()));
             }
 
             List<int?> colorsIds = new List<int?>();
-            if (!String.IsNullOrWhiteSpace(colors))
+            if (!String.IsNullOrWhiteSpace(filter.Colors))
             {
-                int?[] icolors = JsonConvert.DeserializeObject<int?[]>(colors);
-                if (icolors.Length > 0)
+                int[]? icolors = JsonConvert.DeserializeObject<int[]>(filter.Colors);
+                if (icolors!.Length > 0)
                     colorsIds = (from cv in ctx.ColorVariants
                                  join cc in ctx.ColorVariantsInColors on cv.Id equals cc.ColorVariantId
                                  where icolors.Contains(cc.ColorId)
@@ -93,26 +101,26 @@
             }
 
             List<int?> seasonsIds = new List<int?>();
-            if (!String.IsNullOrWhiteSpace(seasons))
+            if (!String.IsNullOrWhiteSpace(filter.Seasons))
             {
-                int[] iseasons = JsonConvert.DeserializeObject<int[]>(seasons);
-                if (iseasons.Length > 0)
+                int[]? iseasons = JsonConvert.DeserializeObject<int[]>(filter.Seasons);
+                if (iseasons!.Length > 0)
                     seasonsIds = (from ps in ctx.ProductsInSeasons where iseasons.Contains(ps.SeasonId) select ps.ProductId as int?).Distinct().ToList();
             }
 
             List<int?> overworkIds = new List<int?>();
-            if (!String.IsNullOrWhiteSpace(overworks))
+            if (!String.IsNullOrWhiteSpace(filter.Overworks))
             {
-                int[] ioverworks = JsonConvert.DeserializeObject<int[]>(overworks);
-                if (ioverworks.Length > 0)
+                int[]? ioverworks = JsonConvert.DeserializeObject<int[]>(filter.Overworks);
+                if (ioverworks!.Length > 0)
                     overworkIds = (from po in ctx.ProductsInOverWorkTypes where ioverworks.Contains(po.OverWorkTypeId) select po.ProductId as int?).Distinct().ToList();
             }
 
             List<int?> designTypesIds = new List<int?>();
-            if (!String.IsNullOrWhiteSpace(designTypes))
+            if (!String.IsNullOrWhiteSpace(filter.DesignTypes))
             {
-                int[] idesignTypes = JsonConvert.DeserializeObject<int[]>(designTypes);
-                if (idesignTypes.Length > 0)
+                int[]? idesignTypes = JsonConvert.DeserializeObject<int[]>(filter.DesignTypes);
+                if (idesignTypes!.Length > 0)
                     designTypesIds = (from ps in ctx.ProductsInDesignTypes where idesignTypes.Contains(ps.DesignTypeId) select ps.ProductId as int?).Distinct().ToList();
             }
 
@@ -128,7 +136,28 @@
                 List<string> images = new List<string>();
                 foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == p.Id).ToList())
                 {
-                    var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid);
+                    var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                    images.AddRange(imageFiles); //p.ImagePaths = images.ToArray();
+                    string colors1 = String.Join(", ",
+                                        ctx.Colors.Where(col =>
+                                            ctx.ColorVariantsInColors
+                                            .Where(x =>
+                                                x.ColorVariantId == cv.Id)
+                                            .Select(x => x.ColorId)
+                                            .ToList()
+                                            .Contains(col.Id))
+                                        .Select(col => col.ColorName));
+                    p.Colors.Add(new ProductColor()
+                    {
+                        Color = colors1,
+                        CvId = cv.Id,
+                        CvNum = cv.Num,
+                        ImagePath = imageFiles
+                    });
+                }
+                foreach (var pc in ctx.ProductsInColors.Where(x => x.ProductId == p.Id).ToList())
+                {
+                    var imageFiles = DirectoryHelper.GetImageFiles(pc.Uuid!);
                     images.AddRange(imageFiles); //p.ImagePaths = images.ToArray();
                     string colors1 = String.Join(", ",
                                         ctx.Colors.Where(col =>
