@@ -3,12 +3,35 @@
     public class ProductFilter
     {
         public int? Id { get; set; }
+        public string? ItemName { get; set; }
+        public string? RefNo { get; set; }
+        public string? ArtNo { get; set; }
+        public string? Design { get; set; }
+        public decimal[] Price { get; set; }
+        public int[] Weight { get; set; }
+        public int[] Width { get; set; }
+        public int? ProductStyleId { get; set; }
+        public int? ProductTypeId { get; set; }
+        public int[] ColorId { get; set; }
+        public int[] DesignTypeId { get; set; }
+        public int[] SeasonId { get; set; }
+        public int[] OverworkId { get; set; }
+        public ProductFilter() 
+        {
+            Price = Array.Empty<decimal>();
+            Weight = Array.Empty<int>();
+            Width = Array.Empty<int>();
+            ColorId = Array.Empty<int>();
+            DesignTypeId = Array.Empty<int>();
+            SeasonId = Array.Empty<int>();
+            OverworkId = Array.Empty<int>();
+        }
     }
 
     public class ProductModel
     {
         private static readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
-        public static void Get()
+        public static void Get(ProductFilter filter)
         {
             //var query = from p in ctx.Products select p;
             var query = from p in ctx.Products
@@ -30,13 +53,13 @@
                             VendorId = p.VendorId,
                             //Uuid = p.Uuid,
                             //ImagePath = Code.DirectoryHelper.GetFirstFileUrl(ctx.ColorVariants.FirstOrDefault(x=>x.ProductId==x.Id).Uuid),// p.Uuid),  //Code.DirectoryHelper.ComputeFileUrl(p.Uuid, p.FileName),
-                            Vendor = p.Vendor.VendorName,
-                            ProductStyle = p.ProductStyle.StyleName,
-                            ProductType = p.ProductType.TypeName,
+                            Vendor = p.Vendor!.VendorName,
+                            ProductStyle = p.ProductStyle!.StyleName,
+                            ProductType = p.ProductType!.TypeName,
                             //Colors = p.ProductsInColors.Select(x => new Models.Color { Id = x.ColorId, ColorName = x.Color.ColorName }).ToArray(),
-                            DesignTypes = p.ProductsInDesignTypes.Select(x => new Models.DesignType { Id = x.DesignTypeId, DesignName = x.DesignType.DesignName }).ToArray(),
-                            OverWorkTypes = p.ProductsInOverWorkTypes.Select(x => new Models.OverWorkType { Id = x.OverWorkTypeId, OverWorkName = x.OverWorkType.OverWorkName }).ToArray(),
-                            Seasons = p.ProductsInSeasons.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
+                            DesignTypes = p.ProductsInDesignTypes!.Select(x => new Models.DesignType { Id = x.DesignTypeId, DesignName = x.DesignType.DesignName }).ToArray(),
+                            OverWorkTypes = p.ProductsInOverWorkTypes!.Select(x => new Models.OverWorkType { Id = x.OverWorkTypeId, OverWorkName = x.OverWorkType.OverWorkName }).ToArray(),
+                            Seasons = p.ProductsInSeasons!.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
                             Colors = new List<ProductColor>(),
                         };
 
