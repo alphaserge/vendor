@@ -28,6 +28,8 @@ namespace chiffon_back.Models
         public string? ProductStyle { get; set; }
         public string? ProductType { get; set; }
         public string? Uuid { get; set; }
+        public string? PhotoUuids { get; set; }
+        
         public string? FileName { get; set; }
         public List<ProductColor> Colors { get; set; }
         

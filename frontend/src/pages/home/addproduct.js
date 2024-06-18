@@ -143,6 +143,18 @@ export default function AddProduct(props) {
       },
     ])
 
+    const [allColor, setAllColor] = useState([
+      {
+        Id: uuid(),
+        No: 1,
+        SelectedFile: null,
+      },
+      {
+        Id: uuid(),
+        No: 2,
+        SelectedFile: null,
+      },
+    ])
 
     const setColorProduct = (i, item) => {
       let cv = productColor.map(el=>el.Id==i? item:el)
@@ -438,9 +450,12 @@ export default function AddProduct(props) {
                   setValueFn={setOverworkType}
                 />
 
-                <ProductColor cv={productColor[0]} setColorItem={setColorProduct}  />
-                <ProductColor cv={productColor[1]} setColorItem={setColorProduct}  />
+                {/* <ProductColor cv={productColor[0]} setColorItem={setColorProduct}  />
+                <ProductColor cv={productColor[1]} setColorItem={setColorProduct}  /> */}
 
+                { allColor.map((cv) => (
+                    <ProductColor cv={cv} setColorItem={setColorProduct}  />
+                 ))}
 
                 { colorVariant.map((cv) => (
                     <ColorVariant cv={cv} setColorItem={setColorVariantItem}  />

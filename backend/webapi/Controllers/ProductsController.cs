@@ -67,99 +67,29 @@ namespace chiffon_back.Controllers
 
         // временно [Authorize]
         [HttpGet("Product")]
-        public Models.Product GetProduct([FromQuery] string id)
+        public Models.Product? GetProduct([FromQuery] string id)
         {
-            var id1 = HttpContext.Request.Query["id"];
-
-            var query = from p in ctx.Products where p.Id.ToString() == id
-                        select new Models.Product
-                        {
-                            Id = p.Id,
-                            RefNo = p.RefNo,
-                            ArtNo = p.ArtNo,
-                            ItemName = p.ItemName,
-                            Design = p.Design,
-                            Price = p.Price,
-                            Weight = p.Weight,
-                            Width = p.Width,
-                            ProductStyleId = p.ProductStyleId,
-                            ProductTypeId = p.ProductTypeId,
-                            VendorId = p.VendorId,
-                            Vendor = p.Vendor.VendorName,
-                            ProductStyle = p.ProductStyleId.ToString(),
-                            ProductType = p.ProductTypeId.ToString(),
-                            DesignTypeIds = p.ProductsInDesignTypes.Select(x => x.DesignTypeId).ToArray(),
-                            OverWorkTypeIds = p.ProductsInOverWorkTypes.Select(x => x.OverWorkTypeId).ToArray(),
-                            SeasonIds = p.ProductsInSeasons.Select(x => x.SeasonId).ToArray(),
-                            Colors = new List<ProductColor>(),
-                            //ImagePaths = new List<string>().ToArray(),
-                            //Colors = new List<string>().ToArray()
-                        };
-
-            var prod = query.FirstOrDefault();
-
-            //List<string> images = new List<string>();
-            //List<string> colors = new List<string>();
-            //List<int> nums = new List<int>();
-            //List<int> cvIds = new List<int>();
-            foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == prod.Id).ToList())
-            {
-                //images.AddRange(DirectoryHelper.GetImageFiles(cv.Uuid));
-                //colors.Add( );
-                //nums.Add(cv.Num);
-                //cvIds.Add(cv.Id);
-                string colors = String.Join(", ", 
-                    ctx.Colors.Where(col => 
-                        ctx.ColorVariantsInColors
-                        .Where(x => 
-                            x.ColorVariantId == cv.Id)
-                        .Select(x => x.ColorId)
-                        .ToList()
-                        .Contains(col.Id))
-                    .Select(col => col.ColorName));
-                prod.Colors.Add(new ProductColor()
-                {
-                    Color = colors,
-                    CvId = cv.Id,
-                    CvNum = cv.Num,
-                    ImagePath = DirectoryHelper.GetImageFiles(cv.Uuid)
-                });
-            }
-            if (!String.IsNullOrWhiteSpace(prod.Uuid))
-            {
-                prod.Colors.Add(new ProductColor()
-                {
-                    Color = "COMMON",
-                    CvId = 0,
-                    CvNum = 0,
-                    ImagePath = DirectoryHelper.GetImageFiles(prod.Uuid)
-                });
-            }
-            //prod.ImagePaths = images.ToArray();
-            //prod.Colors = colors.ToArray();
-            //prod.CvNums = nums.ToArray();
-            //prod.CvIds = cvIds.ToArray();
-
-            return prod;
+            return ProductModel.Get(id);
         }
-
 
         // временно [Authorize]
         [HttpGet("Products")]
         public IEnumerable<Models.Product> Get()//[FromQuery] string colors, [FromQuery] string name) //ProductsQuery query1)
         {
-            var name = HttpContext.Request.Query["name"].ToString();
-            var artNo = HttpContext.Request.Query["artno"].ToString();
-            var refNo = HttpContext.Request.Query["refno"].ToString();
-            var design = HttpContext.Request.Query["design"].ToString();
-            string colors = HttpContext.Request.Query["colors"].ToString();
-            string seasons = HttpContext.Request.Query["seasons"].ToString();
-            string overworks = HttpContext.Request.Query["overworks"].ToString();
-            string designTypes = HttpContext.Request.Query["designtypes"].ToString();
+            var prods = ProductModel.Get(new ProductFilter()
+            {
+                ItemName = HttpContext.Request.Query["name"].ToString(),
+                ArtNo = HttpContext.Request.Query["artno"].ToString(),
+                RefNo = HttpContext.Request.Query["refno"].ToString(),
+                Design = HttpContext.Request.Query["design"].ToString(),
+                Colors = HttpContext.Request.Query["colors"].ToString(),
+                Seasons = HttpContext.Request.Query["seasons"].ToString(),
+                Overworks = HttpContext.Request.Query["overworks"].ToString(),
+                DesignTypes = HttpContext.Request.Query["designtypes"].ToString(),
+            });
 
-            return new List<Models.Product>();
+            return prods;// new List<Models.Product>();
         }
-
 
         [HttpPost("ImportFile")]
         public /*async*/ ActionResult ImportFile([FromForm] IFormFile formFile, [FromForm] string uid)

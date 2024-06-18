@@ -18,6 +18,7 @@
         public int? VendorId { get; set; }
         public string? Uuid { get; set; }
         public string? FileName { get; set; }
+        public string? PhotoUuids { get; set; }
         public virtual ProductStyle? ProductStyle { get; set; }
         public virtual ProductType? ProductType { get; set; }
         public virtual Vendor? Vendor { get; set; }
