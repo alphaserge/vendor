@@ -31,7 +31,7 @@ const defaultTheme = createTheme()
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
 const labelStyle = { m: 2, ml: 4, mr: 4 }
-const buttonStyle = { width: 90, m: 2, backgroundColor: APPEARANCE.BLACK2, color: APPEARANCE.WHITE }
+const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BLACK2, color: APPEARANCE.WHITE }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -73,24 +73,6 @@ export default function AddProduct(props) {
     const [price, setPrice] = useState("")
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
-    const [productColor, setProductColor] = useState([
-      {
-        Id: uuid(),
-        No: 1,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 2,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-    ])
 
     const [colorVariant, setColorVariant] = useState([
       {
@@ -157,8 +139,8 @@ export default function AddProduct(props) {
     ])
 
     const setColorProduct = (i, item) => {
-      let cv = productColor.map(el=>el.Id==i? item:el)
-      setProductColor(cv)
+      let cv = allColor.map(el=>el.Id==i? item:el)
+      setAllColor(cv)
     }
 
     const setColorVariantItem = (i, item) => {
@@ -198,7 +180,7 @@ export default function AddProduct(props) {
     let cv = colorVariant.slice()
     let num = cv.length
     let i=num+1
-    while (i<num+7){
+    while (i<=num+6){
       cv.push({
         Id: uuid(),
         No: i,
@@ -212,6 +194,21 @@ export default function AddProduct(props) {
     setColorVariant(cv)
   }
 
+  const morePhotos = async (e) => {
+    let cv = allColor.slice()
+    let num = cv.length
+    let i=num+1
+    while (i<=num+2){
+      cv.push({
+        Id: uuid(),
+        No: i,
+        SelectedFile: null,
+      })
+      i++
+    }
+    setAllColor(cv)
+  }
+
   const postProduct = async (e) => {
 
     // let cv = colorVariant.map(function(item) { 
@@ -222,6 +219,7 @@ export default function AddProduct(props) {
     // });
 
     let cv = colorVariant.filter(item => !!item.ColorNo && item.ColorIds.length > 0 && !!item.SelectedFile)
+    let ac = allColor.filter(item => !!item.No && !!item.SelectedFile).map((e) => e.Id).join(',')
 
     fetch(config.api + '/Products/ProductAdd', {
       method: "POST",
@@ -241,6 +239,7 @@ export default function AddProduct(props) {
         ProductTypeId: Number(productType),
         VendorId: 1, //!!props.user ? props.user.vendorId : null,
         Uuid: uid,
+        PhotoUuids: ac,
         //Colors: color,
         ColorVariants: cv, 
         Seasons: season,
@@ -258,6 +257,9 @@ export default function AddProduct(props) {
       if (!!cv.SelectedFile) {
         postFile(cv);
       }    
+    });
+    allColor.filter(e=>!!e.SelectedFile).forEach(cv => {
+        postFile(cv);
     });
     
     props.setLastAction("Product has been added")
@@ -450,9 +452,6 @@ export default function AddProduct(props) {
                   setValueFn={setOverworkType}
                 />
 
-                {/* <ProductColor cv={productColor[0]} setColorItem={setColorProduct}  />
-                <ProductColor cv={productColor[1]} setColorItem={setColorProduct}  /> */}
-
                 { allColor.map((cv) => (
                     <ProductColor cv={cv} setColorItem={setColorProduct}  />
                  ))}
@@ -460,28 +459,8 @@ export default function AddProduct(props) {
                 { colorVariant.map((cv) => (
                     <ColorVariant cv={cv} setColorItem={setColorVariantItem}  />
                  ))}
-
 <br/>
 <br/>
-                
-                {/* <div style={{  textAlign: "center" }}>
-                <div style={{ margin: "0 auto" }}>
-                <Button
-                  variant="outlined"
-                  component="label"
-                  style={buttonStyle}
-                  >
-                  { selectedFile ?  "Photo is selected" : "Select Photo"}
-                  <input
-                    type="file"
-                    onChange={onFileChange}
-                    hidden
-                  />
-                </Button>
-
-                </div>
-                </div>
-<br/> */}
                 {/* <FormControl sx = {{itemStyle}} > */}
                 <Box sx={{ textAlign: "center", marginTop: 2 }}>
                   <Button 
@@ -495,8 +474,15 @@ export default function AddProduct(props) {
                     variant="contained"
                     style={buttonStyle}
                     sx={{margin: "0 10px", height: 70}}
+                    onClick={morePhotos} >
+                        Add product photos
+                    </Button>
+                    <Button 
+                    variant="contained"
+                    style={buttonStyle}
+                    sx={{margin: "0 10px", height: 70}}
                     onClick={moreVariants} >
-                        More colors
+                        Add colors
                     </Button>
                     </Box>
                 {/* </FormControl> */}

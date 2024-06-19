@@ -44,22 +44,8 @@ export default function ProductColor(props) {
     const navigate = useNavigate();
     const theme = useTheme();
 
-    const setColorNo = (value) => {
-      let cv = props.cv;
-      cv.ColorNo = parseInt(value)
-      props.setColorItem(cv.Id, cv)
-    }
-
-    const setColorName = (value) => {
-      let cv1 = props.cv;
-      cv1.ColorIds = value
-      props.cv.ColorNo = props.cv.No
-      props.setColorItem(cv1.Id, cv1)
-    }
-
     const setSelectedFile = (value) => {
       props.cv.SelectedFile = value
-      props.cv.ColorNo = props.cv.No
       props.setColorItem(props.cv.Id, props.cv)
     }
     
@@ -83,11 +69,11 @@ export default function ProductColor(props) {
         //label="No"
         name="colorNo"
         sx = {textStyle}
-        value={"ALL COLORS PHOTO " + props.cv.No}
+        value={"PRODUCT PHOTO " + props.cv.No}
       />
 
-        <label htmlFor={"icon-button-file-0"}>
-        <Input accept="image/*" id={"icon-button-file-0"} type="file" onChange={onFileChange} />
+        <label htmlFor={"icon-button-file-prod"+props.cv.Id}>
+        <Input accept="image/*" id={"icon-button-file-prod"+props.cv.Id} type="file" onChange={onFileChange} />
         <IconButton
           color="success"
           aria-label="upload picture"

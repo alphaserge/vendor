@@ -1,4 +1,6 @@
-﻿using chiffon_back.Code;
+﻿using AutoMapper;
+using chiffon_back.Code;
+using chiffon_back.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -41,6 +43,38 @@ namespace chiffon_back.Models
     {
         private static readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
 
+        private static MapperConfiguration config = new MapperConfiguration(cfg =>
+        {
+            /**/
+            cfg.CreateMap<Models.Product, Context.Product>();
+            cfg.CreateMap<Models.PostProduct, Context.Product>();
+            cfg.CreateMap<Models.Color, Context.Color>();
+            cfg.CreateMap<Models.Season, Context.Season>();
+            cfg.CreateMap<Models.DesignType, Context.DesignType>();
+            cfg.CreateMap<Models.OverWorkType, Context.OverWorkType>();
+            cfg.CreateMap<Models.ProductsInColors, Context.ProductsInColors>();
+            cfg.CreateMap<Models.ProductsInDesignTypes, Context.ProductsInDesignTypes>();
+            cfg.CreateMap<Models.ProductsInOverWorkTypes, Context.ProductsInOverWorkTypes>();
+            cfg.CreateMap<Models.ProductsInSeasons, Context.ProductsInSeasons>();
+            cfg.CreateMap<Models.ProductStyle, Context.ProductStyle>();
+            cfg.CreateMap<Models.ProductType, Context.ProductType>();
+            cfg.CreateMap<Models.Vendor, Context.Vendor>();
+
+            cfg.CreateMap<Context.Color, Models.Color>();
+            cfg.CreateMap<Context.Season, Models.Season>();
+            cfg.CreateMap<Context.DesignType, Models.DesignType>();
+            cfg.CreateMap<Context.OverWorkType, Models.OverWorkType>();
+            cfg.CreateMap<Context.ProductsInColors, Models.ProductsInColors>();
+            cfg.CreateMap<Context.ProductsInDesignTypes, Models.ProductsInDesignTypes>();
+            cfg.CreateMap<Context.ProductsInOverWorkTypes, Models.ProductsInOverWorkTypes>();
+            cfg.CreateMap<Context.ProductsInSeasons, Models.ProductsInSeasons>();
+            cfg.CreateMap<Context.ProductStyle, Models.ProductStyle>();
+            cfg.CreateMap<Context.ProductType, Models.ProductType>();
+            cfg.CreateMap<Context.Vendor, Models.Vendor>();
+            cfg.CreateMap<Context.Product, Models.Product>();
+        });
+
+
         public static IEnumerable<Models.Product> Get(ProductFilter filter)
         {
             //var query = from p in ctx.Products select p;
@@ -61,6 +95,7 @@ namespace chiffon_back.Models
                             ProductStyleId = p.ProductStyleId,
                             ProductTypeId = p.ProductTypeId,
                             VendorId = p.VendorId,
+                            PhotoUuids = p.PhotoUuids,
                             //Uuid = p.Uuid,
                             //ImagePath = Code.DirectoryHelper.GetFirstFileUrl(ctx.ColorVariants.FirstOrDefault(x=>x.ProductId==x.Id).Uuid),// p.Uuid),  //Code.DirectoryHelper.ComputeFileUrl(p.Uuid, p.FileName),
                             Vendor = p.Vendor!.VendorName,
@@ -137,17 +172,20 @@ namespace chiffon_back.Models
             {
                 // 1) ALL COLORS
                 int id = 1;
-                foreach (string uuid in PhotoHelper.GetPhotoUuids(p.PhotoUuids))
+                if (!String.IsNullOrEmpty(p.PhotoUuids))
                 {
-                    var imageFiles = DirectoryHelper.GetImageFiles(uuid);
-                    p.Colors.Add(new ProductColor()
+                    foreach (string uuid in PhotoHelper.GetPhotoUuids(p.PhotoUuids))
                     {
-                        Color = "ALL COLORS",
-                        CvId = -id,
-                        CvNum = null,
-                        ImagePath = imageFiles
-                    });
-                    id++;
+                        var imageFiles = DirectoryHelper.GetImageFiles(uuid);
+                        p.Colors.Add(new ProductColor()
+                        {
+                            Color = "ALL COLORS",
+                            CvId = -id,
+                            CvNum = null,
+                            ImagePath = imageFiles
+                        });
+                        id++;
+                    }
                 }
 
                 // 2) COLOR VARIANTS
@@ -260,6 +298,95 @@ namespace chiffon_back.Models
             }
 
             return prod;
+        }
+   
+        public static int? Post(Models.PostProduct product)
+        {
+            try
+            {
+                Context.Product prod = config.CreateMapper()
+                    .Map<Context.Product>(product);
+
+                ctx.Products.Add(prod);
+                ctx.SaveChanges();
+
+                if (product.ColorVariants != null)
+                {
+                    foreach (var item in product.ColorVariants)
+                    {
+                        Context.ColorVariant cv = new Context.ColorVariant()
+                        {
+                            ProductId = prod.Id,
+                            Uuid = item.Id,
+                            Num = item.No
+                        };
+
+                        ctx.ColorVariants.Add(cv);
+                        ctx.SaveChanges(true);
+
+                        foreach (var colorId in item.ColorIds != null ? item.ColorIds : [])
+                        {
+                            ctx.ColorVariantsInColors.Add(new Context.ColorVariantsInColors()
+                            {
+                                ColorVariantId = cv.Id,
+                                ColorId = colorId,
+                            });
+                        }
+                        ctx.SaveChanges(true);
+                    }
+                }
+
+                if (product.DesignTypes != null)
+                {
+                    foreach (var item in product.DesignTypes)
+                    {
+                        Context.ProductsInDesignTypes cv = new Context.ProductsInDesignTypes()
+                        {
+                            ProductId = prod.Id,
+                            DesignTypeId = item
+                        };
+
+                        ctx.ProductsInDesignTypes.Add(cv);
+                        ctx.SaveChanges(true);
+                    }
+                }
+
+                if (product.Seasons != null)
+                {
+                    foreach (var item in product.Seasons)
+                    {
+                        Context.ProductsInSeasons cv = new Context.ProductsInSeasons()
+                        {
+                            ProductId = prod.Id,
+                            SeasonId = item
+                        };
+
+                        ctx.ProductsInSeasons.Add(cv);
+                        ctx.SaveChanges(true);
+                    }
+                }
+
+                if (product.OverWorkTypes != null)
+                {
+                    foreach (var item in product.OverWorkTypes)
+                    {
+                        Context.ProductsInOverWorkTypes cv = new Context.ProductsInOverWorkTypes()
+                        {
+                            ProductId = prod.Id,
+                            OverWorkTypeId = item
+                        };
+
+                        ctx.ProductsInOverWorkTypes.Add(cv);
+                        ctx.SaveChanges(true);
+                    }
+                }
+                return prod.Id;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
         }
     }
 }

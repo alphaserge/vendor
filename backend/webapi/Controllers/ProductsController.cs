@@ -74,7 +74,7 @@ namespace chiffon_back.Controllers
 
         // временно [Authorize]
         [HttpGet("Products")]
-        public IEnumerable<Models.Product> Get()//[FromQuery] string colors, [FromQuery] string name) //ProductsQuery query1)
+        public IEnumerable<Models.Product> Get()
         {
             var prods = ProductModel.Get(new ProductFilter()
             {
@@ -88,7 +88,7 @@ namespace chiffon_back.Controllers
                 DesignTypes = HttpContext.Request.Query["designtypes"].ToString(),
             });
 
-            return prods;// new List<Models.Product>();
+            return prods;
         }
 
         [HttpPost("ImportFile")]
@@ -150,84 +150,8 @@ namespace chiffon_back.Controllers
         {
             try
             {
-                Context.Product prod = config.CreateMapper()
-                    .Map<Context.Product>(product);
-
-                ctx.Products.Add(prod);
-                ctx.SaveChanges();
-
-                if (product.ColorVariants != null)
-                {
-                    foreach (var item in product.ColorVariants)
-                    {
-                        Context.ColorVariant cv = new Context.ColorVariant()
-                        {
-                            ProductId = prod.Id,
-                            Uuid = item.Id,
-                            Num = item.No
-                        };
-
-                        ctx.ColorVariants.Add(cv);
-                        ctx.SaveChanges(true);
-
-                        foreach (var colorId in item.ColorIds != null ? item.ColorIds : [])
-                        {
-                            ctx.ColorVariantsInColors.Add(new Context.ColorVariantsInColors()
-                            {
-                                ColorVariantId = cv.Id,
-                                ColorId = colorId,
-                            });
-                        }
-                        ctx.SaveChanges(true);
-                    }
-                }
-
-                if (product.DesignTypes!= null)
-                {
-                    foreach (var item in product.DesignTypes)
-                    {
-                        Context.ProductsInDesignTypes cv = new Context.ProductsInDesignTypes()
-                        {
-                            ProductId = prod.Id,
-                            DesignTypeId = item
-                        };
-
-                        ctx.ProductsInDesignTypes.Add(cv);
-                        ctx.SaveChanges(true);
-                    }
-                }
-
-                if (product.Seasons != null)
-                {
-                    foreach (var item in product.Seasons)
-                    {
-                        Context.ProductsInSeasons cv = new Context.ProductsInSeasons()
-                        {
-                            ProductId = prod.Id,
-                            SeasonId = item
-                        };
-
-                        ctx.ProductsInSeasons.Add(cv);
-                        ctx.SaveChanges(true);
-                    }
-                }
-
-                if (product.OverWorkTypes != null)
-                {
-                    foreach (var item in product.OverWorkTypes)
-                    {
-                        Context.ProductsInOverWorkTypes cv = new Context.ProductsInOverWorkTypes()
-                        {
-                            ProductId = prod.Id,
-                            OverWorkTypeId = item
-                        };
-
-                        ctx.ProductsInOverWorkTypes.Add(cv);
-                        ctx.SaveChanges(true);
-                    }
-                }
-
-                return CreatedAtAction(nameof(Get), new { id = prod.Id }, "");
+                int? id = ProductModel.Post(product);
+                return CreatedAtAction(nameof(Get), new { id = id }, "");
             }
             catch (Exception ex)
             {
