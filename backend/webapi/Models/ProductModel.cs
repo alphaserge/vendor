@@ -211,10 +211,10 @@ namespace chiffon_back.Models
                 }
             }
 
+            /*prods.AddRange(prods);
             prods.AddRange(prods);
             prods.AddRange(prods);
-            prods.AddRange(prods);
-            prods.AddRange(prods);
+            prods.AddRange(prods);*/
 
             return prods;
         }
