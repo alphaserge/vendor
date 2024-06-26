@@ -23,6 +23,7 @@ import { v4 as uuid } from 'uuid'
 
 import MySelect from '../../components/myselect';
 import ColorVariant from './colorvariant';
+import ProductColor from './productcolor';
 import Copyright from '../copyright';
 import config from "../../config.json"
 
@@ -82,7 +83,9 @@ export default function Update(props) {
     const [stock, setStock] = useState("")
     const [gramm_pm, setGramm_pm] = useState("")
     const [colorVariant, setColorVariant] = useState([])
+    const [productColors, setProductColors] = useState([])
     const [colorVariantPlus, setColorVariantPlus] = useState([])
+    const [productColorsPlus, setProductColorsPlus] = useState([])
     //const [images, setImages] = useState([])
     //const [colors, setColors] = useState([])
     //const [cvNums, setCvNums] = useState([])
@@ -92,6 +95,11 @@ export default function Update(props) {
     const setColorVariantItem = (i, item) => {
       let cv = colorVariantPlus.map(el=>el.Id==i? item:el)
       setColorVariantPlus(cv)
+    }
+
+    const setProductColorItem = (i, item) => {
+      let cv = productColorsPlus.map(el=>el.Id==i? item:el)
+      setProductColorsPlus(cv)
     }
 
     const [selectedFile, setSelectedFile] = useState(null)
@@ -138,6 +146,23 @@ export default function Update(props) {
       i++
     }
     setColorVariantPlus(cv)
+  }
+
+  const moreProductColors = async (e) => {
+    let cv = productColorsPlus.slice()
+    let num = cv.length
+    let cvNums = productColors.map(x => x.cvNum);
+    let max = cvNums.length > 0 ? Math.max(...cvNums) : 0
+    let i=max+1
+    while (i<max+3){
+      cv.push({
+        Id: uuid(),
+        No: i,
+        SelectedFile: null,
+      })
+      i++
+    }
+    setProductColorsPlus(cv)
   }
 
   const handleRemoveCv = async (id) => {
@@ -276,6 +301,8 @@ const loadProducts = async (e) => {
 
     useEffect(() => {
       loadProducts()
+      console.log('productColorsPlus:')
+      console.log(productColorsPlus)
     }, []);
 
   return (
@@ -457,6 +484,9 @@ const loadProducts = async (e) => {
                 { colorVariantPlus.map((cv) => (
                     <ColorVariant cv={cv} setColorItem={setColorVariantItem}  />
                  ))}
+                { productColorsPlus.map((cv) => (
+                    <ProductColor cv={cv} setColorItem={setProductColorItem}  />
+                 ))}
           </Grid>
           </Box>
         </main>
@@ -509,6 +539,14 @@ const loadProducts = async (e) => {
                     onClick={moreVariants} >
                         More colors
                     </Button>
+                    <Button 
+                    variant="contained"
+                    style={buttonStyle}
+                    sx={{margin: "0 10px", height: 70}}
+                    onClick={moreProductColors} >
+                        More product colors
+                    </Button>
+
         </Box>
         </Box>
         </Box>
