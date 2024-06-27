@@ -267,22 +267,29 @@ namespace chiffon_back.Controllers
         {
             try
             {
-
-                var cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == c.Id);// && x.Num == c.Num);
-                if (cv != null)
+                if (c.IsProduct)
                 {
-                    var productsInCv = ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == cv.Id);
-                    ctx.ColorVariantsInColors.RemoveRange(productsInCv);
+                    var prod = ctx.Products.FirstOrDefault(x => x.Id == c.ProductId);
+                    prod.PhotoUuids = PhotoHelper.RemovePhotoUuid(prod.PhotoUuids, c.Uuid);
                     ctx.SaveChanges();
+                }
+                else
+                {
+                    var cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == c.Id);// && x.Num == c.Num);
                     if (cv != null)
                     {
-                        ctx.ColorVariants.RemoveRange(cv);
+                        var productsInCv = ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == cv.Id);
+                        ctx.ColorVariantsInColors.RemoveRange(productsInCv);
                         ctx.SaveChanges();
-                        
+                        if (cv != null)
+                        {
+                            ctx.ColorVariants.RemoveRange(cv);
+                        }
+                        ctx.SaveChanges();
                     }
                 }
 
-                return CreatedAtAction(nameof(Get), new { id = cv.Id }, "");
+                return CreatedAtAction(nameof(Get), new { id = c.Id }, "");
             }
             catch (Exception ex)
             {

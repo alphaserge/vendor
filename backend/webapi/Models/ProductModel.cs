@@ -41,8 +41,6 @@ namespace chiffon_back.Models
 
     public class ProductModel
     {
-        private static readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
-
         private static MapperConfiguration config = new MapperConfiguration(cfg =>
         {
             /**/
@@ -77,6 +75,7 @@ namespace chiffon_back.Models
 
         public static IEnumerable<Models.Product> Get(ProductFilter filter)
         {
+            ChiffonDbContext ctx = ContextHelper.ChiffonContext();
             //var query = from p in ctx.Products select p;
             var query = from p in ctx.Products
                         select new Models.Product
@@ -221,9 +220,8 @@ namespace chiffon_back.Models
 
         public static Models.Product? Get(string id)
         {
-
-            chiffon_back.Context.ChiffonDbContext cx = Code.ContextHelper.ChiffonContext();
-            var query = from p in cx.Products
+            ChiffonDbContext ctx = ContextHelper.ChiffonContext();
+            var query = from p in ctx.Products
                         where p.Id.ToString() == id
                         select new Models.Product
                         {
@@ -235,6 +233,7 @@ namespace chiffon_back.Models
                             Price = p.Price,
                             Weight = p.Weight,
                             Width = p.Width,
+                            PhotoUuids = p.PhotoUuids,
                             ProductStyleId = p.ProductStyleId,
                             ProductTypeId = p.ProductTypeId,
                             VendorId = p.VendorId,
@@ -258,20 +257,23 @@ namespace chiffon_back.Models
                     var imageFiles = DirectoryHelper.GetImageFiles(uuid);
                     prod.Colors.Add(new ProductColor()
                     {
-                        Color = "ALL COLORS",
+                        Color = "PRODUCT",
                         CvId = -colorId,
                         CvNum = null,
+                        Uuid = uuid,
+                        ProductId = prod.Id,
+                        IsProduct = true,
                         ImagePath = imageFiles
                     });
                     colorId++;
                 }
 
                 // 2) COLOR VARIANTS
-                foreach (var cv in cx.ColorVariants.Where(x => x.ProductId == prod.Id).ToList())
+                foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == prod.Id).ToList())
                 {
                     string colors = String.Join(", ",
-                        cx.Colors.Where(col =>
-                            cx.ColorVariantsInColors
+                        ctx.Colors.Where(col =>
+                            ctx.ColorVariantsInColors
                             .Where(x =>
                                 x.ColorVariantId == cv.Id)
                             .Select(x => x.ColorId)
@@ -283,6 +285,7 @@ namespace chiffon_back.Models
                         Color = colors,
                         CvId = cv.Id,
                         CvNum = cv.Num,
+                        IsProduct = false,
                         ImagePath = DirectoryHelper.GetImageFiles(cv.Uuid!)
                     });
                 }
@@ -303,6 +306,8 @@ namespace chiffon_back.Models
    
         public static int? Post(Models.PostProduct product)
         {
+            ChiffonDbContext ctx = ContextHelper.ChiffonContext();
+
             try
             {
                 Context.Product prod = config.CreateMapper()

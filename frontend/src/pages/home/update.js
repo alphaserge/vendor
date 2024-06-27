@@ -75,6 +75,7 @@ export default function Update(props) {
     const [refNo, setRefNo] = useState("")
     const [artNo, setArtNo] = useState("")
     const [uid, setUid] = useState(uuid())
+    const [productId, setProductId] = useState(uuid())
     const [design, setDesign] = useState("")
     const [colorNo, setColorNo] = useState("")
     const [price, setPrice] = useState("")
@@ -147,6 +148,7 @@ export default function Update(props) {
         ColorIds: [],
         ColorId: [],
         SelectedFile: null,
+        IsProduct: false
       })
       i++
     }
@@ -164,17 +166,14 @@ export default function Update(props) {
         Id: uuid(),
         No: i,
         SelectedFile: null,
+        IsProduct: true
       })
       i++
     }
     setProductColorsPlus(cv)
   }
 
-  const handleRemoveCv = async (id) => {
-    /*const search = window.location.search;
-    const params = new URLSearchParams(search);
-    const id = params.get('id');
-    let a = id;*/
+  const handleRemoveCv = async (cv) => {
 
     fetch(config.api + '/Products/ProductRemoveCV', {
       method: "POST",
@@ -182,17 +181,14 @@ export default function Update(props) {
           'Content-Type': 'application/json'
         },
       body: JSON.stringify({
-        Id: id,
-        //Num: num,
+        Id: cv.cvId,
+        Uuid: cv.uuid,
+        ProductId: cv.productId,
+        IsProduct: cv.isProduct
       })
   })
   .then(r => r.json())
   .then(r => {
-    /*colorVariant.filter(e=>!!e.ColorNo).forEach(cv => {
-      if (!!cv.SelectedFile) {
-        postFile(cv);
-      }    
-    });*/
 
     loadProducts(0)
     
@@ -201,11 +197,33 @@ export default function Update(props) {
 })
   .catch (error => {
     console.log(error)
-    //navigate("/error")
   })
+};
 
-    
-  }
+const handleRemoveProductPhoto = async (id) => {
+
+  fetch(config.api + '/Products/ProductRemoveProductPhoto', {
+    method: "POST",
+    headers: {
+        'Content-Type': 'application/json'
+      },
+    body: JSON.stringify({
+      Id: id,
+      ProductId: productId
+    })
+})
+.then(r => r.json())
+.then(r => {
+
+  loadProducts(0)
+  
+  props.setLastAction("Product photo variant has been removed")
+  navigate(loc)
+})
+.catch (error => {
+  console.log(error)
+})
+};
 
   const postProduct = async (e) => {
 
@@ -274,11 +292,14 @@ export default function Update(props) {
   })
 };
 
+
+
 const loadProducts = async (e) => {
 
   const search = window.location.search;
   const params = new URLSearchParams(search);
   const id = params.get('id');
+  setProductId(parseInt(id))
 
   axios.get(config.api + '/Products/Product?='+id, { params: { id: id }})
   .then(function (res) {
@@ -515,18 +536,18 @@ const loadProducts = async (e) => {
                   <br/>
                   </Box>
                   <Box component={"div"} 
-                    sx={{ mt: 1, ml: 1, height: "36px", width: "125px", wordBreak: "break-all", wordWrap: "break-word" }} 
-                    textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > { cv.cvNum + ' - ' + cv.color} </Box>
+                    sx={{ mt: 1, ml: 1, height: "36px", width: "125px", wordBreak: "break-all", wordWrap: "break-word", alignItems: "center" }} 
+                    textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > { (cv.cvNum?cv.cvNum+' - ':'') + cv.color} </Box>
 
           <IconButton
           color="success"
           aria-label="upload picture"
           sx={{color: APPEARANCE.BLACK2, pt: 0}}
           component="span"
-          onClick={ function() { handleRemoveCv(cv.cvId)}}
+          onClick={ function() { handleRemoveCv(cv)}}
           >
               {<DeleteIcon />}
-        </IconButton>
+              </IconButton>
 
               </Box>
 

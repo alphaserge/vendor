@@ -45,15 +45,22 @@ namespace chiffon_back.Models
     {
         public int? Num { get; set; }
         public int? Id { get; set; }
+        public string? Uuid { get; set; }
+        public int? ProductId { get; set; }
+        public bool IsProduct { get; set; }
     }
 
     public class ProductColor
     {
         public List<string> ImagePath { get; set; }
         public string Color { get; set; }
+        public string Uuid { get; set; }
         public int? CvNum { get; set; }
         public int? CvId { get; set; }
+        public int? ProductId { get; set; }
+        public bool IsProduct { get; set; }
     }
+
     public class PostProduct
     {
         public int? Id { get; set; }
