@@ -26,6 +26,20 @@ import Footer from './footer';
 
 import { APPEARANCE } from '../../appearance';
 
+import Modal from '@mui/material/Modal';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
@@ -274,12 +288,37 @@ export default function AddProduct(props) {
 
 // #endregion
 
+const [open, setOpen] = React.useState(false);
+const handleOpen = () => setOpen(true);
+const handleClose = () => setOpen(false);
+
+const addNewColor = () => {
+  handleOpen();
+}
+
     useEffect(() => {
     }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
+
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Text in a modal
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+          </Typography>
+        </Box>
+      </Modal>
+
       <Container sx={{maxWidth: "100%", padding: 0 }} className="header-container" >
         <Header user={props.user} title={props.title} />
         <main>
@@ -457,7 +496,7 @@ export default function AddProduct(props) {
                  ))}
 
                 { colorVariant.map((cv) => (
-                    <ColorVariant cv={cv} setColorItem={setColorVariantItem}  />
+                    <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor}  />
                  ))}
 <br/>
 <br/>
@@ -475,7 +514,7 @@ export default function AddProduct(props) {
                     style={buttonStyle}
                     sx={{margin: "0 10px", height: 70}}
                     onClick={morePhotos} >
-                        + photos
+                        add photos
                     </Button>
                     <Button 
                     variant="contained"

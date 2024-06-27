@@ -30,11 +30,15 @@ namespace chiffon_back.Controllers
         [HttpGet(Name = "Colors")]
         public IEnumerable<Models.Color> Get()
         {
-            return ctx.Colors.OrderBy(x => x.ColorName)
+            List<Models.Color> colors =
+                ctx.Colors.OrderBy(x => x.ColorName)
                 .Select(x =>
                     config.CreateMapper()
                         .Map<Models.Color>(x))
                 .ToList();
+
+            colors.Add(new Models.Color() { Id = -2, ColorName = "ADD NEW" });
+            return colors.AsEnumerable();
         }
 
         [HttpPost(Name = "Colors")]

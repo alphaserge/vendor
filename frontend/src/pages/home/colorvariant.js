@@ -96,6 +96,7 @@ export default function ColorVariant(props) {
         MenuProps={MenuProps}
         valueVariable={props.cv.ColorIds}
         setValueFn={setColorName}
+        addNewFn={props.addNewFn}
         rgbField="rgb"
       />
 

@@ -55,9 +55,14 @@ export default function MySelect(props) {
 
         // processing of 'ALL' (-1) item (select all items)
         if (value.indexOf(-1) != -1) {
-          let all = data.map(x => x.id).filter(x=>x!=-1)
+          let all = data.map(x => x.id).filter(x => x > -1)
           setSelectedValue(all)
           props.setValueFn(all)
+          return
+        }
+
+        if (value.indexOf(-2) != -1) {
+          props.addNewFn()
           return
         }
 
