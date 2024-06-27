@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using chiffon_back.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,19 +29,16 @@ namespace chiffon_back.Controllers
         [HttpGet(Name = "Seasons")]
         public IEnumerable<Models.Season> Get()
         {
-            return ctx.Seasons.OrderBy(x => x.SeasonName)
+            List<Models.Season> seasons = 
+                ctx.Seasons.OrderBy(x => x.SeasonName)
                 .Select(x =>
                     config.CreateMapper()
                         .Map<Models.Season>(x))
                 .ToList();
 
-            /*return Enumerable.Range(1, 5).Select(index => new Season
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();*/
+            seasons.Add(new Models.Season() { Id = -1, SeasonName = "ALL" });
+
+            return seasons.AsEnumerable();
         }
 
 
