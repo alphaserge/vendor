@@ -475,7 +475,7 @@ export default function AddProduct(props) {
                     style={buttonStyle}
                     sx={{margin: "0 10px", height: 70}}
                     onClick={morePhotos} >
-                        Add product photos
+                        + photos
                     </Button>
                     <Button 
                     variant="contained"

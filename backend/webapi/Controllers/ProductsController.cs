@@ -92,7 +92,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost("ImportFile")]
-        public /*async*/ ActionResult ImportFile([FromForm] IFormFile formFile, [FromForm] string uid)
+        public /*async*/ ActionResult ImportFile([FromForm] IFormFile formFile, [FromForm] string uid, [FromForm] string id)
         {
             try
             {
@@ -105,20 +105,20 @@ namespace chiffon_back.Controllers
                     Code.DirectoryHelper.CreateDirectoryIfMissing(dirPath);
                     var fileNumber = Directory.GetFiles(dirPath, "*.*").Count() + 1;
                     string fileName = $"{fileNumber}{extension}";
-                    string filePath = Path.Combine(dirPath, fileName); //Code.DirectoryHelper.ComputeFilePath(uid, extension);
+                    string filePath = Path.Combine(dirPath, fileName); 
 
                     using (var stream = System.IO.File.Create(filePath))
                     {
                         //await formFile.CopyToAsync(stream);
                         formFile.CopyTo(stream);
                     }
-
-                    /*Context.ColorVariant? prod = ctx.ColorVariants.FirstOrDefault(x => x.Uuid == uid);
-                    if (prod != null)
+                    var product = ctx.Products.FirstOrDefault(x => x.Id.ToString() == id);
+                    if (product != null)
                     {
-                        prod.FileName = fileName;
-                    }*/
-                    ctx.SaveChanges();
+                        product.PhotoUuids = 
+                            product.PhotoUuids != null ? product.PhotoUuids + "," + uid : uid;
+                        ctx.SaveChanges();
+                    }
                 }
                 return CreatedAtAction(nameof(Get), new { id = -1 }, true);
 

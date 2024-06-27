@@ -13,6 +13,7 @@ import CameraswitchOutlinedIcon from '@mui/icons-material/CameraswitchOutlined';
 
 import MySelect from '../../components/myselect';
 import { APPEARANCE } from '../../appearance';
+import { green } from "@mui/material/colors";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -68,9 +69,9 @@ export default function ProductColor(props) {
         id="colorNo"
         //label="No"
         name="colorNo"
-        sx = {textStyle}
-        value={"PRODUCT PHOTO " + props.cv.No}
-      />
+        sx = {[textStyle, (props.cv.SelectedFile ? { backgroundColor: "#ccc" }:{ backgroundColor: "#cfe" })]}
+        inputProps={{ readOnly: true }}
+        value={props.cv.SelectedFile ? "photo is loaded" : ("<please select photo>")} />
 
         <label htmlFor={"icon-button-file-prod"+props.cv.Id}>
         <Input accept="image/*" id={"icon-button-file-prod"+props.cv.Id} type="file" onChange={onFileChange} />

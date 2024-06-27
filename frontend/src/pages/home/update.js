@@ -38,7 +38,7 @@ const defaultTheme = createTheme()
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
 const labelStyle = { m: 2, ml: 4, mr: 4 }
-const buttonStyle = { width: 90, m: 2, backgroundColor: APPEARANCE.GREEN2, color: APPEARANCE.WHITE }
+const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.GREEN2, color: APPEARANCE.WHITE }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -118,9 +118,14 @@ export default function Update(props) {
   }
 
   const postFile = async (cv) => {
+    const search = window.location.search;
+    const params = new URLSearchParams(search);
+    const id = params.get('id');
+
     const formData = new FormData();
     formData.append("formFile", cv.SelectedFile);
     formData.append("uid", cv.Id);
+    formData.append("id", id);
     try {
       const res = await axios.post(config.api + "/Products/ImportFile", formData);
     } catch (ex) {
@@ -251,6 +256,10 @@ export default function Update(props) {
       if (!!cv.SelectedFile) {
         postFile(cv);
       }    
+    });
+    
+    productColorsPlus.filter(e=>!!e.SelectedFile).forEach(cv => {
+        postFile(cv);
     });
     
     props.setLastAction("Product has been modified")
@@ -537,14 +546,14 @@ const loadProducts = async (e) => {
                     style={buttonStyle}
                     sx={{margin: "0 10px", height: 70}}
                     onClick={moreVariants} >
-                        More colors
+                        add colors
                     </Button>
                     <Button 
                     variant="contained"
                     style={buttonStyle}
                     sx={{margin: "0 10px", height: 70}}
                     onClick={moreProductColors} >
-                        More product colors
+                        add photos
                     </Button>
 
         </Box>

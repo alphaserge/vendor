@@ -222,7 +222,8 @@ namespace chiffon_back.Models
         public static Models.Product? Get(string id)
         {
 
-            var query = from p in ctx.Products
+            chiffon_back.Context.ChiffonDbContext cx = Code.ContextHelper.ChiffonContext();
+            var query = from p in cx.Products
                         where p.Id.ToString() == id
                         select new Models.Product
                         {
@@ -266,11 +267,11 @@ namespace chiffon_back.Models
                 }
 
                 // 2) COLOR VARIANTS
-                foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == prod.Id).ToList())
+                foreach (var cv in cx.ColorVariants.Where(x => x.ProductId == prod.Id).ToList())
                 {
                     string colors = String.Join(", ",
-                        ctx.Colors.Where(col =>
-                            ctx.ColorVariantsInColors
+                        cx.Colors.Where(col =>
+                            cx.ColorVariantsInColors
                             .Where(x =>
                                 x.ColorVariantId == cv.Id)
                             .Select(x => x.ColorId)
