@@ -87,6 +87,8 @@ export default function AddProduct(props) {
     const [price, setPrice] = useState("")
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
+    const [newColor, setNewColor] = useState("")
+    const [newColorRgb, setNewColorRgb] = useState("")
 
     const [colorVariant, setColorVariant] = useState([
       {
@@ -311,11 +313,41 @@ const addNewColor = () => {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
+            Adding a new color
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+          <Typography id="modal-modal-description" sx={{ mt: 2, width: "150px" }}>
           </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <TextField
+                  margin="normal"
+                  size="small" 
+                  id="newColor"
+                  label="Color name"
+                  name="newColor"
+                  value={newColor}
+                  onChange={ev => setNewColor(ev.target.value)}
+                />
+            <TextField
+                  margin="normal"
+                  size="small" 
+                  id="newColor"
+                  label="RGB value"
+                  name="newColorRgb"
+                  value={newColorRgb}
+                  onChange={ev => setNewColorRgb(ev.target.value)}
+                />
+          </Box>
+          <Box>
+          <Button 
+                    variant="contained"
+                    style={buttonStyle}
+                    sx={{margin: "0 10px 0 30px", height: 70}}
+                    onClick={postProduct} >
+                        Save
+                    </Button>
+                    </Box>
+          </Box>
         </Box>
       </Modal>
 
