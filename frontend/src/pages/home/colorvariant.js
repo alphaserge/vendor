@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -13,6 +13,7 @@ import CameraswitchOutlinedIcon from '@mui/icons-material/CameraswitchOutlined';
 
 import MySelect from '../../components/myselect';
 import { APPEARANCE } from '../../appearance';
+import { InputLabel } from "@mui/material";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -44,6 +45,8 @@ export default function ColorVariant(props) {
     const navigate = useNavigate();
     const theme = useTheme();
 
+    const child = React.createRef();
+
     const setColorNo = (value) => {
       let cv = props.cv;
       cv.ColorNo = parseInt(value)
@@ -69,6 +72,8 @@ export default function ColorVariant(props) {
     }
 
     useEffect(() => {
+      console.log('color variant useEffect')
+      //!child.getAlert()
     }, []);
 
   return (
@@ -97,7 +102,9 @@ export default function ColorVariant(props) {
         valueVariable={props.cv.ColorIds}
         setValueFn={setColorName}
         addNewFn={props.addNewFn}
+        updateHash={props.updateHash}
         rgbField="rgb"
+        ref={child}
       />
 
         <label htmlFor={"icon-button-file-"+props.cv.Id}>
@@ -111,6 +118,7 @@ export default function ColorVariant(props) {
               { props.cv.SelectedFile && <CameraswitchOutlinedIcon />}
         </IconButton>
       </label>      
+      <InputLabel sx={{display: "none"}}>{props.updateHash}</InputLabel>
       {/* <input
             type="file"
             onChange={onFileChange}

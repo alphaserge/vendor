@@ -27,6 +27,7 @@ import Footer from './footer';
 import { APPEARANCE } from '../../appearance';
 
 import Modal from '@mui/material/Modal';
+import { InputLabel } from "@mui/material";
 
 const style = {
   position: 'absolute',
@@ -45,7 +46,7 @@ const defaultTheme = createTheme()
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
 const labelStyle = { m: 2, ml: 4, mr: 4 }
-const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BLACK2, color: APPEARANCE.WHITE }
+const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BLUE1, color: APPEARANCE.WHITE }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -89,6 +90,7 @@ export default function AddProduct(props) {
     const [width, setWidth] = useState("")
     const [newColor, setNewColor] = useState("")
     const [newColorRgb, setNewColorRgb] = useState("")
+    const [updateHash, setUpdateHash] = useState(uuid())
 
     const [colorVariant, setColorVariant] = useState([
       {
@@ -288,11 +290,52 @@ export default function AddProduct(props) {
 
 };
 
+const postColor = async (e) => {
+
+  const matched = newColorRgb.match("^(([0-9a-fA-F]{2}){3}|([0-9a-fA-F]){3})$")
+
+  if (!matched || newColorRgb.length != 6 ) {
+    setErrorNewColor("Incorrect RGB value.\n Should be as example: FA240C, DD34CC")
+    return
+  }
+
+  fetch(config.api + '/Colors', {
+    method: "POST",
+    headers: {
+        'Content-Type': 'application/json'
+      },
+    body: JSON.stringify({
+      colorName: newColor,
+      rgb: newColorRgb,
+    })
+})
+//.then(r => r.json())
+.then(r => {
+  if (r.ok==true) {
+    props.setLastAction("Color has been added")
+
+    setUpdateHash(uuid())
+    //let cv = colorVariant.slice()
+    //setColorVariant(cv)
+    handleClose()
+  } else {
+    setErrorNewColor("An error has occurred")
+  }
+})
+.catch (error => {
+  console.log(error)
+  setErrorNewColor("An error has occurred")
+})
+
+};
+
+
 // #endregion
 
-const [open, setOpen] = React.useState(false);
-const handleOpen = () => setOpen(true);
-const handleClose = () => setOpen(false);
+const [errorNewColor, setErrorNewColor] = React.useState("");
+const [openNewColor, setOpenNewColor] = React.useState(false);
+const handleOpen = () => { setErrorNewColor(""); setOpenNewColor(true); }
+const handleClose = () => setOpenNewColor(false);
 
 const addNewColor = () => {
   handleOpen();
@@ -306,7 +349,7 @@ const addNewColor = () => {
       <CssBaseline />
 
       <Modal
-        open={open}
+        open={openNewColor}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -315,10 +358,8 @@ const addNewColor = () => {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Adding a new color
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2, width: "150px" }}>
-          </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', flex: 3 }}>
           <TextField
                   margin="normal"
                   size="small" 
@@ -332,21 +373,34 @@ const addNewColor = () => {
                   margin="normal"
                   size="small" 
                   id="newColor"
-                  label="RGB value"
+                  label="Color value : RRGGBB"
                   name="newColorRgb"
                   value={newColorRgb}
                   onChange={ev => setNewColorRgb(ev.target.value)}
                 />
+                <InputLabel
+                component={"div"}
+                  shrink={true}
+                  sx={{ wordBreak: "break-word", whiteSpace: "pre-line" }} >
+                    {errorNewColor}
+                  </InputLabel>
           </Box>
-          <Box>
+          <Box sx={{flex: 2}} >
           <Button 
-                    variant="contained"
-                    style={buttonStyle}
-                    sx={{margin: "0 10px 0 30px", height: 70}}
-                    onClick={postProduct} >
-                        Save
-                    </Button>
-                    </Box>
+              variant="contained"
+              style={buttonStyle}
+              sx={{margin: "5px 10px 5px 30px", height: 50}}
+              onClick={postColor} >
+                  Save
+          </Button>
+          <Button 
+              variant="contained"
+              style={buttonStyle}
+              sx={{margin: "5px 10px 5px 30px", height: 50}}
+              onClick={handleClose} >
+                  Cancel
+          </Button>
+          </Box>
           </Box>
         </Box>
       </Modal>
@@ -528,7 +582,7 @@ const addNewColor = () => {
                  ))}
 
                 { colorVariant.map((cv) => (
-                    <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor}  />
+                    <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} updateHash={updateHash} />
                  ))}
 <br/>
 <br/>

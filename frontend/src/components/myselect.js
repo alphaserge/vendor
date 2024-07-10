@@ -5,6 +5,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Box from '@mui/material/Box';
+import AddIcon from '@mui/icons-material/Add';
 import { useTheme } from '@mui/material/styles';
 
 
@@ -54,14 +55,14 @@ export default function MySelect(props) {
         const { target: { value }, } = event;
 
         // processing of 'ALL' (-1) item (select all items)
-        if (value.indexOf(-1) != -1) {
+        if (Array.isArray(value) && value.indexOf(-1) != -1) {
           let all = data.map(x => x.id).filter(x => x > -1)
           setSelectedValue(all)
           props.setValueFn(all)
           return
         }
 
-        if (value.indexOf(-2) != -1) {
+        if (Array.isArray(value) && value && value.indexOf(-2) != -1) {
           props.addNewFn()
           return
         }
@@ -80,6 +81,10 @@ export default function MySelect(props) {
           console.log(error)
         })
       }      
+
+      const getAlert = () =>{
+        alert('123')
+      }
   
     useEffect(() => {
         loadData()
@@ -111,14 +116,17 @@ return (
             key={elem.id} 
             value={elem.id}
             style={getStyles(elem.id, selectedValue, theme)}>  
-               {props.rgbField != undefined &&
+               {props.rgbField != undefined && elem.id != -2 &&
                  <Box component="span" className="color_select_item" sx={{ backgroundColor: "#" + elem[props.rgbField], border: "1px solid #bbb", height: "24px", width: "24px",  mr: 2 }}>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                  </Box>}
+                 {elem.id == -2 && <AddIcon sx={{ mr: 2 }} />}
                  {elem[props.valueName]} 
+                 <InputLabel sx={{fontSize: "1px"}}>{props.updateHash}</InputLabel>
             </MenuItem>
     ))}
     </Select>
+    
   </FormControl>
 );
 }

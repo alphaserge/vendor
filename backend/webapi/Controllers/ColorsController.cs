@@ -9,7 +9,7 @@ namespace chiffon_back.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [EnableCors("Chiffon_AllowAllOrigins")]
+    //[EnableCors("Chiffon_AllowAllOrigins")]
     public class ColorsController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>

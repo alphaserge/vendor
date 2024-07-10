@@ -69,9 +69,9 @@ export default function ProductColor(props) {
         id="colorNo"
         //label="No"
         name="colorNo"
-        sx = {[textStyle, (props.cv.SelectedFile ? { backgroundColor: "#ccc" }:{ backgroundColor: "#cfe" })]}
+        sx = {[textStyle, (props.cv.SelectedFile ? { backgroundColor: "#ccc" }:{ backgroundColor: "#fff" })]}
         inputProps={{ readOnly: true }}
-        value={props.cv.SelectedFile ? "photo is loaded" : ("<please select photo>")} />
+        value={props.cv.SelectedFile ? "PHOTO IS LOADED" : ("PRODUCT PHOTO")} />
 
         <label htmlFor={"icon-button-file-prod"+props.cv.Id}>
         <Input accept="image/*" id={"icon-button-file-prod"+props.cv.Id} type="file" onChange={onFileChange} />
