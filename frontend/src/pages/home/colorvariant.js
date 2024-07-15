@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
-import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
@@ -13,17 +12,12 @@ import CameraswitchOutlinedIcon from '@mui/icons-material/CameraswitchOutlined';
 
 import MySelect from '../../components/myselect';
 import { APPEARANCE } from '../../appearance';
-import { InputLabel } from "@mui/material";
 
-// TODO remove, this demo shouldn't need to reset the theme.
-const defaultTheme = createTheme()
 const itemStyle = { width: 245 }
 const labelStyle = { mb: 3, ml: 0 }
-const buttonStyle = { width: 180, height: 32, m: 2 }
 const textStyle = { width: 45, m: 0, ml: 0 }
 const divStyle = { width: 340, mt: 3, ml: 4, mr: 4 }
 const flexStyle = { display: "flex", justifyContent: "space-between", alignContent: "space-between", alignItems: "center", mr: 22 }
-//display: "flex", alignItems: "center", justifyContent: "space-between", alignContent: "space-between", marginRight: "22px"
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -44,8 +38,6 @@ export default function ColorVariant(props) {
 
     const navigate = useNavigate();
     const theme = useTheme();
-
-    const child = React.createRef();
 
     const setColorNo = (value) => {
       let cv = props.cv;
@@ -73,7 +65,6 @@ export default function ColorVariant(props) {
 
     useEffect(() => {
       console.log('color variant useEffect')
-      //!child.getAlert()
     }, []);
 
   return (
@@ -85,7 +76,6 @@ export default function ColorVariant(props) {
         margin="normal"
         size="small" 
         id="colorNo"
-        //label="No"
         name="colorNo"
         sx = {textStyle}
         value={props.cv.ColorNo}
@@ -102,57 +92,21 @@ export default function ColorVariant(props) {
         valueVariable={props.cv.ColorIds}
         setValueFn={setColorName}
         addNewFn={props.addNewFn}
-        updateHash={props.updateHash}
-        rgbField="rgb"
-        ref={child}
+        data={props.data}
       />
 
-        <label htmlFor={"icon-button-file-"+props.cv.Id}>
-        <Input accept="image/*" id={"icon-button-file-"+props.cv.Id} type="file" onChange={onFileChange} />
-        <IconButton
-          color="success"
-          aria-label="upload picture"
-          sx={{color: APPEARANCE.BLACK2}}
-          component="span">
-              {!props.cv.SelectedFile && <AddAPhotoIcon />}
-              { props.cv.SelectedFile && <CameraswitchOutlinedIcon />}
-        </IconButton>
+      <label htmlFor={"icon-button-file-"+props.cv.Id}>
+      <Input accept="image/*" id={"icon-button-file-"+props.cv.Id} type="file" onChange={onFileChange} />
+      <IconButton
+        color="success"
+        aria-label="upload picture"
+        sx={{color: APPEARANCE.BLACK2}}
+        component="span">
+            {!props.cv.SelectedFile && <AddAPhotoIcon />}
+            { props.cv.SelectedFile && <CameraswitchOutlinedIcon />}
+      </IconButton>
       </label>      
-      <InputLabel sx={{display: "none"}}>{props.updateHash}</InputLabel>
-      {/* <input
-            type="file"
-            onChange={onFileChange}
-            hidden
-          /> 
-            <input type="file" ref={(fileUpload) => {
-                    this.fileUpload = fileUpload;
-                  }}
-  style={{ visibility: 'hidden'}} onChange={onFileChange} />
-            <IconButton
-              onClick={() => this.fileUpload.click()}
-              variant={selectedFile ? "outlined" : "contained"} 
-              type="file">
-              {!selectedFile && <AddAPhoto />}
-              {selectedFile && <PhotoCameraOutlined />}
-              
-            </IconButton>*/}
-
-        {/* <Button
-          variant={selectedFile ? "outlined" : "contained"}
-          component="label"
-          style={buttonStyle}
-          >
-          { selectedFile ?  "Photo is selected" : "Select Photo"}
-          <input
-            type="file"
-            onChange={onFileChange}
-            hidden
-          />
-        </Button> */}
       </div>
-      
-
-       
        </FormControl>
   );
 }

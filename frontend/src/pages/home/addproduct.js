@@ -75,7 +75,7 @@ export default function AddProduct(props) {
 
     const [productStyle, setProductStyle] = useState("")
     const [productType, setProductType] = useState("")
-    const [color, setColor] = useState([])
+    const [colors, setColors] = useState([])
     const [designType, setDesignType] = useState([])
     const [overworkType, setOverworkType] = useState([])
     const [season, setSeason] = useState([])
@@ -90,7 +90,7 @@ export default function AddProduct(props) {
     const [width, setWidth] = useState("")
     const [newColor, setNewColor] = useState("")
     const [newColorRgb, setNewColorRgb] = useState("")
-    const [updateHash, setUpdateHash] = useState(uuid())
+    const [selectedFile, setSelectedFile] = useState(null)
 
     const [colorVariant, setColorVariant] = useState([
       {
@@ -165,11 +165,7 @@ export default function AddProduct(props) {
       let cv = colorVariant.map(el=>el.Id==i? item:el)
       setColorVariant(cv)
     }
-
-    const [selectedFile, setSelectedFile] = useState(null)
   
-    // #region handlers; 
-
     const handleSubmit = (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
@@ -313,10 +309,6 @@ const postColor = async (e) => {
 .then(r => {
   if (r.ok==true) {
     props.setLastAction("Color has been added")
-
-    setUpdateHash(uuid())
-    //let cv = colorVariant.slice()
-    //setColorVariant(cv)
     handleClose()
   } else {
     setErrorNewColor("An error has occurred")
@@ -329,8 +321,17 @@ const postColor = async (e) => {
 
 };
 
-
-// #endregion
+const loadColors = () => {
+  axios.get(config.api + '/Colors')
+  .then(function (res) {
+      let items = res.data.map((item)=>({ id:item.id, value:item.colorName, rgb:item.rgb }))
+      setColors(items)
+  })
+  .catch (error => {
+    console.log('Addproduct loadColors error:' )
+    console.log(error)
+  })
+}
 
 const [errorNewColor, setErrorNewColor] = React.useState("");
 const [openNewColor, setOpenNewColor] = React.useState(false);
@@ -341,7 +342,10 @@ const addNewColor = () => {
   handleOpen();
 }
 
+loadColors()
+
     useEffect(() => {
+      //loadColors()
     }, []);
 
   return (
@@ -514,6 +518,7 @@ const addNewColor = () => {
                   MenuProps={MenuProps}
                   valueVariable={productType}
                   setValueFn={setProductType}
+                  data={colors}
                 />
 
                 <MySelect 
@@ -526,6 +531,7 @@ const addNewColor = () => {
                   MenuProps={MenuProps}
                   valueVariable={productStyle}
                   setValueFn={setProductStyle}
+                  data={colors}
                 />
 
                 <MySelect 
@@ -538,6 +544,7 @@ const addNewColor = () => {
                   MenuProps={MenuProps}
                   valueVariable={season}
                   setValueFn={setSeason}
+                  data={colors}
                 />
 
                 {/* <MySelect 
@@ -550,7 +557,7 @@ const addNewColor = () => {
                   MenuProps={MenuProps}
                   valueVariable={color}
                   setValueFn={setColor}
-                  rgbField="rgb"
+                  data={colors}
                 /> */}
 
                 <MySelect 
@@ -563,6 +570,7 @@ const addNewColor = () => {
                   MenuProps={MenuProps}
                   valueVariable={designType}
                   setValueFn={setDesignType}
+                  data={colors}
                 />
 
                 <MySelect 
@@ -575,6 +583,7 @@ const addNewColor = () => {
                   MenuProps={MenuProps}
                   valueVariable={overworkType}
                   setValueFn={setOverworkType}
+                  data={colors}
                 />
 
                 { allColor.map((cv) => (
@@ -582,7 +591,7 @@ const addNewColor = () => {
                  ))}
 
                 { colorVariant.map((cv) => (
-                    <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} updateHash={updateHash} />
+                    <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} data={colors} />
                  ))}
 <br/>
 <br/>
