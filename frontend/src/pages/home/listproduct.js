@@ -52,6 +52,13 @@ export default function ListProduct(props) {
     const [products, setProducts] = useState([])
     const [filter, setFilter] = useState(false)
 
+    const [colors, setColors] = useState([])
+    const [seasons, setSeasons] = useState([])
+    const [designTypes, setDesignTypes] = useState([])
+    const [overworkTypes, setOverworkTypes] = useState([])
+    const [productTypes, setProductTypes] = useState([])
+    const [productStyles, setProductStyles] = useState([])
+
     const [productStyle, setProductStyle] = useState("")
     const [productType, setProductType] = useState("")
     const [color, setColor] = useState([])
@@ -121,10 +128,89 @@ export default function ListProduct(props) {
       .catch (error => {
         console.log(error)
       })
-    }      
+    }
+    
+    const loadColors = () => {
+      axios.get(config.api + '/Colors')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.colorName, rgb:item.rgb }))
+          setColors(items)
+      })
+      .catch (error => {
+        console.log('Addproduct loadColors error:' )
+        console.log(error)
+      })
+    }
+    
+    const loadSeasons = () => {
+      axios.get(config.api + '/Seasons')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.seasonName }))
+          setSeasons(items)
+      })
+      .catch (error => {
+        console.log('Addproduct loadSeasons error:' )
+        console.log(error)
+      })
+    }
+    
+    const loadDesignTypes = () => {
+      axios.get(config.api + '/DesignTypes')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.designName }))
+          setDesignTypes(items)
+      })
+      .catch (error => {
+        console.log('Addproduct loadDesignTypes error:' )
+        console.log(error)
+      })
+    }
+    
+    const loadOverworkTypes = () => {
+      axios.get(config.api + '/OverworkTypes')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.overWorkName }))
+          setOverworkTypes(items)
+      })
+      .catch (error => {
+        console.log('Addproduct loadDesignTypes error:' )
+        console.log(error)
+      })
+    }
+    
+    const loadProductTypes = () => {
+      axios.get(config.api + '/ProductTypes')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.typeName }))
+          setProductTypes(items)
+      })
+      .catch (error => {
+        console.log('Addproduct loadProductTypes error:' )
+        console.log(error)
+      })
+    }
+    
+    const loadProductStyles = () => {
+      axios.get(config.api + '/ProductStyles')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.styleName }))
+          setProductStyles(items)
+      })
+      .catch (error => {
+        console.log('Addproduct loadProductStyles error:' )
+        console.log(error)
+      })
+    }
+        
 
     useEffect(() => {
       loadProducts()
+      loadColors()
+      loadSeasons()
+      loadDesignTypes()
+      loadOverworkTypes()
+      loadProductTypes()
+      loadProductStyles()
     }, []);
 
   return (
@@ -201,6 +287,7 @@ export default function ListProduct(props) {
                   MenuProps={MenuProps}
                   valueVariable={productType}
                   setValueFn={setProductType}
+                  data={productTypes}
                 />
 
                 <MySelect 
@@ -213,6 +300,7 @@ export default function ListProduct(props) {
                   MenuProps={MenuProps}
                   valueVariable={productStyle}
                   setValueFn={setProductStyle}
+                  data={productStyles}
                 />
 
                 <MySelect 
@@ -225,6 +313,7 @@ export default function ListProduct(props) {
                   MenuProps={MenuProps}
                   valueVariable={season}
                   setValueFn={setSeason}
+                  data={seasons}
                 />
 
                 <MySelect 
@@ -237,6 +326,7 @@ export default function ListProduct(props) {
                   MenuProps={MenuProps}
                   valueVariable={color}
                   setValueFn={setColor}
+                  data={colors}
                 />
 
                 <MySelect 
@@ -249,6 +339,7 @@ export default function ListProduct(props) {
                   MenuProps={MenuProps}
                   valueVariable={designType}
                   setValueFn={setDesignType}
+                  data={designTypes}
                 />
 
                 <MySelect 
@@ -261,6 +352,7 @@ export default function ListProduct(props) {
                   MenuProps={MenuProps}
                   valueVariable={overworkType}
                   setValueFn={setOverworkType}
+                  data={overworkTypes}
                 />
 
           </Box>

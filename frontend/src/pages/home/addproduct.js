@@ -76,6 +76,11 @@ export default function AddProduct(props) {
     const [productStyle, setProductStyle] = useState("")
     const [productType, setProductType] = useState("")
     const [colors, setColors] = useState([])
+    const [seasons, setSeasons] = useState([])
+    const [designTypes, setDesignTypes] = useState([])
+    const [overworkTypes, setOverworkTypes] = useState([])
+    const [productTypes, setProductTypes] = useState([])
+    const [productStyles, setProductStyles] = useState([])
     const [designType, setDesignType] = useState([])
     const [overworkType, setOverworkType] = useState([])
     const [season, setSeason] = useState([])
@@ -333,6 +338,66 @@ const loadColors = () => {
   })
 }
 
+const loadSeasons = () => {
+  axios.get(config.api + '/Seasons')
+  .then(function (res) {
+      let items = res.data.map((item)=>({ id:item.id, value:item.seasonName }))
+      setSeasons(items)
+  })
+  .catch (error => {
+    console.log('Addproduct loadSeasons error:' )
+    console.log(error)
+  })
+}
+
+const loadDesignTypes = () => {
+  axios.get(config.api + '/DesignTypes')
+  .then(function (res) {
+      let items = res.data.map((item)=>({ id:item.id, value:item.designName }))
+      setDesignTypes(items)
+  })
+  .catch (error => {
+    console.log('Addproduct loadDesignTypes error:' )
+    console.log(error)
+  })
+}
+
+const loadOverworkTypes = () => {
+  axios.get(config.api + '/OverworkTypes')
+  .then(function (res) {
+      let items = res.data.map((item)=>({ id:item.id, value:item.overWorkName }))
+      setOverworkTypes(items)
+  })
+  .catch (error => {
+    console.log('Addproduct loadDesignTypes error:' )
+    console.log(error)
+  })
+}
+
+const loadProductTypes = () => {
+  axios.get(config.api + '/ProductTypes')
+  .then(function (res) {
+      let items = res.data.map((item)=>({ id:item.id, value:item.typeName }))
+      setProductTypes(items)
+  })
+  .catch (error => {
+    console.log('Addproduct loadProductTypes error:' )
+    console.log(error)
+  })
+}
+
+const loadProductStyles = () => {
+  axios.get(config.api + '/ProductStyles')
+  .then(function (res) {
+      let items = res.data.map((item)=>({ id:item.id, value:item.styleName }))
+      setProductStyles(items)
+  })
+  .catch (error => {
+    console.log('Addproduct loadProductStyles error:' )
+    console.log(error)
+  })
+}
+
 const [errorNewColor, setErrorNewColor] = React.useState("");
 const [openNewColor, setOpenNewColor] = React.useState(false);
 const handleOpen = () => { setErrorNewColor(""); setOpenNewColor(true); }
@@ -342,11 +407,14 @@ const addNewColor = () => {
   handleOpen();
 }
 
-loadColors()
-
-    useEffect(() => {
-      //loadColors()
-    }, []);
+useEffect(() => {
+  loadColors()
+  loadSeasons()
+  loadDesignTypes()
+  loadOverworkTypes()
+  loadProductTypes()
+  loadProductStyles()
+  }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -497,16 +565,6 @@ loadColors()
                 value={width}
                 onChange={ev => setWidth(ev.target.value)}
               />
-            {/* <TextField
-                margin="normal"
-                size="small" 
-                id="colorNo"
-                label="Color No"
-                name="colorNo"
-                sx = {itemStyle}
-                value={colorNo}
-                onChange={ev => setColorNo(ev.target.value)}
-              /> */}
 
                 <MySelect 
                   id="addproduct-producttype"
@@ -518,7 +576,7 @@ loadColors()
                   MenuProps={MenuProps}
                   valueVariable={productType}
                   setValueFn={setProductType}
-                  data={colors}
+                  data={productTypes}
                 />
 
                 <MySelect 
@@ -531,7 +589,7 @@ loadColors()
                   MenuProps={MenuProps}
                   valueVariable={productStyle}
                   setValueFn={setProductStyle}
-                  data={colors}
+                  data={productStyles}
                 />
 
                 <MySelect 
@@ -544,21 +602,8 @@ loadColors()
                   MenuProps={MenuProps}
                   valueVariable={season}
                   setValueFn={setSeason}
-                  data={colors}
+                  data={seasons}
                 />
-
-                {/* <MySelect 
-                  id="addproduct-color"
-                  url="Colors"
-                  title="Color"
-                  valueName="colorName"
-                  labelStyle={labelStyle}
-                  itemStyle={itemStyle}
-                  MenuProps={MenuProps}
-                  valueVariable={color}
-                  setValueFn={setColor}
-                  data={colors}
-                /> */}
 
                 <MySelect 
                   id="addproduct-designtype"
@@ -570,7 +615,7 @@ loadColors()
                   MenuProps={MenuProps}
                   valueVariable={designType}
                   setValueFn={setDesignType}
-                  data={colors}
+                  data={designTypes}
                 />
 
                 <MySelect 
@@ -583,7 +628,7 @@ loadColors()
                   MenuProps={MenuProps}
                   valueVariable={overworkType}
                   setValueFn={setOverworkType}
-                  data={colors}
+                  data={overworkTypes}
                 />
 
                 { allColor.map((cv) => (

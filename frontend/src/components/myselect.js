@@ -88,7 +88,7 @@ return (
             key={elem.id} 
             value={elem.id}
             style={getStyles(elem.id, selectedValue, theme)}>  
-               {elem.id != -2 &&
+               {elem.id != -2 && elem.rgb &&
                  <Box component="span" className="color_select_item" sx={{ backgroundColor: "#" + elem.rgb, border: "1px solid #bbb", height: "24px", width: "24px",  mr: 2 }}>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                  </Box>} 
