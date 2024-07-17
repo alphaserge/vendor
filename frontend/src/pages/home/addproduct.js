@@ -18,8 +18,10 @@ import { v4 as uuid } from 'uuid'
 import MySelect from '../../components/myselect';
 import ColorVariant from './colorvariant';
 import ProductColor from './productcolor';
-import Copyright from '../copyright';
 import config from "../../config.json"
+import { getColors } from '../../api/colors'
+import { getSeasons } from '../../api/seasons'
+import { getDesignTypes } from '../../api/designtypes'
 
 import Header from './header';
 import Footer from './footer';
@@ -326,18 +328,6 @@ const postColor = async (e) => {
 
 };
 
-const loadColors = () => {
-  axios.get(config.api + '/Colors')
-  .then(function (res) {
-      let items = res.data.map((item)=>({ id:item.id, value:item.colorName, rgb:item.rgb }))
-      setColors(items)
-  })
-  .catch (error => {
-    console.log('Addproduct loadColors error:' )
-    console.log(error)
-  })
-}
-
 const loadSeasons = () => {
   axios.get(config.api + '/Seasons')
   .then(function (res) {
@@ -408,9 +398,9 @@ const addNewColor = () => {
 }
 
 useEffect(() => {
-  loadColors()
-  loadSeasons()
-  loadDesignTypes()
+  getColors(setColors)
+  getSeasons(setSeasons)
+  getDesignTypes(setDesignTypes)
   loadOverworkTypes()
   loadProductTypes()
   loadProductStyles()

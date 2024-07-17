@@ -64,7 +64,7 @@ export default function ColorVariant(props) {
     }
 
     useEffect(() => {
-      console.log('color variant useEffect')
+      
     }, []);
 
   return (
