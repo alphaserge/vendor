@@ -22,6 +22,9 @@ import config from "../../config.json"
 import { getColors } from '../../api/colors'
 import { getSeasons } from '../../api/seasons'
 import { getDesignTypes } from '../../api/designtypes'
+import { getOverworkTypes } from '../../api/overworktypes'
+import { getProductTypes } from '../../api/producttypes'
+import { getProductStyles } from '../../api/productstyles'
 
 import Header from './header';
 import Footer from './footer';
@@ -77,12 +80,6 @@ export default function AddProduct(props) {
 
     const [productStyle, setProductStyle] = useState("")
     const [productType, setProductType] = useState("")
-    const [colors, setColors] = useState([])
-    const [seasons, setSeasons] = useState([])
-    const [designTypes, setDesignTypes] = useState([])
-    const [overworkTypes, setOverworkTypes] = useState([])
-    const [productTypes, setProductTypes] = useState([])
-    const [productStyles, setProductStyles] = useState([])
     const [designType, setDesignType] = useState([])
     const [overworkType, setOverworkType] = useState([])
     const [season, setSeason] = useState([])
@@ -91,13 +88,18 @@ export default function AddProduct(props) {
     const [artNo, setArtNo] = useState("")
     const [uid, setUid] = useState(uuid())
     const [design, setDesign] = useState("")
-    const [colorNo, setColorNo] = useState("")
     const [price, setPrice] = useState("")
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
     const [newColor, setNewColor] = useState("")
     const [newColorRgb, setNewColorRgb] = useState("")
-    const [selectedFile, setSelectedFile] = useState(null)
+
+    const [colors, setColors] = useState([])
+    const [seasons, setSeasons] = useState([])
+    const [designTypes, setDesignTypes] = useState([])
+    const [overworkTypes, setOverworkTypes] = useState([])
+    const [productTypes, setProductTypes] = useState([])
+    const [productStyles, setProductStyles] = useState([])
 
     const [colorVariant, setColorVariant] = useState([
       {
@@ -182,14 +184,11 @@ export default function AddProduct(props) {
       });
     };
   
-  const onFileChange = (event) => {
-      setSelectedFile(event.target.files[0])
-  }
-  
-  const postFile = async (cv) => {
+  const postFile = async (cv, id) => {
     const formData = new FormData();
     formData.append("formFile", cv.SelectedFile);
     formData.append("uid", cv.Id);
+    formData.append("id", id);
     try {
       const res = await axios.post(config.api + "/Products/ImportFile", formData);
     } catch (ex) {
@@ -268,7 +267,7 @@ export default function AddProduct(props) {
         OverWorkTypes: overworkType,
       })
   })
-  //.then(r => r.json())
+  .then(r => r.json())
   .then(r => {
     let cvs1 = colorVariant.filter(e=>!!e.ColorNo)
     let cvs2 = colorVariant.filter(e=>e.ColorNo!=null)
@@ -280,7 +279,7 @@ export default function AddProduct(props) {
       }    
     });
     allColor.filter(e=>!!e.SelectedFile).forEach(cv => {
-        postFile(cv);
+        postFile(cv, r.id);
     });
     
     props.setLastAction("Product has been added")
@@ -328,66 +327,6 @@ const postColor = async (e) => {
 
 };
 
-const loadSeasons = () => {
-  axios.get(config.api + '/Seasons')
-  .then(function (res) {
-      let items = res.data.map((item)=>({ id:item.id, value:item.seasonName }))
-      setSeasons(items)
-  })
-  .catch (error => {
-    console.log('Addproduct loadSeasons error:' )
-    console.log(error)
-  })
-}
-
-const loadDesignTypes = () => {
-  axios.get(config.api + '/DesignTypes')
-  .then(function (res) {
-      let items = res.data.map((item)=>({ id:item.id, value:item.designName }))
-      setDesignTypes(items)
-  })
-  .catch (error => {
-    console.log('Addproduct loadDesignTypes error:' )
-    console.log(error)
-  })
-}
-
-const loadOverworkTypes = () => {
-  axios.get(config.api + '/OverworkTypes')
-  .then(function (res) {
-      let items = res.data.map((item)=>({ id:item.id, value:item.overWorkName }))
-      setOverworkTypes(items)
-  })
-  .catch (error => {
-    console.log('Addproduct loadDesignTypes error:' )
-    console.log(error)
-  })
-}
-
-const loadProductTypes = () => {
-  axios.get(config.api + '/ProductTypes')
-  .then(function (res) {
-      let items = res.data.map((item)=>({ id:item.id, value:item.typeName }))
-      setProductTypes(items)
-  })
-  .catch (error => {
-    console.log('Addproduct loadProductTypes error:' )
-    console.log(error)
-  })
-}
-
-const loadProductStyles = () => {
-  axios.get(config.api + '/ProductStyles')
-  .then(function (res) {
-      let items = res.data.map((item)=>({ id:item.id, value:item.styleName }))
-      setProductStyles(items)
-  })
-  .catch (error => {
-    console.log('Addproduct loadProductStyles error:' )
-    console.log(error)
-  })
-}
-
 const [errorNewColor, setErrorNewColor] = React.useState("");
 const [openNewColor, setOpenNewColor] = React.useState(false);
 const handleOpen = () => { setErrorNewColor(""); setOpenNewColor(true); }
@@ -401,9 +340,9 @@ useEffect(() => {
   getColors(setColors)
   getSeasons(setSeasons)
   getDesignTypes(setDesignTypes)
-  loadOverworkTypes()
-  loadProductTypes()
-  loadProductStyles()
+  getOverworkTypes(setOverworkTypes)
+  getProductTypes(setProductTypes)
+  getProductStyles(setProductStyles)
   }, []);
 
   return (

@@ -313,6 +313,7 @@ namespace chiffon_back.Models
                 Context.Product prod = config.CreateMapper()
                     .Map<Context.Product>(product);
 
+                prod.Created = DateTime.Now;
                 ctx.Products.Add(prod);
                 ctx.SaveChanges();
 
@@ -394,5 +395,112 @@ namespace chiffon_back.Models
             }
 
         }
+
+        public static bool Update(Models.PostProduct product)
+        {
+            ChiffonDbContext ctx = ContextHelper.ChiffonContext();
+
+            try
+            {
+                Context.Product? prod = ctx.Products.Where(x => x.Id == product.Id).FirstOrDefault();
+                if (prod != null)
+                {
+                    prod.ArtNo = product.ArtNo;
+                    prod.RefNo = product.RefNo;
+                    prod.Design = product.Design;
+                    prod.ItemName = product.ItemName;
+                    prod.Price = product.Price;
+                    prod.ProductStyleId = product.ProductStyleId;
+                    prod.ProductTypeId = product.ProductTypeId;
+                    prod.VendorId = product.VendorId;
+                    prod.Weight = product.Weight;
+                    prod.Width = product.Width;
+                    ctx.SaveChanges();
+
+
+                    if (product.ColorVariants != null)
+                    {
+                        foreach (var item in product.ColorVariants)
+                        {
+                            Context.ColorVariant cv = new Context.ColorVariant()
+                            {
+                                ProductId = prod.Id,
+                                Uuid = item.Id,
+                                Num = item.No
+                            };
+
+                            ctx.ColorVariants.Add(cv);
+                            ctx.SaveChanges(true);
+
+                            foreach (var colorId in item.ColorIds != null ? item.ColorIds : [])
+                            {
+                                ctx.ColorVariantsInColors.Add(new Context.ColorVariantsInColors()
+                                {
+                                    ColorVariantId = cv.Id,
+                                    ColorId = colorId,
+                                });
+                            }
+                            ctx.SaveChanges(true);
+                        }
+                    }
+
+                    ctx.ProductsInDesignTypes.RemoveRange(ctx.ProductsInDesignTypes.Where(x => x.ProductId == prod.Id));
+                    if (product.DesignTypes != null)
+                    {
+                        foreach (var item in product.DesignTypes)
+                        {
+                            Context.ProductsInDesignTypes cv = new Context.ProductsInDesignTypes()
+                            {
+                                ProductId = prod.Id,
+                                DesignTypeId = item
+                            };
+
+                            ctx.ProductsInDesignTypes.Add(cv);
+                            ctx.SaveChanges(true);
+                        }
+                    }
+
+                    ctx.ProductsInSeasons.RemoveRange(ctx.ProductsInSeasons.Where(x => x.ProductId == prod.Id));
+                    if (product.Seasons != null)
+                    {
+                        foreach (var item in product.Seasons)
+                        {
+                            Context.ProductsInSeasons cv = new Context.ProductsInSeasons()
+                            {
+                                ProductId = prod.Id,
+                                SeasonId = item
+                            };
+
+                            ctx.ProductsInSeasons.Add(cv);
+                            ctx.SaveChanges(true);
+                        }
+                    }
+
+                    ctx.ProductsInOverWorkTypes.RemoveRange(ctx.ProductsInOverWorkTypes.Where(x => x.ProductId == prod.Id));
+                    if (product.OverWorkTypes != null)
+                    {
+                        foreach (var item in product.OverWorkTypes)
+                        {
+                            Context.ProductsInOverWorkTypes cv = new Context.ProductsInOverWorkTypes()
+                            {
+                                ProductId = prod.Id,
+                                OverWorkTypeId = item
+                            };
+
+                            ctx.ProductsInOverWorkTypes.Add(cv);
+                            ctx.SaveChanges(true);
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
     }
 }

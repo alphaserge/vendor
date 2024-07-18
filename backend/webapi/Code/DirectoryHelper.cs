@@ -29,7 +29,7 @@ namespace chiffon_back.Code
         }
         public static List<string> GetImageFiles(string uid)
         {
-            if (uid == null)
+            if (uid == null || String.IsNullOrWhiteSpace(uid))
             {
                 return new List<string> { @"colors\nopicture.png" };
             }

@@ -9,6 +9,7 @@ namespace chiffon_back.Models
     public class Product
     {
         public int? Id { get; set; }
+        public DateTime? Created { get; set; }
         public string? ItemName { get; set; }
         public string? RefNo { get; set; }
         public string? ArtNo { get; set; }

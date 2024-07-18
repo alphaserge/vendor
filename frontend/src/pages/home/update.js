@@ -24,19 +24,22 @@ import { v4 as uuid } from 'uuid'
 import MySelect from '../../components/myselect';
 import ColorVariant from './colorvariant';
 import ProductColor from './productcolor';
-import Copyright from '../copyright';
 import config from "../../config.json"
+import { getColors } from '../../api/colors'
+import { getSeasons } from '../../api/seasons'
+import { getDesignTypes } from '../../api/designtypes'
+import { getOverworkTypes } from '../../api/overworktypes'
+import { getProductTypes } from '../../api/producttypes'
+import { getProductStyles } from '../../api/productstyles'
 
 import Header from './header';
 import Footer from './footer';
 
 import { APPEARANCE } from '../../appearance';
-import zIndex from "@mui/material/styles/zIndex";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
-const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
 const labelStyle = { m: 2, ml: 4, mr: 4 }
 const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.GREEN2, color: APPEARANCE.WHITE }
 
@@ -67,7 +70,7 @@ export default function Update(props) {
 
     const [productStyle, setProductStyle] = useState("")
     const [productType, setProductType] = useState("")
-    const [color, setColor] = useState([])
+
     const [designType, setDesignType] = useState([])
     const [overworkType, setOverworkType] = useState([])
     const [season, setSeason] = useState([])
@@ -77,7 +80,6 @@ export default function Update(props) {
     const [uid, setUid] = useState(uuid())
     const [productId, setProductId] = useState(uuid())
     const [design, setDesign] = useState("")
-    const [colorNo, setColorNo] = useState("")
     const [price, setPrice] = useState("")
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
@@ -87,10 +89,14 @@ export default function Update(props) {
     const [productColors, setProductColors] = useState([])
     const [colorVariantPlus, setColorVariantPlus] = useState([])
     const [productColorsPlus, setProductColorsPlus] = useState([])
-    //const [images, setImages] = useState([])
-    //const [colors, setColors] = useState([])
-    //const [cvNums, setCvNums] = useState([])
-    //const [cvIds, setCvIds] = useState([])
+
+    const [colors, setColors] = useState([])
+    const [seasons, setSeasons] = useState([])
+    const [designTypes, setDesignTypes] = useState([])
+    const [overworkTypes, setOverworkTypes] = useState([])
+    const [productTypes, setProductTypes] = useState([])
+    const [productStyles, setProductStyles] = useState([])
+
     let loc = useLocation()
 
     const setColorVariantItem = (i, item) => {
@@ -331,9 +337,13 @@ const loadProducts = async (e) => {
 
     useEffect(() => {
       loadProducts()
-      console.log('productColorsPlus:')
-      console.log(productColorsPlus)
-    }, []);
+      getColors(setColors)
+      getSeasons(setSeasons)
+      getDesignTypes(setDesignTypes)
+      getOverworkTypes(setOverworkTypes)
+      getProductTypes(setProductTypes)
+      getProductStyles(setProductStyles)
+        }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -462,6 +472,7 @@ const loadProducts = async (e) => {
                   MenuProps={MenuProps}
                   valueVariable={productType}
                   setValueFn={setProductType}
+                  data={productTypes}
                 />
 
                 <MySelect 
@@ -474,6 +485,7 @@ const loadProducts = async (e) => {
                   MenuProps={MenuProps}
                   valueVariable={productStyle}
                   setValueFn={setProductStyle}
+                  data={productStyles}
                 />
 
                 <MySelect 
@@ -486,6 +498,7 @@ const loadProducts = async (e) => {
                   MenuProps={MenuProps}
                   valueVariable={season}
                   setValueFn={setSeason}
+                  data={seasons}
                 />
 
                 <MySelect 
@@ -498,6 +511,7 @@ const loadProducts = async (e) => {
                   MenuProps={MenuProps}
                   valueVariable={designType}
                   setValueFn={setDesignType}
+                  data={designTypes}
                 />
 
                 <MySelect 
@@ -510,9 +524,10 @@ const loadProducts = async (e) => {
                   MenuProps={MenuProps}
                   valueVariable={overworkType}
                   setValueFn={setOverworkType}
+                  data={overworkTypes}
                 />
                 { colorVariantPlus.map((cv) => (
-                    <ColorVariant cv={cv} setColorItem={setColorVariantItem}  />
+                    <ColorVariant cv={cv} setColorItem={setColorVariantItem} data={colors} />
                  ))}
                 { productColorsPlus.map((cv) => (
                     <ProductColor cv={cv} setColorItem={setProductColorItem}  />
