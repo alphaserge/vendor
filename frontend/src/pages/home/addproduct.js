@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useSyncExternalStore } from "react";
 import { json, useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -10,8 +10,6 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
-
-import axios from 'axios'
 
 import { v4 as uuid } from 'uuid'
 
@@ -25,6 +23,7 @@ import { getDesignTypes } from '../../api/designtypes'
 import { getOverworkTypes } from '../../api/overworktypes'
 import { getProductTypes } from '../../api/producttypes'
 import { getProductStyles } from '../../api/productstyles'
+import { postProduct } from '../../api/products'
 
 import Header from './header';
 import Footer from './footer';
@@ -34,19 +33,6 @@ import { APPEARANCE } from '../../appearance';
 import Modal from '@mui/material/Modal';
 import { InputLabel } from "@mui/material";
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
@@ -56,7 +42,7 @@ const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BLUE1, color
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 
-const MenuProps = {
+const MySelectProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
@@ -65,14 +51,6 @@ const MenuProps = {
   },
 };
 
-function getStyles(name, personName, theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
-}
 export default function AddProduct(props) {
 
     const navigate = useNavigate();
@@ -175,26 +153,6 @@ export default function AddProduct(props) {
       setColorVariant(cv)
     }
   
-    const handleSubmit = (event) => {
-      event.preventDefault();
-      const data = new FormData(event.currentTarget);
-      console.log({
-        email: data.get('email'),
-        password: data.get('password'),
-      });
-    };
-  
-  const postFile = async (cv, id) => {
-    const formData = new FormData();
-    formData.append("formFile", cv.SelectedFile);
-    formData.append("uid", cv.Id);
-    formData.append("id", id);
-    try {
-      const res = await axios.post(config.api + "/Products/ImportFile", formData);
-    } catch (ex) {
-      console.log(ex);
-    }
-  };
 
   const moreVariants = async (e) => {
     let cv = colorVariant.slice()
@@ -229,70 +187,34 @@ export default function AddProduct(props) {
     setAllColor(cv)
   }
 
-  const postProduct = async (e) => {
-
-    // let cv = colorVariant.map(function(item) { 
-    //   delete item.SelectedFile; 
-    //   delete item.No;
-    //   delete item.ColorId;
-    //   return item; 
-    // });
-
-    let cv = colorVariant.filter(item => !!item.ColorNo && item.ColorIds.length > 0 && !!item.SelectedFile)
-    let ac = allColor.filter(item => !!item.No && !!item.SelectedFile).map((e) => e.Id).join(',')
-
-    fetch(config.api + '/Products/ProductAdd', {
-      method: "POST",
-      headers: {
-          'Content-Type': 'application/json'
-        },
-      body: JSON.stringify({
-        ItemName: itemName,
-        RefNo: refNo,
-        ArtNo: artNo,
-        Design: design,
-         //ColorNo: colorNo,
-        Price: Number(price),
-        Weight: Number(weight),
-        Width: Number(width),
-        ProductStyleId: Number(productStyle),
-        ProductTypeId: Number(productType),
-        VendorId: 1, //!!props.user ? props.user.vendorId : null,
-        Uuid: uid,
-        PhotoUuids: ac,
-        //Colors: color,
-        ColorVariants: cv, 
-        Seasons: season,
-        DesignTypes: designType,
-        OverWorkTypes: overworkType,
-      })
-  })
-  .then(r => r.json())
-  .then(r => {
-    let cvs1 = colorVariant.filter(e=>!!e.ColorNo)
-    let cvs2 = colorVariant.filter(e=>e.ColorNo!=null)
-    let cvs3 = colorVariant.filter(function(e) { return e.ColorNo!=null})
-
-    colorVariant.filter(e=>!!e.ColorNo).forEach(cv => {
-      if (!!cv.SelectedFile) {
-        postFile(cv);
-      }    
-    });
-    allColor.filter(e=>!!e.SelectedFile).forEach(cv => {
-        postFile(cv, r.id);
-    });
+  const saveProduct = async (e) => {
     
-    props.setLastAction("Product has been added")
-    navigate("/menu")
-})
-  .catch (error => {
-    console.log(error)
-    //navigate("/error")
-  })
+    let prod = {
+      itemName: itemName,
+      refNo: refNo,
+      artNo: artNo,
+      design: design,
+      season: season,
+      designType: designType,
+      overworkType: overworkType,
+      productStyle: productStyle,
+      productType: productType,
+      vendorId: 1, //!
+      price: price,
+      weight: weight,
+      width: width,
+      uid: uid,
+      colorVariants: colorVariant.filter(it => !!it.ColorNo && it.ColorIds.length > 0 && !!it.SelectedFile), 
+      globalPhotos: allColor.filter(it => !!it.No && !!it.SelectedFile)
+    }
 
-};
+    if (postProduct(prod)) {
+      props.setLastAction("Product has been added")
+      navigate("/menu")
+    } else {}
+  }
 
-const postColor = async (e) => {
+  const postColor = async (e) => {
 
   const matched = newColorRgb.match("^(([0-9a-fA-F]{2}){3}|([0-9a-fA-F]){3})$")
 
@@ -355,7 +277,8 @@ useEffect(() => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                width: 400, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Adding a new color
           </Typography>
@@ -409,9 +332,6 @@ useEffect(() => {
       <Container sx={{maxWidth: "100%", padding: 0 }} className="header-container" >
         <Header user={props.user} title={props.title} />
         <main>
-        {/* <Avatar sx={{ mb: 2, bgcolor: 'secondary.main' }}>
-            <AddCircleIcon />
-          </Avatar> */}
           <Box sx={{ border: "1px solid #ddd", padding: "20px 10px", textAlign: "center", maxWidth: 900}} justifyContent={"center"} alignItems={"center"}>
             
           <Typography component="h1" variant="h6" color={APPEARANCE.COLOR1}>
@@ -421,8 +341,6 @@ useEffect(() => {
           Please fill out all fields and click the Save button
           </Typography>
           
-
-          {/* <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}> */}
           <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto" }} justifyContent={"center"} className="header-menu"  >
             <TextField
                 margin="normal"
@@ -502,7 +420,7 @@ useEffect(() => {
                   valueName="typeName"
                   labelStyle={labelStyle}
                   itemStyle={itemStyle}
-                  MenuProps={MenuProps}
+                  MenuProps={MySelectProps}
                   valueVariable={productType}
                   setValueFn={setProductType}
                   data={productTypes}
@@ -515,7 +433,7 @@ useEffect(() => {
                   valueName="styleName"
                   labelStyle={labelStyle}
                   itemStyle={itemStyle}
-                  MenuProps={MenuProps}
+                  MenuProps={MySelectProps}
                   valueVariable={productStyle}
                   setValueFn={setProductStyle}
                   data={productStyles}
@@ -528,7 +446,7 @@ useEffect(() => {
                   valueName="seasonName"
                   labelStyle={labelStyle}
                   itemStyle={itemStyle}
-                  MenuProps={MenuProps}
+                  MenuProps={MySelectProps}
                   valueVariable={season}
                   setValueFn={setSeason}
                   data={seasons}
@@ -541,7 +459,7 @@ useEffect(() => {
                   valueName="designName"
                   labelStyle={labelStyle}
                   itemStyle={itemStyle}
-                  MenuProps={MenuProps}
+                  MenuProps={MySelectProps}
                   valueVariable={designType}
                   setValueFn={setDesignType}
                   data={designTypes}
@@ -554,7 +472,7 @@ useEffect(() => {
                   valueName="overWorkName"
                   labelStyle={labelStyle}
                   itemStyle={itemStyle}
-                  MenuProps={MenuProps}
+                  MenuProps={MySelectProps}
                   valueVariable={overworkType}
                   setValueFn={setOverworkType}
                   data={overworkTypes}
@@ -575,7 +493,7 @@ useEffect(() => {
                     variant="contained"
                     style={buttonStyle}
                     sx={{margin: "0 10px", height: 70}}
-                    onClick={postProduct} >
+                    onClick={saveProduct} >
                         Save
                     </Button>
                     <Button 

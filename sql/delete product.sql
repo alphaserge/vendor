@@ -1,6 +1,6 @@
 
 declare @id int
-set @id = 84
+set @id = 90
 
 delete from ColorVariantsInColors where ColorVariantId in (select Id FROM [chiffon].[dbo].[ColorVariants] where ProductId in (@id))
 delete   FROM [chiffon].[dbo].[ColorVariants] where ProductId in (@id)
