@@ -35,6 +35,7 @@ import { InputLabel } from "@mui/material";
 
 const defaultTheme = createTheme()
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
+const halfItemStyle = { width: 140, ml: 0, mr: 2 }
 const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
 const labelStyle = { m: 2, ml: 4, mr: 4 }
 const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BLUE1, color: APPEARANCE.WHITE }
@@ -153,7 +154,6 @@ export default function AddProduct(props) {
       setColorVariant(cv)
     }
   
-
   const moreVariants = async (e) => {
     let cv = colorVariant.slice()
     let num = cv.length
@@ -323,7 +323,7 @@ useEffect(() => {
           Please fill out all fields and click the Save button
           </Typography>
           
-          <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto" }} justifyContent={"center"} className="header-menu"  >
+          <Grid item xs={12} md={6} sx={{ textAlign:"center", margin: "0 auto" }} justifyContent={"center"} className="header-menu"  >
             <TextField
                 margin="normal"
                 size="small" 
@@ -373,26 +373,6 @@ useEffect(() => {
                 sx = {itemStyle}
                 value={price}
                 onChange={ev => setPrice(ev.target.value)}
-              />
-            <TextField
-                margin="normal"
-                size="small" 
-                id="weight"
-                label="Weight"
-                name="weight"
-                sx = {itemStyle}
-                value={weight}
-                onChange={ev => setWeight(ev.target.value)}
-              />
-            <TextField
-                margin="normal"
-                size="small" 
-                id="width"
-                label="Width"
-                name="width"
-                sx = {itemStyle}
-                value={width}
-                onChange={ev => setWidth(ev.target.value)}
               />
 
                 <MySelect 
@@ -459,6 +439,39 @@ useEffect(() => {
                   setValueFn={setOverworkType}
                   data={overworkTypes}
                 />
+
+            <Box sx={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '340px' }}>
+            <TextField
+                margin="normal"
+                size="small" 
+                id="weight"
+                label="Weight P/M"
+                name="weight"
+                sx = {halfItemStyle}
+                value={weight}
+                onChange={ev => setWeight(ev.target.value)}
+              />
+            <TextField
+                margin="normal"
+                size="small" 
+                id="weight"
+                label="Weight P/M"
+                name="weight"
+                sx = {halfItemStyle}
+                value={weight}
+                onChange={ev => setWeight(ev.target.value)}
+              />
+              </Box>
+            <TextField
+                margin="normal"
+                size="small" 
+                id="width"
+                label="Width"
+                name="width"
+                sx = {itemStyle}
+                value={width}
+                onChange={ev => setWidth(ev.target.value)}
+              />
 
                 { allColor.map((cv) => (
                     <ProductColor cv={cv} setColorItem={setColorProduct}  />
