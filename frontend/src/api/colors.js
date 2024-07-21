@@ -12,5 +12,48 @@ export const getColors = (setFn) => {
       console.log(error)
     })
   }
+
+  export const postColor = async (colorName, colorRgb) => {
+
+    const error = {
+      ok: true,
+      message: "Color has been added"
+    }
+
+    const matched = colorRgb.match("^(([0-9a-fA-F]{2}){3}|([0-9a-fA-F]){3})$")
   
+    if (!matched || colorRgb.length != 6 ) {
+      return {
+        ok: false,
+        message: "Incorrect RGB value.\n Should be as example: FA240C, DD34CC"
+      }
+    }
   
+    const responce = await fetch(config.api + '/Colors', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        colorName: colorName,
+        rgb: colorRgb,
+      })
+    })
+
+    console.log(responce);
+
+    return {
+      ok: true,
+      message: "The new color has been added"
+    }
+    //let r = await responce.json();
+
+  /*.then(r => r.json())
+  .then(r => {
+      return {
+        ok: true,
+        message: "The new color has been added"
+      }
+  })
+  .catch (err => {
+    return error
+  })*/
+};

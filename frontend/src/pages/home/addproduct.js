@@ -17,7 +17,7 @@ import MySelect from '../../components/myselect';
 import ColorVariant from './colorvariant';
 import ProductColor from './productcolor';
 import config from "../../config.json"
-import { getColors } from '../../api/colors'
+import { getColors, postColor } from '../../api/colors'
 import { getSeasons } from '../../api/seasons'
 import { getDesignTypes } from '../../api/designtypes'
 import { getOverworkTypes } from '../../api/overworktypes'
@@ -214,39 +214,21 @@ export default function AddProduct(props) {
     } else {}
   }
 
-  const postColor = async (e) => {
+  const saveColor = async (e) => {
 
-  const matched = newColorRgb.match("^(([0-9a-fA-F]{2}){3}|([0-9a-fA-F]){3})$")
+    let r = await postColor(newColor, newColorRgb)
 
-  if (!matched || newColorRgb.length != 6 ) {
-    setErrorNewColor("Incorrect RGB value.\n Should be as example: FA240C, DD34CC")
-    return
-  }
-
-  fetch(config.api + '/Colors', {
-    method: "POST",
-    headers: {
-        'Content-Type': 'application/json'
-      },
-    body: JSON.stringify({
-      colorName: newColor,
-      rgb: newColorRgb,
-    })
-})
-//.then(r => r.json())
-.then(r => {
-  if (r.ok==true) {
-    props.setLastAction("Color has been added")
-    handleClose()
-  } else {
-    setErrorNewColor("An error has occurred")
-  }
-})
-.catch (error => {
-  console.log(error)
-  setErrorNewColor("An error has occurred")
-})
-
+    if (!r.ok) {
+      setErrorNewColor(r.message)
+      return
+    }
+    if (r.ok == true) {
+      props.setLastAction(r.message)
+      getColors(setColors)
+      handleClose()
+    } else {
+      setErrorNewColor(r.message)
+    }
 };
 
 const [errorNewColor, setErrorNewColor] = React.useState("");
@@ -314,7 +296,7 @@ useEffect(() => {
               variant="contained"
               style={buttonStyle}
               sx={{margin: "5px 10px 5px 30px", height: 50}}
-              onClick={postColor} >
+              onClick={saveColor} >
                   Save
           </Button>
           <Button 
