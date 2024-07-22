@@ -1,0 +1,8 @@
+node_modules
+backend/.vs
+backend/webapi/bin
+backend/webapi/colors
+backend/webapi/images
+backend/webapi/obj
+frontend/build
+package-lock.json
