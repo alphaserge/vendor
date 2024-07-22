@@ -20,17 +20,28 @@ namespace chiffon_back.Models
         public decimal? Price { get; set; }
         public int? Weight { get; set; }
         public int? Width { get; set; }
+        public int? GSM { get; set; }
+        public decimal? Meters1KG { get; set; }
 
         public int? ProductStyleId { get; set; }
         public int? ProductTypeId { get; set; }
         public int? VendorId { get; set; }
+        public int? PrintTypeId { get; set; }
+        public int? DyeStaffId { get; set; }
+        public int? PlainDyedTypeId { get; set; }
 
         public string? Vendor { get; set; }
         public string? ProductStyle { get; set; }
         public string? ProductType { get; set; }
+        public string? PrintType { get; set; }
+        public string? DyeStaff { get; set; }
+        public string? PlainDyedType { get; set; }
         public string? Uuid { get; set; }
         public string? PhotoUuids { get; set; }
-        
+        public string? FabricConstruction { get; set; }
+        public string? FabricYarnCount { get; set; }
+        public int? ColorFastness { get; set; }
+
         public string? FileName { get; set; }
         public List<ProductColor> Colors { get; set; }
 

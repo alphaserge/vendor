@@ -440,38 +440,50 @@ useEffect(() => {
                   data={overworkTypes}
                 />
 
-            <Box sx={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '340px' }}>
-            <TextField
-                margin="normal"
-                size="small" 
-                id="weight"
-                label="Weight P/M"
-                name="weight"
-                sx = {halfItemStyle}
-                value={weight}
-                onChange={ev => setWeight(ev.target.value)}
-              />
-            <TextField
-                margin="normal"
-                size="small" 
-                id="weight"
-                label="Weight P/M"
-                name="weight"
-                sx = {halfItemStyle}
-                value={weight}
-                onChange={ev => setWeight(ev.target.value)}
-              />
+             <Box sx={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '340px' }}>
+              <TextField
+                  margin="normal"
+                  size="small" 
+                  id="weight"
+                  label="Weight GPM"
+                  name="weight"
+                  sx = {halfItemStyle}
+                  value={weight}
+                  onChange={ev => setWeight(ev.target.value)}
+                />
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="width"
+                  label="Width"
+                  name="width"
+                  sx = {itemStyle}
+                  value={width}
+                  onChange={ev => setWidth(ev.target.value)}
+                />
               </Box>
-            <TextField
-                margin="normal"
-                size="small" 
-                id="width"
-                label="Width"
-                name="width"
-                sx = {itemStyle}
-                value={width}
-                onChange={ev => setWidth(ev.target.value)}
-              />
+              <Box sx={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '340px' }}>
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="weight"
+                  label="Density GSM"
+                  name="weight"
+                  sx = {halfItemStyle}
+                  value={weight}
+                  onChange={ev => setWeight(ev.target.value)}
+                />
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="weight"
+                  label="Meters in KG"
+                  name="weight"
+                  sx = {halfItemStyle}
+                  value={weight}
+                  onChange={ev => setWeight(ev.target.value)}
+                />
+              </Box>
 
                 { allColor.map((cv) => (
                     <ProductColor cv={cv} setColorItem={setColorProduct}  />
