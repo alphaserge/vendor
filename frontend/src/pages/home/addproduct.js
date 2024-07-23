@@ -35,8 +35,9 @@ import { InputLabel } from "@mui/material";
 
 const defaultTheme = createTheme()
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
-const halfItemStyle = { width: 140, ml: 0, mr: 2 }
+const halfItemStyle = { width: 180, ml: 0, mr: 2 }
 const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
+const boxStyle = { display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '360px', ml:4, mr:2 }
 const labelStyle = { m: 2, ml: 4, mr: 4 }
 const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BLUE1, color: APPEARANCE.WHITE }
 
@@ -70,6 +71,9 @@ export default function AddProduct(props) {
     const [price, setPrice] = useState("")
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
+    const [metersInKg, setMetersInKg] = useState("")
+    const [gsm, setGsm] = useState("")
+    
     const [newColor, setNewColor] = useState("")
     const [newColorRgb, setNewColorRgb] = useState("")
 
@@ -153,7 +157,30 @@ export default function AddProduct(props) {
       let cv = colorVariant.map(el=>el.Id==i? item:el)
       setColorVariant(cv)
     }
-  
+
+    const weightChanged = (e) => {
+      let value = e.target.value
+      setWeight(value)
+      wChanged(e)
+    }
+
+    const widthChanged = (e) => {
+      let value = e.target.value
+      setWidth(value)
+      wChanged(e)
+    }
+
+    const wChanged = (e) => {
+      if (width && !Number.isNaN(width) && weight && !Number.isNaN(weight)) {
+          let iWidth = Number.parseInt(width)
+          let iWeight = Number.parseInt(weight)
+          let iGsm = iWeight/(iWidth/10)
+          setGsm(iGsm)
+          let iMetersInKg = 1/(iWeight*0.001)
+          setMetersInKg(iMetersInKg)
+      }
+    }
+
   const moreVariants = async (e) => {
     let cv = colorVariant.slice()
     let num = cv.length
@@ -440,7 +467,7 @@ useEffect(() => {
                   data={overworkTypes}
                 />
 
-             <Box sx={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '340px' }}>
+             <Box sx={boxStyle}>
               <TextField
                   margin="normal"
                   size="small" 
@@ -449,7 +476,7 @@ useEffect(() => {
                   name="weight"
                   sx = {halfItemStyle}
                   value={weight}
-                  onChange={ev => setWeight(ev.target.value)}
+                  onChange={weightChanged}
                 />
                 <TextField
                   margin="normal"
@@ -457,31 +484,31 @@ useEffect(() => {
                   id="width"
                   label="Width"
                   name="width"
-                  sx = {itemStyle}
+                  sx = {halfItemStyle}
                   value={width}
-                  onChange={ev => setWidth(ev.target.value)}
+                  onChange={widthChanged}
                 />
               </Box>
-              <Box sx={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '340px' }}>
+              <Box sx={boxStyle}>
                 <TextField
                   margin="normal"
                   size="small" 
-                  id="weight"
+                  id="gsm"
                   label="Density GSM"
-                  name="weight"
+                  name="gsm"
                   sx = {halfItemStyle}
-                  value={weight}
-                  onChange={ev => setWeight(ev.target.value)}
+                  value={gsm}
+                  onChange={ev => setGsm(ev.target.value)}
                 />
                 <TextField
                   margin="normal"
                   size="small" 
-                  id="weight"
+                  id="metersInKg"
                   label="Meters in KG"
-                  name="weight"
+                  name="metersInKg"
                   sx = {halfItemStyle}
-                  value={weight}
-                  onChange={ev => setWeight(ev.target.value)}
+                  value={metersInKg}
+                  onChange={ev => setMetersInKg(ev.target.value)}
                 />
               </Box>
 
