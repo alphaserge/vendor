@@ -74,6 +74,10 @@ export default function Update(props) {
     const [designType, setDesignType] = useState([])
     const [overworkType, setOverworkType] = useState([])
     const [season, setSeason] = useState([])
+    const [dyeStaff, setDyeStaff] = useState([])
+    const [plainDyedType, setPlainDyedType] = useState([])
+    const [printType, setPrintType] = useState([])
+
     const [itemName, setItemName] = useState("")
     const [refNo, setRefNo] = useState("")
     const [artNo, setArtNo] = useState("")
@@ -83,6 +87,12 @@ export default function Update(props) {
     const [price, setPrice] = useState("")
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
+    const [colorFastness, setColorFastness] = useState("")
+    const [fabricConstruction, setFabricConstruction] = useState("")
+    const [fabricYarnCount, setFabricYarnCount] = useState("")
+    const [metersInKg, setMetersInKg] = useState("")
+    const [gsm, setGsm] = useState("")
+
     const [stock, setStock] = useState("")
     const [gramm_pm, setGramm_pm] = useState("")
     const [colorVariant, setColorVariant] = useState([])
@@ -96,6 +106,9 @@ export default function Update(props) {
     const [overworkTypes, setOverworkTypes] = useState([])
     const [productTypes, setProductTypes] = useState([])
     const [productStyles, setProductStyles] = useState([])
+    const [printTypes, setPrintTypes] = useState([])
+    const [plainDyedTypes, setPlainDyedTypes] = useState([])
+    const [dyeStaffs, setDyeStaffs] = useState([])
 
     let loc = useLocation()
 
@@ -316,6 +329,10 @@ const loadProducts = async (e) => {
       setPrice(res.data.price)
       setWidth(res.data.width)
       setWeight(res.data.weight)
+      setColorFastness(res.data.colorFastness)
+      fabricConstruction(res.data.fabricConstruction)
+      fabricYarnCount(res.data.fabricYarnCount)
+
       setProductStyle(res.data.productStyle)
       setProductType(res.data.productType)
       setSeason(res.data.seasonIds)

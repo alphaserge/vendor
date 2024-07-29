@@ -63,6 +63,10 @@ export default function AddProduct(props) {
     const [designType, setDesignType] = useState([])
     const [overworkType, setOverworkType] = useState([])
     const [season, setSeason] = useState([])
+    const [dyeStaff, setDyeStaff] = useState([])
+    const [plainDyedType, setPlainDyedType] = useState([])
+    const [printType, setPrintType] = useState([])
+
     const [itemName, setItemName] = useState("")
     const [refNo, setRefNo] = useState("")
     const [artNo, setArtNo] = useState("")
@@ -71,9 +75,10 @@ export default function AddProduct(props) {
     const [price, setPrice] = useState("")
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
-    const [metersInKg, setMetersInKg] = useState("")
-    const [gsm, setGsm] = useState("")
-    
+    const [colorFastness, setColorFastness] = useState("")
+    const [fabricConstruction, setFabricConstruction] = useState("")
+    const [fabricYarnCount, setFabricYarnCount] = useState("")
+
     const [newColor, setNewColor] = useState("")
     const [newColorRgb, setNewColorRgb] = useState("")
 
@@ -83,6 +88,9 @@ export default function AddProduct(props) {
     const [overworkTypes, setOverworkTypes] = useState([])
     const [productTypes, setProductTypes] = useState([])
     const [productStyles, setProductStyles] = useState([])
+    const [dyeStaffs, setDyeStaffs] = useState([])
+    const [plainDyedTypes, setPlainDyedTypes] = useState([])
+    const [printTypes, setPrintTypes] = useState([])
 
     const [colorVariant, setColorVariant] = useState([
       {
@@ -226,10 +234,18 @@ export default function AddProduct(props) {
       overworkType: overworkType,
       productStyle: productStyle,
       productType: productType,
+      printType: printType,
+      dyeStaff: dyeStaff,
+      plainDyedType: plainDyedType,
       vendorId: 1, //!
       price: price,
       weight: weight,
       width: width,
+      colorFastness: colorFastness,
+      fabricConstruction: fabricConstruction,
+      fabricYarnCount: fabricYarnCount,
+      metersInKg: metersInKg,
+      gsm: gsm,
       uid: uid,
       colorVariants: colorVariant.filter(it => !!it.ColorNo && it.ColorIds.length > 0 && !!it.SelectedFile), 
       globalPhotos: allColor.filter(it => !!it.No && !!it.SelectedFile)
@@ -454,19 +470,6 @@ useEffect(() => {
                   data={designTypes}
                 />
 
-                <MySelect 
-                  id="addproduct-overworktype"
-                  url="OverWorkTypes"
-                  title="Overwork type"
-                  valueName="overWorkName"
-                  labelStyle={labelStyle}
-                  itemStyle={itemStyle}
-                  MenuProps={MySelectProps}
-                  valueVariable={overworkType}
-                  setValueFn={setOverworkType}
-                  data={overworkTypes}
-                />
-
              <Box sx={boxStyle}>
               <TextField
                   margin="normal"
@@ -489,6 +492,18 @@ useEffect(() => {
                   onChange={widthChanged}
                 />
               </Box>
+              <MySelect 
+                  id="addproduct-overworktype"
+                  url="OverWorkTypes"
+                  title="Overwork type"
+                  valueName="overWorkName"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
+                  MenuProps={MySelectProps}
+                  valueVariable={overworkType}
+                  setValueFn={setOverworkType}
+                  data={overworkTypes}
+                />
               <Box sx={boxStyle}>
                 <TextField
                   margin="normal"

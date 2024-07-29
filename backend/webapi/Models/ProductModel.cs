@@ -95,12 +95,18 @@ namespace chiffon_back.Models
                             ProductTypeId = p.ProductTypeId,
                             VendorId = p.VendorId,
                             PhotoUuids = p.PhotoUuids,
-                            //Uuid = p.Uuid,
-                            //ImagePath = Code.DirectoryHelper.GetFirstFileUrl(ctx.ColorVariants.FirstOrDefault(x=>x.ProductId==x.Id).Uuid),// p.Uuid),  //Code.DirectoryHelper.ComputeFileUrl(p.Uuid, p.FileName),
                             Vendor = p.Vendor!.VendorName,
                             ProductStyle = p.ProductStyle!.StyleName,
                             ProductType = p.ProductType!.TypeName,
-                            //Colors = p.ProductsInColors.Select(x => new Models.Color { Id = x.ColorId, ColorName = x.Color.ColorName }).ToArray(),
+                            PrintType = p.PrintType!.TypeName,
+                            DyeStaff = p.DyeStaff!.DyeStaffName,
+                            PlainDyedType = p.PlainDyedType!.PlainDyedTypeName,
+                            Findings = p.Findings,
+                            GSM = p.GSM,
+                            MetersInKG = p.MetersInKG,
+                            FabricConstruction = p.FabricConstruction,
+                            FabricYarnCount = p.FabricYarnCount,
+                            ColorFastness = p.ColorFastness,
                             DesignTypes = p.ProductsInDesignTypes!.Select(x => new Models.DesignType { Id = x.DesignTypeId, DesignName = x.DesignType.DesignName }).ToArray(),
                             OverWorkTypes = p.ProductsInOverWorkTypes!.Select(x => new Models.OverWorkType { Id = x.OverWorkTypeId, OverWorkName = x.OverWorkType.OverWorkName }).ToArray(),
                             Seasons = p.ProductsInSeasons!.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
@@ -247,6 +253,13 @@ namespace chiffon_back.Models
                             OverWorkTypeIds = p.ProductsInOverWorkTypes!.Select(x => x.OverWorkTypeId).ToArray(),
                             SeasonIds = p.ProductsInSeasons!.Select(x => x.SeasonId).ToArray(),
                             Colors = new List<ProductColor>(),
+                            Findings = p.Findings,
+                            GSM = p.GSM,
+                            MetersInKG = p.MetersInKG,
+                            FabricConstruction = p.FabricConstruction,
+                            FabricYarnCount = p.FabricYarnCount,
+                            ColorFastness = p.ColorFastness,
+
                         };
 
             var prod = query.FirstOrDefault();
@@ -418,6 +431,14 @@ namespace chiffon_back.Models
                     prod.VendorId = product.VendorId;
                     prod.Weight = product.Weight;
                     prod.Width = product.Width;
+                    prod.GSM = product.GSM;
+                    prod.MetersInKG = product.MetersInKG;
+                    prod.ColorFastness = product.ColorFastness;
+                    prod.FabricConstruction = product.FabricConstruction;
+                    prod.FabricYarnCount = product.FabricYarnCount;
+                    prod.DyeStaffId = product.DyeStaffId;
+                    prod.PlainDyedTypeId = product.PlainDyedTypeId;
+                    prod.PrintTypeId = product.PrintTypeId;
                     ctx.SaveChanges();
 
 

@@ -15,7 +15,7 @@
         public int? Weight { get; set; }
         public int? Width { get; set; }
         public int? GSM { get; set; }
-        public decimal? Meters1KG { get; set; }
+        public decimal? MetersInKG { get; set; }
         public int? ProductStyleId { get; set; }
         public int? ProductTypeId { get; set; }
         public int? VendorId { get; set; }
@@ -27,6 +27,7 @@
         public string? PhotoUuids { get; set; }
         public string? FabricConstruction { get; set; }
         public string? FabricYarnCount { get; set; }
+        public string? Findings { get; set; }
         public int? ColorFastness { get; set; }
 
         public virtual ProductStyle? ProductStyle { get; set; }
