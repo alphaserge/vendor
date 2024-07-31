@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
+import FormControl from '@mui/material/FormControl';
 
 import { v4 as uuid } from 'uuid'
 
@@ -31,15 +32,20 @@ import Footer from './footer';
 import { APPEARANCE } from '../../appearance';
 
 import Modal from '@mui/material/Modal';
-import { InputLabel } from "@mui/material";
+import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const defaultTheme = createTheme()
+//const accordionStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 const halfItemStyle = { width: 180, ml: 0, mr: 2 }
 const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
 const boxStyle = { display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '360px', ml:4, mr:2 }
 const labelStyle = { m: 2, ml: 4, mr: 4 }
 const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BLUE1, color: APPEARANCE.WHITE }
+const accordionStyle = { textAlign: "center", margin: "15px auto", justifyContent:"center", boxShadow: "none", border: "none" }
+const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 10px",  backgroundColor: "#e4e4e4", textTransform: "uppercase", border: "1px #ddd solid", borderRadius: "4px" }
+const accordionCaption = { width: "100%", fontWeight: "bold", fontSize: "11pt" };
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -78,6 +84,8 @@ export default function AddProduct(props) {
     const [colorFastness, setColorFastness] = useState("")
     const [fabricConstruction, setFabricConstruction] = useState("")
     const [fabricYarnCount, setFabricYarnCount] = useState("")
+    const [metersInKg, setMetersInKg] = useState("")
+    const [gsm, setGsm] = useState("")
 
     const [newColor, setNewColor] = useState("")
     const [newColorRgb, setNewColorRgb] = useState("")
@@ -169,23 +177,23 @@ export default function AddProduct(props) {
     const weightChanged = (e) => {
       let value = e.target.value
       setWeight(value)
-      wChanged(e)
+      wChanged(width, value)
     }
 
     const widthChanged = (e) => {
       let value = e.target.value
       setWidth(value)
-      wChanged(e)
+      wChanged(value, weight)
     }
 
-    const wChanged = (e) => {
-      if (width && !Number.isNaN(width) && weight && !Number.isNaN(weight)) {
-          let iWidth = Number.parseInt(width)
-          let iWeight = Number.parseInt(weight)
+    const wChanged = (_width, _weight) => {
+      if (_width && !Number.isNaN(_width) && _weight && !Number.isNaN(_weight)) {
+          let iWidth = Number.parseInt(_width)
+          let iWeight = Number.parseInt(_weight)
           let iGsm = iWeight/(iWidth/10)
           setGsm(iGsm)
           let iMetersInKg = 1/(iWeight*0.001)
-          setMetersInKg(iMetersInKg)
+          setMetersInKg(iMetersInKg.toFixed(2))
       }
     }
 
@@ -357,8 +365,7 @@ useEffect(() => {
       <Container sx={{maxWidth: "100%", padding: 0 }} className="header-container" >
         <Header user={props.user} title={props.title} />
         <main>
-          <Box sx={{ border: "1px solid #ddd", padding: "20px 10px", textAlign: "center", maxWidth: 900}} justifyContent={"center"} alignItems={"center"}>
-            
+ 
           <Typography component="h1" variant="h6" color={APPEARANCE.COLOR1}>
             Adding a product form
           </Typography>
@@ -366,7 +373,14 @@ useEffect(() => {
           Please fill out all fields and click the Save button
           </Typography>
           
-          <Grid item xs={12} md={6} sx={{ textAlign:"center", margin: "0 auto" }} justifyContent={"center"} className="header-menu"  >
+          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
+
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
+            <Typography align="center" sx={accordionCaption}>Main properties</Typography>
+          </AccordionSummary>
+
+          <AccordionDetails>
+          <Grid item xs={12} md={6} >
             <TextField
                 margin="normal"
                 size="small" 
@@ -470,7 +484,33 @@ useEffect(() => {
                   data={designTypes}
                 />
 
-             <Box sx={boxStyle}>
+              <MySelect 
+                  id="addproduct-overworktype"
+                  url="OverWorkTypes"
+                  title="Overwork type"
+                  valueName="overWorkName"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle}
+                  MenuProps={MySelectProps}
+                  valueVariable={overworkType}
+                  setValueFn={setOverworkType}
+                  data={overworkTypes}
+                />
+          </Grid>
+          </AccordionDetails>
+
+          {/* </Box> */}
+          </Accordion>
+
+          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} elevation={0} sx={{ '&:before':{height:'0px'}}} >
+
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
+            <Typography align="center" sx={accordionCaption}>Weight / Width / Density</Typography>
+          </AccordionSummary>
+
+          <AccordionDetails>
+          <Grid item xs={12} md={6} >
+          <Box sx={boxStyle}>
               <TextField
                   margin="normal"
                   size="small" 
@@ -492,18 +532,6 @@ useEffect(() => {
                   onChange={widthChanged}
                 />
               </Box>
-              <MySelect 
-                  id="addproduct-overworktype"
-                  url="OverWorkTypes"
-                  title="Overwork type"
-                  valueName="overWorkName"
-                  labelStyle={labelStyle}
-                  itemStyle={itemStyle}
-                  MenuProps={MySelectProps}
-                  valueVariable={overworkType}
-                  setValueFn={setOverworkType}
-                  data={overworkTypes}
-                />
               <Box sx={boxStyle}>
                 <TextField
                   margin="normal"
@@ -526,17 +554,30 @@ useEffect(() => {
                   onChange={ev => setMetersInKg(ev.target.value)}
                 />
               </Box>
+          </Grid>
+          </AccordionDetails>
+          </Accordion>
 
-                { allColor.map((cv) => (
+          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
+
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
+            <Typography align="center" sx={accordionCaption}>Product photos</Typography>
+          </AccordionSummary>
+
+          <AccordionDetails>
+          <Grid item xs={12} md={6} >
+          { allColor.map((cv) => (
                     <ProductColor cv={cv} setColorItem={setColorProduct}  />
                  ))}
 
                 { colorVariant.map((cv) => (
                     <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} data={colors} />
                  ))}
-<br/>
-<br/>
-                {/* <FormControl sx = {{itemStyle}} > */}
+          </Grid>
+          </AccordionDetails>
+          </Accordion>
+
+          <FormControl sx = {{itemStyle}} > 
                 <Box sx={{ textAlign: "center", marginTop: 2 }}>
                   <Button 
                     variant="contained"
@@ -560,11 +601,9 @@ useEffect(() => {
                         Add colors
                     </Button>
                     </Box>
-                {/* </FormControl> */}
+                </FormControl>
 
-          </Grid>
-          {/* </Box> */}
-          </Box>
+
         </main>
       </Container>
       <Footer sx={{ mt: 2, mb: 2 }} />
