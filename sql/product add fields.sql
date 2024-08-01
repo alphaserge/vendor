@@ -1,0 +1,1 @@
+alter table [chiffon].[dbo].[Products] add HSCode [varchar](50) NULL

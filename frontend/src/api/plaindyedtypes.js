@@ -1,0 +1,16 @@
+import axios from 'axios'
+import config from "../config.json"
+
+export const getPlainDyedTypes = (setFn) => {
+    axios.get(config.api + '/PlainDyedTypes')
+    .then(function (res) {
+        let items = res.data.map((item)=>({ id:item.id, value:item.plainDyedTypeName }))
+        setFn(items)
+    })
+    .catch (error => {
+      console.log('getPlainDyedTypes error:' )
+      console.log(error)
+    })
+  }
+  
+  
