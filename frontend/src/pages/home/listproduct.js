@@ -3,6 +3,7 @@ import { json, useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -69,6 +70,8 @@ export default function ListProduct(props) {
     const [refNo, setRefNo] = useState("")
     const [artNo, setArtNo] = useState("")
     const [design, setDesign] = useState("")
+
+    const headStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 10px",  backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px" }
 
     const handleShowHideFilter = (event) => {
       setFilter(!filter);
@@ -218,7 +221,7 @@ export default function ListProduct(props) {
       <CssBaseline />
       <Container sx={{padding: 0 }} className="header-container" >
         <Header user={props.user} title={props.title} />
-        <MainBanner user={props.user} title={props.title} />
+        {/* <MainBanner user={props.user} title={props.title} /> */}
         <div>
         
           {/* <Avatar sx={{ mb: 2, bgcolor: 'secondary.main' }}>
@@ -230,13 +233,25 @@ export default function ListProduct(props) {
 
           
 
-          <Box component="form" noValidate sx={{ mt: 1 }}  >
-          <IconButton onClick={handleShowHideFilter} sx={{ p: 0, ml: "calc(50vw + 450px)" }}>
-                <TuneIcon  sx={{color: APPEARANCE.BLACK}} />
-              </IconButton>
+          <Box component="form" noValidate sx={{ mt: 3 }}  >
+
+          <Box style={headStyle} sx={{ display: "flex", justifyContent:"space-between",  margin: "0 auto", maxWidth: "1100px"}} justifyContent={"center"} className="header-menu" >
+            <Box sx={{ display: "flex", alignItems:"center", justifyContent: "center", width: "100%", mt: 2, mb: 2}}>
+            <Typography component="h1" variant="h6" color={APPEARANCE.COLOR1}>
+              Your product's list
+            </Typography>
+            </Box>
+            <IconButton onClick={handleShowHideFilter} sx={{ p: 0, mr: 4 }}>
+              <TuneIcon  sx={{color: APPEARANCE.BLACK}} />
+            </IconButton>
+          </Box>
+
 
           <Box sx={{ backgroundColor: "none", display: filter==true? "block": "none", textAlign: "center", mt: 3, mb: 3  }} className="filter" >
-          <Box className="filter" >
+          <Box className="filter" sx={{ textAlign: "left"}} >
+          <Typography component="p" variant="p" sx={{ ml: 2, fontSize: "10pt", fontWeight: "bold"}} >
+              Product's filters
+            </Typography>
           <TextField
                 margin="normal"
                 size="small" 

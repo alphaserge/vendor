@@ -137,7 +137,7 @@ image.product-img {
 
   /* Center slide text vertically */
   display: flex;
-  justify-content: left;
+  justify-content: center;
   align-items: center;
 }
 
