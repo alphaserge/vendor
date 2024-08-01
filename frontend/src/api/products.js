@@ -62,13 +62,13 @@ const makeProduct = (prod)  => {
   return JSON.stringify(p)
 }
 
-export const postProduct = async (prod) => {
+export const postProduct = async (prod, action) => {
 
   //let cv = prod.colorVariant.filter(item => !!item.ColorNo && item.ColorIds.length > 0 && !!item.SelectedFile)
   //let ac = allColor.filter(item => !!item.No && !!item.SelectedFile).map((e) => e.Id).join(',')
   let product = makeProduct(prod)
 
-  let rc = await fetch(config.api + '/Products/ProductAdd', {
+  let rc = await fetch(config.api + '/Products/' + action, {
       method: "POST",
       headers: {
           'Content-Type': 'application/json'
@@ -110,4 +110,24 @@ export const postFile = async (colorVariant, prodId) => {
     console.log(ex);
   }
 };
+
+export const loadProduct = async (id, setFn) => {
+
+  //let rc = await axios.get(config.api + '/Products/Product?='+id, { params: { id: id }})
+  const rc = await fetch(config.api + '/Products/Product?id='+id, {
+    //params: { id: id },
+    method: "GET",
+    headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+  .then(r => r.json())
+  .then(res => {
+      setFn(res)
+      })
+  .catch (error => {
+    console.log(error)
+  })
+
+}
 

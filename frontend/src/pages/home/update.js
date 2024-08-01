@@ -330,8 +330,8 @@ const loadProducts = async (e) => {
       setWidth(res.data.width)
       setWeight(res.data.weight)
       setColorFastness(res.data.colorFastness)
-      fabricConstruction(res.data.fabricConstruction)
-      fabricYarnCount(res.data.fabricYarnCount)
+      setFabricConstruction(res.data.fabricConstruction)
+      setFabricYarnCount(res.data.fabricYarnCount)
 
       setProductStyle(res.data.productStyle)
       setProductType(res.data.productType)
@@ -361,6 +361,9 @@ const loadProducts = async (e) => {
       getProductTypes(setProductTypes)
       getProductStyles(setProductStyles)
         }, []);
+
+console.log('colorVariant=>')
+console.log(colorVariant)
 
   return (
     <ThemeProvider theme={defaultTheme}>

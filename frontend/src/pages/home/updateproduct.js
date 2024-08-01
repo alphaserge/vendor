@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useSyncExternalStore } from "react";
-import { json, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,6 +11,8 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
 import FormControl from '@mui/material/FormControl';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import { v4 as uuid } from 'uuid'
 
@@ -27,7 +29,7 @@ import { getPrintTypes } from '../../api/printtypes'
 import { getProductStyles } from '../../api/productstyles'
 import { getProductTypes } from '../../api/producttypes'
 import { getSeasons } from '../../api/seasons'
-import { postProduct } from '../../api/products'
+import { postProduct, loadProduct } from '../../api/products'
 
 import Header from './header';
 import Footer from './footer';
@@ -62,11 +64,13 @@ const MySelectProps = {
   },
 };
 
-export default function AddProduct(props) {
+export default function UpdateProduct(props) {
 
     const navigate = useNavigate();
     const theme = useTheme();
 
+    const [uid, setUid] = useState(uuid())
+    const [productId, setProductId] = useState(uuid())
     const [dyeStaff, setDyeStaff] = useState("")
     const [plainDyedType, setPlainDyedType] = useState("")
     const [printType, setPrintType] = useState("")
@@ -92,8 +96,6 @@ export default function AddProduct(props) {
     const [gsm, setGsm] = useState("")
     const [refNo, setRefNo] = useState("")
 
-    const [uid, setUid] = useState(uuid())
-
     const [newColor, setNewColor] = useState("")
     const [newColorRgb, setNewColorRgb] = useState("")
 
@@ -109,79 +111,30 @@ export default function AddProduct(props) {
 
     const [savingError, setSavingError] = useState(false)
 
-    const [colorVariant, setColorVariant] = useState([
-      {
-        Id: uuid(),
-        No: 1,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 2,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 3,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 4,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 5,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 6,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-    ])
+    const [colorVariantPlus, setColorVariantPlus] = useState([])
+    const [productColorsPlus, setProductColorsPlus] = useState([])
+    const [colorVariant, setColorVariant] = useState([])
+    const [productColors, setProductColors] = useState([])
+    
+    let loc = useLocation()
 
-    const [allColor, setAllColor] = useState([
-      {
-        Id: uuid(),
-        No: 1,
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 2,
-        SelectedFile: null,
-      },
-    ])
-
-    const setColorProduct = (i, item) => {
-      let cv = allColor.map(el=>el.Id==i? item:el)
-      setAllColor(cv)
+    const idFromUrl = () => {
+      const search = window.location.search
+      const params = new URLSearchParams(search)
+      return params.get('id')
     }
 
     const setColorVariantItem = (i, item) => {
-      let cv = colorVariant.map(el=>el.Id==i? item:el)
-      setColorVariant(cv)
+      let cv = colorVariantPlus.map(el=>el.Id==i? item:el)
+      setColorVariantPlus(cv)
     }
+
+    const setProductColorItem = (i, item) => {
+      let cv = productColorsPlus.map(el=>el.Id==i? item:el)
+      setProductColorsPlus(cv)
+    }
+
+    const [selectedFile, setSelectedFile] = useState(null)
 
     const weightChanged = (e) => {
       let value = e.target.value
@@ -206,39 +159,98 @@ export default function AddProduct(props) {
       }
     }
 
-  const moreVariants = async (e) => {
-    let cv = colorVariant.slice()
-    let num = cv.length
-    let i=num+1
-    while (i<=num+6){
-      cv.push({
-        Id: uuid(),
-        No: i,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      })
-      i++
+    const moreVariants = async (e) => {
+      let cv = colorVariantPlus.slice()
+      let num = cv.length
+      let cvNums = colorVariantPlus.map(x => x.cvNum);
+      let max = Math.max(...cvNums)
+      let i=max+1
+      while (i<max+7){
+        cv.push({
+          Id: uuid(),
+          No: i,
+          ColorNo: null,
+          ColorIds: [],
+          ColorId: [],
+          SelectedFile: null,
+          IsProduct: false
+        })
+        i++
+      }
+      setColorVariantPlus(cv)
     }
-    setColorVariant(cv)
-  }
-
-  const morePhotos = async (e) => {
-    let cv = allColor.slice()
-    let num = cv.length
-    let i=num+1
-    while (i<=num+2){
-      cv.push({
-        Id: uuid(),
-        No: i,
-        SelectedFile: null,
-      })
-      i++
+  
+    const moreProductColors = async (e) => {
+      let cv = productColorsPlus.slice()
+      let num = cv.length
+      let cvNums = productColorsPlus.map(x => x.cvNum);
+      let max = cvNums.length > 0 ? Math.max(...cvNums) : 0
+      let i=max+1
+      while (i<max+3){
+        cv.push({
+          Id: uuid(),
+          No: i,
+          SelectedFile: null,
+          IsProduct: true
+        })
+        i++
+      }
+      setProductColorsPlus(cv)
     }
-    setAllColor(cv)
-  }
+  
+    const handleRemoveCv = async (cv) => {
 
+      fetch(config.api + '/Products/ProductRemoveCV', {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+          },
+        body: JSON.stringify({
+          Id: cv.cvId,
+          Uuid: cv.uuid,
+          ProductId: cv.productId,
+          IsProduct: cv.isProduct
+        })
+    })
+    .then(r => r.json())
+    .then(r => {
+  
+      let id = idFromUrl()
+      loadProduct(id)
+      
+      props.setLastAction("Color variant has been removed")
+      navigate(loc)
+  })
+    .catch (error => {
+      console.log(error)
+    })
+  };
+  
+  const handleRemoveProductPhoto = async (id) => {
+
+    fetch(config.api + '/Products/ProductRemoveProductPhoto', {
+      method: "POST",
+      headers: {
+          'Content-Type': 'application/json'
+        },
+      body: JSON.stringify({
+        Id: id,
+        ProductId: productId
+      })
+  })
+  .then(r => r.json())
+  .then(r => {
+  
+    loadProduct(id)
+    
+    props.setLastAction("Product photo variant has been removed")
+    navigate(loc)
+  })
+  .catch (error => {
+    console.log(error)
+  })
+  };
+  
   const openMyProducts = async (e) => {
   }
 
@@ -270,16 +282,16 @@ export default function AddProduct(props) {
       printType: printType,
       dyeStaff: dyeStaff,
       plainDyedType: plainDyedType,
-      colorVariants: colorVariant.filter(it => !!it.ColorNo && it.ColorIds.length > 0 && !!it.SelectedFile), 
-      globalPhotos: allColor.filter(it => !!it.No && !!it.SelectedFile)
+      colorVariants: colorVariantPlus.filter(it => !!it.ColorNo && it.ColorIds.length > 0 && !!it.SelectedFile), 
+      globalPhotos: productColorsPlus.filter(it => !!it.No && !!it.SelectedFile)
     }
 
-    let r = await postProduct(prod, "ProductAdd")
+    let r = await postProduct(prod, "ProductUpdate")
 
     if (r) {
-      props.setLastAction("Product has been added")
+      props.setLastAction("Product has been saved")
       setSavingError(false)
-      navigate("/menu")
+      //navigate("/menu")
     } else {
       setSavingError(true)
     }
@@ -311,7 +323,36 @@ const addNewColor = () => {
   handleOpen();
 }
 
+const setProduct = (prod) => {
+  setItemName(prod.itemName)
+  setArtNo(prod.artNo)
+  setRefNo(prod.refNo)
+  setDesign(prod.design)
+  setPrice(prod.price)
+  setWidth(prod.width)
+  setWeight(prod.weight)
+  setColorFastness(prod.colorFastness)
+  setFabricConstruction(prod.fabricConstruction)
+  setFabricYarnCount(prod.fabricYarnCount)
+
+  setProductStyle(prod.productStyle)
+  setProductType(prod.productType)
+  setSeason(prod.seasonIds)
+  setOverworkType(prod.overWorkTypeIds)
+  setDesignType(prod.designTypeIds)
+  setColorVariant(prod.colors)
+  //setProductColors()
+  //setGramm_pm( parseInt(prod.weight)*parseInt(prod.width)/100)
+}
+
 useEffect(() => {
+
+  let id = idFromUrl()
+  loadProduct(id, setProduct)
+
+  //const prod = fetchData(id)
+
+
   getColors(setColors)
   getDesignTypes(setDesignTypes)
   getOverworkTypes(setOverworkTypes)
@@ -323,29 +364,6 @@ useEffect(() => {
   getDyeStaffs(setDyeStaffs)
   getPlainDyedTypes(setPlainDyedTypes)
   getPrintTypes(setPrintTypes)
-
-  /*setItemName('WINDSOR JAQUARD DYED')
-  setArtNo('MP-22040')
-  setRefNo('22040')
-  setDesign('P/D (505-e)')
-  setPrice('10')
-  setWidth('150')
-  setWeight('400')
-  setColorFastness('3')
-  setFabricConstruction('Simple 1')
-  setFabricYarnCount('4')
-  setFabricShrinkage('5')
-  setFindings('test 1')
-  setHsCode('HS 001')
-  setDesignType([1,2])
-  setProductType(1)
-  setProductStyle(1)
-  setSeason([1,2])
-  setOverworkType([1,2])
-
-  setDyeStaff(1)
-  setPrintType(2)
-  setPlainDyedType(2)*/
 
   }, []);
 
@@ -416,11 +434,11 @@ useEffect(() => {
         <main>
  
           <Typography component="h1" variant="h6" color={APPEARANCE.COLOR1}>
-            Adding a product form
+          Change a product
           </Typography>
-          <Typography component="p" variant="subtitle1" sx={{mb:2}}  color={APPEARANCE.COLOR1}>
+          {/* <Typography component="p" variant="subtitle1" sx={{mb:2}}  color={APPEARANCE.COLOR1}>
           Please fill out all fields and click the Save button
-          </Typography>
+          </Typography> */}
           
           <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
 
@@ -615,11 +633,11 @@ useEffect(() => {
 
           <AccordionDetails>
           <Grid item xs={12} md={6} >
-          { allColor.map((cv) => (
-                    <ProductColor cv={cv} setColorItem={setColorProduct}  />
+                { productColorsPlus.map((cv) => (
+                    <ProductColor cv={cv} setColorItem={setProductColorItem}  />
                  ))}
 
-                { colorVariant.map((cv) => (
+                { colorVariantPlus.map((cv) => (
                     <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} data={colors} />
                  ))}
           </Grid>
@@ -628,7 +646,7 @@ useEffect(() => {
                     <Button 
                     variant="contained"
                     style={buttonStyle}
-                    onClick={morePhotos} >
+                    onClick={moreProductColors} >
                         Add photos
                     </Button>
                     <Button 
@@ -778,9 +796,40 @@ useEffect(() => {
                   </Button>
                 </Box>
           </FormControl>
-
-
         </main>
+
+        <Box component={"div"} display={"flex"} justifyContent={"left"} alignItems={"left"} 
+          marginBottom={3} marginLeft={6} marginRight={6} 
+          paddingBottom={1} sx={{ backgroundColor: "#f1f1f1" }} >
+            {colorVariant.map((cv, index) => {
+              return <Box className="product-img-holder-item">
+                <Box className="product-img-holder-thumb" >
+
+                <Box 
+                  component={"img"} 
+                  key={index} 
+                  src={"https://localhost:3080/"+cv.imagePath} 
+                  alt={"photo"+(index+1)} 
+                  className="product-img" />
+                  <br/>
+                  </Box>
+                  <Box component={"div"} 
+                    sx={{ mt: 1, ml: 1, height: "36px", width: "125px", wordBreak: "break-all", wordWrap: "break-word", alignItems: "center" }} 
+                    textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > { (cv.cvNum?cv.cvNum+' - ':'') + cv.color} </Box>
+
+          <IconButton
+          color="success"
+          aria-label="upload picture"
+          sx={{color: APPEARANCE.BLACK2, pt: 0}}
+          component="span"
+          onClick={ function() { handleRemoveCv(cv)}}
+          >
+              {<DeleteIcon />}
+              </IconButton>
+        </Box>
+      })}
+      </Box>
+
       </Container>
       <Footer sx={{ mt: 2, mb: 2 }} />
     </ThemeProvider>
