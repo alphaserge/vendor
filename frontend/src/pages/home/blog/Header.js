@@ -31,8 +31,6 @@ function FabricIcon(props) {
   );
   }
 
-
-
 function Header(props) {
   const { sections, title } = props;
 

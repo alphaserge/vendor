@@ -14,16 +14,19 @@ import FormControl from '@mui/material/FormControl';
 
 import { v4 as uuid } from 'uuid'
 
-import MySelect from '../../components/myselect';
-import ColorVariant from './colorvariant';
-import ProductColor from './productcolor';
 import config from "../../config.json"
+import ColorVariant from './colorvariant';
+import MySelect from '../../components/myselect';
+import ProductColor from './productcolor';
 import { getColors, postColor } from '../../api/colors'
-import { getSeasons } from '../../api/seasons'
 import { getDesignTypes } from '../../api/designtypes'
+import { getDyeStaffs } from '../../api/dyestaffs'
 import { getOverworkTypes } from '../../api/overworktypes'
-import { getProductTypes } from '../../api/producttypes'
+import { getPlainDyedTypes } from '../../api/plaindyedtypes'
+import { getPrintTypes } from '../../api/printtypes'
 import { getProductStyles } from '../../api/productstyles'
+import { getProductTypes } from '../../api/producttypes'
+import { getSeasons } from '../../api/seasons'
 import { postProduct } from '../../api/products'
 
 import Header from './header';
@@ -42,9 +45,9 @@ const halfItemStyle = { width: 180, ml: 0, mr: 2 }
 const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
 const boxStyle = { display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '360px', ml:4, mr:2 }
 const labelStyle = { m: 2, ml: 4, mr: 4 }
-const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BLUE1, color: APPEARANCE.WHITE }
+const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "0 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
 const accordionStyle = { textAlign: "center", margin: "15px auto", justifyContent:"center", boxShadow: "none", border: "none" }
-const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 10px",  backgroundColor: "#e4e4e4", textTransform: "uppercase", border: "1px #ddd solid", borderRadius: "4px" }
+const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 10px",  backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px" }
 const accordionCaption = { width: "100%", fontWeight: "bold", fontSize: "11pt" };
 
 const ITEM_HEIGHT = 48;
@@ -64,28 +67,32 @@ export default function AddProduct(props) {
     const navigate = useNavigate();
     const theme = useTheme();
 
+    const [dyeStaff, setDyeStaff] = useState("")
+    const [plainDyedType, setPlainDyedType] = useState("")
+    const [printType, setPrintType] = useState("")
     const [productStyle, setProductStyle] = useState("")
     const [productType, setProductType] = useState("")
     const [designType, setDesignType] = useState([])
     const [overworkType, setOverworkType] = useState([])
     const [season, setSeason] = useState([])
-    const [dyeStaff, setDyeStaff] = useState([])
-    const [plainDyedType, setPlainDyedType] = useState([])
-    const [printType, setPrintType] = useState([])
 
-    const [itemName, setItemName] = useState("")
-    const [refNo, setRefNo] = useState("")
     const [artNo, setArtNo] = useState("")
-    const [uid, setUid] = useState(uuid())
     const [design, setDesign] = useState("")
+    const [itemName, setItemName] = useState("")
     const [price, setPrice] = useState("")
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
     const [colorFastness, setColorFastness] = useState("")
     const [fabricConstruction, setFabricConstruction] = useState("")
     const [fabricYarnCount, setFabricYarnCount] = useState("")
+    const [findings, setFindings] = useState("")
+    const [fabricShrinkage, setFabricShrinkage] = useState("")
+    const [hsCode, setHsCode] = useState("")
     const [metersInKg, setMetersInKg] = useState("")
     const [gsm, setGsm] = useState("")
+    const [refNo, setRefNo] = useState("")
+
+    const [uid, setUid] = useState(uuid())
 
     const [newColor, setNewColor] = useState("")
     const [newColorRgb, setNewColorRgb] = useState("")
@@ -99,6 +106,8 @@ export default function AddProduct(props) {
     const [dyeStaffs, setDyeStaffs] = useState([])
     const [plainDyedTypes, setPlainDyedTypes] = useState([])
     const [printTypes, setPrintTypes] = useState([])
+
+    const [savingError, setSavingError] = useState(false)
 
     const [colorVariant, setColorVariant] = useState([
       {
@@ -190,8 +199,8 @@ export default function AddProduct(props) {
       if (_width && !Number.isNaN(_width) && _weight && !Number.isNaN(_weight)) {
           let iWidth = Number.parseInt(_width)
           let iWeight = Number.parseInt(_weight)
-          let iGsm = iWeight/(iWidth/10)
-          setGsm(iGsm)
+          let iGsm = iWeight/(iWidth/100)
+          setGsm(iGsm.toFixed(2))
           let iMetersInKg = 1/(iWeight*0.001)
           setMetersInKg(iMetersInKg.toFixed(2))
       }
@@ -230,14 +239,30 @@ export default function AddProduct(props) {
     setAllColor(cv)
   }
 
+  const openMyProducts = async (e) => {
+  }
+
   const saveProduct = async (e) => {
     
     let prod = {
-      itemName: itemName,
-      refNo: refNo,
+      vendorId: 1, //!
       artNo: artNo,
+      itemName: itemName,
       design: design,
+      price: price,
+      hsCode: hsCode,
+      refNo: refNo,
       season: season,
+      weight: weight,
+      width: width,
+      colorFastness: colorFastness,
+      fabricConstruction: fabricConstruction,
+      fabricYarnCount: fabricYarnCount,
+      fabricShrinkage: fabricShrinkage,
+      findings: findings,
+      metersInKg: metersInKg,
+      gsm: gsm,
+      uid: uid,
       designType: designType,
       overworkType: overworkType,
       productStyle: productStyle,
@@ -245,24 +270,19 @@ export default function AddProduct(props) {
       printType: printType,
       dyeStaff: dyeStaff,
       plainDyedType: plainDyedType,
-      vendorId: 1, //!
-      price: price,
-      weight: weight,
-      width: width,
-      colorFastness: colorFastness,
-      fabricConstruction: fabricConstruction,
-      fabricYarnCount: fabricYarnCount,
-      metersInKg: metersInKg,
-      gsm: gsm,
-      uid: uid,
       colorVariants: colorVariant.filter(it => !!it.ColorNo && it.ColorIds.length > 0 && !!it.SelectedFile), 
       globalPhotos: allColor.filter(it => !!it.No && !!it.SelectedFile)
     }
 
-    if (postProduct(prod)) {
+    let r = await postProduct(prod)
+
+    if (r) {
       props.setLastAction("Product has been added")
+      setSavingError(false)
       navigate("/menu")
-    } else {}
+    } else {
+      setSavingError(true)
+    }
   }
 
   const saveColor = async (e) => {
@@ -293,11 +313,40 @@ const addNewColor = () => {
 
 useEffect(() => {
   getColors(setColors)
-  getSeasons(setSeasons)
   getDesignTypes(setDesignTypes)
   getOverworkTypes(setOverworkTypes)
-  getProductTypes(setProductTypes)
   getProductStyles(setProductStyles)
+  getProductTypes(setProductTypes)
+  getSeasons(setSeasons)
+
+  // in bottom part of page, so can load later:
+  getDyeStaffs(setDyeStaffs)
+  getPlainDyedTypes(setPlainDyedTypes)
+  getPrintTypes(setPrintTypes)
+
+  setItemName('WINDSOR JAQUARD DYED')
+  setArtNo('MP-22040')
+  setRefNo('22040')
+  setDesign('P/D (505-e)')
+  setPrice('10')
+  setWidth('150')
+  setWeight('400')
+  setColorFastness('3')
+  setFabricConstruction('Simple 1')
+  setFabricYarnCount('4')
+  setFabricShrinkage('5')
+  setFindings('test 1')
+  setHsCode('HS 001')
+  setDesignType([1,2])
+  setProductType(1)
+  setProductStyle(1)
+  setSeason([1,2])
+  setOverworkType([1,2])
+
+  setDyeStaff(1)
+  setPrintType(2)
+  setPlainDyedType(2)
+
   }, []);
 
   return (
@@ -574,10 +623,144 @@ useEffect(() => {
                     <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} data={colors} />
                  ))}
           </Grid>
+          <FormControl sx = {{itemStyle}} > 
+                <Box sx={{ textAlign: "center", marginTop: 2 }}>
+                    <Button 
+                    variant="contained"
+                    style={buttonStyle}
+                    onClick={morePhotos} >
+                        Add photos
+                    </Button>
+                    <Button 
+                    variant="contained"
+                    style={buttonStyle}
+                    onClick={moreVariants} >
+                        Add colors
+                    </Button>
+                    </Box>
+          </FormControl>
           </AccordionDetails>
           </Accordion>
 
+          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
+
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
+            <Typography align="center" sx={accordionCaption}>Additional properties</Typography>
+          </AccordionSummary>
+
+          <AccordionDetails>
+          <Grid item xs={12} md={6} >
+            <TextField
+                margin="normal"
+                size="small" 
+                id="fabricConstruction"
+                label="Fabric construction"
+                name="fabricConstruction"
+                sx = {itemStyle}
+                value={fabricConstruction}
+                onChange={ev => setFabricConstruction(ev.target.value)}
+              />
+            <TextField
+                margin="normal"
+                size="small" 
+                id="fabricYarnCount"
+                label="Fabric Yarn Count"
+                name="fabricYarnCount"
+                sx = {itemStyle}
+                value={fabricYarnCount}
+                onChange={ev => setFabricYarnCount(ev.target.value)}
+              />
+            <TextField
+                margin="normal"
+                size="small" 
+                id="fabricShrinkage"
+                label="Fabric Shrinkage"
+                name="fabricShrinkage"
+                sx = {itemStyle}
+                value={fabricShrinkage}
+                onChange={ev => setFabricShrinkage(ev.target.value)}
+              />
+            <TextField
+                margin="normal"
+                size="small" 
+                id="colorFastness"
+                label="Color Fastness"
+                name="colorFastness"
+                sx = {itemStyle}
+                value={colorFastness}
+                onChange={ev => setColorFastness(ev.target.value)}
+              />
+            <TextField
+                margin="normal"
+                size="small" 
+                id="findings"
+                label="Findings"
+                name="findings"
+                sx = {itemStyle}
+                value={findings}
+                onChange={ev => setFindings(ev.target.value)}
+              />
+            <TextField
+                margin="normal"
+                size="small" 
+                id="hsCode"
+                label="HS Code"
+                name="hsCode"
+                sx = {itemStyle}
+                value={hsCode}
+                onChange={ev => setHsCode(ev.target.value)}
+              />
+
+              <MySelect 
+                id="addproduct-printttype"
+                url="PrintTypes"
+                title="Print Type"
+                valueName="typeName"
+                labelStyle={labelStyle}
+                itemStyle={itemStyle}
+                MenuProps={MySelectProps}
+                valueVariable={printType}
+                setValueFn={setPrintType}
+                data={printTypes}
+              />
+
+              <MySelect 
+                id="addproduct-plaindyedtype"
+                url="PlainDyedTypes"
+                title="Plain Dyed Type"
+                valueName="plainDyedTypeName"
+                labelStyle={labelStyle}
+                itemStyle={itemStyle}
+                MenuProps={MySelectProps}
+                valueVariable={plainDyedType}
+                setValueFn={setPlainDyedType}
+                data={plainDyedTypes}
+              />
+
+              <MySelect 
+                id="addproduct-dyestaff"
+                url="DyeStaffs"
+                title="Dye Staff"
+                valueName="dyeStaffName"
+                labelStyle={labelStyle}
+                itemStyle={itemStyle}
+                MenuProps={MySelectProps}
+                valueVariable={dyeStaff}
+                setValueFn={setDyeStaff}
+                data={dyeStaffs}
+              />
+
+          </Grid>
+          </AccordionDetails>
+
+          {/* </Box> */}
+          </Accordion>
+
           <FormControl sx = {{itemStyle}} > 
+          { savingError && 
+            <Box sx={{ textAlign: "center", marginTop: 2, fontSize: "12pt", color: "red" }}>
+            An error has occurred. Please check that all fields are filled in correctly and completely and try saving again.
+            </Box> }
                 <Box sx={{ textAlign: "center", marginTop: 2 }}>
                   <Button 
                     variant="contained"
@@ -585,23 +768,16 @@ useEffect(() => {
                     sx={{margin: "0 10px", height: 70}}
                     onClick={saveProduct} >
                         Save
-                    </Button>
-                    <Button 
+                  </Button>
+                  <Button 
                     variant="contained"
                     style={buttonStyle}
                     sx={{margin: "0 10px", height: 70}}
-                    onClick={morePhotos} >
-                        add photos
-                    </Button>
-                    <Button 
-                    variant="contained"
-                    style={buttonStyle}
-                    sx={{margin: "0 10px", height: 70}}
-                    onClick={moreVariants} >
-                        Add colors
-                    </Button>
-                    </Box>
-                </FormControl>
+                    onClick={openMyProducts} >
+                        View products
+                  </Button>
+                </Box>
+          </FormControl>
 
 
         </main>

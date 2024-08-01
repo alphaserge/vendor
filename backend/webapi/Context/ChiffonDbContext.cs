@@ -17,7 +17,10 @@ namespace chiffon_back.Context
         public DbSet<ColorVariant> ColorVariants { get; set; }
         public DbSet<ColorVariantsInColors> ColorVariantsInColors { get; set; }
         public DbSet<DesignType> DesignTypes { get; set; }
+        public DbSet<DyeStaff> DyeStaffs { get; set; }
         public DbSet<OverWorkType> OverWorkTypes { get; set; }
+        public DbSet<PlainDyedType> PlainDyedTypes { get; set; }
+        public DbSet<PrintType> PrintTypes { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductsInColors> ProductsInColors { get; set; }
         public DbSet<ProductsInDesignTypes> ProductsInDesignTypes { get; set; }
@@ -35,7 +38,10 @@ namespace chiffon_back.Context
             modelBuilder.Entity<ColorVariant>().ToTable("ColorVariants");
             modelBuilder.Entity<ColorVariantsInColors>().ToTable("ColorVariantsInColors");
             modelBuilder.Entity<DesignType>().ToTable("DesignTypes");
+            modelBuilder.Entity<DyeStaff>().ToTable("DyeStaffs");
             modelBuilder.Entity<OverWorkType>().ToTable("OverWorkTypes");
+            modelBuilder.Entity<PlainDyedType>().ToTable("PlainDyedTypes");
+            modelBuilder.Entity<PrintType>().ToTable("PrintTypes");
             modelBuilder.Entity<Product>().ToTable("Products");
             modelBuilder.Entity<ProductsInColors>().ToTable("ProductsInColors");
             modelBuilder.Entity<ProductsInDesignTypes>().ToTable("ProductsInDesignTypes");

@@ -42,12 +42,12 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost(Name = "Colors")]
-        public ActionResult<Models.Vendor> Post(Models.Color Vendor)
+        public ActionResult<Models.Vendor> Post(Models.Color color)
         {
             try
             {
                 Context.Color vendor = config.CreateMapper()
-                    .Map<Context.Color>(Vendor);
+                    .Map<Context.Color>(color);
 
                 ctx.Colors.Add(vendor);
                 ctx.SaveChanges();

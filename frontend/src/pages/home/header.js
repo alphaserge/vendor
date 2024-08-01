@@ -23,6 +23,8 @@ import config from "../../config.json"
 const pages = ['My Products', 'Add Product', 'Categories', 'Contact Us' ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Login', 'Logout', 'Register'];
 
+const menuPagesStyle = { textTransform: "none", fontSize: "11pt", fontWeight: "normal", color: APPEARANCE.WHITE2 }
+
 function FabricIcon(props) {
   return (
   <Icon src="./pag">
@@ -87,8 +89,8 @@ export default function Header(props) {
   
 
   return (
-    <AppBar position="static" sx={{backgroundColor: APPEARANCE.NONE, boxShadow: "none" }}>
-      <Container className="header-menu" sx={{ backgroundColor: APPEARANCE.NONE  }} maxWidth={false}  >
+    <AppBar position="static" sx={{backgroundColor: APPEARANCE.BLACK, boxShadow: "none" }}>
+      <Container className="header-menu" sx={{ backgroundColor: APPEARANCE.BLACK  }} maxWidth={false}  >
         <Toolbar disableGutters>
           {/* <ApiIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
@@ -113,7 +115,7 @@ export default function Header(props) {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color={APPEARANCE.BLACK}
+              sx={{ color: APPEARANCE.WHITE2 }} 
             >
               <MenuIcon />
             </IconButton>
@@ -139,7 +141,7 @@ export default function Header(props) {
                 <MenuItem 
                   key={page} 
                   data-menu-value={page}
-                  sx={{ color: APPEARANCE.COLOR1}}
+                  //style={menuPagesStyle}
                   onClick={handleMenuClick}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
@@ -152,8 +154,9 @@ export default function Header(props) {
               <Button
                 key={page}
                 data-menu-value={page}
+                style={menuPagesStyle}
+                sx={{ ml: 2, mr: 2, display: 'block' }}
                 onClick={handleMenuClick}
-                sx={{ ml: 2, mr: 2, color: APPEARANCE.BLACK, display: 'block' }}
               >
                 {page}
               </Button>

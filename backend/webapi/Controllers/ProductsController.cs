@@ -151,11 +151,13 @@ namespace chiffon_back.Controllers
             try
             {
                 int? id = ProductModel.Post(product);
+                //test: throw new Exception();
                 return CreatedAtAction(nameof(Get), new { Id = id });
             }
             catch (Exception ex)
             {
-                return CreatedAtAction(nameof(Get), new { Id = -1 }, null);
+                return BadRequest(ex);
+                //CreatedAtAction(nameof(Get), new { Id = -1 }, null);
             }
         }
 

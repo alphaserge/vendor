@@ -1,7 +1,12 @@
 export const APPEARANCE = {
     NONE: "#fff",
     WHITE: "#fff",
+    WHITE1: "#eee",
+    WHITE2: "#ddd",
     BLACK: "#000",
+    BUTTON: "#fff",
+    BUTTON_BG: "#000",
+
     BLACK1: "#111",
     BLACK2: "#222",
     BLACK3: "#333",

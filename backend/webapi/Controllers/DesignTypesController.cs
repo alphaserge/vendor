@@ -36,12 +36,12 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost(Name = "DesignTypes")]
-        public ActionResult<Models.Vendor> Post(Models.DesignType Vendor)
+        public ActionResult<Models.Vendor> Post(Models.DesignType designType)
         {
             try
             {
                 Context.DesignType vendor = config.CreateMapper()
-                    .Map<Context.DesignType>(Vendor);
+                    .Map<Context.DesignType>(designType);
 
                 ctx.DesignTypes.Add(vendor);
                 ctx.SaveChanges();

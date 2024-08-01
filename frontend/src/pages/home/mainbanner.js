@@ -19,9 +19,6 @@ import { APPEARANCE } from '../../appearance';
 
 import config from "../../config.json"
 
-const pages = ['My Products', 'Add Product', 'Contacts' ];
-const settings = ['Profile', 'Account', 'Dashboard', 'Login', 'Logout', 'Register'];
-
 function FabricIcon(props) {
   return (
   <Icon src="./pag">
