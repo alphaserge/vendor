@@ -10,7 +10,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE TABLE [dbo].[Finishing](
+CREATE TABLE [dbo].[Finishings](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[FinishingName] [varchar](50) NULL,
  CONSTRAINT [PK_Finishing] PRIMARY KEY CLUSTERED 
@@ -21,18 +21,18 @@ CREATE TABLE [dbo].[Finishing](
 GO
 
 
-insert into [Finishing]([FinishingName]) values ('ROUGH')
-insert into [Finishing]([FinishingName]) values ('SOFT')
-insert into [Finishing]([FinishingName]) values ('PEACH')
-insert into [Finishing]([FinishingName]) values ('BRUSH')
-insert into [Finishing]([FinishingName]) values ('CREPE') */
+insert into [Finishings]([FinishingName]) values ('ROUGH')
+insert into [Finishings]([FinishingName]) values ('SOFT')
+insert into [Finishings]([FinishingName]) values ('PEACH')
+insert into [Finishings]([FinishingName]) values ('BRUSH')
+insert into [Finishings]([FinishingName]) values ('CREPE') */
 
 
 alter table Products add [FinishingId] [int] NULL
 
 
 ALTER TABLE [dbo].[Products]  WITH CHECK ADD  CONSTRAINT [FK_Products_Finishing] FOREIGN KEY([FinishingId])
-REFERENCES [dbo].[Finishing] ([Id])
+REFERENCES [dbo].[Finishings] ([Id])
 GO
 
 ALTER TABLE [dbo].[Products] CHECK CONSTRAINT [FK_Products_Finishing]
