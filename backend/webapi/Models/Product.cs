@@ -33,6 +33,7 @@ namespace chiffon_back.Models
         public string? FileName { get; set; }
 
         public int? DyeStaffId { get; set; }
+        public int? FinishingId { get; set; }
         public int? PlainDyedTypeId { get; set; }
         public int? PrintTypeId { get; set; }
         public int? ProductStyleId { get; set; }
@@ -98,12 +99,13 @@ namespace chiffon_back.Models
         public decimal? FabricShrinkage { get; set; }
 
 
+        public int? DyeStaffId { get; set; }
+        public int? FinishingId { get; set; }
+        public int? PlainDyedTypeId { get; set; }
+        public int? PrintTypeId { get; set; }
         public int? ProductStyleId { get; set; }
         public int? ProductTypeId { get; set; }
         public int? VendorId { get; set; }
-        public int? PrintTypeId { get; set; }
-        public int? DyeStaffId { get; set; }
-        public int? PlainDyedTypeId { get; set; }
 
         public string? ProductStyle { get; set; }
         public string? ProductType { get; set; }

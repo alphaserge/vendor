@@ -11,6 +11,9 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
 import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import MenuItem from '@mui/material/MenuItem';
 
 import { v4 as uuid } from 'uuid'
 
@@ -45,6 +48,7 @@ const halfItemStyle = { width: 180, ml: 0, mr: 2 }
 const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
 const boxStyle = { display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '360px', ml:4, mr:2 }
 const labelStyle = { m: 2, ml: 4, mr: 4 }
+const labelStyle1 = { m: 2, ml: 0, mr: 4 }
 const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "0 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
 const accordionStyle = { textAlign: "center", margin: "15px auto", justifyContent:"center", boxShadow: "none", border: "none" }
 const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 10px",  backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px" }
@@ -61,6 +65,27 @@ const MySelectProps = {
     },
   },
 };
+
+function getStyles(name, values, theme) {
+  try 
+  {
+    if (Array.isArray(values)) {
+      return {
+        fontWeight:
+        values.indexOf(name) === -1
+            ? theme.typography.fontWeightRegular
+            : theme.typography.fontWeightBold,
+            /*backgroundColor: names.indexOf(name) === -1 ? "#F00" : "#F0F"*/
+      }
+    } else {
+      return {}
+    }
+  }
+  catch(exc)
+  {
+    let a = exc
+  }
+}
 
 export default function AddProduct(props) {
 
@@ -185,9 +210,23 @@ export default function AddProduct(props) {
 
     const weightChanged = (e) => {
       let value = e.target.value
-      setWeight(value)
+      setWeight(Math.round(parseInt(value)))
       wChanged(width, value)
     }
+
+    const densityChanged = (e) => {
+      let gs = e.target.value
+      setGsm(gs)
+      //wChanged(value, weight)
+      if (width && !Number.isNaN(width) && gs && !Number.isNaN(gs)) {
+        let iWidth = Number.parseInt(width)
+        let iGsm = Number.parseInt(gs)
+        let iWeight = iGsm*iWidth/100
+        setWeight(Math.round(iWeight))
+        let iMetersInKg = 1/(iWeight*0.001)
+        setMetersInKg(iMetersInKg.toFixed(2))
+    }
+  }
 
     const widthChanged = (e) => {
       let value = e.target.value
@@ -244,8 +283,10 @@ export default function AddProduct(props) {
 
   const saveProduct = async (e) => {
     
+    let vendorId = props.user ? props.user.vendorId : -1;
+
     let prod = {
-      vendorId: 1, //!
+      vendorId: vendorId,
       artNo: artNo,
       itemName: itemName,
       design: design,
@@ -554,21 +595,21 @@ useEffect(() => {
           <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} elevation={0} sx={{ '&:before':{height:'0px'}}} >
 
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
-            <Typography align="center" sx={accordionCaption}>Weight / Width / Density</Typography>
+            <Typography align="center" sx={accordionCaption}>Weight / Width / GSM</Typography>
           </AccordionSummary>
 
           <AccordionDetails>
           <Grid item xs={12} md={6} >
-          <Box sx={boxStyle}>
+            <Box sx={boxStyle}>
               <TextField
                   margin="normal"
                   size="small" 
-                  id="weight"
-                  label="Weight GPM"
-                  name="weight"
+                  id="gsm"
+                  label="GSM"
+                  name="gsm"
                   sx = {halfItemStyle}
-                  value={weight}
-                  onChange={weightChanged}
+                  value={gsm}
+                  onChange={densityChanged}
                 />
                 <TextField
                   margin="normal"
@@ -585,12 +626,12 @@ useEffect(() => {
                 <TextField
                   margin="normal"
                   size="small" 
-                  id="gsm"
-                  label="Density GSM"
-                  name="gsm"
+                  id="weight"
+                  label="Weight G/M"
+                  name="weight"
                   sx = {halfItemStyle}
-                  value={gsm}
-                  onChange={ev => setGsm(ev.target.value)}
+                  value={weight}
+                  onChange={weightChanged}
                 />
                 <TextField
                   margin="normal"
@@ -670,7 +711,7 @@ useEffect(() => {
                 value={fabricYarnCount}
                 onChange={ev => setFabricYarnCount(ev.target.value)}
               />
-            <TextField
+            {/* <TextField
                 margin="normal"
                 size="small" 
                 id="fabricShrinkage"
@@ -679,8 +720,43 @@ useEffect(() => {
                 sx = {itemStyle}
                 value={fabricShrinkage}
                 onChange={ev => setFabricShrinkage(ev.target.value)}
-              />
-            <TextField
+              /> */}
+
+              <Box sx={boxStyle}>
+              <FormControl >
+              <InputLabel id="fabric-shrinkage-label" sx={labelStyle1} size="small" >Fabric Shrinkage</InputLabel>
+              <Select
+                size="small" 
+                labelId="fabric-shrinkage-label"
+                id="fabric-shrinkage"
+                value={fabricShrinkage}
+                label="Fabric Shrinkage"
+                sx = {{width: 163, m: 2, ml: 0, mr: 4}}
+                onChange={ev => setFabricShrinkage(ev.target.value)} >
+                   { [...Array(11).keys()].map((elem, ix) => (
+                      <MenuItem key={"shr_"+ix} value={elem}
+                      style={getStyles(elem, fabricShrinkage, theme)}> { elem + "%"} </MenuItem> ))}
+              </Select>
+              </FormControl>
+
+              <FormControl >
+              <InputLabel id="color-fastness-label" sx={labelStyle1} size="small" >Color Fastness</InputLabel>
+              <Select
+                size="small" 
+                labelId="color-fastness-label"
+                id="color-fastness"
+                value={colorFastness}
+                label="Color Fastness"
+                sx = {{width: 163, m: 2, ml: 0, mr: 4}}
+                onChange={ev => setColorFastness(ev.target.value)} >
+                   {  [...Array(6).keys()].map((elem, ix) => (
+                      <MenuItem key={"shr_"+ix} value={elem}
+                      style={getStyles(elem, fabricShrinkage, theme)}> { elem } </MenuItem> ))}
+              </Select>
+              </FormControl>
+              </Box>
+
+            {/* <TextField
                 margin="normal"
                 size="small" 
                 id="colorFastness"
@@ -689,7 +765,7 @@ useEffect(() => {
                 sx = {itemStyle}
                 value={colorFastness}
                 onChange={ev => setColorFastness(ev.target.value)}
-              />
+              /> */}
             <TextField
                 margin="normal"
                 size="small" 

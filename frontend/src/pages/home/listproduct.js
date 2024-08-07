@@ -89,9 +89,10 @@ export default function ListProduct(props) {
       setArtNo("")
       setDesign("")
 
-      axios.get(config.api + '/Products/Products', 
+      axios.get(config.api + '/Products/Products?id='+props.user.id, 
         { params: 
             { 
+              vendorId: 2
             }})
       .then(function (res) {
           var result = res.data;
@@ -111,7 +112,7 @@ export default function ListProduct(props) {
 
       //const params = new url.URLSearchParams({ foo: 'bar' });      
 
-      axios.get(config.api + '/Products/Products', 
+      axios.get(config.api + '/Products/Products?id='+props.user.id, 
         { params: 
             { 
               name: itemName,
@@ -237,8 +238,8 @@ export default function ListProduct(props) {
 
           <Box style={headStyle} sx={{ display: "flex", justifyContent:"space-between",  margin: "0 auto", maxWidth: "1100px"}} justifyContent={"center"} className="header-menu" >
             <Box sx={{ display: "flex", alignItems:"center", justifyContent: "center", width: "100%", mt: 2, mb: 2}}>
-            <Typography component="h1" variant="h6" color={APPEARANCE.COLOR1}>
-              Your product's list
+            <Typography component="h7" variant="h7" color={APPEARANCE.COLOR1}>
+              {props.user && ( props.user.vendorName + " product's list") } 
             </Typography>
             </Box>
             <IconButton onClick={handleShowHideFilter} sx={{ p: 0, mr: 4 }}>

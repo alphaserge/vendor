@@ -28,6 +28,7 @@ const getDecimal = (value) => {
 const makeProduct = (prod)  => {
 
   let p = {
+    Id: prod.id,
     ItemName: prod.itemName,
     ArtNo: prod.artNo,
     ColorFastness: getInt(prod.colorFastness) ,
@@ -49,12 +50,12 @@ const makeProduct = (prod)  => {
     OverWorkTypes: prod.overworkType,
     Seasons: prod.season,
 
-    ProductStyleId: prod.productStyle,
-    ProductTypeId: prod.productType,
-    DyeStaffId: prod.dyeStaff,
-    PlainDyedTypeId: prod.plainDyedType,
-    PrintTypeId: prod.printType,
-    VendorId: prod.vendorId,
+    ProductStyleId: getInt(prod.productStyle),
+    ProductTypeId: getInt(prod.productType),
+    DyeStaffId: getInt(prod.dyeStaff),
+    PlainDyedTypeId: getInt(prod.plainDyedType),
+    PrintTypeId: getInt(prod.printType),
+    VendorId: getInt(prod.vendorId),
 
     ColorVariants: prod.colorVariants, 
   }

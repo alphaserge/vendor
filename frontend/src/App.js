@@ -5,6 +5,7 @@ import AddProduct from './pages/home/addproduct';
 import ListProduct from './pages/home/listproduct';
 import Menu from './pages/home/menu';
 import Login from './pages/auth/login';
+import Logout from './pages/auth/logout';
 import Register from './pages/auth/register';
 import Confirm from './pages/auth/confirm';
 import Info from './pages/auth/info';
@@ -16,9 +17,8 @@ import Blog from './pages/home/blog/Blog';
 import './App.css';
 import { useEffect, useState } from 'react';
 
-function App() {
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [user, setUser] = useState({
+const userInitialValue = () => {
+  return JSON.parse(localStorage.getItem("user")) || {
     Id: 0,
     FirstName: "",
     LastName: "",
@@ -28,7 +28,23 @@ function App() {
     IsLocked: true,
     VendorId: 0,
     Vendor: ""
-  })
+  };
+};
+
+function App() {
+  const [loggedIn, setLoggedIn] = useState(false)
+  const [user, setUser] = useState(userInitialValue)
+  /*useState({
+    Id: 0,
+    FirstName: "",
+    LastName: "",
+    Email: "",
+    Phones: "",
+    Roles: [],
+    IsLocked: true,
+    VendorId: 0,
+    Vendor: ""
+  })*/
 
   const [lastAction, setLastAction] = useState("")
 
@@ -62,6 +78,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home user={user} loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setUser={setUser} />} />
+          <Route path="/logout" element={<Logout setLoggedIn={setLoggedIn} setUser={setUser} />} />
           <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setUser={setUser} />} />
           <Route path="/confirm" element={<Confirm setLoggedIn={setLoggedIn} setUser={setUser} />} />
           <Route path="/info" element={<Info />} />

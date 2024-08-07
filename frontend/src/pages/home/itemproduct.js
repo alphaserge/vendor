@@ -46,7 +46,7 @@ export default function ItemProduct(props) {
   return (
     
     <FormControl  sx={{ mb: 2, width: 440 }} > 
-          <Link href={"/update?id=" + props.data.id} >
+          <Link href={"/updateproduct?id=" + props.data.id} >
           <Swiper className="mySwiper" >
             {props.data.colors.map((cv, index) => {
               return <>

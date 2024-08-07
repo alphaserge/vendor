@@ -74,10 +74,14 @@ namespace chiffon_back.Controllers
 
         // временно [Authorize]
         [HttpGet("Products")]
-        public IEnumerable<Models.Product> Get()
+        public IEnumerable<Models.Product> Get([FromQuery] string id)
         {
+            var user = ctx.Users.FirstOrDefault(x => x.Id.ToString() == id);
+            int? vendorId = user != null ? user.VendorId : -1;
+
             var prods = ProductModel.Get(new ProductFilter()
             {
+                VendorId = vendorId,
                 ItemName = HttpContext.Request.Query["name"].ToString(),
                 ArtNo = HttpContext.Request.Query["artno"].ToString(),
                 RefNo = HttpContext.Request.Query["refno"].ToString(),
@@ -116,7 +120,7 @@ namespace chiffon_back.Controllers
                     if (product != null)
                     {
                         product.PhotoUuids = 
-                            product.PhotoUuids != null ? product.PhotoUuids + "," + uid : uid;
+                            String.IsNullOrEmpty(product.PhotoUuids) ? uid : product.PhotoUuids + "," + uid;
                         ctx.SaveChanges();
                     }
                 }
@@ -157,14 +161,21 @@ namespace chiffon_back.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex);
-                //CreatedAtAction(nameof(Get), new { Id = -1 }, null);
             }
         }
 
         [HttpPost("ProductUpdate")]
         public ActionResult Update(Models.PostProduct product)
         {
-            return CreatedAtAction(nameof(Get), ProductModel.Update(product));
+            try
+            {
+                int? id = ProductModel.Update(product);
+                return CreatedAtAction(nameof(Get), new { Id = id });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         [HttpPost("ProductRemoveCV")]

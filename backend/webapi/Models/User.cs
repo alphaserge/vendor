@@ -15,6 +15,7 @@
         public string? Token { get; set; }
         public string? Roles { get; set; }
         public string? RegistrationHash { get; set; }
+        public string? VendorName { get; set; }
 
         //public virtual Vendor? Vendor { get; set; }
     }

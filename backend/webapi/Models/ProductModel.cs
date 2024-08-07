@@ -9,6 +9,7 @@ namespace chiffon_back.Models
 {
     public class ProductFilter
     {
+        public int? VendorId { get; set; }
         public int? Id { get; set; }
         public string ItemName { get; set; }
         public string RefNo { get; set; }
@@ -25,6 +26,8 @@ namespace chiffon_back.Models
         public string Overworks { get; set; }
         public ProductFilter()
         {
+            VendorId = 0;
+
             ItemName = String.Empty;
             RefNo = String.Empty;
             ArtNo = String.Empty;
@@ -76,6 +79,7 @@ namespace chiffon_back.Models
         public static IEnumerable<Models.Product> Get(ProductFilter filter)
         {
             ChiffonDbContext ctx = ContextHelper.ChiffonContext();
+
             //var query = from p in ctx.Products select p;
             var query = from p in ctx.Products
                         select new Models.Product
@@ -112,6 +116,11 @@ namespace chiffon_back.Models
                             Seasons = p.ProductsInSeasons!.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
                             Colors = new List<ProductColor>(),
                         };
+
+            if (filter.VendorId > 0)
+            {
+                query = query.Where(x => x.VendorId==filter.VendorId);
+            }
 
             if (!String.IsNullOrEmpty(filter.ItemName))
             {
@@ -227,6 +236,9 @@ namespace chiffon_back.Models
         public static Models.Product? Get(string id)
         {
             ChiffonDbContext ctx = ContextHelper.ChiffonContext();
+
+            //var p1 = ctx.Products.Where(x => x.Id.ToString() == id).Select(x=>x).FirstOrDefault();
+
             var query = from p in ctx.Products
                         where p.Id.ToString() == id
                         select new Models.Product
@@ -258,8 +270,9 @@ namespace chiffon_back.Models
                             MetersInKG = p.MetersInKG,
                             FabricConstruction = p.FabricConstruction,
                             FabricYarnCount = p.FabricYarnCount,
+                            FabricShrinkage = p.FabricShrinkage,
                             ColorFastness = p.ColorFastness,
-
+                            HSCode = p.HSCode,
                         };
 
             var prod = query.FirstOrDefault();
@@ -412,7 +425,7 @@ namespace chiffon_back.Models
 
         }
 
-        public static bool Update(Models.PostProduct product)
+        public static int? Update(Models.PostProduct product)
         {
             ChiffonDbContext ctx = ContextHelper.ChiffonContext();
 
@@ -435,12 +448,14 @@ namespace chiffon_back.Models
                     prod.MetersInKG = product.MetersInKG;
                     prod.ColorFastness = product.ColorFastness;
                     prod.FabricConstruction = product.FabricConstruction;
+                    prod.FabricShrinkage = product.FabricShrinkage;
                     prod.FabricYarnCount = product.FabricYarnCount;
-                    prod.DyeStaffId = product.DyeStaffId;
-                    prod.PlainDyedTypeId = product.PlainDyedTypeId;
+                    prod.Findings = product.Findings;
+                    prod.HSCode = product.HSCode;
                     prod.PrintTypeId = product.PrintTypeId;
+                    prod.PlainDyedTypeId = product.PlainDyedTypeId;
+                    prod.DyeStaffId = product.DyeStaffId;
                     ctx.SaveChanges();
-
 
                     if (product.ColorVariants != null)
                     {
@@ -517,11 +532,11 @@ namespace chiffon_back.Models
                     }
                 }
 
-                return true;
+                return product.Id;
             }
             catch (Exception ex)
             {
-                return false;
+                return null;
             }
 
         }

@@ -27,6 +27,7 @@
         public string? FileName { get; set; }
 
         public int? DyeStaffId { get; set; }
+        public int? FinishingId { get; set; }
         public int? PlainDyedTypeId { get; set; }
         public int? PrintTypeId { get; set; }
         public int? ProductStyleId { get; set; }

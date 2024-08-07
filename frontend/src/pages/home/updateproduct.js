@@ -142,6 +142,20 @@ export default function UpdateProduct(props) {
       wChanged(width, value)
     }
 
+    const densityChanged = (e) => {
+      let gs = e.target.value
+      setGsm(gs)
+      //wChanged(value, weight)
+      if (width && !Number.isNaN(width) && gs && !Number.isNaN(gs)) {
+        let iWidth = Number.parseInt(width)
+        let iGsm = Number.parseInt(gs)
+        let iWeight = iGsm*iWidth/100
+        setWeight(iWeight.toFixed(2))
+        let iMetersInKg = 1/(iWeight*0.001)
+        setMetersInKg(iMetersInKg.toFixed(2))
+    }
+  }
+
     const widthChanged = (e) => {
       let value = e.target.value
       setWidth(value)
@@ -159,11 +173,13 @@ export default function UpdateProduct(props) {
       }
     }
 
-    const moreVariants = async (e) => {
+    const moreVariants = async (e, max) => {
       let cv = colorVariantPlus.slice()
-      let num = cv.length
-      let cvNums = colorVariantPlus.map(x => x.cvNum);
-      let max = Math.max(...cvNums)
+      if (max === null || max === undefined) {
+        let num = cv.length
+        let cvNums = colorVariantPlus.map(x => x.No)
+        max = cvNums.length > 0 ?  Math.max(...cvNums) : 0
+      }
       let i=max+1
       while (i<max+7){
         cv.push({
@@ -183,7 +199,7 @@ export default function UpdateProduct(props) {
     const moreProductColors = async (e) => {
       let cv = productColorsPlus.slice()
       let num = cv.length
-      let cvNums = productColorsPlus.map(x => x.cvNum);
+      let cvNums = productColorsPlus.map(x => x.No);
       let max = cvNums.length > 0 ? Math.max(...cvNums) : 0
       let i=max+1
       while (i<max+3){
@@ -212,11 +228,11 @@ export default function UpdateProduct(props) {
           IsProduct: cv.isProduct
         })
     })
-    .then(r => r.json())
+    //.then(r => r.json())
     .then(r => {
   
       let id = idFromUrl()
-      loadProduct(id)
+      loadProduct(id, setProduct)
       
       props.setLastAction("Color variant has been removed")
       navigate(loc)
@@ -259,6 +275,7 @@ export default function UpdateProduct(props) {
     let prod = {
       vendorId: 1, //!
       artNo: artNo,
+      id: idFromUrl(),
       itemName: itemName,
       design: design,
       price: price,
@@ -291,6 +308,9 @@ export default function UpdateProduct(props) {
     if (r) {
       props.setLastAction("Product has been saved")
       setSavingError(false)
+      let id = idFromUrl()
+      loadProduct(id, setProduct)
+
       //navigate("/menu")
     } else {
       setSavingError(true)
@@ -334,13 +354,30 @@ const setProduct = (prod) => {
   setColorFastness(prod.colorFastness)
   setFabricConstruction(prod.fabricConstruction)
   setFabricYarnCount(prod.fabricYarnCount)
-
+  setFabricShrinkage(prod.fabricShrinkage)
+  setFindings(prod.findings)
+  setHsCode(prod.hsCode)
   setProductStyle(prod.productStyle)
   setProductType(prod.productType)
+  setPrintType(prod.printType)
+  setPlainDyedType(prod.plainDyedType)
+  setDyeStaff(prod.dyeStaff)
   setSeason(prod.seasonIds)
   setOverworkType(prod.overWorkTypeIds)
   setDesignType(prod.designTypeIds)
   setColorVariant(prod.colors)
+
+  wChanged(prod.width, prod.weight)
+
+  if (colorVariantPlus.length == 0) {
+    let cvNums = prod.colors.map(x => x.cvNum)
+    let max = cvNums.length > 0 ?  Math.max(...cvNums) : 0
+    moreVariants(null, max)
+  }
+
+  if (productColorsPlus.length == 0) {
+    moreProductColors()
+  }
   //setProductColors()
   //setGramm_pm( parseInt(prod.weight)*parseInt(prod.width)/100)
 }
@@ -433,8 +470,8 @@ useEffect(() => {
         <Header user={props.user} title={props.title} />
         <main>
  
-          <Typography component="h1" variant="h6" color={APPEARANCE.COLOR1}>
-          Change a product
+          <Typography component="h7" variant="h7" color={APPEARANCE.COLOR1}>
+          Change a product art. {artNo} - {itemName}
           </Typography>
           {/* <Typography component="p" variant="subtitle1" sx={{mb:2}}  color={APPEARANCE.COLOR1}>
           Please fill out all fields and click the Save button
@@ -608,7 +645,7 @@ useEffect(() => {
                   name="gsm"
                   sx = {halfItemStyle}
                   value={gsm}
-                  onChange={ev => setGsm(ev.target.value)}
+                  onChange={densityChanged}
                 />
                 <TextField
                   margin="normal"
@@ -625,13 +662,46 @@ useEffect(() => {
           </AccordionDetails>
           </Accordion>
 
-          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
+          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true}  elevation={0} sx={{ '&:before':{height:'0px'}}} >
 
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
             <Typography align="center" sx={accordionCaption}>Product photos</Typography>
           </AccordionSummary>
 
           <AccordionDetails>
+        <Box component={"div"} display={"flex"} justifyContent={"left"} alignItems={"left"} 
+          marginBottom={3} marginLeft={6} marginRight={6} 
+          paddingBottom={1} sx={accordionSummaryStyle} >
+            {colorVariant.map((cv, index) => {
+              return <Box className="product-img-holder-item">
+                <Box className="product-img-holder-thumb" >
+
+                <Box 
+                  component={"img"} 
+                  key={index} 
+                  src={"https://localhost:3080/"+cv.imagePath} 
+                  alt={"photo"+(index+1)} 
+                  className="product-img" />
+                  <br/>
+                  </Box>
+                  <Box component={"div"} 
+                    sx={{ mt: 1, ml: 1, height: "36px", width: "125px", wordBreak: "break-all", wordWrap: "break-word", alignItems: "center" }} 
+                    textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > { (cv.cvNum?cv.cvNum+' - ':'') + cv.color} </Box>
+
+          <IconButton
+          color="success"
+          aria-label="upload picture"
+          sx={{color: APPEARANCE.BLACK2, pt: 0}}
+          component="span"
+          onClick={ function() { handleRemoveCv(cv)}}
+          >
+              {<DeleteIcon />}
+              </IconButton>
+        </Box>
+      })}
+      </Box>
+
+
           <Grid item xs={12} md={6} >
                 { productColorsPlus.map((cv) => (
                     <ProductColor cv={cv} setColorItem={setProductColorItem}  />
@@ -660,7 +730,7 @@ useEffect(() => {
           </AccordionDetails>
           </Accordion>
 
-          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
+          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true}  elevation={0} sx={{ '&:before':{height:'0px'}}} >
 
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
             <Typography align="center" sx={accordionCaption}>Additional properties</Typography>
@@ -787,48 +857,16 @@ useEffect(() => {
                     onClick={saveProduct} >
                         Save
                   </Button>
-                  <Button 
+                  {/* <Button 
                     variant="contained"
                     style={buttonStyle}
                     sx={{margin: "0 10px", height: 70}}
                     onClick={openMyProducts} >
                         View products
-                  </Button>
+                  </Button> */}
                 </Box>
           </FormControl>
         </main>
-
-        <Box component={"div"} display={"flex"} justifyContent={"left"} alignItems={"left"} 
-          marginBottom={3} marginLeft={6} marginRight={6} 
-          paddingBottom={1} sx={{ backgroundColor: "#f1f1f1" }} >
-            {colorVariant.map((cv, index) => {
-              return <Box className="product-img-holder-item">
-                <Box className="product-img-holder-thumb" >
-
-                <Box 
-                  component={"img"} 
-                  key={index} 
-                  src={"https://localhost:3080/"+cv.imagePath} 
-                  alt={"photo"+(index+1)} 
-                  className="product-img" />
-                  <br/>
-                  </Box>
-                  <Box component={"div"} 
-                    sx={{ mt: 1, ml: 1, height: "36px", width: "125px", wordBreak: "break-all", wordWrap: "break-word", alignItems: "center" }} 
-                    textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > { (cv.cvNum?cv.cvNum+' - ':'') + cv.color} </Box>
-
-          <IconButton
-          color="success"
-          aria-label="upload picture"
-          sx={{color: APPEARANCE.BLACK2, pt: 0}}
-          component="span"
-          onClick={ function() { handleRemoveCv(cv)}}
-          >
-              {<DeleteIcon />}
-              </IconButton>
-        </Box>
-      })}
-      </Box>
 
       </Container>
       <Footer sx={{ mt: 2, mb: 2 }} />

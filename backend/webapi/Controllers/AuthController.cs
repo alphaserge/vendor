@@ -76,6 +76,12 @@ namespace chiffon_back.Controllers
                 new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
 
                 user = config.CreateMapper().Map<Models.User>(ctxUser);
+                int? vendorId = user.VendorId;
+                if (vendorId != null)
+                {
+                    var vendor = ctx.Vendors.FirstOrDefault(x => x.Id == vendorId.Value);
+                    user.VendorName = vendor != null ? vendor.VendorName : "no vendor";
+                }
                 return claimsIdentity;
             }
 

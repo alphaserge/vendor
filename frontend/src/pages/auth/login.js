@@ -19,8 +19,13 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Copyright from '../copyright';
 import { stringToHash } from '../../functions/hash'
 
+import { APPEARANCE } from '../../appearance';
+
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
+
+const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
+const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "0 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
 
 export default function Login(props) {
 
@@ -106,7 +111,8 @@ export default function Login(props) {
               localStorage.setItem("user", JSON.stringify({email, token: r.token}))
               props.setLoggedIn(true)
               props.setUser(r)
-              navigate("/")
+              localStorage.setItem("user", JSON.stringify(r));
+              navigate("/listproduct")
           } else {
               window.alert("Wrong email or password")
           }
@@ -138,13 +144,15 @@ export default function Login(props) {
             flexDirection: 'column',
             alignItems: 'center',
           }} >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, display: "flex", flexDirection: "row", alignItems: "center" }}>
+          {/* <Avatar sx={{ m: 1, bgcolor: '#000', mr: 2 }}>
             <LockOutlinedIcon />
-          </Avatar>
+          </Avatar> */}
           <Typography component="h1" variant="h5">
-            Sign in
+            Log in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          </Box>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
             <FormControl 
              fullWidth 
              sx={{display: 'flex'}} > 
@@ -158,6 +166,7 @@ export default function Login(props) {
               value={email}
               onChange={ev => setEmail(ev.target.value)}
               autoComplete="email"
+              style={itemStyle}
               autoFocus
             />
             <FormHelperText>{emailError}</FormHelperText>
@@ -172,6 +181,7 @@ export default function Login(props) {
               autoComplete="current-password"
               value={password}
               onChange={ev => setPassword(ev.target.value)}
+              style={itemStyle}
             />
             <FormHelperText>{passwordError}</FormHelperText>
             <FormControlLabel
@@ -183,8 +193,9 @@ export default function Login(props) {
               type="submit"
               fullWidth
               variant="contained"
+              style={buttonStyle}
+              sx={{margin: "5px 10px 5px 30px", height: 50}}
               onClick={onButtonClick}
-              sx={{ mt: 3, mb: 2 }}
             >
               Log In
             </Button>

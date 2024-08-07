@@ -15,7 +15,7 @@ delete from ProductsInOverWorkTypes where ProductId in (@id)
 delete FROM [chiffon].[dbo].[Products] where Id in (@id)
 
     /* do some work */
-
+	 
     SET @id = @id + 1
 
 END

@@ -14,6 +14,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import ApiIcon from '@mui/icons-material/Api';
+import PersonIcon from '@mui/icons-material/Person';
 import { Icon } from '@mui/material';
 
 import { APPEARANCE } from '../../appearance';
@@ -163,20 +164,22 @@ export default function Header(props) {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
-          <Button
+          <Box sx={{ flexGrow: 0, display: "flex", flexDirection: "row", alignItems : "center" }}>
+          <Box onClick={handleOpenUserMenu}>{props.user != undefined? props.user.firstName: ""}</Box>
+          {/* <Button
                 key="user"
                 data-menu-value="user"
                 onClick={handleMenuClick}
                 sx={{ ml: 2, mr: 2, color: APPEARANCE.BLACK, display: 'inline-block' }}
               >
                 Admin
-              </Button>
+           </Button> */}
             <Tooltip title={props.user != undefined? props.user.firstName: ""}>
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 2, mr: 4 }}>
-                <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} />
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 2, mr: 4, color: "#eee" }}>
+                {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
+                <PersonIcon />
               </IconButton>
-              <div onClick={handleOpenUserMenu}>{props.user != undefined? props.user.firstName: ""}</div>
+              
             </Tooltip>
             <Menu
               sx={{ mt: '45px' }}
