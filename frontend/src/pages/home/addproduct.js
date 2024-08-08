@@ -24,6 +24,7 @@ import ProductColor from './productcolor';
 import { getColors, postColor } from '../../api/colors'
 import { getDesignTypes } from '../../api/designtypes'
 import { getDyeStaffs } from '../../api/dyestaffs'
+import { getFinishings } from '../../api/finishings'
 import { getOverworkTypes } from '../../api/overworktypes'
 import { getPlainDyedTypes } from '../../api/plaindyedtypes'
 import { getPrintTypes } from '../../api/printtypes'
@@ -45,6 +46,7 @@ const defaultTheme = createTheme()
 //const accordionStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 const halfItemStyle = { width: 180, ml: 0, mr: 2 }
+const thirdItemStyle = { width: 108, ml: 0, mr: 1 }
 const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
 const boxStyle = { display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '360px', ml:4, mr:2 }
 const labelStyle = { m: 2, ml: 4, mr: 4 }
@@ -62,6 +64,15 @@ const MySelectProps = {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
       width: 250,
+    },
+  },
+};
+
+const MySelectProps1 = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 160,
     },
   },
 };
@@ -93,6 +104,7 @@ export default function AddProduct(props) {
     const theme = useTheme();
 
     const [dyeStaff, setDyeStaff] = useState("")
+    const [finishing, setFinishing] = useState("")
     const [plainDyedType, setPlainDyedType] = useState("")
     const [printType, setPrintType] = useState("")
     const [productStyle, setProductStyle] = useState("")
@@ -105,12 +117,13 @@ export default function AddProduct(props) {
     const [design, setDesign] = useState("")
     const [itemName, setItemName] = useState("")
     const [price, setPrice] = useState("")
+    const [price2, setPrice2] = useState("")
+    const [price3, setPrice3] = useState("")
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
     const [colorFastness, setColorFastness] = useState("")
     const [fabricConstruction, setFabricConstruction] = useState("")
     const [fabricYarnCount, setFabricYarnCount] = useState("")
-    const [findings, setFindings] = useState("")
     const [fabricShrinkage, setFabricShrinkage] = useState("")
     const [hsCode, setHsCode] = useState("")
     const [metersInKg, setMetersInKg] = useState("")
@@ -129,6 +142,7 @@ export default function AddProduct(props) {
     const [productTypes, setProductTypes] = useState([])
     const [productStyles, setProductStyles] = useState([])
     const [dyeStaffs, setDyeStaffs] = useState([])
+    const [finishings, setFinishings] = useState([])
     const [plainDyedTypes, setPlainDyedTypes] = useState([])
     const [printTypes, setPrintTypes] = useState([])
 
@@ -245,6 +259,13 @@ export default function AddProduct(props) {
       }
     }
 
+    const priceChanged = (e) => {
+      let value = e.target.value
+      setPrice(value)
+      setPrice2((value*1.05).toFixed(2))
+      setPrice3((value*1.10).toFixed(2))
+    }
+
   const moreVariants = async (e) => {
     let cv = colorVariant.slice()
     let num = cv.length
@@ -300,7 +321,6 @@ export default function AddProduct(props) {
       fabricConstruction: fabricConstruction,
       fabricYarnCount: fabricYarnCount,
       fabricShrinkage: fabricShrinkage,
-      findings: findings,
       metersInKg: metersInKg,
       gsm: gsm,
       uid: uid,
@@ -310,6 +330,7 @@ export default function AddProduct(props) {
       productType: productType,
       printType: printType,
       dyeStaff: dyeStaff,
+      finishing: finishing,
       plainDyedType: plainDyedType,
       colorVariants: colorVariant.filter(it => !!it.ColorNo && it.ColorIds.length > 0 && !!it.SelectedFile), 
       globalPhotos: allColor.filter(it => !!it.No && !!it.SelectedFile)
@@ -362,6 +383,7 @@ useEffect(() => {
 
   // in bottom part of page, so can load later:
   getDyeStaffs(setDyeStaffs)
+  getFinishings(setFinishings)
   getPlainDyedTypes(setPlainDyedTypes)
   getPrintTypes(setPrintTypes)
 
@@ -484,10 +506,22 @@ useEffect(() => {
             <TextField
                 margin="normal"
                 size="small" 
+                id="design"
+                label="Design"
+                name="design"
+                sx = {itemStyle}
+                value={design}
+                onChange={ev => setDesign(ev.target.value)}
+              />
+
+            <Box sx={boxStyle}>
+            <TextField
+                margin="normal"
+                size="small" 
                 id="refNo"
                 label="Ref No"
                 name="refNo"
-                sx = {itemStyle}
+                sx = {halfItemStyle}
                 value={refNo}
                 onChange={ev => setRefNo(ev.target.value)}
               />
@@ -497,39 +531,52 @@ useEffect(() => {
                 id="artNo"
                 label="Art No"
                 name="artNo"
-                sx = {itemStyle}
+                sx = {halfItemStyle}
                 value={artNo}
                 onChange={ev => setArtNo(ev.target.value)}
               />
-            <TextField
-                margin="normal"
-                size="small" 
-                id="design"
-                label="Design"
-                name="design"
-                sx = {itemStyle}
-                value={design}
-                onChange={ev => setDesign(ev.target.value)}
-              />
+            </Box>  
+            <Box sx={boxStyle}>
             <TextField
                 margin="normal"
                 size="small" 
                 id="price"
-                label="Price"
+                label="Price > 500m"
                 name="price"
-                sx = {itemStyle}
+                sx = {{width: 122, ml: 0, mr: 1}}
                 value={price}
-                onChange={ev => setPrice(ev.target.value)}
+                onChange={priceChanged}
               />
-
+            <TextField
+                margin="normal"
+                size="small" 
+                id="price2"
+                label="301-500m"
+                name="price2"
+                sx = {{width: 104, ml: 0, mr: 1}}
+                value={price2}
+                InputProps={{ readOnly: true, }}
+              />
+            <TextField
+                margin="normal"
+                size="small" 
+                id="price3"
+                label="< 301m"
+                name="price3"
+                sx = {{width: 98, ml: 0, mr: 1}}
+                value={price3}
+                InputProps={{ readOnly: true, }}
+              />
+              </Box>
+              <Box sx={boxStyle}>
                 <MySelect 
                   id="addproduct-producttype"
                   url="ProductTypes"
                   title="Product Type"
                   valueName="typeName"
-                  labelStyle={labelStyle}
-                  itemStyle={itemStyle}
-                  MenuProps={MySelectProps}
+                  labelStyle={labelStyle1}
+                  itemStyle = {{width: 163, m: 2, ml: 0, mr: 4}}
+                  MenuProps={MySelectProps1}
                   valueVariable={productType}
                   setValueFn={setProductType}
                   data={productTypes}
@@ -540,13 +587,14 @@ useEffect(() => {
                   url="ProductStyles"
                   title="Product Style"
                   valueName="styleName"
-                  labelStyle={labelStyle}
-                  itemStyle={itemStyle}
-                  MenuProps={MySelectProps}
+                  labelStyle={labelStyle1}
+                  itemStyle = {{width: 163, m: 2, ml: 0, mr: 4}}
+                  MenuProps={MySelectProps1}
                   valueVariable={productStyle}
                   setValueFn={setProductStyle}
                   data={productStyles}
                 />
+                </Box>
 
                 <MySelect 
                   id="addproduct-season"
@@ -766,15 +814,17 @@ useEffect(() => {
                 value={colorFastness}
                 onChange={ev => setColorFastness(ev.target.value)}
               /> */}
-            <TextField
-                margin="normal"
-                size="small" 
-                id="findings"
-                label="Findings"
-                name="findings"
-                sx = {itemStyle}
-                value={findings}
-                onChange={ev => setFindings(ev.target.value)}
+            <MySelect 
+                id="addproduct-dyestaff"
+                url="Finishings"
+                title="Finishing"
+                valueName="finishingName"
+                labelStyle={labelStyle}
+                itemStyle={itemStyle}
+                MenuProps={MySelectProps}
+                valueVariable={finishing}
+                setValueFn={setFinishing}
+                data={finishings}
               />
             <TextField
                 margin="normal"
