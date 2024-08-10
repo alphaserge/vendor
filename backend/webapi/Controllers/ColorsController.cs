@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
+//using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Web.Http.Cors; // пространство имен CORS
 
 namespace chiffon_back.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    //[EnableCors("Chiffon_AllowAllOrigins")]
+    [EnableCors(origins: "http://localhost:3000", headers: "*", methods: "*")]
     public class ColorsController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>
@@ -46,13 +47,16 @@ namespace chiffon_back.Controllers
         {
             try
             {
-                Context.Color vendor = config.CreateMapper()
+                Context.Color newColor = config.CreateMapper()
                     .Map<Context.Color>(color);
 
-                ctx.Colors.Add(vendor);
+                if (newColor.RGB.StartsWith('#'))
+                    newColor.RGB = newColor.RGB.Trim('#');
+
+                ctx.Colors.Add(newColor);
                 ctx.SaveChanges();
 
-                return CreatedAtAction(nameof(Get), new { id = vendor.Id }, vendor);
+                return CreatedAtAction(nameof(Get), new { id = newColor.Id }, newColor);
             }
             catch (Exception ex)
             {

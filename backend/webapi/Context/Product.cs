@@ -20,6 +20,7 @@
         public decimal? FabricShrinkage { get; set; }
         public decimal? MetersInKG { get; set; }
         public decimal? Price { get; set; }
+        public decimal? Stock { get; set; }
 
         public string? PhotoDir { get; set; }
         public string? Uuid { get; set; }
@@ -40,6 +41,7 @@
         public virtual Vendor? Vendor { get; set; }
         public virtual PrintType? PrintType { get; set; }
         public virtual DyeStaff? DyeStaff { get; set; }
+        public virtual Finishing? Finishing { get; set; }
         public virtual PlainDyedType? PlainDyedType { get; set; }
 
         public virtual ICollection<ProductsInSeasons>? ProductsInSeasons { get; set; }

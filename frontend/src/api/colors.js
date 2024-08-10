@@ -20,9 +20,11 @@ export const getColors = (setFn) => {
       message: "Color has been added"
     }
 
-    const matched = colorRgb.match("^(([0-9a-fA-F]{2}){3}|([0-9a-fA-F]){3})$")
+    //colorRgb = colorRgb.substring(1)
+
+    const matched = colorRgb.match("^#([0-9a-fA-F]{2}){3}$")
   
-    if (!matched || colorRgb.length != 6 ) {
+    if (!matched) {
       return {
         ok: false,
         message: "Incorrect RGB value.\n Should be as example: FA240C, DD34CC"

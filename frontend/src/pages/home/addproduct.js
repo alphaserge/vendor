@@ -14,6 +14,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import MenuItem from '@mui/material/MenuItem';
+import { HexColorPicker } from "react-colorful";
 
 import { v4 as uuid } from 'uuid'
 
@@ -51,7 +52,7 @@ const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
 const boxStyle = { display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '360px', ml:4, mr:2 }
 const labelStyle = { m: 2, ml: 4, mr: 4 }
 const labelStyle1 = { m: 2, ml: 0, mr: 4 }
-const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "0 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
+const buttonStyle = { width: 100, backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "5px 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
 const accordionStyle = { textAlign: "center", margin: "15px auto", justifyContent:"center", boxShadow: "none", border: "none" }
 const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 10px",  backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px" }
 const accordionCaption = { width: "100%", fontWeight: "bold", fontSize: "11pt" };
@@ -115,6 +116,7 @@ export default function AddProduct(props) {
 
     const [artNo, setArtNo] = useState("")
     const [design, setDesign] = useState("")
+    const [gsm, setGsm] = useState("")
     const [itemName, setItemName] = useState("")
     const [price, setPrice] = useState("")
     const [price2, setPrice2] = useState("")
@@ -127,13 +129,14 @@ export default function AddProduct(props) {
     const [fabricShrinkage, setFabricShrinkage] = useState("")
     const [hsCode, setHsCode] = useState("")
     const [metersInKg, setMetersInKg] = useState("")
-    const [gsm, setGsm] = useState("")
     const [refNo, setRefNo] = useState("")
-
+    const [stock, setStock] = useState("")
+    
     const [uid, setUid] = useState(uuid())
 
     const [newColor, setNewColor] = useState("")
-    const [newColorRgb, setNewColorRgb] = useState("")
+    const [newColorRgb, setNewColorRgb] = useState("#b32aa9")
+    //const [color, setColor] = useState("#b32aa9");
 
     const [colors, setColors] = useState([])
     const [seasons, setSeasons] = useState([])
@@ -311,10 +314,11 @@ export default function AddProduct(props) {
       artNo: artNo,
       itemName: itemName,
       design: design,
-      price: price,
       hsCode: hsCode,
       refNo: refNo,
+      price: price,
       season: season,
+      stock: stock,
       weight: weight,
       width: width,
       colorFastness: colorFastness,
@@ -423,30 +427,23 @@ useEffect(() => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-                width: 400, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
+                width: 475, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Adding a new color
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'top' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', flex: 3 }}>
-          <TextField
-                  margin="normal"
-                  size="small" 
-                  id="newColor"
-                  label="Color name"
-                  name="newColor"
-                  value={newColor}
-                  onChange={ev => setNewColor(ev.target.value)}
-                />
             <TextField
                   margin="normal"
                   size="small" 
                   id="newColor"
-                  label="Color value : RRGGBB"
+                  label="Color value"
                   name="newColorRgb"
                   value={newColorRgb}
-                  onChange={ev => setNewColorRgb(ev.target.value)}
-                />
+                  InputProps={{ readOnly: true }}
+                  // onChange={ev => setNewColorRgb(ev.target.value)}
+                /> 
+                <HexColorPicker color={newColorRgb} onChange={setNewColorRgb} />
                 <InputLabel
                 component={"div"}
                   shrink={true}
@@ -454,18 +451,27 @@ useEffect(() => {
                     {errorNewColor}
                   </InputLabel>
           </Box>
-          <Box sx={{flex: 2}} >
+          <Box sx={{flex: 2, ml: 2, mr: 2, display: "flex", flexDirection: 'column', alignItems: "center"}} >
+          <TextField
+                  margin="normal"
+                  size="small" 
+                  id="newColor"
+                  label="Color name"
+                  name="newColor"
+                  value={newColor}
+                  sx={{ width: "200px", mb: 6}}
+                  onChange={ev => setNewColor(ev.target.value)}
+                />
           <Button 
               variant="contained"
               style={buttonStyle}
-              sx={{margin: "5px 10px 5px 30px", height: 50}}
+              sx={{marginTop: "40px"}}
               onClick={saveColor} >
                   Save
           </Button>
           <Button 
               variant="contained"
               style={buttonStyle}
-              sx={{margin: "5px 10px 5px 30px", height: 50}}
               onClick={handleClose} >
                   Cancel
           </Button>
@@ -881,6 +887,45 @@ useEffect(() => {
 
           {/* </Box> */}
           </Accordion>
+
+
+
+
+
+
+
+
+
+
+
+
+          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} elevation={0} sx={{ '&:before':{height:'0px'}}} >
+
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
+            <Typography align="center" sx={accordionCaption}>Logistic</Typography>
+          </AccordionSummary>
+
+          <AccordionDetails>
+          <Grid item xs={12} md={6} >
+            <Box sx={boxStyle}>
+              <TextField
+                  margin="normal"
+                  size="small" 
+                  id="stock"
+                  label="Stock value"
+                  name="stock"
+                  sx = {halfItemStyle}
+                  value={stock}
+                  onChange={setStock}
+                />
+               </Box>
+               <Box sx={boxStyle}>
+              
+               </Box>
+           </Grid>
+          </AccordionDetails>
+          </Accordion>
+
 
           <FormControl sx = {{itemStyle}} > 
           { savingError && 

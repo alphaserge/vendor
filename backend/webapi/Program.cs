@@ -15,7 +15,6 @@ using System.Security.Cryptography;
 using Microsoft.Extensions.FileProviders;
 using System;
 
-//MD5 hash = MD5.Create();
 string result;
 using (MD5 hash = MD5.Create())
 {
@@ -29,8 +28,6 @@ using (MD5 hash = MD5.Create())
         select ba.ToString("x2")
     );
 }
-//string? h = hash.ToString();
-int a = result.Length;
 
 var builder = WebApplication.CreateBuilder(args);
 

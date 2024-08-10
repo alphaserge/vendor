@@ -86,6 +86,7 @@ namespace chiffon_back.Controllers
                 ArtNo = HttpContext.Request.Query["artno"].ToString(),
                 RefNo = HttpContext.Request.Query["refno"].ToString(),
                 Design = HttpContext.Request.Query["design"].ToString(),
+                Search = HttpContext.Request.Query["search"].ToString(),
                 Colors = HttpContext.Request.Query["colors"].ToString(),
                 Seasons = HttpContext.Request.Query["seasons"].ToString(),
                 Overworks = HttpContext.Request.Query["overworks"].ToString(),

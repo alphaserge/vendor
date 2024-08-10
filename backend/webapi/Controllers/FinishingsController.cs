@@ -12,8 +12,8 @@ namespace chiffon_back.Controllers
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Models.Finishings, Context.Finishings>();
-                cfg.CreateMap<Context.Finishings, Models.Finishings>();
+                cfg.CreateMap<Models.Finishings, Context.Finishing>();
+                cfg.CreateMap<Context.Finishing, Models.Finishings>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
@@ -40,8 +40,8 @@ namespace chiffon_back.Controllers
         {
             try
             {
-                Context.Finishings vendor = config.CreateMapper()
-                    .Map<Context.Finishings>(finishing);
+                Context.Finishing vendor = config.CreateMapper()
+                    .Map<Context.Finishing>(finishing);
 
                 ctx.Finishings.Add(vendor);
                 ctx.SaveChanges();

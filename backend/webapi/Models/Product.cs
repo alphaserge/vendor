@@ -26,6 +26,8 @@ namespace chiffon_back.Models
         public decimal? FabricShrinkage { get; set; }
         public decimal? MetersInKG { get; set; }
         public decimal? Price { get; set; }
+        public decimal? Stock { get; set; }
+
 
         public string? PhotoDir { get; set; }
         public string? Uuid { get; set; }
@@ -41,6 +43,7 @@ namespace chiffon_back.Models
         public int? VendorId { get; set; }
 
         public string? DyeStaff { get; set; }
+        public string? Finishing { get; set; }
         public string? PlainDyedType { get; set; }
         public string? PrintType { get; set; }
         public string? ProductStyle { get; set; }
@@ -90,14 +93,14 @@ namespace chiffon_back.Models
         public string? HSCode { get; set; }
         public string? RefNo { get; set; }
 
-        public decimal? Price { get; set; }
         public int? Weight { get; set; }
         public int? Width { get; set; }
         public int? GSM { get; set; }
-        public decimal? MetersInKG { get; set; }
         public int? ColorFastness { get; set; }
         public decimal? FabricShrinkage { get; set; }
-
+        public decimal? MetersInKG { get; set; }
+        public decimal? Price { get; set; }
+        public decimal? Stock { get; set; }
 
         public int? DyeStaffId { get; set; }
         public int? FinishingId { get; set; }

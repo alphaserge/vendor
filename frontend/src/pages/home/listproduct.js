@@ -9,6 +9,9 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
+import SearchIcon from '@mui/icons-material/Search';
+import InputAdornment from '@mui/material/InputAdornment';
+
 import TextField from '@mui/material/TextField';
 import TuneIcon from '@mui/icons-material/Tune';
 
@@ -52,6 +55,7 @@ export default function ListProduct(props) {
 
     const [products, setProducts] = useState([])
     const [filter, setFilter] = useState(false)
+    const [search, setSearch] = useState("")
 
     const [colors, setColors] = useState([])
     const [seasons, setSeasons] = useState([])
@@ -71,7 +75,7 @@ export default function ListProduct(props) {
     const [artNo, setArtNo] = useState("")
     const [design, setDesign] = useState("")
 
-    const headStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 10px",  backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px" }
+    const headStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 10px" }
 
     const handleShowHideFilter = (event) => {
       setFilter(!filter);
@@ -88,11 +92,12 @@ export default function ListProduct(props) {
       setRefNo("")
       setArtNo("")
       setDesign("")
+      setSearch("")
 
       axios.get(config.api + '/Products/Products?id='+props.user.id, 
         { params: 
             { 
-              vendorId: 2
+              vendorId: null
             }})
       .then(function (res) {
           var result = res.data;
@@ -105,6 +110,24 @@ export default function ListProduct(props) {
    }
 
     const url = require('url');
+
+    const searchProducts = async (e) => {
+
+      setSearch(e)
+      axios.get(config.api + '/Products/Products?id='+props.user.id, 
+        { params: 
+            { 
+              search: e
+            }})
+      .then(function (res) {
+          var result = res.data;
+          setProducts(result)
+      })
+      .catch (error => {
+        console.log(error)
+      })
+    }
+
 
     const loadProducts = async (e) => {
       //const params = new URLSearchParams();
@@ -123,6 +146,7 @@ export default function ListProduct(props) {
               seasons: JSON.stringify(season),
               overworks: JSON.stringify(overworkType),
               designtypes: JSON.stringify(designType),
+              search: search
             }})
       .then(function (res) {
           var result = res.data;
@@ -236,7 +260,7 @@ export default function ListProduct(props) {
 
           <Box component="form" noValidate sx={{ mt: 3 }}  >
 
-          <Box style={headStyle} sx={{ display: "flex", justifyContent:"space-between",  margin: "0 auto", maxWidth: "1100px"}} justifyContent={"center"} className="header-menu" >
+          <Box style={headStyle} sx={{ display: "flex", justifyContent:"space-between",  margin: "0 auto", maxWidth: "1100px", backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px"}} justifyContent={"center"} className="header-menu" >
             <Box sx={{ display: "flex", alignItems:"center", justifyContent: "center", width: "100%", mt: 2, mb: 2}}>
             <Typography component="h7" variant="h7" color={APPEARANCE.COLOR1}>
               {props.user && ( props.user.vendorName + " product's list") } 
@@ -247,6 +271,27 @@ export default function ListProduct(props) {
             </IconButton>
           </Box>
 
+          <Box style={headStyle} sx={{ display: "flex", justifyContent:"space-between",  margin: "0 auto", maxWidth: "1100px"}} justifyContent={"center"} className="header-menu" >
+          <TextField
+                margin="normal"
+                size="small" 
+                id="search-value"
+                label="Find products - art, ref, design, item name .."
+                name="search"
+                sx={{ flex: 2 }}
+                value={search}
+                onChange={ev => searchProducts(ev.target.value)}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment>
+                      <IconButton>
+                        <SearchIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+          </Box>
 
           <Box sx={{ backgroundColor: "none", display: filter==true? "block": "none", textAlign: "center", mt: 3, mb: 3  }} className="filter" >
           <Box className="filter" sx={{ textAlign: "left"}} >

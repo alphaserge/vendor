@@ -11,8 +11,11 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
 import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import MenuItem from '@mui/material/MenuItem';
+import { HexColorPicker } from "react-colorful";
 
 import { v4 as uuid } from 'uuid'
 
@@ -23,6 +26,7 @@ import ProductColor from './productcolor';
 import { getColors, postColor } from '../../api/colors'
 import { getDesignTypes } from '../../api/designtypes'
 import { getDyeStaffs } from '../../api/dyestaffs'
+import { getFinishings } from '../../api/finishings'
 import { getOverworkTypes } from '../../api/overworktypes'
 import { getPlainDyedTypes } from '../../api/plaindyedtypes'
 import { getPrintTypes } from '../../api/printtypes'
@@ -47,6 +51,7 @@ const halfItemStyle = { width: 180, ml: 0, mr: 2 }
 const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
 const boxStyle = { display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '360px', ml:4, mr:2 }
 const labelStyle = { m: 2, ml: 4, mr: 4 }
+const labelStyle1 = { m: 2, ml: 0, mr: 4 }
 const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "0 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
 const accordionStyle = { textAlign: "center", margin: "15px auto", justifyContent:"center", boxShadow: "none", border: "none" }
 const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 10px",  backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px" }
@@ -64,6 +69,36 @@ const MySelectProps = {
   },
 };
 
+const MySelectProps1 = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 160,
+    },
+  },
+};
+
+function getStyles(name, values, theme) {
+  try 
+  {
+    if (Array.isArray(values)) {
+      return {
+        fontWeight:
+        values.indexOf(name) === -1
+            ? theme.typography.fontWeightRegular
+            : theme.typography.fontWeightBold,
+            /*backgroundColor: names.indexOf(name) === -1 ? "#F00" : "#F0F"*/
+      }
+    } else {
+      return {}
+    }
+  }
+  catch(exc)
+  {
+    let a = exc
+  }
+}
+
 export default function UpdateProduct(props) {
 
     const navigate = useNavigate();
@@ -72,6 +107,7 @@ export default function UpdateProduct(props) {
     const [uid, setUid] = useState(uuid())
     const [productId, setProductId] = useState(uuid())
     const [dyeStaff, setDyeStaff] = useState("")
+    const [finishing, setFinishing] = useState("")
     const [plainDyedType, setPlainDyedType] = useState("")
     const [printType, setPrintType] = useState("")
     const [productStyle, setProductStyle] = useState("")
@@ -82,8 +118,11 @@ export default function UpdateProduct(props) {
 
     const [artNo, setArtNo] = useState("")
     const [design, setDesign] = useState("")
+    const [gsm, setGsm] = useState("")
     const [itemName, setItemName] = useState("")
     const [price, setPrice] = useState("")
+    const [price2, setPrice2] = useState("")
+    const [price3, setPrice3] = useState("")
     const [weight, setWeight] = useState("")
     const [width, setWidth] = useState("")
     const [colorFastness, setColorFastness] = useState("")
@@ -93,8 +132,8 @@ export default function UpdateProduct(props) {
     const [fabricShrinkage, setFabricShrinkage] = useState("")
     const [hsCode, setHsCode] = useState("")
     const [metersInKg, setMetersInKg] = useState("")
-    const [gsm, setGsm] = useState("")
     const [refNo, setRefNo] = useState("")
+    const [stock, setStock] = useState("")
 
     const [newColor, setNewColor] = useState("")
     const [newColorRgb, setNewColorRgb] = useState("")
@@ -106,6 +145,7 @@ export default function UpdateProduct(props) {
     const [productTypes, setProductTypes] = useState([])
     const [productStyles, setProductStyles] = useState([])
     const [dyeStaffs, setDyeStaffs] = useState([])
+    const [finishings, setFinishings] = useState([])
     const [plainDyedTypes, setPlainDyedTypes] = useState([])
     const [printTypes, setPrintTypes] = useState([])
 
@@ -171,6 +211,13 @@ export default function UpdateProduct(props) {
           let iMetersInKg = 1/(iWeight*0.001)
           setMetersInKg(iMetersInKg.toFixed(2))
       }
+    }
+
+    const priceChanged = (e) => {
+      let value = e.target.value
+      setPrice(value)
+      setPrice2((value*1.05).toFixed(2))
+      setPrice3((value*1.10).toFixed(2))
     }
 
     const moreVariants = async (e, max) => {
@@ -278,8 +325,9 @@ export default function UpdateProduct(props) {
       id: idFromUrl(),
       itemName: itemName,
       design: design,
-      price: price,
       hsCode: hsCode,
+      price: price,
+      stock: stock,
       refNo: refNo,
       season: season,
       weight: weight,
@@ -298,6 +346,7 @@ export default function UpdateProduct(props) {
       productType: productType,
       printType: printType,
       dyeStaff: dyeStaff,
+      finishing: finishing,
       plainDyedType: plainDyedType,
       colorVariants: colorVariantPlus.filter(it => !!it.ColorNo && it.ColorIds.length > 0 && !!it.SelectedFile), 
       globalPhotos: productColorsPlus.filter(it => !!it.No && !!it.SelectedFile)
@@ -349,6 +398,9 @@ const setProduct = (prod) => {
   setRefNo(prod.refNo)
   setDesign(prod.design)
   setPrice(prod.price)
+  setPrice2((prod.price*1.05).toFixed(2))
+  setPrice3((prod.price*1.10).toFixed(2))
+  setStock(prod.stock)
   setWidth(prod.width)
   setWeight(prod.weight)
   setColorFastness(prod.colorFastness)
@@ -362,6 +414,7 @@ const setProduct = (prod) => {
   setPrintType(prod.printType)
   setPlainDyedType(prod.plainDyedType)
   setDyeStaff(prod.dyeStaff)
+  setFinishing(prod.finishing)
   setSeason(prod.seasonIds)
   setOverworkType(prod.overWorkTypeIds)
   setDesignType(prod.designTypeIds)
@@ -399,6 +452,7 @@ useEffect(() => {
 
   // in bottom part of page, so can load later:
   getDyeStaffs(setDyeStaffs)
+  getFinishings(setFinishings)
   getPlainDyedTypes(setPlainDyedTypes)
   getPrintTypes(setPrintTypes)
 
@@ -415,30 +469,23 @@ useEffect(() => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-                width: 400, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
+                width: 475, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Adding a new color
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'top' }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', flex: 3 }}>
-          <TextField
-                  margin="normal"
-                  size="small" 
-                  id="newColor"
-                  label="Color name"
-                  name="newColor"
-                  value={newColor}
-                  onChange={ev => setNewColor(ev.target.value)}
-                />
             <TextField
                   margin="normal"
                   size="small" 
                   id="newColor"
-                  label="Color value : RRGGBB"
+                  label="Color value"
                   name="newColorRgb"
                   value={newColorRgb}
-                  onChange={ev => setNewColorRgb(ev.target.value)}
-                />
+                  InputProps={{ readOnly: true }}
+                  // onChange={ev => setNewColorRgb(ev.target.value)}
+                /> 
+                <HexColorPicker color={newColorRgb} onChange={setNewColorRgb} />
                 <InputLabel
                 component={"div"}
                   shrink={true}
@@ -446,18 +493,27 @@ useEffect(() => {
                     {errorNewColor}
                   </InputLabel>
           </Box>
-          <Box sx={{flex: 2}} >
+          <Box sx={{flex: 2, ml: 2, mr: 2, display: "flex", flexDirection: 'column', alignItems: "center"}} >
+          <TextField
+                  margin="normal"
+                  size="small" 
+                  id="newColor"
+                  label="Color name"
+                  name="newColor"
+                  value={newColor}
+                  sx={{ width: "200px", mb: 6}}
+                  onChange={ev => setNewColor(ev.target.value)}
+                />
           <Button 
               variant="contained"
               style={buttonStyle}
-              sx={{margin: "5px 10px 5px 30px", height: 50}}
+              sx={{marginTop: "40px"}}
               onClick={saveColor} >
                   Save
           </Button>
           <Button 
               variant="contained"
               style={buttonStyle}
-              sx={{margin: "5px 10px 5px 30px", height: 50}}
               onClick={handleClose} >
                   Cancel
           </Button>
@@ -498,10 +554,22 @@ useEffect(() => {
             <TextField
                 margin="normal"
                 size="small" 
+                id="design"
+                label="Design"
+                name="design"
+                sx = {itemStyle}
+                value={design}
+                onChange={ev => setDesign(ev.target.value)}
+              />
+
+            <Box sx={boxStyle}>
+            <TextField
+                margin="normal"
+                size="small" 
                 id="refNo"
                 label="Ref No"
                 name="refNo"
-                sx = {itemStyle}
+                sx = {halfItemStyle}
                 value={refNo}
                 onChange={ev => setRefNo(ev.target.value)}
               />
@@ -511,39 +579,52 @@ useEffect(() => {
                 id="artNo"
                 label="Art No"
                 name="artNo"
-                sx = {itemStyle}
+                sx = {halfItemStyle}
                 value={artNo}
                 onChange={ev => setArtNo(ev.target.value)}
               />
-            <TextField
-                margin="normal"
-                size="small" 
-                id="design"
-                label="Design"
-                name="design"
-                sx = {itemStyle}
-                value={design}
-                onChange={ev => setDesign(ev.target.value)}
-              />
+            </Box>  
+            <Box sx={boxStyle}>
             <TextField
                 margin="normal"
                 size="small" 
                 id="price"
-                label="Price"
+                label="Price > 500m"
                 name="price"
-                sx = {itemStyle}
+                sx = {{width: 122, ml: 0, mr: 1}}
                 value={price}
-                onChange={ev => setPrice(ev.target.value)}
+                onChange={priceChanged}
               />
-
+            <TextField
+                margin="normal"
+                size="small" 
+                id="price2"
+                label="301-500m"
+                name="price2"
+                sx = {{width: 104, ml: 0, mr: 1}}
+                value={price2}
+                InputProps={{ readOnly: true, }}
+              />
+            <TextField
+                margin="normal"
+                size="small" 
+                id="price3"
+                label="< 301m"
+                name="price3"
+                sx = {{width: 98, ml: 0, mr: 1}}
+                value={price3}
+                InputProps={{ readOnly: true, }}
+              />
+              </Box>
+              <Box sx={boxStyle}>
                 <MySelect 
                   id="addproduct-producttype"
                   url="ProductTypes"
                   title="Product Type"
                   valueName="typeName"
-                  labelStyle={labelStyle}
-                  itemStyle={itemStyle}
-                  MenuProps={MySelectProps}
+                  labelStyle={labelStyle1}
+                  itemStyle = {{width: 163, m: 2, ml: 0, mr: 4}}
+                  MenuProps={MySelectProps1}
                   valueVariable={productType}
                   setValueFn={setProductType}
                   data={productTypes}
@@ -554,13 +635,14 @@ useEffect(() => {
                   url="ProductStyles"
                   title="Product Style"
                   valueName="styleName"
-                  labelStyle={labelStyle}
-                  itemStyle={itemStyle}
-                  MenuProps={MySelectProps}
+                  labelStyle={labelStyle1}
+                  itemStyle = {{width: 163, m: 2, ml: 0, mr: 4}}
+                  MenuProps={MySelectProps1}
                   valueVariable={productStyle}
                   setValueFn={setProductStyle}
                   data={productStyles}
                 />
+                </Box>
 
                 <MySelect 
                   id="addproduct-season"
@@ -609,21 +691,21 @@ useEffect(() => {
           <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} elevation={0} sx={{ '&:before':{height:'0px'}}} >
 
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
-            <Typography align="center" sx={accordionCaption}>Weight / Width / Density</Typography>
+            <Typography align="center" sx={accordionCaption}>Weight / Width / GSM</Typography>
           </AccordionSummary>
 
           <AccordionDetails>
           <Grid item xs={12} md={6} >
-          <Box sx={boxStyle}>
+            <Box sx={boxStyle}>
               <TextField
                   margin="normal"
                   size="small" 
-                  id="weight"
-                  label="Weight GPM"
-                  name="weight"
+                  id="gsm"
+                  label="GSM"
+                  name="gsm"
                   sx = {halfItemStyle}
-                  value={weight}
-                  onChange={weightChanged}
+                  value={gsm}
+                  onChange={densityChanged}
                 />
                 <TextField
                   margin="normal"
@@ -640,12 +722,12 @@ useEffect(() => {
                 <TextField
                   margin="normal"
                   size="small" 
-                  id="gsm"
-                  label="Density GSM"
-                  name="gsm"
+                  id="weight"
+                  label="Weight G/M"
+                  name="weight"
                   sx = {halfItemStyle}
-                  value={gsm}
-                  onChange={densityChanged}
+                  value={weight}
+                  onChange={weightChanged}
                 />
                 <TextField
                   margin="normal"
@@ -758,7 +840,7 @@ useEffect(() => {
                 value={fabricYarnCount}
                 onChange={ev => setFabricYarnCount(ev.target.value)}
               />
-            <TextField
+            {/* <TextField
                 margin="normal"
                 size="small" 
                 id="fabricShrinkage"
@@ -767,8 +849,43 @@ useEffect(() => {
                 sx = {itemStyle}
                 value={fabricShrinkage}
                 onChange={ev => setFabricShrinkage(ev.target.value)}
-              />
-            <TextField
+              /> */}
+
+              <Box sx={boxStyle}>
+              <FormControl >
+              <InputLabel id="fabric-shrinkage-label" sx={labelStyle1} size="small" >Fabric Shrinkage</InputLabel>
+              <Select
+                size="small" 
+                labelId="fabric-shrinkage-label"
+                id="fabric-shrinkage"
+                value={fabricShrinkage}
+                label="Fabric Shrinkage"
+                sx = {{width: 163, m: 2, ml: 0, mr: 4}}
+                onChange={ev => setFabricShrinkage(ev.target.value)} >
+                   { [...Array(11).keys()].map((elem, ix) => (
+                      <MenuItem key={"shr_"+ix} value={elem}
+                      style={getStyles(elem, fabricShrinkage, theme)}> { elem + "%"} </MenuItem> ))}
+              </Select>
+              </FormControl>
+
+              <FormControl >
+              <InputLabel id="color-fastness-label" sx={labelStyle1} size="small" >Color Fastness</InputLabel>
+              <Select
+                size="small" 
+                labelId="color-fastness-label"
+                id="color-fastness"
+                value={colorFastness}
+                label="Color Fastness"
+                sx = {{width: 163, m: 2, ml: 0, mr: 4}}
+                onChange={ev => setColorFastness(ev.target.value)} >
+                   {  [...Array(6).keys()].map((elem, ix) => (
+                      <MenuItem key={"shr_"+ix} value={elem}
+                      style={getStyles(elem, fabricShrinkage, theme)}> { elem } </MenuItem> ))}
+              </Select>
+              </FormControl>
+              </Box>
+
+            {/* <TextField
                 margin="normal"
                 size="small" 
                 id="colorFastness"
@@ -777,16 +894,18 @@ useEffect(() => {
                 sx = {itemStyle}
                 value={colorFastness}
                 onChange={ev => setColorFastness(ev.target.value)}
-              />
-            <TextField
-                margin="normal"
-                size="small" 
-                id="findings"
-                label="Findings"
-                name="findings"
-                sx = {itemStyle}
-                value={findings}
-                onChange={ev => setFindings(ev.target.value)}
+              /> */}
+            <MySelect 
+                id="addproduct-dyestaff"
+                url="Finishings"
+                title="Finishing"
+                valueName="finishingName"
+                labelStyle={labelStyle}
+                itemStyle={itemStyle}
+                MenuProps={MySelectProps}
+                valueVariable={finishing}
+                setValueFn={setFinishing}
+                data={finishings}
               />
             <TextField
                 margin="normal"
@@ -843,6 +962,36 @@ useEffect(() => {
 
           {/* </Box> */}
           </Accordion>
+
+          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} elevation={0} sx={{ '&:before':{height:'0px'}}} >
+
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
+            <Typography align="center" sx={accordionCaption}>Logistic</Typography>
+          </AccordionSummary>
+
+          <AccordionDetails>
+          <Grid item xs={12} md={6} >
+            <Box sx={boxStyle}>
+              <TextField
+                  margin="normal"
+                  size="small" 
+                  id="stock"
+                  label="Stock value"
+                  name="stock"
+                  sx = {halfItemStyle}
+                  value={stock}
+                  onChange={ev => setStock(ev.target.value)}
+                />
+               </Box>
+               <Box sx={boxStyle}>
+              
+               </Box>
+           </Grid>
+          </AccordionDetails>
+          </Accordion>
+
+
+
 
           <FormControl sx = {{itemStyle}} > 
           { savingError && 
