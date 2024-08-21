@@ -64,21 +64,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-string CORSPolicyName = "Chiffon_AllowAllOrigins";
-
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(//name: CORSPolicyName,
-                      builder =>
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
                       {
-                          // builder.WithOrigins("http://localhost:3000")
-                          builder
-                          .AllowAnyOrigin() 
-                          .AllowAnyMethod() //.WithMethods("GET")
+                          policy//WithOrigins("http://185.40.31.18", "http://185.40.31.18:3000")
+                          .AllowAnyOrigin()
                           .AllowAnyHeader()
-                          .Build();
+                          .AllowAnyMethod();
                       });
-    });
+});
+
+// services.AddResponseCaching();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -114,21 +113,21 @@ app.UseDirectoryBrowser(new DirectoryBrowserOptions()
     dir), //Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images")),
     RequestPath = new PathString("/images")
 });
-//app.UseRouting();
-app.UseCors();// CORSPolicyName);
+app.UseRouting();
+app.UseCors(MyAllowSpecificOrigins);
+//app.UseCors();// CORSPolicyName);
 app.UseAuthorization();
 
 app.Use(async (context, next) =>
 {
-    context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+    context.Response.Headers.Add("Access-Control-Allow-Origin", "http://185.40.31.18:3000");
     context.Response.Headers.Add("Access-Control-Allow-Methods", "*");
     context.Response.Headers.Add("Access-Control-Allow-Headers", "*");
     context.Response.Headers.Add("Access-Control-Max-Age", "86400");
 
-    /*context.Response.Headers.Add("Access-Control-Allow-Headers", "X-PINGOTHER, Host, User-Agent, Accept, Accept: application/json, application/json, Accept-Language, Accept-Encoding, Access-Control-Request-Method, Access-Control-Request-Headers, Origin, Connection, Content-Type, Content-Type: application/json, Authorization, Connection, Origin, Referer");
-    context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
-    //context.Response.Headers.Add("Access-Control-Allow-Headers", "content-type, accept, X-PINGOTHER");*/
-
+    //context.Response.Headers.Add("Access-Control-Allow-Headers", "X-PINGOTHER, Host, User-Agent, Accept, Accept: application/json, application/json, Accept-Language, Accept-Encoding, Access-Control-Request-Method, Access-Control-Request-Headers, Origin, Connection, Content-Type, Content-Type: application/json, Authorization, Connection, Origin, Referer");
+    //context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
+    //context.Response.Headers.Add("Access-Control-Allow-Headers", "content-type, accept, X-PINGOTHER");
     await next.Invoke();
 });
 

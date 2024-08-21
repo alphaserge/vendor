@@ -102,7 +102,7 @@ export default function Register(props) {
 
   // Call the server API to check if the given email ID already exists
   const checkAccountExists = (callback) => {
-      fetch("https://localhost:3080/Auth/check-account", {
+      fetch("http://185.40.31.18:5001/Auth/check-account", {
           method: "POST",
           headers: {
               'Content-Type': 'application/json'
@@ -120,7 +120,7 @@ export default function Register(props) {
 
       let passwordhash = stringToHash(password)+''
 
-      fetch("https://localhost:3080/Auth/signup", {
+      fetch("http://185.40.31.18:5001/Auth/signup", {
           method: "POST",
           headers: {
               'Content-Type': 'application/json'

@@ -565,7 +565,7 @@ console.log(colorVariant)
                 <Box 
                   component={"img"} 
                   key={index} 
-                  src={"https://localhost:3080/"+cv.imagePath} 
+                  src={"http://185.40.31.18:5001/"+cv.imagePath} 
                   alt={"photo"+(index+1)} 
                   className="product-img" />
                   <br/>

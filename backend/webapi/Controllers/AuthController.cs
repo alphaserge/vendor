@@ -15,12 +15,17 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Security.Principal;
 using System.Text;
+using System.Web.Http.Cors; // пространство имен CORS
+//using Microsoft.AspNetCore.Cors;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace chiffon_back.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [EnableCors(origins: "http://185.40.31.18:3000", headers: "*", methods: "*")]
+    //[EnableCors(origins: "http://185.40.31.18:3000", headers: "*", methods: "*")]
+    //[EnableCors("_myAllowSpecificOrigins")]
     public class AuthController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>
@@ -90,7 +95,8 @@ namespace chiffon_back.Controllers
             return null;
         }
 
-        [HttpPost("auth")]
+        //[HttpPost("auth")]
+        [HttpPost(Name = "Auth1")]
         public ActionResult<Models.User> SignIn(Models.SignIn signIn)
         {
             try

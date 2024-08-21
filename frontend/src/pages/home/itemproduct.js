@@ -51,7 +51,7 @@ export default function ItemProduct(props) {
             {props.data.colors.map((cv, index) => {
               return <>
               <SwiperSlide key={"product-swiper"+index} sx={{ display: "flex", justifyContent: "center"}} >
-                <Box className="product-img-holder" ><Box component={"img"} key={index} src={"https://localhost:3080/"+cv.imagePath[0]} alt={"photo"+(index+1)} className="product-img" /></Box>
+                <Box className="product-img-holder" ><Box component={"img"} key={index} src={"http://185.40.31.18:5001/"+cv.imagePath[0]} alt={"photo"+(index+1)} className="product-img" /></Box>
               </SwiperSlide></>
             })}
             </Swiper>

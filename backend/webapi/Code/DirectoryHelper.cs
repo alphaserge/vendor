@@ -36,6 +36,7 @@ namespace chiffon_back.Code
             string dir = uid.Replace("-", "").Insert(6, "\\").Insert(4, "\\").Insert(2, "\\");
             string fileUrl = Path.Combine(@"colors", dir);
             fileUrl = Path.Combine(@"", fileUrl);
+            Console.WriteLine(fileUrl);
             if (Directory.Exists(fileUrl))
             {
                 string[] fileEntries = Directory.GetFiles(fileUrl);

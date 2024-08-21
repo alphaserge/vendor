@@ -10,7 +10,7 @@ namespace chiffon_back.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [EnableCors(origins: "http://localhost:3000", headers: "*", methods: "*")]
+    [EnableCors(origins: "http://185.40.31.18:3000", headers: "*", methods: "*")]
     public class ColorsController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>

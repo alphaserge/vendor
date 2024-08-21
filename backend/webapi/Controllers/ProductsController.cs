@@ -11,6 +11,8 @@ using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Web.Http.Cors; // пространство имен CORS
+//using Microsoft.AspNetCore.Cors;
 
 namespace chiffon_back.Controllers
 {
@@ -22,6 +24,7 @@ namespace chiffon_back.Controllers
 
     [ApiController]
     [Route("[controller]")]
+    [EnableCors(origins: "http://185.40.31.18:3000", headers: "*", methods: "*")]
     public class ProductsController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>
@@ -77,7 +80,9 @@ namespace chiffon_back.Controllers
         public IEnumerable<Models.Product> Get([FromQuery] string id)
         {
             var user = ctx.Users.FirstOrDefault(x => x.Id.ToString() == id);
-            int? vendorId = user != null ? user.VendorId : -1;
+            int? vendorId = user != null ? user.VendorId : 1;
+
+            if (vendorId <= 0) vendorId = 1;
 
             var prods = ProductModel.Get(new ProductFilter()
             {

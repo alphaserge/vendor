@@ -76,7 +76,7 @@ export default function Login(props) {
 
   // Call the server API to check if the given email ID already exists
   const checkAccountExists = (callback) => {
-      fetch("https://localhost:3080/Auth/check-account", {
+      fetch("http://185.40.31.18:5001/Auth/check-account", {
           method: "POST",
           headers: {
               'Content-Type': 'application/json'
@@ -94,7 +94,7 @@ export default function Login(props) {
 
       let passwordHash = stringToHash(password)+''
 
-      fetch("https://localhost:3080/Auth/auth", {
+      fetch("http://185.40.31.18:5001/Auth", {
           method: "POST",
           headers: {
               'Content-Type': 'application/json'
