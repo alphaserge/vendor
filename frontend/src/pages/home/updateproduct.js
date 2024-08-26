@@ -47,6 +47,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 const defaultTheme = createTheme()
 //const accordionStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
+const quantityStyle = { width: 340, m: 2, ml: 0, mr: 4 }
 const halfItemStyle = { width: 180, ml: 0, mr: 2 }
 const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
 const boxStyle = { display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '360px', ml:4, mr:2 }
@@ -172,6 +173,15 @@ export default function UpdateProduct(props) {
     const setProductColorItem = (i, item) => {
       let cv = productColorsPlus.map(el=>el.Id==i? item:el)
       setProductColorsPlus(cv)
+    }
+
+    const setQuantity = (num, quantity) => {
+      for (let i=0; i<colorVariant.length; i++) {
+        if (colorVariant[i].cvNum==num) {
+          colorVariant[i].quantity = quantity
+          break
+        }
+      }
     }
 
     const [selectedFile, setSelectedFile] = useState(null)
@@ -349,6 +359,7 @@ export default function UpdateProduct(props) {
       finishing: finishing,
       plainDyedType: plainDyedType,
       colorVariants: colorVariantPlus.filter(it => !!it.ColorNo && it.ColorIds.length > 0 && !!it.SelectedFile), 
+      quantities: colorVariant.filter(it => !!it.cvNum ), 
       globalPhotos: productColorsPlus.filter(it => !!it.No && !!it.SelectedFile)
     }
 
@@ -458,6 +469,7 @@ useEffect(() => {
 
   }, []);
 
+  
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -972,7 +984,7 @@ useEffect(() => {
           <AccordionDetails>
           <Grid item xs={12} md={6} >
             <Box sx={boxStyle}>
-              <TextField
+              {/* <TextField
                   margin="normal"
                   size="small" 
                   id="stock"
@@ -981,17 +993,33 @@ useEffect(() => {
                   sx = {halfItemStyle}
                   value={stock}
                   onChange={ev => setStock(ev.target.value)}
-                />
-               </Box>
-               <Box sx={boxStyle}>
+                /> */}
+
+              <Grid item xs={12} md={6} >
+
+
+              { colorVariant.filter(it => !!it.cvNum).map((cv) => (
+                <TextField
+                margin="normal"
+                size="small" 
+                id="stock"
+                label={"Color No." + cv.cvNum + " stock"}
+                name="stock"
+                sx = {quantityStyle}
+                value={cv.Quantity}
+                onChange={ev => setQuantity(cv.cvNum, ev.target.value)}
+              />
+             ))}
+
+              </Grid>
+
+              </Box>
+              <Box sx={boxStyle}>
               
-               </Box>
+              </Box>
            </Grid>
           </AccordionDetails>
           </Accordion>
-
-
-
 
           <FormControl sx = {{itemStyle}} > 
           { savingError && 

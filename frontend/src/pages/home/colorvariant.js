@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
 import { useTheme } from '@mui/material/styles';
@@ -13,9 +14,9 @@ import CameraswitchOutlinedIcon from '@mui/icons-material/CameraswitchOutlined';
 import MySelect from '../../components/myselect';
 import { APPEARANCE } from '../../appearance';
 
-const itemStyle = { width: 245 }
+const itemStyle = { width: 290 }
 const labelStyle = { mb: 3, ml: 0 }
-const textStyle = { width: 45, m: 0, ml: 0 }
+const textStyle = { m: 0, mr: 1 }
 const divStyle = { width: 340, mt: 3, ml: 4, mr: 4 }
 const flexStyle = { display: "flex", justifyContent: "space-between", alignContent: "space-between", alignItems: "center", mr: 22 }
 
@@ -71,16 +72,27 @@ export default function ColorVariant(props) {
     
       <FormControl sx={divStyle}> 
 
-      <div style={flexStyle}>
+      <Box component="div" style={flexStyle}>
       <TextField
         margin="normal"
         size="small" 
         id="colorNo"
         name="colorNo"
         sx = {textStyle}
+        style={{width: 55}}
         value={props.cv.ColorNo}
         onChange={ev => setColorNo(ev.target.value) }
       />
+      {/* <TextField
+        margin="normal"
+        size="small" 
+        id="colorQuantity"
+        name="colorQuantity"
+        sx = {textStyle}
+        style={{width: 65}}
+        value={props.cv.ColorQuantity}
+        onChange={ev => setColorNo(ev.target.value) }
+      /> */}
       <MySelect 
         id="addproduct-colorvariant"
         url="Colors"
@@ -106,7 +118,7 @@ export default function ColorVariant(props) {
             { props.cv.SelectedFile && <CameraswitchOutlinedIcon />}
       </IconButton>
       </label>      
-      </div>
+      </Box>
        </FormControl>
   );
 }

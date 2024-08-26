@@ -60,6 +60,7 @@ const makeProduct = (prod)  => {
     VendorId: getInt(prod.vendorId),
 
     ColorVariants: prod.colorVariants, 
+    Quantities: prod.quantities,
   }
 
   return JSON.stringify(p)

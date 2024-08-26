@@ -236,6 +236,7 @@ namespace chiffon_back.Models
                         Color = colors1,
                         CvId = cv.Id,
                         CvNum = cv.Num,
+                        Quantity = cv.Quantity,
                         ImagePath = imageFiles
                     });
                 }
@@ -316,6 +317,7 @@ namespace chiffon_back.Models
                 }
 
                 // 2) COLOR VARIANTS
+                var ccc = ctx.ColorVariants.ToList();
                 foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == prod.Id).ToList())
                 {
                     string colors = String.Join(", ",
@@ -332,6 +334,7 @@ namespace chiffon_back.Models
                         Color = colors,
                         CvId = cv.Id,
                         CvNum = cv.Num,
+                        Quantity = cv.Quantity,
                         IsProduct = false,
                         ImagePath = DirectoryHelper.GetImageFiles(cv.Uuid!)
                     });
@@ -372,7 +375,8 @@ namespace chiffon_back.Models
                         {
                             ProductId = prod.Id,
                             Uuid = item.Id,
-                            Num = item.No
+                            Num = item.No,
+                            Quantity = item.Quantity,
                         };
 
                         ctx.ColorVariants.Add(cv);
@@ -485,7 +489,8 @@ namespace chiffon_back.Models
                             {
                                 ProductId = prod.Id,
                                 Uuid = item.Id,
-                                Num = item.No
+                                Num = item.No,
+                                Quantity = item.Quantity,
                             };
 
                             ctx.ColorVariants.Add(cv);
@@ -501,6 +506,19 @@ namespace chiffon_back.Models
                             }
                             ctx.SaveChanges(true);
                         }
+                    }
+
+                    if (product.Quantities != null)
+                    {
+                        foreach (var quan in product.Quantities)
+                        {
+                            Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.ProductId == product.Id && x.Num == quan.Num);
+                            if (cv != null)
+                            {
+                                cv.Quantity = quan.Quantity;
+                            }
+                        }
+                        ctx.SaveChanges(true);
                     }
 
                     ctx.ProductsInDesignTypes.RemoveRange(ctx.ProductsInDesignTypes.Where(x => x.ProductId == prod.Id));

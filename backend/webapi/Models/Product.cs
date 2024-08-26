@@ -77,6 +77,7 @@ namespace chiffon_back.Models
         public string Uuid { get; set; }
         public int? CvNum { get; set; }
         public int? CvId { get; set; }
+        public decimal? Quantity { get; set; }
         public int? ProductId { get; set; }
         public bool IsProduct { get; set; }
     }
@@ -117,6 +118,7 @@ namespace chiffon_back.Models
         public int[]? OverWorkTypes { get; set; }
         public int []? Seasons { get; set; }
         public PostColorVariant[]? ColorVariants { get; set; }
+        public PostColorVariant[]? Quantities { get; set; }
         public string? PhotoUuids { get; set; }
 
     }
