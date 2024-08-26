@@ -144,6 +144,7 @@ namespace chiffon_back.Controllers
             {
                 if (ctx.Users.FirstOrDefault(x => x.Email == mdUser.Email) != null)
                 {
+                    Console.WriteLine("SignUp error: User with email already exists");
                     return BadRequest(new
                     {
                         status = "User with email already exists",
@@ -174,6 +175,7 @@ namespace chiffon_back.Controllers
                 dbUser.IsLocked = true; // разблокируем на confirm
                 ctx.Users.Add(dbUser);
                 ctx.SaveChanges();
+                Console.WriteLine("SignUp: User saved");
 
                 Models.User newUser =  config.CreateMapper()
                     .Map<Models.User>(dbUser);
@@ -202,13 +204,14 @@ namespace chiffon_back.Controllers
                     client.Send(mess);
                     mess.Dispose();
                     client.Dispose();
+                    Console.WriteLine("SignUp: Email was sended");
                 }
 
                 return Ok(newUser);
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine("SignUp error: " + ex.Message);
             }
             return NotFound(); //?Forbid()?;
         }
