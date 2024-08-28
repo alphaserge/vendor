@@ -1,6 +1,5 @@
 {
-    "api2": "http://185.40.31.18:12928",
-    "api": "http://185.40.31.18:5001",
-    "api1" : "https://localhost:3080",
+    "api1": "http://185.40.31.18:5001",
+    "api" : "https://localhost:3080",
     "company": "JSC Angelika"
 }

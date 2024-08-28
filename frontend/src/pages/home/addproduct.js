@@ -151,56 +151,18 @@ export default function AddProduct(props) {
 
     const [savingError, setSavingError] = useState(false)
 
-    const [colorVariant, setColorVariant] = useState([
-      {
-        Id: uuid(),
-        No: 1,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 2,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 3,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 4,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 5,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-      {
-        Id: uuid(),
-        No: 6,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
-      },
-    ])
+    const [colorVariant, setColorVariant] = useState(
+      [...Array(10)].map((elem, index) => {
+        return {
+          Id: uuid(),
+          No: index + 1,
+          ColorNo: null,
+          ColorQuantity: null,
+          ColorIds: [],
+          ColorId: [],
+          SelectedFile: null,
+          };
+      }))
 
     const [allColor, setAllColor] = useState([
       {
@@ -709,7 +671,8 @@ useEffect(() => {
           </AccordionSummary>
 
           <AccordionDetails>
-          <Grid item xs={12} md={6} >
+          {/* <Grid item xs={12} md={12} > */}
+          <Box sx={{flex: 1, ml: 0, mr: 0, display: "flex", flexDirection: 'column', alignItems: "left"}} >
           { allColor.map((cv) => (
                     <ProductColor cv={cv} setColorItem={setColorProduct}  />
                  ))}
@@ -717,7 +680,8 @@ useEffect(() => {
                 { colorVariant.map((cv) => (
                     <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} data={colors} />
                  ))}
-          </Grid>
+          </Box>
+          {/* </Grid> */}
           <FormControl sx = {{itemStyle}} > 
                 <Box sx={{ textAlign: "center", marginTop: 2 }}>
                     <Button 

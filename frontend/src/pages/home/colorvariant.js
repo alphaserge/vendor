@@ -17,7 +17,7 @@ import { APPEARANCE } from '../../appearance';
 const itemStyle = { width: 290 }
 const labelStyle = { mb: 3, ml: 0 }
 const textStyle = { m: 0, mr: 1 }
-const divStyle = { width: 340, mt: 3, ml: 4, mr: 4 }
+const divStyle = { width: 500, mt: 3, ml: 4, mr: 4 }
 const flexStyle = { display: "flex", justifyContent: "space-between", alignContent: "space-between", alignItems: "center", mr: 22 }
 
 const ITEM_HEIGHT = 48;
@@ -43,6 +43,12 @@ export default function ColorVariant(props) {
     const setColorNo = (value) => {
       let cv = props.cv;
       cv.ColorNo = parseInt(value)
+      props.setColorItem(cv.Id, cv)
+    }
+
+    const setColorQuantity = (value) => {
+      let cv = props.cv;
+      cv.ColorQuantity = parseInt(value)
       props.setColorItem(cv.Id, cv)
     }
 
@@ -79,20 +85,20 @@ export default function ColorVariant(props) {
         id="colorNo"
         name="colorNo"
         sx = {textStyle}
-        style={{width: 55}}
+        style={{width: 50}}
         value={props.cv.ColorNo}
         onChange={ev => setColorNo(ev.target.value) }
       />
-      {/* <TextField
+      <TextField
         margin="normal"
         size="small" 
         id="colorQuantity"
         name="colorQuantity"
         sx = {textStyle}
-        style={{width: 65}}
+        style={{width: 75}}
         value={props.cv.ColorQuantity}
-        onChange={ev => setColorNo(ev.target.value) }
-      /> */}
+        onChange={ev => setColorQuantity(ev.target.value) }
+      />
       <MySelect 
         id="addproduct-colorvariant"
         url="Colors"

@@ -16,6 +16,12 @@ namespace chiffon_back.Controllers
     public class ColorVariantsController : ControllerBase
     {
 
+        private MapperConfiguration config = new MapperConfiguration(cfg =>
+        {
+            cfg.CreateMap<Models.ColorVariant, Context.ColorVariant>();
+            cfg.CreateMap<Context.ColorVariant, Models.ColorVariant>();
+        });
+
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
 
         private readonly ILogger<ColorVariantsController> _logger;
@@ -29,13 +35,13 @@ namespace chiffon_back.Controllers
         [HttpGet(Name = "ColorVariants")]
         public IEnumerable<Models.ColorVariant> Get()
         {
+            var c = ctx.ColorVariants.ToList();
+            var mapper = config.CreateMapper();
             var query = from p in ctx.ColorVariants
-                        select new Models.ColorVariant
-                        {
-                            Id = p.Id,
-                        };
+                    select mapper.Map<Models.ColorVariant>(p);
 
-            return query.ToList();
+            var cv = query.ToList();
+            return cv;
         }
 
         [HttpPost(Name = "ColorVariants")]
