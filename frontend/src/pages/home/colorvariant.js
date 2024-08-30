@@ -9,16 +9,16 @@ import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import CameraswitchOutlinedIcon from '@mui/icons-material/CameraswitchOutlined';
+import DoneIcon from '@mui/icons-material/Done';
 
 import MySelect from '../../components/myselect';
 import { APPEARANCE } from '../../appearance';
 
-const itemStyle = { width: 290 }
+const itemStyle = { width: "197px" }
 const labelStyle = { mb: 3, ml: 0 }
 const textStyle = { m: 0, mr: 1 }
-const divStyle = { width: 500, mt: 3, ml: 4, mr: 4 }
-const flexStyle = { display: "flex", justifyContent: "space-between", alignContent: "space-between", alignItems: "center", mr: 22 }
+const divStyle = { width: 360, mt: 0, ml: 0, mr: 0 }
+const flexStyle = { display: "flex", justifyContent: "space-between", alignContent: "space-between", alignItems: "center", mr: 1 }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -84,8 +84,7 @@ export default function ColorVariant(props) {
         size="small" 
         id="colorNo"
         name="colorNo"
-        sx = {textStyle}
-        style={{width: 50}}
+        sx = {{...textStyle, ...{width: "80px"}}}
         value={props.cv.ColorNo}
         onChange={ev => setColorNo(ev.target.value) }
       />
@@ -94,8 +93,7 @@ export default function ColorVariant(props) {
         size="small" 
         id="colorQuantity"
         name="colorQuantity"
-        sx = {textStyle}
-        style={{width: 75}}
+        sx = {{...textStyle, ...{width: "120px"}}}
         value={props.cv.ColorQuantity}
         onChange={ev => setColorQuantity(ev.target.value) }
       />
@@ -121,7 +119,7 @@ export default function ColorVariant(props) {
         sx={{color: APPEARANCE.BLACK2}}
         component="span">
             {!props.cv.SelectedFile && <AddAPhotoIcon />}
-            { props.cv.SelectedFile && <CameraswitchOutlinedIcon />}
+            { props.cv.SelectedFile && <DoneIcon />}
       </IconButton>
       </label>      
       </Box>

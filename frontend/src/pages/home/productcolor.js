@@ -9,7 +9,7 @@ import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import CameraswitchOutlinedIcon from '@mui/icons-material/CameraswitchOutlined';
+import DoneIcon from '@mui/icons-material/Done';
 
 import MySelect from '../../components/myselect';
 import { APPEARANCE } from '../../appearance';
@@ -20,8 +20,8 @@ const defaultTheme = createTheme()
 const itemStyle = { width: 245 }
 const labelStyle = { mb: 3, ml: 0 }
 const buttonStyle = { width: 180, height: 32, m: 2 }
-const textStyle = { width:295, m: 0, ml: 0 }
-const divStyle = { width: 340, mt: 3, ml: 4, mr: 4 }
+const textStyle = { width:340, m: 0, ml: 0 }
+const divStyle = { width: 360, mt: 0, ml: 0, mr: 0 }
 const flexStyle = { display: "flex", justifyContent: "space-between", alignContent: "space-between", alignItems: "center", mr: 22 }
 //display: "flex", alignItems: "center", justifyContent: "space-between", alignContent: "space-between", marginRight: "22px"
 
@@ -71,7 +71,7 @@ export default function ProductColor(props) {
         name="colorNo"
         sx = {[textStyle, (props.cv.SelectedFile ? { backgroundColor: "#ccc" }:{ backgroundColor: "#fff" })]}
         inputProps={{ readOnly: true }}
-        value={props.cv.SelectedFile ? "PHOTO IS LOADED" : ("PRODUCT PHOTO")} />
+        value={props.cv.SelectedFile ? "PHOTO SELECTED" : ("PRODUCT PHOTO")} />
 
         <label htmlFor={"icon-button-file-prod"+props.cv.Id}>
         <Input accept="image/*" id={"icon-button-file-prod"+props.cv.Id} type="file" onChange={onFileChange} />
@@ -81,7 +81,7 @@ export default function ProductColor(props) {
           sx={{color: APPEARANCE.BLACK2}}
           component="span">
               {!props.cv.SelectedFile && <AddAPhotoIcon />}
-              { props.cv.SelectedFile && <CameraswitchOutlinedIcon />}
+              { props.cv.SelectedFile && <DoneIcon />}
         </IconButton>
       </label>      
       

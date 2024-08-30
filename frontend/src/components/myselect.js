@@ -64,7 +64,7 @@ export default function MySelect(props) {
     useEffect(() => {}, []);
   
 return (
-  <FormControl  error={ false } required > 
+  <FormControl error={ false } required sx={{ ...props.itemStyle,  ...{width: "100%", height: "40px", display: "flex" } }} > 
     <InputLabel 
         id={props.id + "-label"}
         size="small" 
