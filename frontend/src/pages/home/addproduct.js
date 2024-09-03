@@ -156,26 +156,26 @@ export default function AddProduct(props) {
     const [colorVariant, setColorVariant] = useState(
       [...Array(10)].map((elem, index) => {
         return {
-          Id: uuid(),
-          No: index + 1,
-          ColorNo: null,
-          ColorQuantity: null,
-          ColorIds: [],
-          ColorId: [],
-          SelectedFile: null,
+          id: uuid(),
+          no: index + 1,
+          colorNo: null,
+          quantity: null,
+          colorIds: [],
+          //colorId: [],
+          selectedFile: null,
           };
       }))
 
     const [allColor, setAllColor] = useState([
       {
-        Id: uuid(),
-        No: 1,
-        SelectedFile: null,
+        id: uuid(),
+        no: 1,
+        selectedFile: null,
       },
       {
-        Id: uuid(),
-        No: 2,
-        SelectedFile: null,
+        id: uuid(),
+        no: 2,
+        selectedFile: null,
       },
     ])
 
@@ -239,12 +239,12 @@ export default function AddProduct(props) {
     let i=num+1
     while (i<=num+6){
       cv.push({
-        Id: uuid(),
-        No: i,
-        ColorNo: null,
-        ColorIds: [],
-        ColorId: [],
-        SelectedFile: null,
+        id: uuid(),
+        no: i,
+        colorNo: null,
+        colorIds: [],
+        colorId: [],
+        selectedFile: null,
       })
       i++
     }
@@ -257,9 +257,9 @@ export default function AddProduct(props) {
     let i=num+1
     while (i<=num+2){
       cv.push({
-        Id: uuid(),
-        No: i,
-        SelectedFile: null,
+        i: uuid(),
+        no: i,
+        selectedFile: null,
       })
       i++
     }
@@ -300,8 +300,8 @@ export default function AddProduct(props) {
       dyeStaff: dyeStaff,
       finishing: finishing,
       plainDyedType: plainDyedType,
-      colorVariants: colorVariant.filter(it => !!it.ColorNo),
-      globalPhotos: allColor.filter(it => !!it.SelectedFile)
+      colorVariants: colorVariant.filter(it => !!it.colorNo),
+      globalPhotos: allColor.filter(it => !!it.selectedFile)
     }
 
     let r = await postProduct(prod, "ProductAdd")

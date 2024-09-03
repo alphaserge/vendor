@@ -59,8 +59,8 @@ const makeProduct = (prod)  => {
     PrintTypeId: getInt(prod.printType),
     VendorId: getInt(prod.vendorId),
 
-    ColorVariants: prod.colorVariants, 
-    Quantities: prod.quantities,
+    ColorVariants: prod.colorVariants,
+    ColorVariantsPlus: prod.colorVariantsPlus
   }
 
   return JSON.stringify(p)

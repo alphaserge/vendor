@@ -120,7 +120,6 @@ namespace chiffon_back.Models
         public int[]? OverWorkTypes { get; set; }
         public int []? Seasons { get; set; }
         public PostColorVariant[]? ColorVariants { get; set; }
-        public PostColorVariant[]? Quantities { get; set; }
         public string? PhotoUuids { get; set; }
 
     }

@@ -153,9 +153,7 @@ export default function UpdateProduct(props) {
 
     const [savingError, setSavingError] = useState(false)
 
-    const [colorVariantPlus, setColorVariantPlus] = useState([])
-    const [productColorsPlus, setProductColorsPlus] = useState([])
-    const [colorVariant, setColorVariant] = useState([])
+    const [colorVariants, setColorVariants] = useState([])
     const [productColors, setProductColors] = useState([])
     
     let loc = useLocation()
@@ -167,19 +165,19 @@ export default function UpdateProduct(props) {
     }
 
     const setColorVariantItem = (i, item) => {
-      let cv = colorVariantPlus.map(el=>el.Id==i? item:el)
-      setColorVariantPlus(cv)
+      let cv = colorVariants.map(el=>el.Id==i? item:el)
+      setColorVariants(cv)
     }
 
     const setProductColorItem = (i, item) => {
-      let cv = productColorsPlus.map(el=>el.Id==i? item:el)
-      setProductColorsPlus(cv)
+      let cv = productColors.map(el=>el.Id==i? item:el)
+      setProductColors(cv)
     }
 
     const setQuantity = (num, quantity) => {
-      for (let i=0; i<colorVariant.length; i++) {
-        if (colorVariant[i].cvNum==num) {
-          colorVariant[i].quantity = quantity
+      for (let i=0; i<colorVariants.length; i++) {
+        if (colorVariants[i].cvNum==num) {
+          colorVariants[i].quantity = quantity
           break
         }
       }
@@ -232,44 +230,43 @@ export default function UpdateProduct(props) {
     }
 
     const moreVariants = async (e, max) => {
-      let cv = colorVariantPlus.slice()
+      let cv = [] //colorVariants.slice()
       if (max === null || max === undefined) {
-        let num = cv.length
-        let cvNums = colorVariantPlus.map(x => x.No)
+        let cvNums = colorVariants.map(x => x.colorNo)
         max = cvNums.length > 0 ?  Math.max(...cvNums) : 0
       }
       let i=max+1
       while (i<max+7){
         cv.push({
-          Id: uuid(),
-          No: i,
-          ColorNo: null,
-          ColorIds: [],
-          ColorId: [],
-          SelectedFile: null,
-          IsProduct: false
+          uid: uuid(),
+          no: i,
+          colorNo: null,
+          colorIds: [],
+          colorId: [],
+          selectedFile: null,
+          isProduct: false
         })
         i++
       }
-      setColorVariantPlus(cv)
+      return cv
+      //setColorVariants(cv)
     }
   
     const moreProductColors = async (e) => {
-      let cv = productColorsPlus.slice()
-      let num = cv.length
-      let cvNums = productColorsPlus.map(x => x.No);
+      let cv = productColors.slice()
+      let cvNums = productColors.map(x => x.no);
       let max = cvNums.length > 0 ? Math.max(...cvNums) : 0
       let i=max+1
       while (i<max+3){
         cv.push({
-          Id: uuid(),
-          No: i,
-          SelectedFile: null,
-          IsProduct: true
+          uid: uuid(),
+          no: i,
+          selectedFile: null,
+          isProduct: true
         })
         i++
       }
-      setProductColorsPlus(cv)
+      setProductColors(cv)
     }
   
     const handleRemoveCv = async (cv) => {
@@ -359,9 +356,8 @@ export default function UpdateProduct(props) {
       dyeStaff: dyeStaff,
       finishing: finishing,
       plainDyedType: plainDyedType,
-      colorVariants: colorVariantPlus.filter(it => !!it.ColorNo),
-      quantities: colorVariant.filter(it => !!it.cvNum ), 
-      globalPhotos: productColorsPlus.filter(it => !!it.SelectedFile)
+      colorVariants: colorVariants.filter(it => !!it.colorNo),
+      globalPhotos: productColors.filter(it => !!it.selectedFile)
     }
 
     let r = await postProduct(prod, "ProductUpdate")
@@ -430,30 +426,16 @@ const setProduct = (prod) => {
   setSeason(prod.seasonIds)
   setOverworkType(prod.overWorkTypeIds)
   setDesignType(prod.designTypeIds)
-  setColorVariant(prod.colors)
+  setColorVariants(prod.colors)
 
   wChanged(prod.width, prod.weight)
-
-  if (colorVariantPlus.length == 0) {
-    let colorsNo = prod.colors.map(x => x.colorNo)
-    let max = colorsNo.length > 0 ?  Math.max(...colorsNo) : 0
-    moreVariants(null, max)
-  }
-
-  if (productColorsPlus.length == 0) {
-    moreProductColors()
-  }
-  //setProductColors()
-  //setGramm_pm( parseInt(prod.weight)*parseInt(prod.width)/100)
 }
 
 useEffect(() => {
 
   let id = idFromUrl()
-  loadProduct(id, setProduct)
-
-  //const prod = fetchData(id)
-
+  let product = loadProduct(id)
+  setProduct(product)
 
   getColors(setColors)
   getDesignTypes(setDesignTypes)
@@ -461,15 +443,23 @@ useEffect(() => {
   getProductStyles(setProductStyles)
   getProductTypes(setProductTypes)
   getSeasons(setSeasons)
-
   // in bottom part of page, so can load later:
   getDyeStaffs(setDyeStaffs)
   getFinishings(setFinishings)
   getPlainDyedTypes(setPlainDyedTypes)
   getPrintTypes(setPrintTypes)
 
+  //if (colorVariants.length == 0) {
+    moreVariants(null, 6)
+  //}
+
+  //if (productColors.length == 0) {
+   // moreProductColors()
+  //}
+
   }, []);
 
+  console.log(colorVariants)
   
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -667,7 +657,7 @@ useEffect(() => {
           <Box component={"div"} display={"flex"} justifyContent={"left"} alignItems={"left"} 
             marginBottom={3} marginLeft={6} marginRight={6} 
             paddingBottom={1} sx={accordionSummaryStyle} >
-              {colorVariant.map((cv, index) => {
+              {colorVariants.map((cv, index) => {
                 return <Box className="product-img-holder-item">
                   <Box className="product-img-holder-thumb" >
                   <Box 
@@ -694,22 +684,13 @@ useEffect(() => {
             })}
             </Box>
 
-
             <Grid container spacing={2} >
               { productColors.map((cv) => (
                 <Grid item xs={12} md={6} sx={{...flexStyle}} >
                     <ProductColor cv={cv} setColorItem={setProductColorItem}  />
                  </Grid> ))}
-                 { productColorsPlus.map((cv) => (
-                <Grid item xs={12} md={6} sx={{...flexStyle}} >
-                    <ProductColor cv={cv} setColorItem={setProductColorItem}  />
-                 </Grid> ))}
 
-                { colorVariant.map((cv) => (
-                  <Grid item xs={12} md={6} sx={{ ...flexStyle}} >
-                    <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} data={colors} />
-                    </Grid> ))}
-                    { colorVariantPlus.map((cv) => (
+                { colorVariants.map((cv) => (
                   <Grid item xs={12} md={6} sx={{ ...flexStyle}} >
                     <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} data={colors} />
                     </Grid> ))}

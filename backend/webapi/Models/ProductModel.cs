@@ -4,6 +4,7 @@ using chiffon_back.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System;
 using System.Linq;
 
 namespace chiffon_back.Models
@@ -318,7 +319,6 @@ namespace chiffon_back.Models
                 }
 
                 // 2) COLOR VARIANTS
-                var ccc = ctx.ColorVariants.ToList();
                 foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == prod.Id).ToList())
                 {
                     var colorsIds = ctx.ColorVariantsInColors.Where(cvc => cvc.ColorVariantId == cv.Id).Select(x => (int?)x.ColorId).ToList();
@@ -482,40 +482,37 @@ namespace chiffon_back.Models
                     {
                         foreach (var item in product.ColorVariants)
                         {
-                            Context.ColorVariant cv = new Context.ColorVariant()
+                            Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id.ToString() == item.Id);
+                            if (cv == null)
                             {
-                                ProductId = prod.Id,
-                                Uuid = item.Id,
-                                Num = item.No,
-                                Quantity = item.Quantity,
-                            };
+                                cv = new Context.ColorVariant()
+                                {
+                                    ProductId = prod.Id,
+                                    Uuid = item.Id,
+                                    Num = item.No,
+                                    Quantity = item.Quantity,
+                                };
+                                ctx.ColorVariants.Add(cv);
+                            }
 
-                            ctx.ColorVariants.Add(cv);
+                            cv.ProductId = prod.Id;
+                            cv.Uuid = item.Id;
+                            cv.Num = item.No;
+                            cv.Quantity = item.Quantity;
                             ctx.SaveChanges(true);
 
+                            ctx.ColorVariantsInColors.RemoveRange(ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == cv.Id));
                             foreach (var colorId in item.ColorIds != null ? item.ColorIds : [])
                             {
-                                ctx.ColorVariantsInColors.Add(new Context.ColorVariantsInColors()
+                                Context.ColorVariantsInColors? colVarInColors = new Context.ColorVariantsInColors()
                                 {
                                     ColorVariantId = cv.Id,
                                     ColorId = colorId,
-                                });
+                                };
+                                ctx.ColorVariantsInColors.Add(colVarInColors);
                             }
                             ctx.SaveChanges(true);
                         }
-                    }
-
-                    if (product.Quantities != null)
-                    {
-                        foreach (var quan in product.Quantities)
-                        {
-                            Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.ProductId == product.Id && x.Num == quan.Num);
-                            if (cv != null)
-                            {
-                                cv.Quantity = quan.Quantity;
-                            }
-                        }
-                        ctx.SaveChanges(true);
                     }
 
                     ctx.ProductsInDesignTypes.RemoveRange(ctx.ProductsInDesignTypes.Where(x => x.ProductId == prod.Id));
