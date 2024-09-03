@@ -21,15 +21,15 @@ export default function Logout(props) {
 
   props.setLoggedIn(false)
   props.setUser({
-    Id: 0,
-    FirstName: "",
-    LastName: "",
-    Email: "",
-    Phones: "",
-    Roles: [],
-    IsLocked: true,
-    VendorId: 0,
-    Vendor: ""
+    id: 0,
+    firstName: "",
+    lastName: "",
+    email: "",
+    phones: "",
+    roles: [],
+    isLocked: true,
+    vendorId: 0,
+    vendor: ""
   })
 
   navigate("/login")

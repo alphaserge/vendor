@@ -45,17 +45,18 @@ import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const defaultTheme = createTheme()
-//const accordionStyle = { width: 340, m: 2, ml: 4, mr: 4 }
-const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
-const quantityStyle = { width: 340, m: 2, ml: 0, mr: 4 }
-const halfItemStyle = { width: 180, ml: 0, mr: 2 }
-const selectStyle = { width: 290, m: 2, ml: 4, mr: 4 }
-const boxStyle = { display: 'inline-flex', flexDirection: 'row', alignItems: 'center', width: '360px', ml:4, mr:2 }
-const labelStyle = { m: 2, ml: 4, mr: 4 }
-const labelStyle1 = { m: 2, ml: 0, mr: 4 }
-const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "0 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
-const accordionStyle = { textAlign: "center", margin: "15px auto", justifyContent:"center", boxShadow: "none", border: "none" }
-const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 10px",  backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px" }
+const itemStyle  = { width: "100%", mt: 3, ml: 0, mr: 0, mb: 0  }
+const itemStyle1 = { width: "calc( 100% - 0px )", mt: 0, ml: 0, mr: 0  }
+const flexStyle = { display: "flex", flexDirection: "row", alignItems : "center", justifyContent: "space-between" }
+const halfItemStyle = { width: "calc( 50% - 3px )", m: 0 }
+const halfItemStyle1 = { width: "calc( 50% - 4px )", m: 0 }
+const thirdItemStyle = { width: "calc( 33% - 5px )", m: 0 }
+const labelStyle = { m: 0, ml: 0, mr: 4 }
+const labelStyle1 = { m: 0, ml: 0, mr: 4 }
+const buttonStyle = { width: 100, backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "5px 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
+const accordionStyle = { textAlign: "center", margin: "15px auto", justifyContent:"center", boxShadow: "none", border: "none", width: "100%" }
+const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto 20px auto", padding: "0 10px",  backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px" }
+const accordionDetailsStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 0px" }
 const accordionCaption = { width: "100%", fontWeight: "bold", fontSize: "11pt" };
 
 const ITEM_HEIGHT = 48;
@@ -358,9 +359,9 @@ export default function UpdateProduct(props) {
       dyeStaff: dyeStaff,
       finishing: finishing,
       plainDyedType: plainDyedType,
-      colorVariants: colorVariantPlus.filter(it => !!it.ColorNo && it.ColorIds.length > 0 && !!it.SelectedFile), 
+      colorVariants: colorVariantPlus.filter(it => !!it.ColorNo),
       quantities: colorVariant.filter(it => !!it.cvNum ), 
-      globalPhotos: productColorsPlus.filter(it => !!it.No && !!it.SelectedFile)
+      globalPhotos: productColorsPlus.filter(it => !!it.SelectedFile)
     }
 
     let r = await postProduct(prod, "ProductUpdate")
@@ -434,8 +435,8 @@ const setProduct = (prod) => {
   wChanged(prod.width, prod.weight)
 
   if (colorVariantPlus.length == 0) {
-    let cvNums = prod.colors.map(x => x.cvNum)
-    let max = cvNums.length > 0 ?  Math.max(...cvNums) : 0
+    let colorsNo = prod.colors.map(x => x.colorNo)
+    let max = colorsNo.length > 0 ?  Math.max(...colorsNo) : 0
     moreVariants(null, max)
   }
 
@@ -478,8 +479,8 @@ useEffect(() => {
         open={openNewColor}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+        aria-describedby="modal-modal-description" >
+
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
                 width: 475, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
@@ -545,13 +546,16 @@ useEffect(() => {
           Please fill out all fields and click the Save button
           </Typography> */}
           
+          {/* Main properties */}
+          {/* General */}
           <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
 
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
-            <Typography align="center" sx={accordionCaption}>Main properties</Typography>
+            <Typography align="center" sx={accordionCaption}>General</Typography>
           </AccordionSummary>
 
-          <AccordionDetails>
+          <AccordionDetails sx={accordionDetailsStyle}>
+          <Grid container spacing={2} >
           <Grid item xs={12} md={6} >
             <TextField
                 margin="normal"
@@ -559,30 +563,33 @@ useEffect(() => {
                 id="itemName"
                 label="Item name"
                 name="itemName"
-                sx = {itemStyle}
+                sx = {itemStyle1}
                 value={itemName}
                 onChange={ev => setItemName(ev.target.value)}
               />
+            </Grid>
+            <Grid item xs={12} md={6}  >
             <TextField
                 margin="normal"
                 size="small" 
                 id="design"
                 label="Design"
                 name="design"
-                sx = {itemStyle}
+                sx = {itemStyle1}
                 value={design}
                 onChange={ev => setDesign(ev.target.value)}
               />
+              </Grid>
 
-            <Box sx={boxStyle}>
+            <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
             <TextField
                 margin="normal"
                 size="small" 
                 id="refNo"
                 label="Ref No"
                 name="refNo"
-                sx = {halfItemStyle}
                 value={refNo}
+                sx = {halfItemStyle}
                 onChange={ev => setRefNo(ev.target.value)}
               />
             <TextField
@@ -595,15 +602,16 @@ useEffect(() => {
                 value={artNo}
                 onChange={ev => setArtNo(ev.target.value)}
               />
-            </Box>  
-            <Box sx={boxStyle}>
+            </Grid>
+
+            <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
             <TextField
                 margin="normal"
                 size="small" 
                 id="price"
-                label="Price > 500m"
+                label="Price 500m+"
                 name="price"
-                sx = {{width: 122, ml: 0, mr: 1}}
+                sx = {thirdItemStyle}
                 value={price}
                 onChange={priceChanged}
               />
@@ -613,7 +621,7 @@ useEffect(() => {
                 id="price2"
                 label="301-500m"
                 name="price2"
-                sx = {{width: 104, ml: 0, mr: 1}}
+                sx = {thirdItemStyle}
                 value={price2}
                 InputProps={{ readOnly: true, }}
               />
@@ -621,190 +629,91 @@ useEffect(() => {
                 margin="normal"
                 size="small" 
                 id="price3"
-                label="< 301m"
+                label="300m-"
                 name="price3"
-                sx = {{width: 98, ml: 0, mr: 1}}
+                sx = {thirdItemStyle}
                 value={price3}
                 InputProps={{ readOnly: true, }}
               />
-              </Box>
-              <Box sx={boxStyle}>
-                <MySelect 
-                  id="addproduct-producttype"
-                  url="ProductTypes"
-                  title="Product Type"
-                  valueName="typeName"
-                  labelStyle={labelStyle1}
-                  itemStyle = {{width: 163, m: 2, ml: 0, mr: 4}}
-                  MenuProps={MySelectProps1}
-                  valueVariable={productType}
-                  setValueFn={setProductType}
-                  data={productTypes}
-                />
+              </Grid>
 
+              <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
                 <MySelect 
                   id="addproduct-productstyle"
                   url="ProductStyles"
                   title="Product Style"
                   valueName="styleName"
                   labelStyle={labelStyle1}
-                  itemStyle = {{width: 163, m: 2, ml: 0, mr: 4}}
+                  itemStyle = {itemStyle1}
+                  sx={itemStyle1}
                   MenuProps={MySelectProps1}
                   valueVariable={productStyle}
                   setValueFn={setProductStyle}
                   data={productStyles}
                 />
-                </Box>
-
-                <MySelect 
-                  id="addproduct-season"
-                  url="Seasons"
-                  title="Season"
-                  valueName="seasonName"
-                  labelStyle={labelStyle}
-                  itemStyle={itemStyle}
-                  MenuProps={MySelectProps}
-                  valueVariable={season}
-                  setValueFn={setSeason}
-                  data={seasons}
-                />
-
-                <MySelect 
-                  id="addproduct-designtype"
-                  url="DesignTypes"
-                  title="Design type"
-                  valueName="designName"
-                  labelStyle={labelStyle}
-                  itemStyle={itemStyle}
-                  MenuProps={MySelectProps}
-                  valueVariable={designType}
-                  setValueFn={setDesignType}
-                  data={designTypes}
-                />
-
-              <MySelect 
-                  id="addproduct-overworktype"
-                  url="OverWorkTypes"
-                  title="Overwork type"
-                  valueName="overWorkName"
-                  labelStyle={labelStyle}
-                  itemStyle={itemStyle}
-                  MenuProps={MySelectProps}
-                  valueVariable={overworkType}
-                  setValueFn={setOverworkType}
-                  data={overworkTypes}
-                />
-          </Grid>
-          </AccordionDetails>
-
-          {/* </Box> */}
-          </Accordion>
-
-          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} elevation={0} sx={{ '&:before':{height:'0px'}}} >
-
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
-            <Typography align="center" sx={accordionCaption}>Weight / Width / GSM</Typography>
-          </AccordionSummary>
-
-          <AccordionDetails>
-          <Grid item xs={12} md={6} >
-            <Box sx={boxStyle}>
-              <TextField
-                  margin="normal"
-                  size="small" 
-                  id="gsm"
-                  label="GSM"
-                  name="gsm"
-                  sx = {halfItemStyle}
-                  value={gsm}
-                  onChange={densityChanged}
-                />
-                <TextField
-                  margin="normal"
-                  size="small" 
-                  id="width"
-                  label="Width"
-                  name="width"
-                  sx = {halfItemStyle}
-                  value={width}
-                  onChange={widthChanged}
-                />
-              </Box>
-              <Box sx={boxStyle}>
-                <TextField
-                  margin="normal"
-                  size="small" 
-                  id="weight"
-                  label="Weight G/M"
-                  name="weight"
-                  sx = {halfItemStyle}
-                  value={weight}
-                  onChange={weightChanged}
-                />
-                <TextField
-                  margin="normal"
-                  size="small" 
-                  id="metersInKg"
-                  label="Meters in KG"
-                  name="metersInKg"
-                  sx = {halfItemStyle}
-                  value={metersInKg}
-                  onChange={ev => setMetersInKg(ev.target.value)}
-                />
-              </Box>
+                </Grid>
           </Grid>
           </AccordionDetails>
           </Accordion>
 
+          {/* Product photos */}
           <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true}  elevation={0} sx={{ '&:before':{height:'0px'}}} >
 
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
             <Typography align="center" sx={accordionCaption}>Product photos</Typography>
           </AccordionSummary>
 
-          <AccordionDetails>
-        <Box component={"div"} display={"flex"} justifyContent={"left"} alignItems={"left"} 
-          marginBottom={3} marginLeft={6} marginRight={6} 
-          paddingBottom={1} sx={accordionSummaryStyle} >
-            {colorVariant.map((cv, index) => {
-              return <Box className="product-img-holder-item">
-                <Box className="product-img-holder-thumb" >
-
-                <Box 
-                  component={"img"} 
-                  key={index} 
-                  src={"http://185.40.31.18:5001/"+cv.imagePath} 
-                  alt={"photo"+(index+1)} 
-                  className="product-img" />
-                  <br/>
-                  </Box>
+          <AccordionDetails sx={accordionDetailsStyle}>
+          <Box component={"div"} display={"flex"} justifyContent={"left"} alignItems={"left"} 
+            marginBottom={3} marginLeft={6} marginRight={6} 
+            paddingBottom={1} sx={accordionSummaryStyle} >
+              {colorVariant.map((cv, index) => {
+                return <Box className="product-img-holder-item">
+                  <Box className="product-img-holder-thumb" >
+                  <Box 
+                    component={"img"} 
+                    key={index} 
+                    src={"http://185.40.31.18:5001/"+cv.imagePath} 
+                    alt={"photo"+(index+1)} 
+                    className="product-img" />
+                    <br/>
+                    </Box>
                   <Box component={"div"} 
                     sx={{ mt: 1, ml: 1, height: "36px", width: "125px", wordBreak: "break-all", wordWrap: "break-word", alignItems: "center" }} 
-                    textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > { (cv.cvNum?cv.cvNum+' - ':'') + cv.color} </Box>
+                    textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > { (cv.colorNo ? 'No.' + cv.colorNo + ' : ':'') + (cv.quantity ? cv.quantity : '-') + 'm'} </Box>
 
-          <IconButton
-          color="success"
-          aria-label="upload picture"
-          sx={{color: APPEARANCE.BLACK2, pt: 0}}
-          component="span"
-          onClick={ function() { handleRemoveCv(cv)}}
-          >
-              {<DeleteIcon />}
-              </IconButton>
-        </Box>
-      })}
-      </Box>
+                <IconButton
+                  color="success"
+                  aria-label="upload picture"
+                  sx={{color: APPEARANCE.BLACK2, pt: 0}}
+                  component="span"
+                  onClick={ function() { handleRemoveCv(cv)}} >
+                    {<DeleteIcon />}
+                </IconButton>
+              </Box>
+            })}
+            </Box>
 
 
-          <Grid item xs={12} md={6} >
-                { productColorsPlus.map((cv) => (
+            <Grid container spacing={2} >
+              { productColors.map((cv) => (
+                <Grid item xs={12} md={6} sx={{...flexStyle}} >
                     <ProductColor cv={cv} setColorItem={setProductColorItem}  />
-                 ))}
+                 </Grid> ))}
+                 { productColorsPlus.map((cv) => (
+                <Grid item xs={12} md={6} sx={{...flexStyle}} >
+                    <ProductColor cv={cv} setColorItem={setProductColorItem}  />
+                 </Grid> ))}
 
-                { colorVariantPlus.map((cv) => (
+                { colorVariant.map((cv) => (
+                  <Grid item xs={12} md={6} sx={{ ...flexStyle}} >
                     <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} data={colors} />
-                 ))}
-          </Grid>
+                    </Grid> ))}
+                    { colorVariantPlus.map((cv) => (
+                  <Grid item xs={12} md={6} sx={{ ...flexStyle}} >
+                    <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} data={colors} />
+                    </Grid> ))}
+            </Grid>
           <FormControl sx = {{itemStyle}} > 
                 <Box sx={{ textAlign: "center", marginTop: 2 }}>
                     <Button 
@@ -824,13 +733,145 @@ useEffect(() => {
           </AccordionDetails>
           </Accordion>
 
-          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true}  elevation={0} sx={{ '&:before':{height:'0px'}}} >
+          {/* Additional information */}
+          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
 
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
-            <Typography align="center" sx={accordionCaption}>Additional properties</Typography>
+            <Typography align="center" sx={accordionCaption}>Additional information</Typography>
           </AccordionSummary>
 
-          <AccordionDetails>
+          <AccordionDetails sx={accordionDetailsStyle}>
+          <Grid container spacing={2} sx={{pt: 2}} >
+
+              <Grid item xs={12} md={6} >
+                <MySelect 
+                  id="addproduct-producttype"
+                  url="ProductTypes"
+                  title="Product Type"
+                  valueName="typeName"
+                  labelStyle={labelStyle1}
+                  itemStyle = {itemStyle1}
+                  MenuProps={MySelectProps1}
+                  valueVariable={productType}
+                  setValueFn={setProductType}
+                  data={productTypes}
+                />
+                </Grid>
+
+                <Grid item xs={12} md={6}  >
+                <MySelect 
+                  id="addproduct-season"
+                  url="Seasons"
+                  title="Season"
+                  valueName="seasonName"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle1}
+                  MenuProps={MySelectProps}
+                  valueVariable={season}
+                  setValueFn={setSeason}
+                  data={seasons}
+                />
+                </Grid>
+
+                <Grid item xs={12} md={6}  >
+                <MySelect 
+                  id="addproduct-designtype"
+                  url="DesignTypes"
+                  title="Design type"
+                  valueName="designName"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle1}
+                  MenuProps={MySelectProps}
+                  valueVariable={designType}
+                  setValueFn={setDesignType}
+                  data={designTypes}
+                />
+              </Grid>
+
+                <Grid item xs={12} md={6}  >
+                <MySelect 
+                  id="addproduct-overworktype"
+                  url="OverWorkTypes"
+                  title="Overwork type"
+                  valueName="overWorkName"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle1}
+                  MenuProps={MySelectProps}
+                  valueVariable={overworkType}
+                  setValueFn={setOverworkType}
+                  data={overworkTypes}
+                />
+            </Grid>
+          </Grid>
+          </AccordionDetails>
+
+          {/* </Box> */}
+          </Accordion>
+
+          {/* Technical information */}
+          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
+
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
+            <Typography align="center" sx={accordionCaption}>Technical information</Typography>
+          </AccordionSummary>
+
+          <AccordionDetails sx={accordionDetailsStyle}>
+
+          <Grid container spacing={2} sx={{pt: 2}} >
+            
+              <Grid item xs={6} md={3} >
+              <TextField
+                  margin="normal"
+                  size="small" 
+                  id="gsm"
+                  label="GSM"
+                  name="gsm"
+                  sx = {itemStyle1}
+                  value={gsm}
+                  onChange={densityChanged}
+                />
+                </Grid>
+
+                <Grid item xs={6} md={3} >
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="width"
+                  label="Width"
+                  name="width"
+                  sx = {itemStyle1}
+                  value={width}
+                  onChange={widthChanged}
+                />
+              </Grid>
+
+              <Grid item xs={6} md={3} >
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="weight"
+                  label="Weight G/M"
+                  name="weight"
+                  sx = {itemStyle1}
+                  value={weight}
+                  onChange={weightChanged}
+                />
+
+                </Grid>
+                <Grid item xs={6} md={3} >
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="metersInKg"
+                  label="Meters in KG"
+                  name="metersInKg"
+                  sx = {itemStyle1}
+                  value={metersInKg}
+                  onChange={ev => setMetersInKg(ev.target.value)}
+                />
+              </Grid>
+
+
           <Grid item xs={12} md={6} >
             <TextField
                 margin="normal"
@@ -838,33 +879,26 @@ useEffect(() => {
                 id="fabricConstruction"
                 label="Fabric construction"
                 name="fabricConstruction"
-                sx = {itemStyle}
+                sx = {itemStyle1}
                 value={fabricConstruction}
                 onChange={ev => setFabricConstruction(ev.target.value)}
               />
+              </Grid>
+              <Grid item xs={12} md={6} >
             <TextField
                 margin="normal"
                 size="small" 
                 id="fabricYarnCount"
                 label="Fabric Yarn Count"
                 name="fabricYarnCount"
-                sx = {itemStyle}
+                sx = {itemStyle1}
                 value={fabricYarnCount}
                 onChange={ev => setFabricYarnCount(ev.target.value)}
               />
-            {/* <TextField
-                margin="normal"
-                size="small" 
-                id="fabricShrinkage"
-                label="Fabric Shrinkage"
-                name="fabricShrinkage"
-                sx = {itemStyle}
-                value={fabricShrinkage}
-                onChange={ev => setFabricShrinkage(ev.target.value)}
-              /> */}
+              </Grid>
 
-              <Box sx={boxStyle}>
-              <FormControl >
+              <Grid item xs={12} md={6} spacing={2} >
+              <FormControl sx = {halfItemStyle1}>
               <InputLabel id="fabric-shrinkage-label" sx={labelStyle1} size="small" >Fabric Shrinkage</InputLabel>
               <Select
                 size="small" 
@@ -872,15 +906,14 @@ useEffect(() => {
                 id="fabric-shrinkage"
                 value={fabricShrinkage}
                 label="Fabric Shrinkage"
-                sx = {{width: 163, m: 2, ml: 0, mr: 4}}
+                sx = {itemStyle1}
                 onChange={ev => setFabricShrinkage(ev.target.value)} >
                    { [...Array(11).keys()].map((elem, ix) => (
                       <MenuItem key={"shr_"+ix} value={elem}
                       style={getStyles(elem, fabricShrinkage, theme)}> { elem + "%"} </MenuItem> ))}
               </Select>
-              </FormControl>
-
-              <FormControl >
+              </FormControl> &nbsp;
+              <FormControl sx = {halfItemStyle1}>
               <InputLabel id="color-fastness-label" sx={labelStyle1} size="small" >Color Fastness</InputLabel>
               <Select
                 size="small" 
@@ -888,81 +921,80 @@ useEffect(() => {
                 id="color-fastness"
                 value={colorFastness}
                 label="Color Fastness"
-                sx = {{width: 163, m: 2, ml: 0, mr: 4}}
+                sx = {itemStyle1}
                 onChange={ev => setColorFastness(ev.target.value)} >
                    {  [...Array(6).keys()].map((elem, ix) => (
                       <MenuItem key={"shr_"+ix} value={elem}
                       style={getStyles(elem, fabricShrinkage, theme)}> { elem } </MenuItem> ))}
               </Select>
               </FormControl>
-              </Box>
+              </Grid>
 
-            {/* <TextField
-                margin="normal"
-                size="small" 
-                id="colorFastness"
-                label="Color Fastness"
-                name="colorFastness"
-                sx = {itemStyle}
-                value={colorFastness}
-                onChange={ev => setColorFastness(ev.target.value)}
-              /> */}
+              <Grid item xs={12} md={6} >
             <MySelect 
                 id="addproduct-dyestaff"
                 url="Finishings"
                 title="Finishing"
                 valueName="finishingName"
                 labelStyle={labelStyle}
-                itemStyle={itemStyle}
+                itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
                 valueVariable={finishing}
                 setValueFn={setFinishing}
                 data={finishings}
               />
+              </Grid>
+              <Grid item xs={12} md={6} >
             <TextField
                 margin="normal"
                 size="small" 
                 id="hsCode"
                 label="HS Code"
                 name="hsCode"
-                sx = {itemStyle}
+                sx = {itemStyle1}
                 value={hsCode}
                 onChange={ev => setHsCode(ev.target.value)}
               />
+              </Grid>
 
-              <MySelect 
+            <Grid item xs={12} md={6} >
+               <MySelect 
                 id="addproduct-printttype"
                 url="PrintTypes"
                 title="Print Type"
                 valueName="typeName"
                 labelStyle={labelStyle}
-                itemStyle={itemStyle}
+                itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
                 valueVariable={printType}
                 setValueFn={setPrintType}
                 data={printTypes}
               />
+              </Grid>
 
+              <Grid item xs={12} md={6} >
               <MySelect 
                 id="addproduct-plaindyedtype"
                 url="PlainDyedTypes"
                 title="Plain Dyed Type"
                 valueName="plainDyedTypeName"
                 labelStyle={labelStyle}
-                itemStyle={itemStyle}
+                itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
                 valueVariable={plainDyedType}
                 setValueFn={setPlainDyedType}
                 data={plainDyedTypes}
               />
+              </Grid>
 
+              <Grid item xs={12} md={6} >
               <MySelect 
                 id="addproduct-dyestaff"
                 url="DyeStaffs"
                 title="Dye Staff"
                 valueName="dyeStaffName"
                 labelStyle={labelStyle}
-                itemStyle={itemStyle}
+                itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
                 valueVariable={dyeStaff}
                 setValueFn={setDyeStaff}
@@ -970,55 +1002,10 @@ useEffect(() => {
               />
 
           </Grid>
+          </Grid>
           </AccordionDetails>
 
           {/* </Box> */}
-          </Accordion>
-
-          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} elevation={0} sx={{ '&:before':{height:'0px'}}} >
-
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
-            <Typography align="center" sx={accordionCaption}>Logistic</Typography>
-          </AccordionSummary>
-
-          <AccordionDetails>
-          <Grid item xs={12} md={6} >
-            <Box sx={boxStyle}>
-              {/* <TextField
-                  margin="normal"
-                  size="small" 
-                  id="stock"
-                  label="Stock value"
-                  name="stock"
-                  sx = {halfItemStyle}
-                  value={stock}
-                  onChange={ev => setStock(ev.target.value)}
-                /> */}
-
-              <Grid item xs={12} md={6} >
-
-
-              { colorVariant.filter(it => !!it.cvNum).map((cv) => (
-                <TextField
-                margin="normal"
-                size="small" 
-                id="stock"
-                label={"Color No." + cv.cvNum + " stock"}
-                name="stock"
-                sx = {quantityStyle}
-                value={cv.Quantity}
-                onChange={ev => setQuantity(cv.cvNum, ev.target.value)}
-              />
-             ))}
-
-              </Grid>
-
-              </Box>
-              <Box sx={boxStyle}>
-              
-              </Box>
-           </Grid>
-          </AccordionDetails>
           </Accordion>
 
           <FormControl sx = {{itemStyle}} > 

@@ -4,6 +4,7 @@ using chiffon_back.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace chiffon_back.Models
 {
@@ -209,9 +210,9 @@ namespace chiffon_back.Models
                         var imageFiles = DirectoryHelper.GetImageFiles(uuid);
                         p.Colors.Add(new ProductColor()
                         {
-                            Color = "ALL COLORS",
-                            CvId = -id,
-                            CvNum = null,
+                            ColorNames = "ALL COLORS",
+                            ColorVariantId = -id,
+                            ColorNo = null,
                             ImagePath = imageFiles
                         });
                         id++;
@@ -233,9 +234,9 @@ namespace chiffon_back.Models
                                         .Select(col => col.ColorName));
                     p.Colors.Add(new ProductColor()
                     {
-                        Color = colors1,
-                        CvId = cv.Id,
-                        CvNum = cv.Num,
+                        ColorNames = colors1,
+                        ColorVariantId = cv.Id,
+                        ColorNo = cv.Num,
                         Quantity = cv.Quantity,
                         ImagePath = imageFiles
                     });
@@ -305,9 +306,9 @@ namespace chiffon_back.Models
                     var imageFiles = DirectoryHelper.GetImageFiles(uuid);
                     prod.Colors.Add(new ProductColor()
                     {
-                        Color = "PRODUCT",
-                        CvId = -colorId,
-                        CvNum = null,
+                        ColorNames = "PRODUCT",
+                        ColorVariantId = -colorId,
+                        ColorNo = null,
                         Uuid = uuid,
                         ProductId = prod.Id,
                         IsProduct = true,
@@ -320,22 +321,18 @@ namespace chiffon_back.Models
                 var ccc = ctx.ColorVariants.ToList();
                 foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == prod.Id).ToList())
                 {
-                    string colors = String.Join(", ",
-                        ctx.Colors.Where(col =>
-                            ctx.ColorVariantsInColors
-                            .Where(x =>
-                                x.ColorVariantId == cv.Id)
-                            .Select(x => x.ColorId)
-                            .ToList()
-                            .Contains(col.Id))
-                        .Select(col => col.ColorName));
+                    var colorsIds = ctx.ColorVariantsInColors.Where(cvc => cvc.ColorVariantId == cv.Id).Select(x => (int?)x.ColorId).ToList();
+                    var colors = ctx.Colors.Where(x=>colorsIds.Contains(x.Id)).OrderBy(x => x.ColorName).ToList();
+                    string colorNames = String.Join(", ", colors.Select(col => col.ColorName));
                     prod!.Colors.Add(new ProductColor()
                     {
-                        Color = colors,
-                        CvId = cv.Id,
-                        CvNum = cv.Num,
+                        ColorNames = colorNames,
+                        ColorVariantId = cv.Id,
+                        ColorNo = cv.Num,
+                        ColorIds = colorsIds,
                         Quantity = cv.Quantity,
                         IsProduct = false,
+                        Existing = true,
                         ImagePath = DirectoryHelper.GetImageFiles(cv.Uuid!)
                     });
                 }
@@ -343,9 +340,9 @@ namespace chiffon_back.Models
                 {
                     prod.Colors.Add(new ProductColor()
                     {
-                        Color = "COMMON",
-                        CvId = 0,
-                        CvNum = 0,
+                        ColorNames = "COMMON",
+                        ColorVariantId = 0,
+                        ColorNo = 0,
                         ImagePath = DirectoryHelper.GetImageFiles(prod.Uuid)
                     });
                 }

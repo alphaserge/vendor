@@ -10,12 +10,13 @@ import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material/styles';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import DoneIcon from '@mui/icons-material/Done';
+import InputAdornment from '@mui/material/InputAdornment';
 
 import MySelect from '../../components/myselect';
 import { APPEARANCE } from '../../appearance';
 
 const itemStyle = { width: "197px" }
-const labelStyle = { mb: 3, ml: 0 }
+const labelStyle = {  }
 const textStyle = { m: 0, mr: 1 }
 const divStyle = { width: 360, mt: 0, ml: 0, mr: 0 }
 const flexStyle = { display: "flex", justifyContent: "space-between", alignContent: "space-between", alignItems: "center", mr: 1 }
@@ -42,21 +43,24 @@ export default function ColorVariant(props) {
 
     const setColorNo = (value) => {
       let cv = props.cv;
-      cv.ColorNo = parseInt(value)
-      props.setColorItem(cv.Id, cv)
+      cv.colorNo = parseInt(value)
+      props.setColorItem(cv.id, cv)
     }
 
-    const setColorQuantity = (value) => {
+    const setQuantity = (value) => {
       let cv = props.cv;
-      cv.ColorQuantity = parseInt(value)
-      props.setColorItem(cv.Id, cv)
+      cv.quantity = parseInt(value)
+      if (!cv.colorNo) {
+        cv.colorNo = cv.no
+      }
+      props.setColorItem(cv.id, cv)
     }
 
     const setColorName = (value) => {
       let cv1 = props.cv;
-      cv1.ColorIds = value
-      props.cv.ColorNo = props.cv.No
-      props.setColorItem(cv1.Id, cv1)
+      cv1.colorIds = value
+      //props.cv.ColorNo = props.cv.ColorNo
+      props.setColorItem(cv1.colorVariantId, cv1)
     }
 
     const setSelectedFile = (value) => {
@@ -74,6 +78,8 @@ export default function ColorVariant(props) {
       
     }, []);
 
+    const existingStyle = (props.cv.existing ? {backgroundColor: "#eee"} : {})
+
   return (
     
       <FormControl sx={divStyle}> 
@@ -84,18 +90,22 @@ export default function ColorVariant(props) {
         size="small" 
         id="colorNo"
         name="colorNo"
-        sx = {{...textStyle, ...{width: "80px"}}}
-        value={props.cv.ColorNo}
+        label="No."
+        sx = {{...textStyle, ...{width: "85px"}, ...existingStyle}}
+        value={props.cv.colorNo}
         onChange={ev => setColorNo(ev.target.value) }
+        InputLabelProps={{ shrink: true }}
       />
       <TextField
         margin="normal"
         size="small" 
         id="colorQuantity"
         name="colorQuantity"
-        sx = {{...textStyle, ...{width: "120px"}}}
-        value={props.cv.ColorQuantity}
-        onChange={ev => setColorQuantity(ev.target.value) }
+        label="Qty."
+        sx = {{...textStyle, ...{width: "120px"}, ...existingStyle}}
+        value={props.cv.quantity}
+        onChange={ev => setQuantity(ev.target.value) }
+        InputLabelProps={{ shrink: true }}
       />
       <MySelect 
         id="addproduct-colorvariant"
@@ -103,16 +113,16 @@ export default function ColorVariant(props) {
         title="Color"
         valueName="colorName"
         labelStyle={labelStyle}
-        itemStyle={itemStyle}
+        itemStyle={{...itemStyle, ...existingStyle}}
         MenuProps={MenuProps}
-        valueVariable={props.cv.ColorIds}
+        valueVariable={props.cv.colorIds}
         setValueFn={setColorName}
         addNewFn={props.addNewFn}
         data={props.data}
       />
 
-      <label htmlFor={"icon-button-file-"+props.cv.Id}>
-      <Input accept="image/*" id={"icon-button-file-"+props.cv.Id} type="file" onChange={onFileChange} />
+      <label htmlFor={"icon-button-file-" + props.cv.colorVariantId}>
+      <Input accept="image/*" id={"icon-button-file-"+props.cv.colorVariantId} type="file" onChange={onFileChange} />
       <IconButton
         color="success"
         aria-label="upload picture"

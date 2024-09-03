@@ -72,14 +72,16 @@ namespace chiffon_back.Models
 
     public class ProductColor
     {
-        public List<string> ImagePath { get; set; }
-        public string Color { get; set; }
-        public string Uuid { get; set; }
-        public int? CvNum { get; set; }
-        public int? CvId { get; set; }
-        public decimal? Quantity { get; set; }
-        public int? ProductId { get; set; }
-        public bool IsProduct { get; set; }
+        public List<string>   ImagePath { get; set; }
+        public List<int?>?    ColorIds { get; set; }
+        public string?        Uuid { get; set; }
+        public string?        ColorNames { get; set; }
+        public int?           ColorNo { get; set; }
+        public int?           ColorVariantId { get; set; }
+        public decimal?       Quantity { get; set; }
+        public int?           ProductId { get; set; }
+        public bool           IsProduct { get; set; }
+        public bool           Existing { get; set; }
     }
 
     public class PostProduct

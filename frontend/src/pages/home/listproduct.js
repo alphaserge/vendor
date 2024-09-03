@@ -241,6 +241,10 @@ export default function ListProduct(props) {
       loadProductStyles()
     }, []);
 
+  if (!props.user || props.user.Id == 0) {
+    navigate("/")
+  }
+    
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />

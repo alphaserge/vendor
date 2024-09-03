@@ -19,15 +19,15 @@ import { useEffect, useState } from 'react';
 
 const userInitialValue = () => {
   return JSON.parse(localStorage.getItem("user")) || {
-    Id: 0,
-    FirstName: "",
-    LastName: "",
-    Email: "",
-    Phones: "",
-    Roles: [],
-    IsLocked: true,
-    VendorId: 0,
-    Vendor: ""
+    id: 0,
+    firstName: "",
+    lastName: "",
+    email: "",
+    phones: "",
+    roles: [],
+    isLocked: true,
+    vendorId: 0,
+    vendor: ""
   };
 };
 
@@ -35,15 +35,15 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false)
   const [user, setUser] = useState(userInitialValue)
   /*useState({
-    Id: 0,
-    FirstName: "",
-    LastName: "",
-    Email: "",
-    Phones: "",
-    Roles: [],
-    IsLocked: true,
-    VendorId: 0,
-    Vendor: ""
+    id: 0,
+    firstName: "",
+    lastName: "",
+    email: "",
+    phones: "",
+    roles: [],
+    isLocked: true,
+    vendorId: 0,
+    vendor: ""
   })*/
 
   const [lastAction, setLastAction] = useState("")

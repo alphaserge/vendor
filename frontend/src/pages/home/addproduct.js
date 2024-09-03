@@ -47,15 +47,10 @@ const defaultTheme = createTheme()
 //const accordionStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 const itemStyle  = { width: "100%", mt: 3, ml: 0, mr: 0, mb: 0  }
 const itemStyle1 = { width: "calc( 100% - 0px )", mt: 0, ml: 0, mr: 0  }
-const itemStyle2 = { width: "calc( 100% - 20px )", mt: 0, ml: 0, mr: 0  }
-const marginStyle = { ml: 2, mr: 2  }
 const flexStyle = { display: "flex", flexDirection: "row", alignItems : "center", justifyContent: "space-between" }
 const halfItemStyle = { width: "calc( 50% - 3px )", m: 0 }
 const halfItemStyle1 = { width: "calc( 50% - 4px )", m: 0 }
 const thirdItemStyle = { width: "calc( 33% - 5px )", m: 0 }
-const fourthItemStyle = { width: "calc( 25% - 5px )", m: 0 }
-//const boxStyle = { display: 'inline-flex', flexDirection: 'row', alignItems: 'left', justifyContent: "left", alignContent: "left", justifyItems: "left", width: '340px', m: 0, ml: 0, mr: 0 }
-const boxStyle = { height: 40 }
 const labelStyle = { m: 0, ml: 0, mr: 4 }
 const labelStyle1 = { m: 0, ml: 0, mr: 4 }
 const buttonStyle = { width: 100, backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "5px 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
@@ -305,8 +300,8 @@ export default function AddProduct(props) {
       dyeStaff: dyeStaff,
       finishing: finishing,
       plainDyedType: plainDyedType,
-      colorVariants: colorVariant.filter(it => !!it.ColorNo && it.ColorIds.length > 0 && !!it.SelectedFile), 
-      globalPhotos: allColor.filter(it => !!it.No && !!it.SelectedFile)
+      colorVariants: colorVariant.filter(it => !!it.ColorNo),
+      globalPhotos: allColor.filter(it => !!it.SelectedFile)
     }
 
     let r = await postProduct(prod, "ProductAdd")
@@ -346,7 +341,12 @@ const addNewColor = () => {
   handleOpen();
 }
 
+if (!props.user || props.user.Id == 0) {
+  navigate("/")
+}
+
 useEffect(() => {
+  
   getColors(setColors)
   getDesignTypes(setDesignTypes)
   getOverworkTypes(setOverworkTypes)
@@ -393,8 +393,8 @@ useEffect(() => {
         open={openNewColor}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
+        aria-describedby="modal-modal-description" >
+
         <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
                 width: 475, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
@@ -460,6 +460,7 @@ useEffect(() => {
           Please fill out all fields and click the Save button
           </Typography>
           
+          {/* General */}
           <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
 
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
@@ -568,6 +569,7 @@ useEffect(() => {
           </AccordionDetails>
           </Accordion>
 
+          {/* Product photos */}
           <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
 
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
@@ -576,7 +578,6 @@ useEffect(() => {
 
           <AccordionDetails sx={accordionDetailsStyle}>
           <Grid container spacing={2} >
-          {/* <Box sx={{flex: 1, ml: 0, mr: 0, display: "flex", flexDirection: 'column', alignItems: "left"}} > */}
           { allColor.map((cv) => (
               <Grid item xs={12} md={6} sx={{...flexStyle}} >
                     <ProductColor cv={cv} setColorItem={setColorProduct}  />
@@ -606,6 +607,7 @@ useEffect(() => {
           </AccordionDetails>
           </Accordion>
 
+          {/* Additional information */}
           <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
 
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
@@ -680,6 +682,7 @@ useEffect(() => {
           {/* </Box> */}
           </Accordion>
 
+          {/* Technical information */}
           <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
 
           <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
@@ -878,37 +881,6 @@ useEffect(() => {
 
           {/* </Box> */}
           </Accordion>
-
-
-
-
-          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} elevation={0} sx={{ '&:before':{height:'0px'}}} >
-
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
-            <Typography align="center" sx={accordionCaption}>Logistic</Typography>
-          </AccordionSummary>
-
-          <AccordionDetails sx={accordionDetailsStyle}>
-          <Grid item xs={12} md={6} >
-            <Box sx={boxStyle}>
-              <TextField
-                  margin="normal"
-                  size="small" 
-                  id="stock"
-                  label="Stock value"
-                  name="stock"
-                  sx = {halfItemStyle}
-                  value={stock}
-                  onChange={setStock}
-                />
-               </Box>
-               <Box sx={boxStyle}>
-              
-               </Box>
-           </Grid>
-          </AccordionDetails>
-          </Accordion>
-
 
           <FormControl sx = {{itemStyle}} > 
           { savingError && 

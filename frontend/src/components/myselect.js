@@ -61,7 +61,9 @@ export default function MySelect(props) {
       //console.log("MySelect {props.data}:")
       //console.log(props.data)
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+      var a = 0;
+    }, []);
   
 return (
   <FormControl error={ false } required sx={{ ...props.itemStyle,  ...{width: "100%", height: "40px", display: "flex" } }} > 
