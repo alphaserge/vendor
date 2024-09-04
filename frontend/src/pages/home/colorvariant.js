@@ -53,7 +53,7 @@ export default function ColorVariant(props) {
       if (!cv.colorNo) {
         cv.colorNo = cv.no
       }
-      props.setColorItem(cv.id, cv)
+      props.setColorItem(cv.uuid, cv)
     }
 
     const setColorName = (value) => {
@@ -64,9 +64,9 @@ export default function ColorVariant(props) {
     }
 
     const setSelectedFile = (value) => {
-      props.cv.SelectedFile = value
-      props.cv.ColorNo = props.cv.No
-      props.setColorItem(props.cv.Id, props.cv)
+      props.cv.selectedFile = value
+      props.cv.colorNo = props.cv.colorNo
+      props.setColorItem(props.cv.uuid, props.cv)
     }
     
     const onFileChange = (event) => {
@@ -78,7 +78,7 @@ export default function ColorVariant(props) {
       
     }, []);
 
-    const existingStyle = (props.cv.existing ? {backgroundColor: "#eee"} : {})
+    const existingStyle = (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
 
   return (
     
@@ -128,8 +128,8 @@ export default function ColorVariant(props) {
         aria-label="upload picture"
         sx={{color: APPEARANCE.BLACK2}}
         component="span">
-            {!props.cv.SelectedFile && <AddAPhotoIcon />}
-            { props.cv.SelectedFile && <DoneIcon />}
+            {!props.cv.selectedFile && <AddAPhotoIcon />}
+            { props.cv.selectedFile && <DoneIcon />}
       </IconButton>
       </label>      
       </Box>

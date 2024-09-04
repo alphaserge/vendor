@@ -81,12 +81,12 @@ div.product-img-holder-thumb {
   width:125px;
   height:125px;    
   overflow:hidden;
-  padding: 10px;
+  padding: 5px;
 }
 div.product-img-holder-item {
   height:210px;    
   overflow:hidden;
-  padding: 10px;
+  padding: 5px;
 }
 
 
@@ -94,11 +94,17 @@ image.product-img {
   min-width:100%;
 }
 
-.product-img {
+div.product-img {
   width: 190px;
   height: 150px;
   float: left;
 }
+
+img.product-img {
+  height: 100%;
+  width: 100%;
+}
+
 
 .product-item {
   font-size: 14px;
@@ -118,11 +124,6 @@ image.product-img {
 
 .product-item.price > span {
   padding: 4px;
-}
-
-.product-img img {
-  height: 100%;
-  width: 100%;
 }
 
 .swiper {

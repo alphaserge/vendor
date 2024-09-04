@@ -103,6 +103,7 @@ namespace chiffon_back.Models
                             ProductStyleId = p.ProductStyleId,
                             ProductTypeId = p.ProductTypeId,
                             VendorId = p.VendorId,
+                            Uuid = p.Uuid,
                             PhotoUuids = p.PhotoUuids,
                             Vendor = p.Vendor!.VendorName,
                             ProductStyle = p.ProductStyle!.StyleName,
@@ -224,7 +225,7 @@ namespace chiffon_back.Models
                 foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == p.Id).ToList())
                 {
                     var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
-                    string colors1 = String.Join(", ",
+                    /*string colors1 = String.Join(", ",
                                         ctx.Colors.Where(col =>
                                             ctx.ColorVariantsInColors
                                             .Where(x =>
@@ -232,14 +233,23 @@ namespace chiffon_back.Models
                                             .Select(x => x.ColorId)
                                             .ToList()
                                             .Contains(col.Id))
-                                        .Select(col => col.ColorName));
+                                        .Select(col => col.ColorName));*/
+
+                    var colorsIds = ctx.ColorVariantsInColors.Where(cvc => cvc.ColorVariantId == cv.Id).Select(x => (int?)x.ColorId).ToList();
+                    var colors = ctx.Colors.Where(x => colorsIds.Contains(x.Id)).OrderBy(x => x.ColorName).ToList();
+                    string colorNames = String.Join(", ", colors.Select(col => col.ColorName));
+
                     p.Colors.Add(new ProductColor()
                     {
-                        ColorNames = colors1,
+                        ColorNames = colorNames,
                         ColorVariantId = cv.Id,
                         ColorNo = cv.Num,
                         Quantity = cv.Quantity,
-                        ImagePath = imageFiles
+                        ProductId = p.Id,
+                        IsProduct = false,
+                        ColorIds = colorsIds,
+                        ImagePath = imageFiles,
+                        Uuid = cv.Uuid
                     });
                 }
             }
@@ -271,6 +281,7 @@ namespace chiffon_back.Models
                             Stock = p.Stock,
                             Weight = p.Weight,
                             Width = p.Width,
+                            Uuid = p.Uuid,
                             PhotoUuids = p.PhotoUuids,
                             ProductStyleId = p.ProductStyleId,
                             ProductTypeId = p.ProductTypeId,
@@ -331,12 +342,13 @@ namespace chiffon_back.Models
                         ColorNo = cv.Num,
                         ColorIds = colorsIds,
                         Quantity = cv.Quantity,
+                        ProductId = prod.Id,
                         IsProduct = false,
-                        Existing = true,
+                        Uuid = cv.Uuid,
                         ImagePath = DirectoryHelper.GetImageFiles(cv.Uuid!)
                     });
                 }
-                if (!String.IsNullOrWhiteSpace(prod.Uuid))
+                /*if (!String.IsNullOrWhiteSpace(prod.Uuid))
                 {
                     prod.Colors.Add(new ProductColor()
                     {
@@ -345,7 +357,7 @@ namespace chiffon_back.Models
                         ColorNo = 0,
                         ImagePath = DirectoryHelper.GetImageFiles(prod.Uuid)
                     });
-                }
+                }*/
             }
 
             return prod;
@@ -366,13 +378,13 @@ namespace chiffon_back.Models
 
                 if (product.ColorVariants != null)
                 {
-                    foreach (var item in product.ColorVariants)
+                    foreach (var item in product.ColorVariants.Where(x => x.ColorNo != null && x.Quantity != null))
                     {
                         Context.ColorVariant cv = new Context.ColorVariant()
                         {
                             ProductId = prod.Id,
-                            Uuid = item.Id,
-                            Num = item.No,
+                            Uuid = item.Uuid,
+                            Num = item.ColorNo == null ? 0 : item.ColorNo.Value,
                             Quantity = item.Quantity,
                         };
 
@@ -480,24 +492,19 @@ namespace chiffon_back.Models
 
                     if (product.ColorVariants != null)
                     {
-                        foreach (var item in product.ColorVariants)
+                        foreach (var item in product.ColorVariants.Where(x => x.ColorNo != null && x.Quantity != null))
                         {
-                            Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id.ToString() == item.Id);
+                            Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.ColorVariantId);
                             if (cv == null)
                             {
                                 cv = new Context.ColorVariant()
                                 {
                                     ProductId = prod.Id,
-                                    Uuid = item.Id,
-                                    Num = item.No,
-                                    Quantity = item.Quantity,
                                 };
                                 ctx.ColorVariants.Add(cv);
                             }
-
-                            cv.ProductId = prod.Id;
-                            cv.Uuid = item.Id;
-                            cv.Num = item.No;
+                            cv.Uuid = item.Uuid;
+                            cv.Num = item.ColorNo == null ? 0 : item.ColorNo.Value;
                             cv.Quantity = item.Quantity;
                             ctx.SaveChanges(true);
 

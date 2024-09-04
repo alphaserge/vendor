@@ -49,7 +49,7 @@ namespace chiffon_back.Controllers
         {
             try
             {
-                return CreatedAtAction(nameof(Get), new { id = colVar.Id }, null);
+                return CreatedAtAction(nameof(Get), new { id = colVar.ColorVariantId }, null);
             }
             catch (Exception ex)
             {

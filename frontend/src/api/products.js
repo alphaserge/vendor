@@ -45,7 +45,7 @@ const makeProduct = (prod)  => {
     RefNo: prod.refNo,
     Weight: getInt(prod.weight),
     Width: getInt(prod.width),
-    Uuid: prod.uid,
+    Uuid: prod.uuid,
 
     DesignTypes: prod.designType,
     OverWorkTypes: prod.overworkType,
@@ -86,7 +86,7 @@ export const postProduct = async (prod, action) => {
     }
 
     prod.colorVariants.forEach(cv => {  // !!ColorNo
-      postFile(cv)
+      postFile(cv, null)
     });
 
     prod.globalPhotos.forEach(cv => { //filter(e=>!!e.SelectedFile)  .map((e) => e.Id).join(',')
@@ -104,10 +104,14 @@ export const postProduct = async (prod, action) => {
 };
 
 export const postFile = async (colorVariant, prodId) => {
+
+  if (!colorVariant.selectedFile) {
+    return
+  }
   const formData = new FormData();
-  formData.append("formFile", colorVariant.SelectedFile);
-  formData.append("uid", colorVariant.Id);
-  formData.append("id", prodId);
+  formData.append("formFile", colorVariant.selectedFile);
+  formData.append("uid", colorVariant.uuid); //!? Id);
+  formData.append("productId", prodId);
   try {
     const res = await axios.post(config.api + "/Products/ImportFile", formData);
   } catch (ex) {

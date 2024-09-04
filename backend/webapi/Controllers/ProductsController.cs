@@ -102,7 +102,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost("ImportFile")]
-        public /*async*/ ActionResult ImportFile([FromForm] IFormFile formFile, [FromForm] string uid, [FromForm] string id)
+        public /*async*/ ActionResult ImportFile([FromForm] IFormFile formFile, [FromForm] string uid, [FromForm] string? productId)
         {
             try
             {
@@ -115,14 +115,21 @@ namespace chiffon_back.Controllers
                     Code.DirectoryHelper.CreateDirectoryIfMissing(dirPath);
                     var fileNumber = Directory.GetFiles(dirPath, "*.*").Count() + 1;
                     string fileName = $"{fileNumber}{extension}";
-                    string filePath = Path.Combine(dirPath, fileName); 
+                    string filePath = Path.Combine(dirPath, fileName);
 
+                    // first remove all existing files in directory
+                    System.IO.DirectoryInfo di = new DirectoryInfo(dirPath);
+                    foreach (FileInfo file in di.EnumerateFiles())
+                    {
+                        file.Delete();
+                    }
+                    // add picture file
                     using (var stream = System.IO.File.Create(filePath))
                     {
                         //await formFile.CopyToAsync(stream);
                         formFile.CopyTo(stream);
                     }
-                    var product = ctx.Products.FirstOrDefault(x => x.Id.ToString() == id);
+                    var product = ctx.Products.FirstOrDefault(x => x.Id.ToString() == productId);
                     if (product != null)
                     {
                         product.PhotoUuids = 

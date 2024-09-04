@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { Link, Router, useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Button from '@mui/material/Button';
@@ -22,6 +22,12 @@ export default function Home(props) {
       navigate("/auth/login")
     }
 
+  useEffect(() => {
+    if (props.user && props.user.id > 0) {
+      navigate("/listproduct")
+    }
+  })
+    
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />

@@ -164,26 +164,15 @@ export default function UpdateProduct(props) {
       return params.get('id')
     }
 
-    const setColorVariantItem = (i, item) => {
-      let cv = colorVariants.map(el=>el.Id==i? item:el)
+    const setColorVariantItem = (uuid, item) => {
+      let cv = colorVariants.map(el=>el.uuid==uuid? item:el)
       setColorVariants(cv)
     }
 
-    const setProductColorItem = (i, item) => {
-      let cv = productColors.map(el=>el.Id==i? item:el)
+    const setProductColorItem = (uuid, item) => {
+      let cv = productColors.map(el=>el.uuid==uuid? item:el)
       setProductColors(cv)
     }
-
-    const setQuantity = (num, quantity) => {
-      for (let i=0; i<colorVariants.length; i++) {
-        if (colorVariants[i].cvNum==num) {
-          colorVariants[i].quantity = quantity
-          break
-        }
-      }
-    }
-
-    const [selectedFile, setSelectedFile] = useState(null)
 
     const weightChanged = (e) => {
       let value = e.target.value
@@ -229,27 +218,34 @@ export default function UpdateProduct(props) {
       setPrice3((value*1.10).toFixed(2))
     }
 
-    const moreVariants = async (e, max) => {
+    const addVariants = () => {
+      let cv = [...colorVariants]
+      cv = cv.concat(moreVariants(6))
+      setColorVariants(cv)
+    }
+
+    const moreVariants = (add, max) => {
       let cv = [] //colorVariants.slice()
-      if (max === null || max === undefined) {
+      if (!max) {
         let cvNums = colorVariants.map(x => x.colorNo)
         max = cvNums.length > 0 ?  Math.max(...cvNums) : 0
       }
       let i=max+1
-      while (i<max+7){
+      while (i<=max+add){
         cv.push({
-          uid: uuid(),
+          uuid: uuid(),
           no: i,
           colorNo: null,
           colorIds: [],
-          colorId: [],
+          colorVariantId: null,
+          productId: null,
+          quantity: null,
           selectedFile: null,
           isProduct: false
         })
         i++
       }
       return cv
-      //setColorVariants(cv)
     }
   
     const moreProductColors = async (e) => {
@@ -259,7 +255,7 @@ export default function UpdateProduct(props) {
       let i=max+1
       while (i<max+3){
         cv.push({
-          uid: uuid(),
+          uuid: uuid(),
           no: i,
           selectedFile: null,
           isProduct: true
@@ -277,7 +273,7 @@ export default function UpdateProduct(props) {
             'Content-Type': 'application/json'
           },
         body: JSON.stringify({
-          Id: cv.cvId,
+          Id: cv.colorVariantId,
           Uuid: cv.uuid,
           ProductId: cv.productId,
           IsProduct: cv.isProduct
@@ -347,7 +343,7 @@ export default function UpdateProduct(props) {
       findings: findings,
       metersInKg: metersInKg,
       gsm: gsm,
-      uid: uid,
+      uuid: uid,
       designType: designType,
       overworkType: overworkType,
       productStyle: productStyle,
@@ -356,7 +352,7 @@ export default function UpdateProduct(props) {
       dyeStaff: dyeStaff,
       finishing: finishing,
       plainDyedType: plainDyedType,
-      colorVariants: colorVariants.filter(it => !!it.colorNo),
+      colorVariants: colorVariants,//.filter(it => !!it.colorNo),
       globalPhotos: productColors.filter(it => !!it.selectedFile)
     }
 
@@ -426,6 +422,15 @@ const setProduct = (prod) => {
   setSeason(prod.seasonIds)
   setOverworkType(prod.overWorkTypeIds)
   setDesignType(prod.designTypeIds)
+
+  if (!prod.colors) {
+    prod.colors = []
+  }
+
+  let cvNums = prod.colors.map(x => x.colorNo)
+  let max = cvNums.length > 0 ?  Math.max(...cvNums) : 0
+
+  prod.colors = prod.colors.concat(moreVariants(6,max))
   setColorVariants(prod.colors)
 
   wChanged(prod.width, prod.weight)
@@ -434,8 +439,7 @@ const setProduct = (prod) => {
 useEffect(() => {
 
   let id = idFromUrl()
-  let product = loadProduct(id)
-  setProduct(product)
+  loadProduct(id, setProduct)
 
   getColors(setColors)
   getDesignTypes(setDesignTypes)
@@ -449,18 +453,8 @@ useEffect(() => {
   getPlainDyedTypes(setPlainDyedTypes)
   getPrintTypes(setPrintTypes)
 
-  //if (colorVariants.length == 0) {
-    moreVariants(null, 6)
-  //}
-
-  //if (productColors.length == 0) {
-   // moreProductColors()
-  //}
-
   }, []);
 
-  console.log(colorVariants)
-  
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -654,35 +648,46 @@ useEffect(() => {
           </AccordionSummary>
 
           <AccordionDetails sx={accordionDetailsStyle}>
-          <Box component={"div"} display={"flex"} justifyContent={"left"} alignItems={"left"} 
+          {/* <Box component={"div"} display={"flex"} justifyContent={"left"} alignItems={"left"} 
             marginBottom={3} marginLeft={6} marginRight={6} 
-            paddingBottom={1} sx={accordionSummaryStyle} >
-              {colorVariants.map((cv, index) => {
-                return <Box className="product-img-holder-item">
+            paddingBottom={1} sx={accordionSummaryStyle} > */}
+            <Grid container spacing={2} sx={accordionSummaryStyle}>
+            
+              { colorVariants && colorVariants.filter((el)=> el.colorVariantId != null).map((cv, index) => {
+                return <Grid item xs={6} md={3} sx={{}} className="product-img-holder-item" >
+                {/* <Box > */}
                   <Box className="product-img-holder-thumb" >
                   <Box 
                     component={"img"} 
                     key={index} 
-                    src={"http://185.40.31.18:5001/"+cv.imagePath} 
+                    src={config.api + "/" + cv.imagePath} 
                     alt={"photo"+(index+1)} 
                     className="product-img" />
                     <br/>
                     </Box>
                   <Box component={"div"} 
-                    sx={{ mt: 1, ml: 1, height: "36px", width: "125px", wordBreak: "break-all", wordWrap: "break-word", alignItems: "center" }} 
-                    textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > { (cv.colorNo ? 'No.' + cv.colorNo + ' : ':'') + (cv.quantity ? cv.quantity : '-') + 'm'} </Box>
-
-                <IconButton
+                    sx={{ m: 0, mt: 1, ml: 1, height: "22px", width: "125px", wordBreak: "break-all", wordWrap: "break-word", display: "flex", justifyContent: "space-between" }} 
+                    textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > 
+                    {/* { (cv.colorNo ? '[ ' + cv.colorNo + ' ] : ':'') + (cv.quantity ? cv.quantity : '-') + 'm'}  */}
+                    <div>
+                    <span style={{backgroundColor: "#aaa", padding: "3px 5px", borderRadius: 3}}> { (cv.colorNo ? cv.colorNo + ':' : '?')} </span> 
+                    <span style={{backgroundColor: "#fff", padding: "3px 5px", borderRadius: 3, marginLeft: 5}}> { (cv.quantity ? cv.quantity : '-') + 'm'} </span>
+                    </div>
+                    <IconButton
                   color="success"
                   aria-label="upload picture"
-                  sx={{color: APPEARANCE.BLACK2, pt: 0}}
+                  sx={{color: APPEARANCE.BLACK2, pt: 0, mt: 0}}
                   component="span"
                   onClick={ function() { handleRemoveCv(cv)}} >
                     {<DeleteIcon />}
                 </IconButton>
-              </Box>
+                    </Box>
+
+                    </Grid>    
+              {/* </Box> */}
             })}
-            </Box>
+            </Grid>
+            {/* </Box> */}
 
             <Grid container spacing={2} >
               { productColors.map((cv) => (
@@ -690,7 +695,7 @@ useEffect(() => {
                     <ProductColor cv={cv} setColorItem={setProductColorItem}  />
                  </Grid> ))}
 
-                { colorVariants.map((cv) => (
+                { colorVariants && colorVariants.map((cv) => (
                   <Grid item xs={12} md={6} sx={{ ...flexStyle}} >
                     <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} data={colors} />
                     </Grid> ))}
@@ -706,7 +711,7 @@ useEffect(() => {
                     <Button 
                     variant="contained"
                     style={buttonStyle}
-                    onClick={moreVariants} >
+                    onClick={addVariants} >
                         Add colors
                     </Button>
                     </Box>

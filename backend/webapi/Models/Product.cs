@@ -81,7 +81,6 @@ namespace chiffon_back.Models
         public decimal?       Quantity { get; set; }
         public int?           ProductId { get; set; }
         public bool           IsProduct { get; set; }
-        public bool           Existing { get; set; }
     }
 
     public class PostProduct

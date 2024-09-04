@@ -156,13 +156,15 @@ export default function AddProduct(props) {
     const [colorVariant, setColorVariant] = useState(
       [...Array(10)].map((elem, index) => {
         return {
-          id: uuid(),
+          uuid: uuid(),
           no: index + 1,
           colorNo: null,
-          quantity: null,
           colorIds: [],
-          //colorId: [],
+          colorVariantId: null,
+          productId: null,
+          quantity: null,
           selectedFile: null,
+          isProduct: false
           };
       }))
 
@@ -171,21 +173,23 @@ export default function AddProduct(props) {
         id: uuid(),
         no: 1,
         selectedFile: null,
+        isProduct: true
       },
       {
         id: uuid(),
         no: 2,
         selectedFile: null,
+        isProduct: true
       },
     ])
 
     const setColorProduct = (i, item) => {
-      let cv = allColor.map(el=>el.Id==i? item:el)
+      let cv = allColor.map(el=>el.id==i? item:el)
       setAllColor(cv)
     }
 
-    const setColorVariantItem = (i, item) => {
-      let cv = colorVariant.map(el=>el.Id==i? item:el)
+    const setColorVariantItem = (uuid, item) => {
+      let cv = colorVariant.map(el=>el.uuid==uuid? item:el)
       setColorVariant(cv)
     }
 
@@ -239,13 +243,16 @@ export default function AddProduct(props) {
     let i=num+1
     while (i<=num+6){
       cv.push({
-        id: uuid(),
+        uuid: uuid(),
         no: i,
         colorNo: null,
         colorIds: [],
-        colorId: [],
+        colorVariantId: null,
+        productId: null,
+        quantity: null,
         selectedFile: null,
-      })
+        isProduct: false
+    })
       i++
     }
     setColorVariant(cv)
@@ -257,9 +264,10 @@ export default function AddProduct(props) {
     let i=num+1
     while (i<=num+2){
       cv.push({
-        i: uuid(),
+        uuid: uuid(),
         no: i,
         selectedFile: null,
+        isProduct: true
       })
       i++
     }
@@ -291,7 +299,7 @@ export default function AddProduct(props) {
       fabricShrinkage: fabricShrinkage,
       metersInKg: metersInKg,
       gsm: gsm,
-      uid: uid,
+      uuid: uid,
       designType: designType,
       overworkType: overworkType,
       productStyle: productStyle,
@@ -300,7 +308,7 @@ export default function AddProduct(props) {
       dyeStaff: dyeStaff,
       finishing: finishing,
       plainDyedType: plainDyedType,
-      colorVariants: colorVariant.filter(it => !!it.colorNo),
+      colorVariants: colorVariant,//.filter(it => !!it.colorNo),
       globalPhotos: allColor.filter(it => !!it.selectedFile)
     }
 

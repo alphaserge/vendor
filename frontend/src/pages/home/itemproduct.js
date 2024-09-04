@@ -17,6 +17,8 @@ import "swiper/css";
 import { APPEARANCE } from '../../appearance';
 import { Link } from "@mui/material";
 
+import config from "../../config.json"
+
 const defaultTheme = createTheme()
 const itemStyle = { width: 265 }
 
@@ -51,7 +53,9 @@ export default function ItemProduct(props) {
             {props.data.colors.map((cv, index) => {
               return <>
               <SwiperSlide key={"product-swiper"+index} sx={{ display: "flex", justifyContent: "center"}} >
-                <Box className="product-img-holder" ><Box component={"img"} key={index} src={"http://185.40.31.18:5001/"+cv.imagePath[0]} alt={"photo"+(index+1)} className="product-img" /></Box>
+                <Box className="product-img-holder" ><Box component={"img"} key={index} 
+                src={config.api + "/" + cv.imagePath[0]} 
+                alt={"photo"+(index+1)} className="product-img" /></Box>
               </SwiperSlide></>
             })}
             </Swiper>
