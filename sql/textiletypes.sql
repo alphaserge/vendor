@@ -1,0 +1,25 @@
+USE [chiffon]
+GO
+
+/****** Object:  Table [dbo].[Colors]    Script Date: 05.09.2024 10:15:33 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE TABLE [dbo].[TextileTypes](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[TextileTypeName] [varchar](50) NOT NULL,
+	[TextileTypeNameRu] [varchar](50) NOT NULL,
+ CONSTRAINT [PK_TextileTypes] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 90, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+
+

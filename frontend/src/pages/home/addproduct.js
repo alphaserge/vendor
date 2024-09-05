@@ -32,6 +32,7 @@ import { getPrintTypes } from '../../api/printtypes'
 import { getProductStyles } from '../../api/productstyles'
 import { getProductTypes } from '../../api/producttypes'
 import { getSeasons } from '../../api/seasons'
+import { getTextileTypes } from '../../api/textiletypes'
 import { postProduct } from '../../api/products'
 
 import Header from './header';
@@ -113,6 +114,7 @@ export default function AddProduct(props) {
     const [productStyle, setProductStyle] = useState("")
     const [productType, setProductType] = useState("")
     const [designType, setDesignType] = useState([])
+    const [textileType, setTextileType] = useState("")
     const [overworkType, setOverworkType] = useState([])
     const [season, setSeason] = useState([])
 
@@ -133,6 +135,7 @@ export default function AddProduct(props) {
     const [metersInKg, setMetersInKg] = useState("")
     const [refNo, setRefNo] = useState("")
     const [stock, setStock] = useState("")
+    const [composition, setComposition] = useState([])
     
     const [uid, setUid] = useState(uuid())
 
@@ -150,6 +153,7 @@ export default function AddProduct(props) {
     const [finishings, setFinishings] = useState([])
     const [plainDyedTypes, setPlainDyedTypes] = useState([])
     const [printTypes, setPrintTypes] = useState([])
+    const [textileTypes, setTextileTypes] = useState([])
 
     const [savingError, setSavingError] = useState(false)
 
@@ -361,6 +365,7 @@ useEffect(() => {
   getProductStyles(setProductStyles)
   getProductTypes(setProductTypes)
   getSeasons(setSeasons)
+  getTextileTypes(setTextileTypes)
 
   // in bottom part of page, so can load later:
   getDyeStaffs(setDyeStaffs)
@@ -888,6 +893,37 @@ useEffect(() => {
           </AccordionDetails>
 
           {/* </Box> */}
+          </Accordion>
+
+
+          {/* Composition */}
+          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
+
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
+            <Typography align="center" sx={accordionCaption}>Composition</Typography>
+          </AccordionSummary>
+
+          <AccordionDetails sx={accordionDetailsStyle}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'top' }}>
+          <Box>
+              {composition}
+          </Box>
+          <Box sx={{ width: "260px"}}>
+            <MySelect 
+                  id="addproduct-textiletype"
+                  url="TextileTypes"
+                  title="Textile type"
+                  valueName="textileTypeName"
+                  labelStyle={labelStyle}
+                  
+                  MenuProps={MySelectProps}
+                  valueVariable={textileType}
+                  setValueFn={setTextileType}
+                  data={textileTypes}
+                />
+            </Box>
+            </Box>
+          </AccordionDetails>
           </Accordion>
 
           <FormControl sx = {{itemStyle}} > 

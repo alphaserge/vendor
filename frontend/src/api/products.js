@@ -103,6 +103,93 @@ export const postProduct = async (prod, action) => {
   return rc
 };
 
+export const addComposition = async (productId, textileTypeId, value) => {
+
+  let data = {
+    //Id: null,
+    ProductId: getInt(productId),
+    TextileTypeId: textileTypeId,
+    Value: getInt(value)
+  }
+
+  let rc = await fetch(config.api + '/TextileTypes/ProductAddTextileType', {
+      method: "POST",
+      headers: {
+          'Content-Type': 'application/json'
+        },
+      body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(r => {
+    if (r.status !== undefined && r.status == 400) {
+      return false;
+    }
+
+    return true;
+  })
+  .catch (error => {
+    console.log(error)
+    return false
+  })
+
+  return rc
+};
+
+export const finishComposition = async (productId, textileTypeId) => {
+
+  let data = {
+    ProductId: getInt(productId),
+    TextileTypeId: textileTypeId,
+  }
+
+  let rc = await fetch(config.api + '/TextileTypes/Finish', {
+      method: "POST",
+      headers: {
+          'Content-Type': 'application/json'
+        },
+      body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(r => {
+    if (r.status !== undefined && r.status == 400) {
+      return false;
+    }
+
+    return true;
+  })
+  .catch (error => {
+    console.log(error)
+    return false
+  })
+
+  return rc
+};
+
+export const removeComposition = async (id) => {
+
+  let rc = await fetch(config.api + '/TextileTypes/ProductRemoveTextileType', {
+      method: "POST",
+      headers: {
+          'Content-Type': 'application/json'
+        },
+      body: JSON.stringify({ Id: id })
+  })
+  .then(r => r.json())
+  .then(r => {
+    if (r.status !== undefined && r.status == 400) {
+      return false;
+    }
+
+    return true;
+  })
+  .catch (error => {
+    console.log(error)
+    return false
+  })
+
+  return rc
+};
+
 export const postFile = async (colorVariant, prodId) => {
 
   if (!colorVariant.selectedFile) {

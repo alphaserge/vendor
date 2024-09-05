@@ -25,10 +25,12 @@ namespace chiffon_back.Context
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductsInColors> ProductsInColors { get; set; }
         public DbSet<ProductsInDesignTypes> ProductsInDesignTypes { get; set; }
+        public DbSet<ProductsInTextileTypes> ProductsInTextileTypes { get; set; }
         public DbSet<ProductsInOverWorkTypes> ProductsInOverWorkTypes { get; set; }
         public DbSet<ProductsInSeasons> ProductsInSeasons { get; set; }
         public DbSet<ProductStyle> ProductStyles { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
+        public DbSet<TextileType> TextileTypes { get; set; }
         public DbSet<Season> Seasons { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
         public DbSet<User> Users { get; set; }
@@ -39,6 +41,7 @@ namespace chiffon_back.Context
             modelBuilder.Entity<ColorVariant>().ToTable("ColorVariants");
             modelBuilder.Entity<ColorVariantsInColors>().ToTable("ColorVariantsInColors");
             modelBuilder.Entity<DesignType>().ToTable("DesignTypes");
+            modelBuilder.Entity<TextileType>().ToTable("TextileTypes");
             modelBuilder.Entity<DyeStaff>().ToTable("DyeStaffs");
             modelBuilder.Entity<Finishing>().ToTable("Finishings");
             modelBuilder.Entity<OverWorkType>().ToTable("OverWorkTypes");
@@ -47,6 +50,7 @@ namespace chiffon_back.Context
             modelBuilder.Entity<Product>().ToTable("Products");
             modelBuilder.Entity<ProductsInColors>().ToTable("ProductsInColors");
             modelBuilder.Entity<ProductsInDesignTypes>().ToTable("ProductsInDesignTypes");
+            modelBuilder.Entity<ProductsInTextileTypes>().ToTable("ProductsInTextileTypes");
             modelBuilder.Entity<ProductsInOverWorkTypes>().ToTable("ProductsInOverWorkTypes");
             modelBuilder.Entity<ProductsInSeasons>().ToTable("ProductsInSeasons");
             modelBuilder.Entity<ProductStyle>().ToTable("ProductStyles");

@@ -122,6 +122,7 @@ namespace chiffon_back.Models
                             OverWorkTypes = p.ProductsInOverWorkTypes!.Select(x => new Models.OverWorkType { Id = x.OverWorkTypeId, OverWorkName = x.OverWorkType.OverWorkName }).ToArray(),
                             Seasons = p.ProductsInSeasons!.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
                             Colors = new List<ProductColor>(),
+                            TextileTypes = new List<ProductsInTextileTypes>()
                         };
 
             if (filter.VendorId > 0)
@@ -252,6 +253,24 @@ namespace chiffon_back.Models
                         Uuid = cv.Uuid
                     });
                 }
+
+                // 3) TEXTILE TYPES
+                string composition = "";
+                foreach (var cv in ctx.ProductsInTextileTypes.Where(x => x.ProductId == p.Id).ToList())
+                {
+                    var tt = ctx.TextileTypes.FirstOrDefault(x => x.Id == cv.TextileTypeId);
+                    string name = tt != null ? tt.TextileTypeName : "UNKNOWN";
+                    p.TextileTypes.Add(new ProductsInTextileTypes()
+                    {
+                        Id = cv.Id,
+                        ProductId = p.Id,
+                        TextileTypeId = cv.TextileTypeId,
+                        Value = cv.Value,
+                        TextileType = name,
+                    });
+                    composition += name + String.Format(" {0}", cv.Value);
+                }
+                p.Composition = composition;
             }
 
             /*prods.AddRange(prods);
@@ -297,6 +316,7 @@ namespace chiffon_back.Models
                             OverWorkTypeIds = p.ProductsInOverWorkTypes!.Select(x => x.OverWorkTypeId).ToArray(),
                             SeasonIds = p.ProductsInSeasons!.Select(x => x.SeasonId).ToArray(),
                             Colors = new List<ProductColor>(),
+                            TextileTypes = new List<ProductsInTextileTypes>(),
                             Findings = p.Findings,
                             GSM = p.GSM,
                             MetersInKG = p.MetersInKG,
@@ -348,6 +368,30 @@ namespace chiffon_back.Models
                         ImagePath = DirectoryHelper.GetImageFiles(cv.Uuid!)
                     });
                 }
+
+                // 3) TEXTILE TYPES
+                string composition = "";
+                string delim = "";
+                List<ProductsInTextileTypes> tts = new List<ProductsInTextileTypes>();
+                foreach (var cv in ctx.ProductsInTextileTypes.Where(x => x.ProductId == prod.Id).ToList())
+                {
+                    var tt = ctx.TextileTypes.FirstOrDefault(x => x.Id == cv.TextileTypeId);
+                    string name = tt != null ? tt.TextileTypeName : "UNKNOWN";
+                    tts.Add(new ProductsInTextileTypes()
+                    {
+                        Id = cv.Id,
+                        ProductId = prod.Id,
+                        TextileTypeId = cv.TextileTypeId,
+                        Value = cv.Value,
+                        TextileType = name,
+                    });
+                    composition += delim + String.Format("{0}% ", cv.Value) + name;
+                    delim = ", ";
+                }
+
+                prod.TextileTypes = tts.OrderByDescending(x => x.Value).ThenByDescending(x=>x.TextileType).ToList();
+                prod.Composition = composition;
+
                 /*if (!String.IsNullOrWhiteSpace(prod.Uuid))
                 {
                     prod.Colors.Add(new ProductColor()

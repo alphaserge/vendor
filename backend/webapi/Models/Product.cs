@@ -49,8 +49,10 @@ namespace chiffon_back.Models
         public string? ProductStyle { get; set; }
         public string? ProductType { get; set; }
         public string? Vendor { get; set; }
+        public string? Composition { get; set; }
 
         public List<ProductColor> Colors { get; set; }
+        public List<ProductsInTextileTypes> TextileTypes { get; set; }
 
         public int[]? DesignTypeIds { get; set; }
         public int[]? OverWorkTypeIds { get; set; }

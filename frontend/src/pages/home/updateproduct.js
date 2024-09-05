@@ -14,6 +14,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import MenuItem from '@mui/material/MenuItem';
 import { HexColorPicker } from "react-colorful";
 
@@ -33,7 +35,8 @@ import { getPrintTypes } from '../../api/printtypes'
 import { getProductStyles } from '../../api/productstyles'
 import { getProductTypes } from '../../api/producttypes'
 import { getSeasons } from '../../api/seasons'
-import { postProduct, loadProduct } from '../../api/products'
+import { getTextileTypes } from '../../api/textiletypes'
+import { postProduct, loadProduct, addComposition, removeComposition, finishComposition } from '../../api/products'
 
 import Header from './header';
 import Footer from './footer';
@@ -58,6 +61,8 @@ const accordionStyle = { textAlign: "center", margin: "15px auto", justifyConten
 const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto 20px auto", padding: "0 10px",  backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px" }
 const accordionDetailsStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 0px" }
 const accordionCaption = { width: "100%", fontWeight: "bold", fontSize: "11pt" };
+
+const ADDS = [5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95]
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -117,6 +122,7 @@ export default function UpdateProduct(props) {
     const [designType, setDesignType] = useState([])
     const [overworkType, setOverworkType] = useState([])
     const [season, setSeason] = useState([])
+    const [textileType, setTextileType] = useState("")
 
     const [artNo, setArtNo] = useState("")
     const [design, setDesign] = useState("")
@@ -136,6 +142,8 @@ export default function UpdateProduct(props) {
     const [metersInKg, setMetersInKg] = useState("")
     const [refNo, setRefNo] = useState("")
     const [stock, setStock] = useState("")
+    const [textileTypeValue, setTextileTypeValue] = useState("")
+    const [composition, setComposition] = useState([])
 
     const [newColor, setNewColor] = useState("")
     const [newColorRgb, setNewColorRgb] = useState("")
@@ -150,6 +158,8 @@ export default function UpdateProduct(props) {
     const [finishings, setFinishings] = useState([])
     const [plainDyedTypes, setPlainDyedTypes] = useState([])
     const [printTypes, setPrintTypes] = useState([])
+    const [textileTypes, setTextileTypes] = useState([])
+    const [productTextileTypes, setProductTextileTypes] = useState([])
 
     const [savingError, setSavingError] = useState(false)
 
@@ -370,6 +380,80 @@ export default function UpdateProduct(props) {
     }
   }
 
+  const compositionAdd = async (e) => {
+    
+    let id = idFromUrl()
+
+    let r = await addComposition(id, textileType, textileTypeValue)
+
+    if (r) {
+      props.setLastAction("Product has been saved")
+      setSavingError(false)
+      let id = idFromUrl()
+      loadProduct(id, setProduct)
+
+      //navigate("/menu")
+    } else {
+      setSavingError(true)
+    }
+  }
+
+  const compositionAdd2 = async (e) => {
+    
+    let id = idFromUrl()
+
+    let r = await addComposition(id, textileType, e)
+
+    if (r) {
+      props.setLastAction("Product has been saved")
+      setSavingError(false)
+      let id = idFromUrl()
+      loadProduct(id, setProduct)
+
+      //navigate("/menu")
+    } else {
+      setSavingError(true)
+    }
+  }
+
+  const compositionFinish = async (e) => {
+    
+    let id = idFromUrl()
+
+    let r = await finishComposition(id, textileType)
+
+    if (r) {
+      props.setLastAction("Product has been saved")
+      setSavingError(false)
+      let id = idFromUrl()
+      loadProduct(id, setProduct)
+
+      //navigate("/menu")
+    } else {
+      setSavingError(true)
+    }
+  }
+
+  const compositionRemove = async (id) => {
+    
+    //let id = idFromUrl()
+
+    let r = await removeComposition(id)
+
+    if (r) {
+      props.setLastAction("Product has been saved")
+      setSavingError(false)
+      let id = idFromUrl()
+      loadProduct(id, setProduct)
+
+      //navigate("/menu")
+    } else {
+      setSavingError(true)
+    }
+  }
+
+
+
   const saveColor = async (e) => {
 
     let r = await postColor(newColor, newColorRgb)
@@ -422,6 +506,9 @@ const setProduct = (prod) => {
   setSeason(prod.seasonIds)
   setOverworkType(prod.overWorkTypeIds)
   setDesignType(prod.designTypeIds)
+  setComposition(prod.composition)
+
+  setProductTextileTypes(prod.textileTypes)
 
   if (!prod.colors) {
     prod.colors = []
@@ -452,6 +539,7 @@ useEffect(() => {
   getFinishings(setFinishings)
   getPlainDyedTypes(setPlainDyedTypes)
   getPrintTypes(setPrintTypes)
+  getTextileTypes(setTextileTypes)
 
   }, []);
 
@@ -993,6 +1081,91 @@ useEffect(() => {
 
           {/* </Box> */}
           </Accordion>
+
+          {/* Composition */}
+          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
+
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
+            <Typography align="center" sx={accordionCaption}>Composition</Typography>
+          </AccordionSummary>
+
+          <AccordionDetails sx={accordionDetailsStyle}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'top' }}>
+          <Box>
+          { productTextileTypes && productTextileTypes.map((tt, ix) => (
+            <>
+             <IconButton
+              onClick={  function() { compositionRemove(tt.id) } }> <RemoveCircleOutlineIcon/>
+              </IconButton>
+              <span>{tt.value}%&nbsp;{tt.textileType};&nbsp;&nbsp;</span>
+              </>
+          ))}
+            
+          </Box>
+          <Box sx={{ mt: 1, width: "500px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>
+            <MySelect 
+                  id="addproduct-textiletype"
+                  url="TextileTypes"
+                  title="Textile type"
+                  valueName="textileTypeName"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle1}
+                  MenuProps={MySelectProps}
+                  valueVariable={textileType}
+                  setValueFn={setTextileType}
+                  data={textileTypes}
+                />
+            <TextField
+                  margin="normal"
+                  size="small" 
+                  id="textile-type-value"
+                  label="Value"
+                  name="textileTypeValue"
+                  sx = {{...itemStyle1, ...{width: "120px", ml: 2}}}
+                  value={textileTypeValue}
+                  onChange={ev => setTextileTypeValue(ev.target.value)}
+                /> 
+            <Button
+                variant="contained"
+                aria-label="add to composition"
+                size="small"
+                sx={{backgroundColor: "#888", width: "60px", height: "36px", ml: 1}}
+                onClick={compositionAdd}
+                >
+                  Add
+            </Button>
+            <Button
+                variant="contained"
+                aria-label="finish composition"
+                size="small"
+                sx={{backgroundColor: "#888", width: "60px", height: "36px", ml: 1}}
+                onClick={compositionFinish}
+                >
+                  End
+            </Button>
+            </Box>
+            </Box>
+            <Grid container spacing={2} sx={accordionSummaryStyle}>
+              { ADDS.map((el) => (
+
+              
+            <Grid item xs={6} md={2} sx={{}} >
+            <Button
+                variant="contained"
+                aria-label="add to composition"
+                size="small"
+                sx={{backgroundColor: "#888", width: "60px", height: "36px", ml: 1}}
+                onClick={function() { compositionAdd2(el) }}
+                >
+                  {el}%
+            </Button>
+
+            </Grid>
+            )) }
+            </Grid>
+          </AccordionDetails>
+          </Accordion>
+
 
           <FormControl sx = {{itemStyle}} > 
           { savingError && 
