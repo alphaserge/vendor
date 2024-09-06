@@ -78,15 +78,15 @@ div.product-img-holder {
 }
 
 div.product-img-holder-thumb {
-  width:125px;
-  height:125px;    
+  width:135px;
+  height:135px;    
   overflow:hidden;
-  padding: 5px;
+  padding: 0px;
 }
 div.product-img-holder-item {
   height:210px;    
   overflow:hidden;
-  padding: 5px;
+  padding: 0px;
 }
 
 
@@ -176,6 +176,10 @@ img.product-img {
   padding: 0 !important;
   margin: 30px auto;
 
+}
+
+.line-break {
+  width: 100%;
 }
 
 }

@@ -118,5 +118,32 @@ namespace chiffon_back.Controllers
             }
         }
 
+        [HttpPost("ApplySample")]
+        public ActionResult ApplySample(Models.ApplySample sample)
+        {
+            try
+            {
+                ctx.ProductsInTextileTypes.RemoveRange(ctx.ProductsInTextileTypes.Where(x => x.ProductId == sample.ProductId));
+
+                foreach (var item in ctx.ProductsInTextileTypes.Where(x => x.ProductId == sample.SampleId))
+                {
+                    ctx.ProductsInTextileTypes.Add(new Context.ProductsInTextileTypes() 
+                    { 
+                        ProductId = sample.ProductId, 
+                        TextileTypeId = item.TextileTypeId, 
+                        Value = item.Value 
+                    });
+                }
+                ctx.SaveChanges();
+                return CreatedAtAction(nameof(Get), new { Ok = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+
+
     }
 }

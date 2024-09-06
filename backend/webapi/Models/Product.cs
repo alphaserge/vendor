@@ -53,6 +53,7 @@ namespace chiffon_back.Models
 
         public List<ProductColor> Colors { get; set; }
         public List<ProductsInTextileTypes> TextileTypes { get; set; }
+        public List<CompositionSample> CompositionsSamples { get; set; }
 
         public int[]? DesignTypeIds { get; set; }
         public int[]? OverWorkTypeIds { get; set; }
@@ -61,6 +62,12 @@ namespace chiffon_back.Models
         public DesignType[]? DesignTypes { get; set; }
         public OverWorkType[]? OverWorkTypes { get; set; }
         public Season[]? Seasons { get; set; }
+    }
+
+    public class CompositionSample
+    {
+        public int? ProductId { get; set; }
+        public string? Composition { get; set; }
     }
 
     public class PostCV

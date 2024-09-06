@@ -4,6 +4,7 @@ using chiffon_back.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 
@@ -43,6 +44,25 @@ namespace chiffon_back.Models
             Price = Array.Empty<decimal>();
             Weight = Array.Empty<int>();
             Width = Array.Empty<int>();
+        }
+    }
+
+    public class CompositionItem
+    {
+        public int TextileTypeId { get; set; }
+        public int Value { get; set; }
+        public string TextileTypeName { get; set; }
+    }
+
+    public class CompositionList
+    {
+        public int? ProductId { get; set; }
+        public List<CompositionItem> TextileTypes { get; set; }
+        public string? Composition { get; set; }
+
+        public CompositionList()
+        {
+            TextileTypes = new List<CompositionItem>();
         }
     }
 
@@ -372,6 +392,8 @@ namespace chiffon_back.Models
                 // 3) TEXTILE TYPES
                 string composition = "";
                 string delim = "";
+                int percent = 0;
+                List<CompositionItem> textileTypesIds = new List<CompositionItem>();
                 List<ProductsInTextileTypes> tts = new List<ProductsInTextileTypes>();
                 foreach (var cv in ctx.ProductsInTextileTypes.Where(x => x.ProductId == prod.Id).ToList())
                 {
@@ -385,12 +407,76 @@ namespace chiffon_back.Models
                         Value = cv.Value,
                         TextileType = name,
                     });
+                    textileTypesIds.Add(new CompositionItem() { TextileTypeId = cv.TextileTypeId, Value = cv.Value });
+                    percent += cv.Value;
                     composition += delim + String.Format("{0}% ", cv.Value) + name;
                     delim = ", ";
                 }
 
-                prod.TextileTypes = tts.OrderByDescending(x => x.Value).ThenByDescending(x=>x.TextileType).ToList();
+                prod.TextileTypes = tts.OrderByDescending(x => x.Value).ThenBy(x=>x.TextileType).ToList();
                 prod.Composition = composition;
+
+                // 4) COMPOSITION SAMPLES
+                if (percent < 100)
+                {
+                    //var prods = ctx.ProductsInTextileTypes.Where(x => textileTypesIds.Contains(x.TextileTypeId)).Select(x => x.ProductId).Distinct();
+
+                    prod.CompositionsSamples = new List<CompositionSample>();
+                    CompositionList compositionList = new CompositionList();
+                    compositionList.ProductId = -1;
+                    var ptts = ctx.ProductsInTextileTypes.Where(x=>x.ProductId != prod.Id).OrderBy(x => x.ProductId).ToList();
+                    ptts.Add(new Context.ProductsInTextileTypes() { Id = -2, ProductId = -2, TextileTypeId = -2 });
+                    int n = 0;
+                    foreach (var comp in ptts)
+                    {
+                        if (n == 0)
+                            compositionList.ProductId = comp.ProductId;
+
+                        if (comp.ProductId != compositionList.ProductId)
+                        {
+                            bool accept = true;
+                            List<CompositionItem> list = new List<CompositionItem>();
+                            foreach (var tt in compositionList.TextileTypes)
+                            {
+                                list.Add( new CompositionItem() { TextileTypeId = tt.TextileTypeId, Value = tt.Value });
+                            }
+                            foreach (var ttid in textileTypesIds)
+                            {
+                                if (list.FirstOrDefault(x=>x.TextileTypeId == ttid.TextileTypeId && x.Value == ttid.Value) == null)
+                                {
+                                    accept = false;
+                                    break;
+                                }
+                            }
+
+                            if (list.Count == textileTypesIds.Count)
+                                accept = false;
+
+                            if (accept)
+                            {
+                                CompositionSample sample = new CompositionSample();
+                                foreach (var tt in compositionList.TextileTypes.OrderByDescending(x=>x.Value).ThenBy(x=>x.TextileTypeName))
+                                {
+                                    sample.Composition += String.Format("{0}% {1}; ", tt.Value, ctx.TextileTypes.FirstOrDefault(x => x.Id == tt.TextileTypeId).TextileTypeName);
+                                    sample.ProductId = compositionList.ProductId;
+                                    list.Add(new CompositionItem() { TextileTypeId = tt.TextileTypeId, Value = tt.Value });
+                                }
+                                prod.CompositionsSamples.Add(sample);
+                            }
+                            compositionList = new CompositionList();
+                            compositionList.ProductId = comp.ProductId;
+                        }
+
+                        var textileType = ctx.TextileTypes.FirstOrDefault(x => x.Id == comp.TextileTypeId);
+                        compositionList.TextileTypes.Add(new CompositionItem()
+                        {
+                            TextileTypeId = comp.TextileTypeId,
+                            Value = comp.Value,
+                            TextileTypeName = textileType != null ? textileType.TextileTypeName : "?"
+                        });
+                        n++;
+                    }
+                }
 
                 /*if (!String.IsNullOrWhiteSpace(prod.Uuid))
                 {

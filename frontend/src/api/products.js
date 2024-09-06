@@ -190,6 +190,37 @@ export const removeComposition = async (id) => {
   return rc
 };
 
+export const sampleComposition = async (productId, sampleId) => {
+
+  let data = {
+    ProductId: getInt(productId),
+    SampleId: getInt(sampleId),
+  }
+
+  let rc = await fetch(config.api + '/TextileTypes/ApplySample', {
+      method: "POST",
+      headers: {
+          'Content-Type': 'application/json'
+        },
+      body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(r => {
+    if (r.status !== undefined && r.status == 400) {
+      return false;
+    }
+
+    return true;
+  })
+  .catch (error => {
+    console.log(error)
+    return false
+  })
+
+  return rc
+};
+
+
 export const postFile = async (colorVariant, prodId) => {
 
   if (!colorVariant.selectedFile) {

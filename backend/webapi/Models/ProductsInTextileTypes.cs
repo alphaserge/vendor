@@ -24,4 +24,10 @@
         public int? Id { get; set; }
     }
 
+    public class ApplySample
+    {
+        public int ProductId { get; set; }
+        public int SampleId { get; set; }
+    }
+    
 }

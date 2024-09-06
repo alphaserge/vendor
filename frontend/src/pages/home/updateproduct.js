@@ -36,7 +36,7 @@ import { getProductStyles } from '../../api/productstyles'
 import { getProductTypes } from '../../api/producttypes'
 import { getSeasons } from '../../api/seasons'
 import { getTextileTypes } from '../../api/textiletypes'
-import { postProduct, loadProduct, addComposition, removeComposition, finishComposition } from '../../api/products'
+import { postProduct, loadProduct, addComposition, removeComposition, finishComposition, sampleComposition } from '../../api/products'
 
 import Header from './header';
 import Footer from './footer';
@@ -62,7 +62,7 @@ const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto 20px auto", p
 const accordionDetailsStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 0px" }
 const accordionCaption = { width: "100%", fontWeight: "bold", fontSize: "11pt" };
 
-const ADDS = [5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95]
+const BUTTONS = ['1','2','3','4','5','6','7','8','9','X','0','OK',]
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -144,6 +144,7 @@ export default function UpdateProduct(props) {
     const [stock, setStock] = useState("")
     const [textileTypeValue, setTextileTypeValue] = useState("")
     const [composition, setComposition] = useState([])
+    const [compositionSamples, setCompositionSamples] = useState([])
 
     const [newColor, setNewColor] = useState("")
     const [newColorRgb, setNewColorRgb] = useState("")
@@ -382,35 +383,44 @@ export default function UpdateProduct(props) {
 
   const compositionAdd = async (e) => {
     
-    let id = idFromUrl()
+    if (!textileType || !textileTypeValue) {
+      return
+    }
 
-    let r = await addComposition(id, textileType, textileTypeValue)
+    let r = await addComposition(idFromUrl(), textileType, textileTypeValue)
 
     if (r) {
       props.setLastAction("Product has been saved")
       setSavingError(false)
-      let id = idFromUrl()
-      loadProduct(id, setProduct)
-
-      //navigate("/menu")
+      loadProduct(idFromUrl(), setProduct)
     } else {
       setSavingError(true)
     }
   }
 
   const compositionAdd2 = async (e) => {
-    
-    let id = idFromUrl()
 
-    let r = await addComposition(id, textileType, e)
+    if (e==='X') {
+      setTextileTypeValue('')
+      return
+    }
+
+    if (e==='OK') {
+      compositionAdd()
+    }
+
+    setTextileTypeValue(textileTypeValue+e)
+  }
+
+  
+  const compositionApplySample = async (productId) => {
+    
+    let r = await sampleComposition(idFromUrl(), productId)
 
     if (r) {
       props.setLastAction("Product has been saved")
       setSavingError(false)
-      let id = idFromUrl()
-      loadProduct(id, setProduct)
-
-      //navigate("/menu")
+      loadProduct(idFromUrl(), setProduct)
     } else {
       setSavingError(true)
     }
@@ -418,17 +428,16 @@ export default function UpdateProduct(props) {
 
   const compositionFinish = async (e) => {
     
-    let id = idFromUrl()
+    if (!textileType) {
+      return
+    }
 
-    let r = await finishComposition(id, textileType)
+    let r = await finishComposition(idFromUrl(), textileType)
 
     if (r) {
       props.setLastAction("Product has been saved")
       setSavingError(false)
-      let id = idFromUrl()
-      loadProduct(id, setProduct)
-
-      //navigate("/menu")
+      loadProduct(idFromUrl(), setProduct)
     } else {
       setSavingError(true)
     }
@@ -507,6 +516,7 @@ const setProduct = (prod) => {
   setOverworkType(prod.overWorkTypeIds)
   setDesignType(prod.designTypeIds)
   setComposition(prod.composition)
+  setCompositionSamples(prod.compositionsSamples)
 
   setProductTextileTypes(prod.textileTypes)
 
@@ -517,6 +527,7 @@ const setProduct = (prod) => {
   let cvNums = prod.colors.map(x => x.colorNo)
   let max = cvNums.length > 0 ?  Math.max(...cvNums) : 0
 
+  prod.colors = prod.colors.concat(moreProductColors(2))
   prod.colors = prod.colors.concat(moreVariants(6,max))
   setColorVariants(prod.colors)
 
@@ -754,20 +765,27 @@ useEffect(() => {
                     <br/>
                     </Box>
                   <Box component={"div"} 
-                    sx={{ m: 0, mt: 1, ml: 1, height: "22px", width: "125px", wordBreak: "break-all", wordWrap: "break-word", display: "flex", justifyContent: "space-between" }} 
+                    sx={{ m: 0, mt: 2, ml: 0, pb: 1, height: "22px", width: "135px", wordBreak: "break-all", wordWrap: "break-word", display: "flex", justifyContent: "space-between" }} 
                     textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > 
-                    {/* { (cv.colorNo ? '[ ' + cv.colorNo + ' ] : ':'') + (cv.quantity ? cv.quantity : '-') + 'm'}  */}
-                    <div>
-                    <span style={{backgroundColor: "#aaa", padding: "3px 5px", borderRadius: 3}}> { (cv.colorNo ? cv.colorNo + ':' : '?')} </span> 
-                    <span style={{backgroundColor: "#fff", padding: "3px 5px", borderRadius: 3, marginLeft: 5}}> { (cv.quantity ? cv.quantity : '-') + 'm'} </span>
-                    </div>
+                    
+                    { cv.isProduct==false &&
+                    <Box sx={{textAlign: "left"}}>
+                    <span style={{backgroundColor: "rgb(251 178 96)", padding: "5px 3px", borderRadius: 3}}> 
+                      { 'COLOR ' + (cv.colorNo ? cv.colorNo + ' : ' : ' ? ') + (cv.quantity ? cv.quantity : ' -') + ' m'} </span>
+                    </Box>
+                    }
+                    { cv.isProduct==true &&
+                    <Box sx={{textAlign: "left"}}>
+                    <span style={{backgroundColor: "rgb(108 255 145)", padding: "5px 3px", borderRadius: 3 }}> GLOBAL PHOTO </span>                    
+                    </Box>
+                    }
                     <IconButton
                   color="success"
                   aria-label="upload picture"
-                  sx={{color: APPEARANCE.BLACK2, pt: 0, mt: 0}}
+                  sx={{color: APPEARANCE.BLACK2, p: 0, m: 0}}
                   component="span"
                   onClick={ function() { handleRemoveCv(cv)}} >
-                    {<DeleteIcon />}
+                    {<DeleteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/>}
                 </IconButton>
                     </Box>
 
@@ -785,7 +803,12 @@ useEffect(() => {
 
                 { colorVariants && colorVariants.map((cv) => (
                   <Grid item xs={12} md={6} sx={{ ...flexStyle}} >
+                    {/* { (cv.isProduct == true) &&
+                    <ProductColor cv={cv} setColorItem={setProductColorItem}  />
+                    } */}
+                    { (cv.isProduct !== true) &&
                     <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} data={colors} />
+                    }
                     </Grid> ))}
             </Grid>
           <FormControl sx = {{itemStyle}} > 
@@ -1102,7 +1125,8 @@ useEffect(() => {
           ))}
             
           </Box>
-          <Box sx={{ mt: 1, width: "500px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>
+          <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>
+          <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'column', alignItems: 'top'}}>
             <MySelect 
                   id="addproduct-textiletype"
                   url="TextileTypes"
@@ -1115,13 +1139,14 @@ useEffect(() => {
                   setValueFn={setTextileType}
                   data={textileTypes}
                 />
-            <TextField
+          <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>
+          <TextField
                   margin="normal"
                   size="small" 
                   id="textile-type-value"
                   label="Value"
                   name="textileTypeValue"
-                  sx = {{...itemStyle1, ...{width: "120px", ml: 2}}}
+                  sx = {{...itemStyle1, ...{width: "73px"}}}
                   value={textileTypeValue}
                   onChange={ev => setTextileTypeValue(ev.target.value)}
                 /> 
@@ -1141,29 +1166,47 @@ useEffect(() => {
                 sx={{backgroundColor: "#888", width: "60px", height: "36px", ml: 1}}
                 onClick={compositionFinish}
                 >
-                  End
+                  Finish
             </Button>
             </Box>
-            </Box>
-            <Grid container spacing={2} sx={accordionSummaryStyle}>
-              { ADDS.map((el) => (
-
-              
-            <Grid item xs={6} md={2} sx={{}} >
+            <Box sx={{ mt: 0, display: 'flex', flexDirection: 'column'}}>
+            <Box sx={{ mt: 0, display: 'flex', flexDirection: 'row', flexWrap: "wrap"}}>
+            { BUTTONS.map((el, ix) => (
+            
+            (<>
+            {ix % 3 == 0 && <div class="line-break"></div>}
             <Button
                 variant="contained"
                 aria-label="add to composition"
                 size="small"
-                sx={{backgroundColor: "#888", width: "60px", height: "36px", ml: 1}}
+                sx={{backgroundColor: "#888", width: "60px", height: "36px", ml: 1, mt: 1}}
                 onClick={function() { compositionAdd2(el) }}
                 >
-                  {el}%
+                  {el}
             </Button>
-
-            </Grid>
-            )) }
-            </Grid>
-          </AccordionDetails>
+            </>)
+            ))}
+            </Box>
+            </Box>
+            </Box>
+            <Box sx={{ mt: 1, ml: 1, minWidth: "340px", display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              <Box sx={{backgroundColor: "#ddd", width: "100%", fontWeight: "555", p: 1, ml: 0, mt: 0, mb: 1}}>Similar compositions:</Box>
+              <Box sx={{ mt: 1, ml: 1, textAlign: "left" }}>
+              { compositionSamples && compositionSamples.map((el, ix) => (
+            (<>
+            <Box
+                sx={{backgroundColor: "#fff", width: "100%", ml: 0, mt: 0, fontSize: "10pt", cursor: "pointer"}}
+                onClick={function() { compositionApplySample(el.productId) }}
+                >
+                  {el.composition}
+            </Box>
+            </>)
+            ))}
+            </Box>
+            </Box>
+            </Box>
+            </Box>
+            </AccordionDetails>
           </Accordion>
 
 
