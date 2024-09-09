@@ -62,7 +62,7 @@ const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto 20px auto", p
 const accordionDetailsStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 0px" }
 const accordionCaption = { width: "100%", fontWeight: "bold", fontSize: "11pt" };
 
-const BUTTONS = ['1','2','3','4','5','6','7','8','9','X','0','OK',]
+const BUTTONS = ['1','2','3','4','5','6','7','8','9','X','0','ADD',]
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -392,20 +392,22 @@ export default function UpdateProduct(props) {
     if (r) {
       props.setLastAction("Product has been saved")
       setSavingError(false)
+      setTextileTypeValue('')
+      setTextileType('')
       loadProduct(idFromUrl(), setProduct)
     } else {
       setSavingError(true)
     }
   }
 
-  const compositionAdd2 = async (e) => {
+  const buttonClick = async (e) => {
 
     if (e==='X') {
       setTextileTypeValue('')
       return
     }
 
-    if (e==='OK') {
+    if (e==='ADD') {
       compositionAdd()
     }
 
@@ -1150,7 +1152,7 @@ useEffect(() => {
                   value={textileTypeValue}
                   onChange={ev => setTextileTypeValue(ev.target.value)}
                 /> 
-            <Button
+            {/* <Button
                 variant="contained"
                 aria-label="add to composition"
                 size="small"
@@ -1158,15 +1160,15 @@ useEffect(() => {
                 onClick={compositionAdd}
                 >
                   Add
-            </Button>
+            </Button> */}
             <Button
                 variant="contained"
                 aria-label="finish composition"
                 size="small"
-                sx={{backgroundColor: "#888", width: "60px", height: "36px", ml: 1}}
+                sx={{backgroundColor: "#888", width: "90px", height: "36px", ml: 1}}
                 onClick={compositionFinish}
                 >
-                  Finish
+                  Make 100%
             </Button>
             </Box>
             <Box sx={{ mt: 0, display: 'flex', flexDirection: 'column'}}>
@@ -1179,8 +1181,8 @@ useEffect(() => {
                 variant="contained"
                 aria-label="add to composition"
                 size="small"
-                sx={{backgroundColor: "#888", width: "60px", height: "36px", ml: 1, mt: 1}}
-                onClick={function() { compositionAdd2(el) }}
+                sx={{backgroundColor: "#888", width: "60px", height: "36px", mr: 1, mt: 1}}
+                onClick={function() { buttonClick(el) }}
                 >
                   {el}
             </Button>
