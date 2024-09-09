@@ -70,35 +70,55 @@ namespace chiffon_back.Controllers
 
         // временно [Authorize]
         [HttpGet("Product")]
-        public Models.Product? GetProduct([FromQuery] string id)
+        public Models.Product? Product([FromQuery] string id)
         {
-            return ProductModel.Get(id);
+            try
+            {
+                return ProductModel.Get(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/Product({1}): {2}", DateTime.Now, id, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/Product({1}): {2}", DateTime.Now, id, ex.InnerException != null ? ex.InnerException.ToString() : ""));
+            }
+            return null;
         }
 
         // временно [Authorize]
         [HttpGet("Products")]
-        public IEnumerable<Models.Product> Get([FromQuery] string id)
+        public IEnumerable<Models.Product> Products([FromQuery] string id)
         {
-            var user = ctx.Users.FirstOrDefault(x => x.Id.ToString() == id);
-            int? vendorId = user != null ? user.VendorId : 1;
-
-            if (vendorId <= 0) vendorId = 1;
-
-            var prods = ProductModel.Get(new ProductFilter()
+            try
             {
-                VendorId = vendorId,
-                ItemName = HttpContext.Request.Query["name"].ToString(),
-                ArtNo = HttpContext.Request.Query["artno"].ToString(),
-                RefNo = HttpContext.Request.Query["refno"].ToString(),
-                Design = HttpContext.Request.Query["design"].ToString(),
-                Search = HttpContext.Request.Query["search"].ToString(),
-                Colors = HttpContext.Request.Query["colors"].ToString(),
-                Seasons = HttpContext.Request.Query["seasons"].ToString(),
-                Overworks = HttpContext.Request.Query["overworks"].ToString(),
-                DesignTypes = HttpContext.Request.Query["designtypes"].ToString(),
-            });
+                var user = ctx.Users.FirstOrDefault(x => x.Id.ToString() == id);
+                int? vendorId = user != null ? user.VendorId : 1;
 
-            return prods;
+                if (vendorId <= 0) vendorId = 1;
+
+                var prods = ProductModel.Get(new ProductFilter()
+                {
+                    VendorId = vendorId,
+                    ItemName = HttpContext.Request.Query["name"].ToString(),
+                    ArtNo = HttpContext.Request.Query["artno"].ToString(),
+                    RefNo = HttpContext.Request.Query["refno"].ToString(),
+                    Design = HttpContext.Request.Query["design"].ToString(),
+                    Search = HttpContext.Request.Query["search"].ToString(),
+                    Colors = HttpContext.Request.Query["colors"].ToString(),
+                    Seasons = HttpContext.Request.Query["seasons"].ToString(),
+                    Overworks = HttpContext.Request.Query["overworks"].ToString(),
+                    DesignTypes = HttpContext.Request.Query["designtypes"].ToString(),
+                });
+
+                return prods;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/Products: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/Products: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.ToString() : ""));
+            }
+            return new List<Models.Product>();
         }
 
         [HttpPost("ImportFile")]
@@ -137,56 +157,49 @@ namespace chiffon_back.Controllers
                         ctx.SaveChanges();
                     }
                 }
-                return CreatedAtAction(nameof(Get), new { id = -1 }, true);
+                return CreatedAtAction(nameof(Product), new { id = -1 }, true);
 
-                //read the file
-                using (var memoryStream = new MemoryStream())
-                {
-                    formFile.CopyTo(memoryStream);
-                    using (FileStream file = new FileStream(uid + "." + extension, FileMode.Create, System.IO.FileAccess.Write))
-                    {
-                        byte[] bytes = new byte[memoryStream.Length];
-                        memoryStream.Read(bytes, 0, (int)memoryStream.Length);
-                        file.Write(bytes, 0, bytes.Length);
-                        memoryStream.Close();
-                        file.Close();
-                    }
-                }
-
-                //do something with the file here
-                return CreatedAtAction(nameof(Get), new { id = -1 }, true);
             }
             catch(Exception ex)
             {
-                return CreatedAtAction(nameof(Get), new { id = -1 }, false);
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ImportFile: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ImportFile: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.ToString() : ""));
+                return CreatedAtAction(nameof(Product), new { id = -1 }, false);
             }
         }
 
         [HttpPost("ProductAdd")]
-        public ActionResult Post(Models.PostProduct product)
+        public ActionResult ProductAdd(Models.PostProduct product)
         {
             try
             {
                 int? id = ProductModel.Post(product);
                 //test: throw new Exception();
-                return CreatedAtAction(nameof(Get), new { Id = id });
+                return CreatedAtAction(nameof(Product), new { Id = id });
             }
             catch (Exception ex)
             {
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ProductAdd: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ProductAdd: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.ToString() : ""));
                 return BadRequest(ex);
             }
         }
 
         [HttpPost("ProductUpdate")]
-        public ActionResult Update(Models.PostProduct product)
+        public ActionResult ProductUpdate(Models.PostProduct product)
         {
             try
             {
                 int? id = ProductModel.Update(product);
-                return CreatedAtAction(nameof(Get), new { Id = id });
+                return CreatedAtAction(nameof(Product), new { Id = id });
             }
             catch (Exception ex)
             {
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ProductUpdate: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ProductUpdate: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.ToString() : ""));
                 return BadRequest(ex);
             }
         }
@@ -218,11 +231,14 @@ namespace chiffon_back.Controllers
                     }
                 }
 
-                return CreatedAtAction(nameof(Get), new { id = c.Id }, "");
+                return CreatedAtAction(nameof(Product), new { id = c.Id }, "");
             }
             catch (Exception ex)
             {
-                return CreatedAtAction(nameof(Get), new { id = -1 }, null);
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/RemoveColorVariant: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/RemoveColorVariant: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.ToString() : ""));
+                return CreatedAtAction(nameof(Product), new { id = -1 }, null);
             }
         }
 
