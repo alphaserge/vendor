@@ -79,6 +79,8 @@ namespace chiffon_back.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine();
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/Product({1}): {2}", DateTime.Now, id, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/Product({1}): {2}", DateTime.Now, id, ex.InnerException != null ? ex.InnerException.Message : ""));
             }
@@ -114,6 +116,8 @@ namespace chiffon_back.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
                 Console.WriteLine();
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/Products: {1}", DateTime.Now, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/Products: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
@@ -163,6 +167,8 @@ namespace chiffon_back.Controllers
             catch(Exception ex)
             {
                 Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine();
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ImportFile: {1}", DateTime.Now, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ImportFile: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
                 return CreatedAtAction(nameof(Product), new { id = -1 }, false);
@@ -181,6 +187,8 @@ namespace chiffon_back.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine();
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ProductAdd: {1}", DateTime.Now, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ProductAdd: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
                 return BadRequest(ex);
@@ -197,6 +205,8 @@ namespace chiffon_back.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
                 Console.WriteLine();
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ProductUpdate: {1}", DateTime.Now, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ProductUpdate: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
@@ -235,6 +245,8 @@ namespace chiffon_back.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
                 Console.WriteLine();
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/RemoveColorVariant: {1}", DateTime.Now, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/RemoveColorVariant: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
