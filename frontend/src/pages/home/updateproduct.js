@@ -259,21 +259,24 @@ export default function UpdateProduct(props) {
       return cv
     }
   
-    const moreProductColors = async (e) => {
-      let cv = productColors.slice()
-      let cvNums = productColors.map(x => x.no);
-      let max = cvNums.length > 0 ? Math.max(...cvNums) : 0
-      let i=max+1
-      while (i<max+3){
+    const moreProductColors = (num, prodId) => {
+      let cv = [] //productColors.slice()
+      let i=0
+      while (i<num){
         cv.push({
           uuid: uuid(),
-          no: i,
-          selectedFile: null,
+          colorNames: 'PRODUCT',
+          colorNo: null,
+          colorIds: null,
+          colorVariantId: -1,
+          productId: prodId,
+          quantity: null,
           isProduct: true
         })
         i++
       }
-      setProductColors(cv)
+      return cv
+      //setProductColors(cv)
     }
   
     const handleRemoveCv = async (cv) => {
@@ -526,11 +529,22 @@ const setProduct = (prod) => {
     prod.colors = []
   }
 
-  let cvNums = prod.colors.map(x => x.colorNo)
+  let cvNums = prod.colors.filter(it => !it.isProduct).map(x => x.colorNo)
   let max = cvNums.length > 0 ?  Math.max(...cvNums) : 0
 
-  prod.colors = prod.colors.concat(moreProductColors(2))
-  prod.colors = prod.colors.concat(moreVariants(6,max))
+  /*let lengthProd = prod.colors.filter(function(item){
+    return item.isProduct;
+  }).length;*/
+
+  /*while(lengthProd<2) {
+    prod.colors.splice(lengthProd,0,moreProductColors(1,prod.id)[0])
+    lengthProd++
+  }
+  //prod.colors = prod.colors.concat(moreProductColors(2))*/
+  setProductColors(moreProductColors(2,prod.id))
+  let add = max % 2 == 1 ? 5 : 6
+
+  prod.colors = prod.colors.concat(moreVariants(add,max))
   setColorVariants(prod.colors)
 
   wChanged(prod.width, prod.weight)
@@ -555,6 +569,8 @@ useEffect(() => {
   getTextileTypes(setTextileTypes)
 
   }, []);
+
+console.log(colorVariants)
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -803,7 +819,7 @@ useEffect(() => {
                     <ProductColor cv={cv} setColorItem={setProductColorItem}  />
                  </Grid> ))}
 
-                { colorVariants && colorVariants.map((cv) => (
+                { colorVariants && colorVariants.filter(it => !it.isProduct).map((cv) => (
                   <Grid item xs={12} md={6} sx={{ ...flexStyle}} >
                     {/* { (cv.isProduct == true) &&
                     <ProductColor cv={cv} setColorItem={setProductColorItem}  />
