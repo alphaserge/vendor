@@ -1,5 +1,8 @@
 {
     "api1": "http://185.40.31.18:5001",
     "api" : "https://localhost:3080",
-    "company": "JSC Angelika"
+    "company": "JSC Angelika",
+    "product" : {
+        "plain_dyed_types" : ["2"]
+    }
 }

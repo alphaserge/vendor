@@ -18,6 +18,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import MenuItem from '@mui/material/MenuItem';
 import { HexColorPicker } from "react-colorful";
+import InputMask from "react-input-mask";
 
 import { v4 as uuid } from 'uuid'
 
@@ -570,8 +571,6 @@ useEffect(() => {
 
   }, []);
 
-console.log(colorVariants)
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -739,6 +738,51 @@ console.log(colorVariants)
               </Grid>
 
               <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
+              <TextField
+                  margin="normal"
+                  size="small" 
+                  id="gsm"
+                  label="GSM"
+                  name="gsm"
+                  sx = {halfItemStyle}
+                  value={gsm}
+                  onChange={densityChanged}
+                />
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="width"
+                  label="Width"
+                  name="width"
+                  sx = {halfItemStyle}
+                  value={width}
+                  onChange={widthChanged}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="weight"
+                  label="Weight G/M"
+                  name="weight"
+                  sx = {halfItemStyle}
+                  value={weight}
+                  onChange={weightChanged}
+                />
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="metersInKg"
+                  label="Meters in KG"
+                  name="metersInKg"
+                  sx = {halfItemStyle}
+                  value={metersInKg}
+                  onChange={ev => setMetersInKg(ev.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
                 <MySelect 
                   id="addproduct-productstyle"
                   url="ProductStyles"
@@ -753,7 +797,12 @@ console.log(colorVariants)
                   data={productStyles}
                 />
                 </Grid>
-          </Grid>
+                <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
+                <></>
+                </Grid>
+              </Grid>
+
+
           </AccordionDetails>
           </Accordion>
 
@@ -933,84 +982,49 @@ console.log(colorVariants)
           <AccordionDetails sx={accordionDetailsStyle}>
 
           <Grid container spacing={2} sx={{pt: 2}} >
-            
-              <Grid item xs={6} md={3} >
-              <TextField
-                  margin="normal"
-                  size="small" 
-                  id="gsm"
-                  label="GSM"
-                  name="gsm"
-                  sx = {itemStyle1}
-                  value={gsm}
-                  onChange={densityChanged}
-                />
-                </Grid>
-
-                <Grid item xs={6} md={3} >
-                <TextField
-                  margin="normal"
-                  size="small" 
-                  id="width"
-                  label="Width"
-                  name="width"
-                  sx = {itemStyle1}
-                  value={width}
-                  onChange={widthChanged}
-                />
-              </Grid>
-
-              <Grid item xs={6} md={3} >
-                <TextField
-                  margin="normal"
-                  size="small" 
-                  id="weight"
-                  label="Weight G/M"
-                  name="weight"
-                  sx = {itemStyle1}
-                  value={weight}
-                  onChange={weightChanged}
-                />
-
-                </Grid>
-                <Grid item xs={6} md={3} >
-                <TextField
-                  margin="normal"
-                  size="small" 
-                  id="metersInKg"
-                  label="Meters in KG"
-                  name="metersInKg"
-                  sx = {itemStyle1}
-                  value={metersInKg}
-                  onChange={ev => setMetersInKg(ev.target.value)}
-                />
-              </Grid>
-
 
           <Grid item xs={12} md={6} >
-            <TextField
-                margin="normal"
-                size="small" 
-                id="fabricConstruction"
-                label="Fabric construction"
-                name="fabricConstruction"
-                sx = {itemStyle1}
-                value={fabricConstruction}
-                onChange={ev => setFabricConstruction(ev.target.value)}
-              />
-              </Grid>
-              <Grid item xs={12} md={6} >
-            <TextField
-                margin="normal"
-                size="small" 
-                id="fabricYarnCount"
-                label="Fabric Yarn Count"
-                name="fabricYarnCount"
-                sx = {itemStyle1}
-                value={fabricYarnCount}
-                onChange={ev => setFabricYarnCount(ev.target.value)}
-              />
-              </Grid>
+
+          <InputMask
+            mask="999 \* 999"
+            value={fabricConstruction}
+            disabled={false}
+            onChange={ev => setFabricConstruction(ev.target.value)}
+            maskChar=" " >
+
+            {() => <TextField
+              margin="normal"
+              size="small" 
+              id="fabricConstruction"
+              label="Fabric construction"
+              name="fabricConstruction"
+              sx = {itemStyle1}
+              value={fabricConstruction}
+            />}
+
+          </InputMask>
+
+          </Grid>
+
+          <Grid item xs={12} md={6} >
+
+          <InputMask
+            mask="999s \+ 999s"
+            value={fabricYarnCount}
+            disabled={false}
+            onChange={ev => setFabricYarnCount(ev.target.value)}
+            maskChar=" " >
+            {() => <TextField
+              margin="normal"
+              size="small" 
+              id="fabricYarnCount"
+              label="Fabric Yarn Count"
+              name="fabricYarnCount"
+              sx = {itemStyle1}
+              //value={fabricYarnCount}
+            />}
+          </InputMask>
+          </Grid>
 
               <Grid item xs={12} md={6} spacing={2} >
               <FormControl sx = {halfItemStyle1}>
@@ -1087,7 +1101,7 @@ console.log(colorVariants)
               />
               </Grid>
 
-              <Grid item xs={12} md={6} >
+              <Grid item xs={12} md={6} sx={{display: config.product.plain_dyed_types.includes(productStyle) ? "block" : "none" }} >
               <MySelect 
                 id="addproduct-plaindyedtype"
                 url="PlainDyedTypes"
@@ -1099,6 +1113,7 @@ console.log(colorVariants)
                 valueVariable={plainDyedType}
                 setValueFn={setPlainDyedType}
                 data={plainDyedTypes}
+                
               />
               </Grid>
 
@@ -1106,7 +1121,7 @@ console.log(colorVariants)
               <MySelect 
                 id="addproduct-dyestaff"
                 url="DyeStaffs"
-                title="Dye Staff"
+                title="Dye Stuff"
                 valueName="dyeStaffName"
                 labelStyle={labelStyle}
                 itemStyle={itemStyle1}
