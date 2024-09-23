@@ -209,7 +209,12 @@ export default function UpdateProduct(props) {
     const widthChanged = (e) => {
       let value = e.target.value
       setWidth(value)
-      wChanged(value, weight)
+      let _width = Number.parseInt(value)
+      let _weight = gsm*_width/100
+      setWeight(_weight)
+      let _metersInKg = (1000/_weight).toFixed(2)
+      setMetersInKg(_metersInKg)
+      //wChanged(value, weight)
     }
 
     const wChanged = (_width, _weight) => {
@@ -571,6 +576,8 @@ useEffect(() => {
 
   }, []);
 
+  console.log(productStyle)
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -741,16 +748,6 @@ useEffect(() => {
               <TextField
                   margin="normal"
                   size="small" 
-                  id="gsm"
-                  label="GSM"
-                  name="gsm"
-                  sx = {halfItemStyle}
-                  value={gsm}
-                  onChange={densityChanged}
-                />
-                <TextField
-                  margin="normal"
-                  size="small" 
                   id="width"
                   label="Width"
                   name="width"
@@ -758,7 +755,18 @@ useEffect(() => {
                   value={width}
                   onChange={widthChanged}
                 />
-              </Grid>
+              
+              <TextField
+                  margin="normal"
+                  size="small" 
+                  id="gsm"
+                  label="GSM"
+                  name="gsm"
+                  sx = {halfItemStyle}
+                  value={gsm}
+                  onChange={densityChanged}
+                />
+                </Grid>
 
               <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
                 <TextField
