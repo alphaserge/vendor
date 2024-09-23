@@ -107,11 +107,11 @@ img.product-img {
 
 
 .product-item {
-  font-size: 14px;
-  width: 200px;
+  font-size: 15px;
+  /* width: 200px;
   height: 26px;
   margin-left: 20px;
-  text-align: left;
+  text-align: left; */
 }
 
 .product-item.price {
