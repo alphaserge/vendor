@@ -14,6 +14,9 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import TextField from '@mui/material/TextField';
 import TuneIcon from '@mui/icons-material/Tune';
+import GridViewIcon from '@mui/icons-material/GridView';
+import TableRowsIcon from '@mui/icons-material/TableRows';
+import Tooltip from '@mui/material/Tooltip';
 
 import axios from 'axios'
 
@@ -23,6 +26,7 @@ import Header from './header';
 import Footer from './footer';
 import MainBanner from './mainbanner';
 import ItemProduct from './itemproduct';
+import ItemProductRow from './itemproductrow';
 import MySelect from '../../components/myselect';
 
 import { clear } from "@testing-library/user-event/dist/clear";
@@ -32,10 +36,13 @@ import { Button } from "@mui/material";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
-const itemStyle = { width: 400, m: 2 }
+const itemStyle = { width: 330, m: 1, ml: 0 }
+const itemStyle1 = { width: "100%", mt: 0, ml: 0, mr: 0 }
 const labelStyle = { m: 2 }
+const labelStyle1 = { m: 0, mt: 1, ml: 0, mr: 4 }
 const buttonStyle = { width: 180, m: 2 }
 const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto 20px auto", padding: "0 10px" }
+const flexStyle = { display: "flex", flexDirection: "row", alignItems : "center", justifyContent: "space-between" }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -75,6 +82,7 @@ export default function ListProduct(props) {
     const [refNo, setRefNo] = useState("")
     const [artNo, setArtNo] = useState("")
     const [design, setDesign] = useState("")
+    const [view, setView] = useState("grid")
 
     const headStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 10px" }
 
@@ -266,6 +274,16 @@ export default function ListProduct(props) {
           <Box component="form" noValidate sx={accordionSummaryStyle} >
 
           <Box style={headStyle} sx={{ display: "flex", justifyContent:"space-between",  margin: "0 auto", maxWidth: "1100px", backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px"}} justifyContent={"center"} className="header-menu" >
+            <Tooltip title="Rows interface">
+            <IconButton onClick={ (e) => { setView("rows")} } sx={{ p: 0, ml: 2 }}>
+              <TableRowsIcon sx={{color: view=="grid" ? APPEARANCE.BLACK : APPEARANCE.GREY }} />
+            </IconButton>
+            </Tooltip>
+            <Tooltip title="Grid interface">
+            <IconButton onClick={ (e) => { setView("grid")} } sx={{ p: 0, ml: 1 }}>
+              <GridViewIcon sx={{color: view=="grid" ? APPEARANCE.GREY : APPEARANCE.BLACK }} />
+            </IconButton>
+            </Tooltip>
             <Box sx={{ display: "flex", alignItems:"center", justifyContent: "center", width: "100%", mt: 2, mb: 2}}>
             <Typography component="h7" variant="h7" color={APPEARANCE.COLOR1}>
               {props.user && ( props.user.vendorName + " product's list") } 
@@ -300,9 +318,11 @@ export default function ListProduct(props) {
 
           <Box sx={{ backgroundColor: "none", display: filter==true? "block": "none", textAlign: "center", mt: 3, mb: 3  }} className="filter" >
           <Box className="filter" sx={{ textAlign: "left"}} >
-          <Typography component="p" variant="p" sx={{ ml: 2, fontSize: "10pt", fontWeight: "bold"}} >
+          <Typography component="p" variant="p" sx={{ mb: 2, fontSize: "10pt", fontWeight: "bold"}} >
               Product's filters
             </Typography>
+            <Grid container spacing={1} >
+            <Grid item xs={12} md={6} sx={{...flexStyle}} >
           <TextField
                 margin="normal"
                 size="small" 
@@ -313,6 +333,8 @@ export default function ListProduct(props) {
                 value={itemName}
                 onChange={ev => setItemName(ev.target.value)}
               />
+              </Grid>
+            <Grid item xs={12} md={6} sx={{...flexStyle}} >
             <TextField
                 margin="normal"
                 size="small" 
@@ -323,6 +345,8 @@ export default function ListProduct(props) {
                 value={refNo}
                 onChange={ev => setRefNo(ev.target.value)}
               />
+              </Grid>
+              <Grid item xs={12} md={6} sx={{...flexStyle}} >
             <TextField
                 margin="normal"
                 size="small" 
@@ -333,6 +357,8 @@ export default function ListProduct(props) {
                 value={artNo}
                 onChange={ev => setArtNo(ev.target.value)}
               />
+              </Grid>
+              <Grid item xs={12} md={6} sx={{...flexStyle}} >
             <TextField
                 margin="normal"
                 size="small" 
@@ -343,83 +369,98 @@ export default function ListProduct(props) {
                 value={design}
                 onChange={ev => setDesign(ev.target.value)}
               />
+              </Grid>
+              <Grid item xs={12} md={6} sx={{...flexStyle}} >
                 <MySelect 
                   id="addproduct-producttype"
                   url="ProductTypes"
                   title="Product Type"
                   valueName="typeName"
-                  labelStyle={labelStyle}
+                  labelStyle={labelStyle1}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
                   valueVariable={productType}
                   setValueFn={setProductType}
                   data={productTypes}
                 />
+                </Grid>
 
+                <Grid item xs={12} md={6} sx={{...flexStyle}} >
                 <MySelect 
                   id="addproduct-productstyle"
                   url="ProductStyles"
                   title="Product Style"
                   valueName="styleName"
-                  labelStyle={labelStyle}
+                  labelStyle={labelStyle1}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
                   valueVariable={productStyle}
                   setValueFn={setProductStyle}
                   data={productStyles}
                 />
+                </Grid>
 
+                <Grid item xs={12} md={6} sx={{...flexStyle}} >
                 <MySelect 
                   id="addproduct-season"
                   url="Seasons"
                   title="Season"
                   valueName="seasonName"
-                  labelStyle={labelStyle}
+                  labelStyle={labelStyle1}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
                   valueVariable={season}
                   setValueFn={setSeason}
                   data={seasons}
                 />
+                </Grid>
 
+                <Grid item xs={12} md={6} sx={{...flexStyle}} >
                 <MySelect 
                   id="addproduct-color"
                   url="Colors"
                   title="Color"
                   valueName="colorName"
-                  labelStyle={labelStyle}
+                  labelStyle={labelStyle1}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
                   valueVariable={color}
                   setValueFn={setColor}
                   data={colors}
                 />
+                </Grid>
 
+                <Grid item xs={12} md={6} sx={{...flexStyle}} >  
                 <MySelect 
                   id="addproduct-designtype"
                   url="DesignTypes"
                   title="Design type"
                   valueName="designName"
-                  labelStyle={labelStyle}
+                  labelStyle={labelStyle1}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
                   valueVariable={designType}
                   setValueFn={setDesignType}
                   data={designTypes}
                 />
+                </Grid>
 
+                <Grid item xs={12} md={6} sx={{...flexStyle}} >
                 <MySelect 
                   id="addproduct-overworktype"
                   url="OverWorkTypes"
                   title="Overwork type"
                   valueName="overWorkName"
-                  labelStyle={labelStyle}
+                  labelStyle={labelStyle1}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
                   valueVariable={overworkType}
                   setValueFn={setOverworkType}
                   data={overworkTypes}
                 />
+                </Grid>
+
+              </Grid>
 
           </Box>
                 <Button variant="contained" className="action-button" onClick={loadProducts} >
@@ -432,9 +473,14 @@ export default function ListProduct(props) {
 
           {/* <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" > */}
           <Grid container spacing={2} >
-            { products.map((data, index) => (
+            { view == "grid" && products.map((data, index) => (
             <Grid item xs={12} md={6} >
               <ItemProduct data={data} index={index} />
+              </Grid>
+            ))}
+            { view == "rows" && products.map((data, index) => (
+            <Grid item xs={12} md={12} >
+              <ItemProductRow data={data} index={index} />
               </Grid>
             ))}
           </Grid>

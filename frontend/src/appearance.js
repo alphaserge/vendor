@@ -10,6 +10,7 @@ export const APPEARANCE = {
     BLACK1: "#111",
     BLACK2: "#222",
     BLACK3: "#333",
+    GREY: "#888",
     BLUE1: "#1976d2",
     
     GREEN1: "#013e31",
