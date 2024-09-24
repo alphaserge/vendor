@@ -47,7 +47,7 @@ export default function ItemProduct(props) {
 
   return (
     
-    <FormControl  sx={{ mb: 2, width: 440 }} > 
+    <FormControl  sx={{ mb: 2, width: 340 }} > 
           <Link href={"/updateproduct?id=" + props.data.id} >
           <Swiper className="mySwiper" >
             {props.data.colors.map((cv, index) => {
@@ -61,20 +61,13 @@ export default function ItemProduct(props) {
             </Swiper>
           </Link>
 
-          <Box 
-             key={props.data.id}
-             value={props.data.id}
-             sx={{ display: "flex", justifyContent: "center"}}
-             
-           >
-            <Box display="flex">
-            <Box>
-                <Box className="product-item">{props.index + ". " + props.data.itemName}</Box>
-                {/* <div class="product-item">{props.data.refNo}</div>*/}
-                <Box className="product-item">{props.data.artNo}</Box> 
-                <Box className="product-item">{props.data.design}</Box>
+          <Box sx={{ display: "flex", flexDirection: 'column', alignItems: "left", ml: 3}}>
+                <Box className="product-item">{props.data.itemName}</Box>
+              {/* <div class="product-item">{props.data.refNo}</div>*/}
+              <Box className="product-item">Ref. {props.data.refNo} / Art. {props.data.artNo}</Box> 
+              <Box className="product-item">{props.data.design}</Box>
             </Box>
-            <Box display="flex" alignItems={"center"} justifyContent={"left"} >
+            {/* <Box display="flex" alignItems={"center"} justifyContent={"left"} >
                <Box className="product-item price" sx={{color: APPEARANCE.LIGHT_GREEN1}} >&nbsp;${props.data.price}&nbsp;</Box>
                <IconButton
                 sx={{backgroundColor: APPEARANCE.LIGHT_GREEN1, color: "#fff", width: 48, height: 48, mt: 1, ml:1 }}
@@ -83,9 +76,7 @@ export default function ItemProduct(props) {
               { true  && <AddShoppingCartIcon  />}
               { false && <AddShoppingCartIcon />}
               </IconButton>
-            </Box>
-           </Box>
-           </Box>
+            </Box> */}
            <div style={{ clear: "left" }} >
            </div>
            {/* </div> */}

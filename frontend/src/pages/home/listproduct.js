@@ -35,6 +35,7 @@ const defaultTheme = createTheme()
 const itemStyle = { width: 400, m: 2 }
 const labelStyle = { m: 2 }
 const buttonStyle = { width: 180, m: 2 }
+const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto 20px auto", padding: "0 10px" }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -262,7 +263,7 @@ export default function ListProduct(props) {
 
           
 
-          <Box component="form" noValidate sx={{ mt: 3 }}  >
+          <Box component="form" noValidate sx={accordionSummaryStyle} >
 
           <Box style={headStyle} sx={{ display: "flex", justifyContent:"space-between",  margin: "0 auto", maxWidth: "1100px", backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px"}} justifyContent={"center"} className="header-menu" >
             <Box sx={{ display: "flex", alignItems:"center", justifyContent: "center", width: "100%", mt: 2, mb: 2}}>
@@ -429,10 +430,13 @@ export default function ListProduct(props) {
                 </Button>
           </Box>
 
-          <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" >
+          {/* <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" > */}
+          <Grid container spacing={2} >
             { products.map((data, index) => (
+            <Grid item xs={12} md={6} >
               <ItemProduct data={data} index={index} />
-                 ))}
+              </Grid>
+            ))}
           </Grid>
 
           </Box>
