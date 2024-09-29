@@ -10,13 +10,15 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
+import TuneIcon from '@mui/icons-material/Tune';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import TextField from '@mui/material/TextField';
-import TuneIcon from '@mui/icons-material/Tune';
 import GridViewIcon from '@mui/icons-material/GridView';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import Tooltip from '@mui/material/Tooltip';
+import Modal from '@mui/material/Modal';
 
 import axios from 'axios'
 
@@ -38,7 +40,7 @@ import { Button } from "@mui/material";
 const defaultTheme = createTheme()
 const itemStyle = { width: 330, m: 1, ml: 0 }
 const itemStyle1 = { width: "100%", mt: 0, ml: 0, mr: 0 }
-const labelStyle = { m: 2 }
+const halfItemStyle = { width: "calc( 50% - 3px )", m: 0 }
 const labelStyle1 = { m: 0, mt: 1, ml: 0, mr: 4 }
 const buttonStyle = { width: 180, m: 2 }
 const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto 20px auto", padding: "0 10px" }
@@ -64,7 +66,8 @@ export default function ListProduct(props) {
     const [products, setProducts] = useState([])
     const [filter, setFilter] = useState(false)
     const [search, setSearch] = useState("")
-
+    const [addProduct, setAddProduct] = useState(false)
+    
     const [colors, setColors] = useState([])
     const [seasons, setSeasons] = useState([])
     const [designTypes, setDesignTypes] = useState([])
@@ -83,7 +86,12 @@ export default function ListProduct(props) {
     const [artNo, setArtNo] = useState("")
     const [design, setDesign] = useState("")
     const [view, setView] = useState("grid")
-
+    
+    const [addItemName, setAddItemName] = useState("")
+    const [addRefNo, setAddRefNo] = useState("")
+    const [addArtNo, setAddArtNo] = useState("")
+    const [addDesign, setAddDesign] = useState("")
+    
     const headStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 10px" }
 
     const handleShowHideFilter = (event) => {
@@ -117,6 +125,18 @@ export default function ListProduct(props) {
         console.log(error)
       })
    }
+
+   const handleAddProductShow = (event) => {
+    setAddProduct(true)
+  };
+
+  const handleAddProductSave = (event) => {
+    setFilter(!filter);
+  };
+
+  const handleAddProductCancel = (event) => {
+    setFilter(!filter);
+  };
 
     const url = require('url');
 
@@ -257,6 +277,86 @@ export default function ListProduct(props) {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
+
+      <Modal
+        open={addProduct}
+        onClose={function() { setAddProduct(false) }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description" >
+
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                width: 475, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Adding a new product
+          </Typography>
+
+          {/* General */}
+          <Grid container spacing={2} >
+          <Grid item xs={12} md={6} >
+            <TextField
+                margin="normal"
+                size="small" 
+                id="itemName"
+                label="Item name"
+                name="itemName"
+                sx = {itemStyle1}
+                value={addItemName}
+                onChange={ev => setAddItemName(ev.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}  >
+            <TextField
+                margin="normal"
+                size="small" 
+                id="design"
+                label="Design"
+                name="design"
+                sx = {itemStyle1}
+                value={addDesign}
+                onChange={ev => setAddDesign(ev.target.value)}
+              />
+              </Grid>
+
+            <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
+            <TextField
+                margin="normal"
+                size="small" 
+                id="refNo"
+                label="Ref No"
+                name="refNo"
+                value={addRefNo}
+                sx = {halfItemStyle}
+                onChange={ev => setAddRefNo(ev.target.value)}
+              />
+            <TextField
+                margin="normal"
+                size="small" 
+                id="artNo"
+                label="Art No"
+                name="artNo"
+                sx = {halfItemStyle}
+                value={addArtNo}
+                onChange={ev => setAddArtNo(ev.target.value)}
+              />
+            </Grid>
+          </Grid>
+
+          <Button 
+              variant="contained"
+              style={buttonStyle}
+              sx={{marginTop: "40px"}}
+              onClick={handleAddProductSave} >
+                  Save
+          </Button>
+          <Button 
+              variant="contained"
+              style={buttonStyle}
+              onClick={handleAddProductCancel} >
+                  Cancel
+          </Button>
+        </Box>
+      </Modal>
+
       <Container sx={{padding: 0 }} className="header-container" >
         <Header user={props.user} title={props.title} />
         {/* <MainBanner user={props.user} title={props.title} /> */}
@@ -284,14 +384,21 @@ export default function ListProduct(props) {
               <GridViewIcon sx={{color: view=="grid" ? APPEARANCE.GREY : APPEARANCE.BLACK }} />
             </IconButton>
             </Tooltip>
+            <Tooltip title="Filters">
+            <IconButton onClick={handleShowHideFilter} sx={{ p: 0, mr: 4 }}>
+              <TuneIcon  sx={{color: APPEARANCE.BLACK}} />
+            </IconButton>
+            </Tooltip>
+            <Tooltip title="Filters">
+            <IconButton onClick={handleAddProductShow} sx={{ p: 0, mr: 4 }}>
+              <AddCircleOutlineIcon  sx={{color: APPEARANCE.BLACK}} />
+            </IconButton>
+            </Tooltip>
             <Box sx={{ display: "flex", alignItems:"center", justifyContent: "center", width: "100%", mt: 2, mb: 2}}>
             <Typography component="h7" variant="h7" color={APPEARANCE.COLOR1}>
               {props.user && ( props.user.vendorName + " product's list") } 
             </Typography>
             </Box>
-            <IconButton onClick={handleShowHideFilter} sx={{ p: 0, mr: 4 }}>
-              <TuneIcon  sx={{color: APPEARANCE.BLACK}} />
-            </IconButton>
           </Box>
 
           <Box style={headStyle} sx={{ display: "flex", justifyContent:"space-between",  margin: "0 auto", maxWidth: "1100px"}} justifyContent={"center"} className="header-menu" >
