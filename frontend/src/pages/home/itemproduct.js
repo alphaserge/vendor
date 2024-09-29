@@ -48,7 +48,7 @@ export default function ItemProduct(props) {
   return (
     
     <FormControl  sx={{ mb: 2, width: 340 }} > 
-          <Link href={"/updateproduct?id=" + props.data.id} >
+          <Link href={"/updateproduct?id=" + props.data.id} className="no-link" >
           <Swiper className="mySwiper" >
             {props.data.colors.map((cv, index) => {
               return <>
@@ -59,7 +59,6 @@ export default function ItemProduct(props) {
               </SwiperSlide></>
             })}
             </Swiper>
-          </Link>
 
           <Box sx={{ display: "flex", flexDirection: 'column', alignItems: "left", ml: 3}}>
                 <Box className="product-item">{props.data.itemName}</Box>
@@ -80,6 +79,7 @@ export default function ItemProduct(props) {
            <div style={{ clear: "left" }} >
            </div>
            {/* </div> */}
+           </Link>
            </FormControl>
 );
 }

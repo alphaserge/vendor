@@ -64,7 +64,7 @@ export default function ColorVariant(props) {
     }
 
     const setSelectedFile = (value) => {
-      props.cv.selectedFile = value
+      props.cv.SelectedFile = value
       props.cv.colorNo = props.cv.colorNo
       props.setColorItem(props.cv.uuid, props.cv)
     }
@@ -128,8 +128,8 @@ export default function ColorVariant(props) {
         aria-label="upload picture"
         sx={{color: APPEARANCE.BLACK2}}
         component="span">
-            {!props.cv.selectedFile && <AddAPhotoIcon />}
-            { props.cv.selectedFile && <DoneIcon />}
+            {!props.cv.SelectedFile && <AddAPhotoIcon />}
+            { props.cv.SelectedFile && <DoneIcon />}
       </IconButton>
       </label>      
       </Box>

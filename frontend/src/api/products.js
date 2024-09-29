@@ -223,11 +223,11 @@ export const sampleComposition = async (productId, sampleId) => {
 
 export const postFile = async (colorVariant, prodId) => {
 
-  if (!colorVariant.selectedFile) {
+  if (!colorVariant.SelectedFile) {
     return
   }
   const formData = new FormData();
-  formData.append("formFile", colorVariant.selectedFile);
+  formData.append("formFile", colorVariant.SelectedFile);
   formData.append("uid", colorVariant.uuid); //!? Id);
   formData.append("productId", prodId);
   try {

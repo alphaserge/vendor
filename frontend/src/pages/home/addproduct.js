@@ -167,7 +167,7 @@ export default function AddProduct(props) {
           colorVariantId: null,
           productId: null,
           quantity: null,
-          selectedFile: null,
+          SelectedFile: null,
           isProduct: false
           };
       }))
@@ -176,13 +176,13 @@ export default function AddProduct(props) {
       {
         id: uuid(),
         no: 1,
-        selectedFile: null,
+        SelectedFile: null,
         isProduct: true
       },
       {
         id: uuid(),
         no: 2,
-        selectedFile: null,
+        SelectedFile: null,
         isProduct: true
       },
     ])
@@ -254,7 +254,7 @@ export default function AddProduct(props) {
         colorVariantId: null,
         productId: null,
         quantity: null,
-        selectedFile: null,
+        SelectedFile: null,
         isProduct: false
     })
       i++
@@ -270,7 +270,7 @@ export default function AddProduct(props) {
       cv.push({
         uuid: uuid(),
         no: i,
-        selectedFile: null,
+        SelectedFile: null,
         isProduct: true
       })
       i++
@@ -313,7 +313,7 @@ export default function AddProduct(props) {
       finishing: finishing,
       plainDyedType: plainDyedType,
       colorVariants: colorVariant,//.filter(it => !!it.colorNo),
-      globalPhotos: allColor.filter(it => !!it.selectedFile)
+      globalPhotos: allColor.filter(it => !!it.SelectedFile)
     }
 
     let r = await postProduct(prod, "ProductAdd")

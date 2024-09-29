@@ -257,7 +257,7 @@ export default function UpdateProduct(props) {
           colorVariantId: null,
           productId: null,
           quantity: null,
-          selectedFile: null,
+          SelectedFile: null,
           isProduct: false
         })
         i++
@@ -373,7 +373,7 @@ export default function UpdateProduct(props) {
       finishing: finishing,
       plainDyedType: plainDyedType,
       colorVariants: colorVariants,//.filter(it => !!it.colorNo),
-      globalPhotos: productColors.filter(it => !!it.selectedFile)
+      globalPhotos: productColors.filter(it => !!it.SelectedFile)
     }
 
     let r = await postProduct(prod, "ProductUpdate")

@@ -31,7 +31,7 @@ namespace chiffon_back.Code
         {
             if (uid == null || String.IsNullOrWhiteSpace(uid))
             {
-                return new List<string> { @"colors\no-picture.png" };
+                return new List<string> { @"colors\nopicture.png" };
             }
             string dir = uid.Replace("-", "").Insert(6, "\\").Insert(4, "\\").Insert(2, "\\");
             string fileUrl = Path.Combine(@"colors", dir);
@@ -44,7 +44,7 @@ namespace chiffon_back.Code
             }
             else
             {
-                return new List<string> { @"colors\no-picture.png" };
+                return new List<string> { @"colors\nopicture.png" };
             }
         }
     }
