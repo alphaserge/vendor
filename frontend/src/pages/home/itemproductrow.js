@@ -37,7 +37,7 @@ const Input = styled('input')({
   display: 'none',
 });
 
-export default function ItemProduct(props) {
+export default function ItemProductRow(props) {
 
     const navigate = useNavigate();
     const theme = useTheme();
@@ -45,26 +45,39 @@ export default function ItemProduct(props) {
     useEffect(() => {
     }, []);
 
+console.log(props.data)
+
   return (
     
-    <FormControl  sx={{ mb: 2, width: 340 }} > 
-          <Link href={"/updateproduct?id=" + props.data.id} className="no-link" >
+    <FormControl sx={{ mt: 0, width: 740 }} > 
+      <Box sx={{ display: "flex", flexDirection: 'row', ml: 0, alignItems: "center" }}>
+      <Link href={"/updateproduct?id=" + props.data.id} sx={{ maxWidth: "125px"}} >
           <Swiper className="mySwiper" >
             {props.data.colors.map((cv, index) => {
               return <>
               <SwiperSlide key={"product-swiper"+index} sx={{ display: "flex", justifyContent: "center"}} >
-                <Box className="product-img-holder" ><Box component={"img"} key={index} 
-                src={config.api + "/" + cv.imagePath[0]} 
-                alt={"photo"+(index+1)} className="product-img" /></Box>
+                <Box className="product-img-holder-small" >
+                  <Box component={"img"} 
+                    key={index} 
+                    src={config.api + "/" + cv.imagePath[0]} 
+                    alt={"photo"+(index+1)} 
+                    className="product-img" />
+                  </Box>
               </SwiperSlide></>
             })}
             </Swiper>
+            </Link>
 
           <Box sx={{ display: "flex", flexDirection: 'column', alignItems: "left", ml: 3}}>
-                <Box className="product-item"><Box component={"span"} className="label width80">Item name: </Box>{props.data.itemName}</Box>
+                <Box className="product-item"><Box component={"span"} className="label width90">Item name: </Box>{props.data.itemName} </Box>
               {/* <div class="product-item">{props.data.refNo}</div>*/}
-              <Box className="product-item"><Box component={"span"} className="label width80">Ref.</Box>{props.data.refNo} <Box component={"span"} className="label marginleft30 marginright10">Art.</Box> {props.data.artNo}</Box> 
-              <Box className="product-item"><Box component={"span"} className="label width80">Design: </Box>{props.data.design}</Box>
+              <Box className="product-item">
+                <Box component={"span"} className="label width90">Ref.</Box>{props.data.refNo} 
+                <Box component={"span"} className="label marginleft30 marginright10">Art.</Box> {props.data.artNo}
+                <Box component={"span"} className="label marginleft30 marginright10">Design: </Box>{props.data.design} 
+              </Box> 
+              <Box className="product-item"><Box component={"span"} className="label width90">Composition: </Box>{props.data.composition} </Box>
+              
             </Box>
             {/* <Box display="flex" alignItems={"center"} justifyContent={"left"} >
                <Box className="product-item price" sx={{color: APPEARANCE.LIGHT_GREEN1}} >&nbsp;${props.data.price}&nbsp;</Box>
@@ -79,7 +92,8 @@ export default function ItemProduct(props) {
            <div style={{ clear: "left" }} >
            </div>
            {/* </div> */}
-           </Link>
+           </Box>
+           
            </FormControl>
 );
 }
