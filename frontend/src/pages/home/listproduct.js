@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { json, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -26,12 +26,10 @@ import config from "../../config.json"
 
 import Header from './header';
 import Footer from './footer';
-import MainBanner from './mainbanner';
+
 import ItemProduct from './itemproduct';
 import ItemProductRow from './itemproductrow';
 import MySelect from '../../components/myselect';
-
-import { clear } from "@testing-library/user-event/dist/clear";
 
 import { APPEARANCE } from '../../appearance';
 import { Button } from "@mui/material";
@@ -39,10 +37,9 @@ import { Button } from "@mui/material";
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
 const itemStyle = { width: 330, m: 1, ml: 0 }
-const itemStyle1 = { width: "100%", mt: 0, ml: 0, mr: 0 }
-const halfItemStyle = { width: "calc( 50% - 3px )", m: 0 }
+const smallItemStyle = { width: 161, m: 1, ml: 0 }
 const labelStyle1 = { m: 0, mt: 1, ml: 0, mr: 4 }
-const buttonStyle = { width: 180, m: 2 }
+const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, m: 1 }
 const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto 20px auto", padding: "0 10px" }
 const flexStyle = { display: "flex", flexDirection: "row", alignItems : "center", justifyContent: "space-between" }
 
@@ -282,78 +279,91 @@ export default function ListProduct(props) {
         open={addProduct}
         onClose={function() { setAddProduct(false) }}
         aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description" >
+        aria-describedby="modal-modal-description"
+        sx={{ width: "auto"}} >
 
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-                width: 475, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
+        <Box sx={{ 
+          position: 'absolute', 
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)',
+          width: "auto", 
+          bgcolor: 'background.paper', 
+          border: '2px solid #000', 
+          boxShadow: 24, 
+          p: 4,
+          display: "flex",
+          flexDirection: 'column', 
+          alignItems: 'left' }}>
+          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{textAlign: "center"}} >
             Adding a new product
           </Typography>
 
           {/* General */}
-          <Grid container spacing={2} >
-          <Grid item xs={12} md={6} >
             <TextField
                 margin="normal"
                 size="small" 
                 id="itemName"
                 label="Item name"
                 name="itemName"
-                sx = {itemStyle1}
+                sx = {itemStyle}
                 value={addItemName}
                 onChange={ev => setAddItemName(ev.target.value)}
               />
-            </Grid>
-            <Grid item xs={12} md={6}  >
             <TextField
                 margin="normal"
                 size="small" 
                 id="design"
                 label="Design"
                 name="design"
-                sx = {itemStyle1}
+                sx = {itemStyle}
                 value={addDesign}
                 onChange={ev => setAddDesign(ev.target.value)}
               />
-              </Grid>
+              <Box sx={{ 
+                display: "flex",
+                flexDirection: 'row', 
+                alignItems: 'left' }}>
+                <TextField
+                    margin="normal"
+                    size="small" 
+                    id="refNo"
+                    label="Ref No"
+                    name="refNo"
+                    value={addRefNo}
+                    sx = {smallItemStyle}
+                    onChange={ev => setAddRefNo(ev.target.value)}
+                  />
+                <TextField
+                    margin="normal"
+                    size="small" 
+                    id="artNo"
+                    label="Art No"
+                    name="artNo"
+                    sx = {smallItemStyle}
+                    value={addArtNo}
+                    onChange={ev => setAddArtNo(ev.target.value)}
+                  />
+                  </Box>
 
-            <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
-            <TextField
-                margin="normal"
-                size="small" 
-                id="refNo"
-                label="Ref No"
-                name="refNo"
-                value={addRefNo}
-                sx = {halfItemStyle}
-                onChange={ev => setAddRefNo(ev.target.value)}
-              />
-            <TextField
-                margin="normal"
-                size="small" 
-                id="artNo"
-                label="Art No"
-                name="artNo"
-                sx = {halfItemStyle}
-                value={addArtNo}
-                onChange={ev => setAddArtNo(ev.target.value)}
-              />
-            </Grid>
-          </Grid>
-
-          <Button 
-              variant="contained"
-              style={buttonStyle}
-              sx={{marginTop: "40px"}}
-              onClick={handleAddProductSave} >
-                  Save
-          </Button>
-          <Button 
-              variant="contained"
-              style={buttonStyle}
-              onClick={handleAddProductCancel} >
-                  Cancel
-          </Button>
+                  <Box sx={{ 
+                    display: "flex",
+                    flexDirection: 'row', 
+                    justifyContent: 'center' }}>
+                      <Button 
+                          variant="contained"
+                          style={buttonStyle}
+                          sx={buttonStyle}
+                          onClick={handleAddProductSave} >
+                              Next
+                      </Button>
+                      <Button 
+                          variant="contained"
+                          sx={buttonStyle}
+                          onClick={handleAddProductCancel} >
+                              Cancel
+                      </Button>
+                  </Box>
         </Box>
       </Modal>
 
@@ -385,12 +395,12 @@ export default function ListProduct(props) {
             </IconButton>
             </Tooltip>
             <Tooltip title="Filters">
-            <IconButton onClick={handleShowHideFilter} sx={{ p: 0, mr: 4 }}>
+            <IconButton onClick={handleShowHideFilter} sx={{ p: 0, ml: 1 }}>
               <TuneIcon  sx={{color: APPEARANCE.BLACK}} />
             </IconButton>
             </Tooltip>
-            <Tooltip title="Filters">
-            <IconButton onClick={handleAddProductShow} sx={{ p: 0, mr: 4 }}>
+            <Tooltip title="Add a new product">
+            <IconButton onClick={handleAddProductShow} sx={{ p: 0, ml: 1 }}>
               <AddCircleOutlineIcon  sx={{color: APPEARANCE.BLACK}} />
             </IconButton>
             </Tooltip>
@@ -580,12 +590,12 @@ export default function ListProduct(props) {
 
           {/* <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" > */}
           <Grid container spacing={2} >
-            { view == "grid" && products.map((data, index) => (
+            { view === "grid" && products.map((data, index) => (
             <Grid item xs={12} md={6} >
               <ItemProduct data={data} index={index} />
               </Grid>
             ))}
-            { view == "rows" && products.map((data, index) => (
+            { view === "rows" && products.map((data, index) => (
             <Grid item xs={12} md={12} >
               <ItemProductRow data={data} index={index} />
               </Grid>
