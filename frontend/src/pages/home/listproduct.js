@@ -30,6 +30,7 @@ import Footer from './footer';
 import ItemProduct from './itemproduct';
 import ItemProductRow from './itemproductrow';
 import MySelect from '../../components/myselect';
+import { postProduct } from '../../api/products'
 
 import { APPEARANCE } from '../../appearance';
 import { Button } from "@mui/material";
@@ -88,6 +89,8 @@ export default function ListProduct(props) {
     const [addRefNo, setAddRefNo] = useState("")
     const [addArtNo, setAddArtNo] = useState("")
     const [addDesign, setAddDesign] = useState("")
+
+    const [savingError, setSavingError] = useState(false)
     
     const headStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 10px" }
 
@@ -128,11 +131,12 @@ export default function ListProduct(props) {
   };
 
   const handleAddProductSave = (event) => {
-    setFilter(!filter);
+    saveProduct()
+    setAddProduct(false)
   };
 
   const handleAddProductCancel = (event) => {
-    setFilter(!filter);
+    setAddProduct(false);
   };
 
     const url = require('url');
@@ -153,7 +157,6 @@ export default function ListProduct(props) {
         console.log(error)
       })
     }
-
 
     const loadProducts = async (e) => {
       //const params = new URLSearchParams();
@@ -256,6 +259,36 @@ export default function ListProduct(props) {
       })
     }
         
+    const saveProduct = async (e) => {
+    
+      let vendorId = props.user ? props.user.vendorId : -1;
+  /*
+    const [addItemName, setAddItemName] = useState("")
+    const [addRefNo, setAddRefNo] = useState("")
+    const [addArtNo, setAddArtNo] = useState("")
+    const [addDesign, setAddDesign] = useState("")
+
+  */
+      let prod = {
+        vendorId: vendorId,
+        artNo: addArtNo,
+        itemName: addItemName,
+        design: addDesign,
+        refNo: addRefNo,
+      }
+  
+      let r = await postProduct(prod, "ProductAdd")
+  
+      if (r && r.status == true) {
+        props.setLastAction("Product has been added")
+        setSavingError(false)
+        navigate("/updateproduct?id=" + r.id)
+      } else {
+        setSavingError(true)
+      }
+    }
+  
+  
 
     useEffect(() => {
       loadProducts()
@@ -345,6 +378,11 @@ export default function ListProduct(props) {
                     onChange={ev => setAddArtNo(ev.target.value)}
                   />
                   </Box>
+
+                  { savingError && 
+                    <Box sx={{ textAlign: "center", marginTop: 2, fontSize: "12pt", color: "red" }}>
+                    An error has occurred. Please check that all fields are filled in correctly and completely and try saving again.
+                    </Box> }
 
                   <Box sx={{ 
                     display: "flex",

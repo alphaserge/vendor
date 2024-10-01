@@ -85,15 +85,15 @@ export const postProduct = async (prod, action) => {
       return false;
     }
 
-    prod.colorVariants.forEach(cv => {  // !!ColorNo
+    prod.colorVariants && prod.colorVariants.forEach(cv => {  // !!ColorNo
       postFile(cv, null)
     });
 
-    prod.globalPhotos.forEach(cv => { //filter(e=>!!e.SelectedFile)  .map((e) => e.Id).join(',')
+    prod.globalPhotos && prod.globalPhotos.forEach(cv => { //filter(e=>!!e.SelectedFile)  .map((e) => e.Id).join(',')
       postFile(cv, r.id)
     });
 
-    return true;
+    return { status: true, id: r.id };
   })
   .catch (error => {
     console.log(error)
