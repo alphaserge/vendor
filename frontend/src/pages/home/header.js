@@ -21,10 +21,10 @@ import { APPEARANCE } from '../../appearance';
 
 import config from "../../config.json"
 
-const pages = ['My Products', 'Add Product', 'Categories', 'Contact Us' ];
+const pages = ['Products', 'Accessories', 'Contacts' ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Login', 'Logout', 'Register'];
 
-const menuPagesStyle = { textTransform: "none", fontSize: "11pt", fontWeight: "normal", color: APPEARANCE.WHITE2 }
+const menuPagesStyle = { fontSize: "14px", fontWeight: "normal", color: APPEARANCE.WHITE2 }
 
 function FabricIcon(props) {
   return (
@@ -90,7 +90,7 @@ export default function Header(props) {
   
 
   return (
-    <AppBar position="static" sx={{backgroundColor: APPEARANCE.BLACK, boxShadow: "none" }}>
+    <AppBar position="fixed" sx={{backgroundColor: APPEARANCE.BLACK, boxShadow: "none" }}>
       <Container className="header-menu" sx={{ backgroundColor: APPEARANCE.BLACK  }} maxWidth={false}  >
         <Toolbar disableGutters>
           {/* <ApiIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -159,13 +159,17 @@ export default function Header(props) {
                 sx={{ ml: 2, mr: 2, display: 'block' }}
                 onClick={handleMenuClick}
               >
-                {page}
+                {page.toUpperCase()}
               </Button>
             ))}
           </Box>
 
           <Box sx={{ flexGrow: 0, display: "flex", flexDirection: "row", alignItems : "center" }}>
-          <Box onClick={handleOpenUserMenu}>{props.user != undefined? props.user.firstName: ""}</Box>
+          <Box 
+            onClick={handleOpenUserMenu}
+            style={menuPagesStyle} >
+              {props.user != undefined? props.user.firstName + " - " + props.user.vendorName : ""}
+            </Box>
           {/* <Button
                 key="user"
                 data-menu-value="user"

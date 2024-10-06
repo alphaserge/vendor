@@ -21,7 +21,7 @@ import { Icon } from '@mui/material';
 
 import config from "../../../config.json"
 
-const pages = ['My Products', 'Add Product', 'Contacts' ];
+const pages = ['Products', 'Contacts' ];
 const settings = ['Profile', 'Account', 'Logout'];
 
 function FabricIcon(props) {
@@ -62,7 +62,7 @@ function Header(props) {
   return (
     <React.Fragment>
     <AppBar position="static">
-      <Container maxWidth="xl">
+      <Container >
         <Toolbar disableGutters>
           <ApiIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography

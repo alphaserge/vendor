@@ -224,6 +224,10 @@ namespace chiffon_back.Models
 
             foreach (var p in prods)
             {
+                if (p.RefNo=="20300")
+                {
+                    int a = 0;
+                }
                 // 1) ALL COLORS
                 int id = 1;
                 if (!String.IsNullOrEmpty(p.PhotoUuids))
@@ -271,6 +275,17 @@ namespace chiffon_back.Models
                         ColorIds = colorsIds,
                         ImagePath = imageFiles,
                         Uuid = cv.Uuid
+                    });
+                }
+
+                if (p.Colors.Count == 0)
+                {
+                    p.Colors.Add(new ProductColor()
+                    {
+                        ColorNames = "ALL COLORS",
+                        ColorVariantId = -id,
+                        ColorNo = null,
+                        ImagePath = new List<string>() { @"colors\nopicture.png" }
                     });
                 }
 

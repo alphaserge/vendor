@@ -41,7 +41,11 @@ const itemStyle = { width: 330, m: 1, ml: 0 }
 const smallItemStyle = { width: 161, m: 1, ml: 0 }
 const labelStyle1 = { m: 0, mt: 1, ml: 0, mr: 4 }
 const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, m: 1 }
-const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto 20px auto", padding: "0 10px" }
+const outboxStyle = { maxWidth: "744px", margin: "80px auto 20px auto", padding: "0 10px" }
+const findBoxStyle = { width: "calc(100% - 80px)" }
+const findTextStyle = { width: "100%", border: "none" }
+//const findTextStyle = { width: "100%", border: "none", border: "solid 1px #888", borderRadius: 1 }
+const toolButtonStyle = { width: "26px", height: "26px", marginTop: "5px" }
 const flexStyle = { display: "flex", flexDirection: "row", alignItems : "center", justifyContent: "space-between" }
 
 const ITEM_HEIGHT = 48;
@@ -92,7 +96,7 @@ export default function ListProduct(props) {
 
     const [savingError, setSavingError] = useState(false)
     
-    const headStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 10px" }
+    const headStyle = { maxWidth: "744px", width: "auto", margin: "0", padding: "0 10px" }
 
     const handleShowHideFilter = (event) => {
       setFilter(!filter);
@@ -419,44 +423,33 @@ export default function ListProduct(props) {
 
           
 
-          <Box component="form" noValidate sx={accordionSummaryStyle} >
+          <Box component="form" noValidate style={outboxStyle}>
 
-          <Box style={headStyle} sx={{ display: "flex", justifyContent:"space-between",  margin: "0 auto", maxWidth: "1100px", backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px"}} justifyContent={"center"} className="header-menu" >
+          <Box style={headStyle} sx={{ display: "flex", justifyContent:"left", margin: "0", alignItems: "center" }}  >
             <Tooltip title="Rows interface">
-            <IconButton onClick={ (e) => { setView("rows")} } sx={{ p: 0, ml: 2 }}>
+            <IconButton onClick={ (e) => { setView("rows")} } style={toolButtonStyle} sx={{mr: 0}} >
               <TableRowsIcon sx={{color: view=="grid" ? APPEARANCE.BLACK : APPEARANCE.GREY }} />
             </IconButton>
             </Tooltip>
             <Tooltip title="Grid interface">
-            <IconButton onClick={ (e) => { setView("grid")} } sx={{ p: 0, ml: 1 }}>
+            <IconButton onClick={ (e) => { setView("grid")} } style={toolButtonStyle} sx={{mr: 1}} >
               <GridViewIcon sx={{color: view=="grid" ? APPEARANCE.GREY : APPEARANCE.BLACK }} />
             </IconButton>
             </Tooltip>
-            <Tooltip title="Filters">
-            <IconButton onClick={handleShowHideFilter} sx={{ p: 0, ml: 1 }}>
-              <TuneIcon  sx={{color: APPEARANCE.BLACK}} />
-            </IconButton>
-            </Tooltip>
-            <Tooltip title="Add a new product">
-            <IconButton onClick={handleAddProductShow} sx={{ p: 0, ml: 1 }}>
-              <AddCircleOutlineIcon  sx={{color: APPEARANCE.BLACK}} />
-            </IconButton>
-            </Tooltip>
-            <Box sx={{ display: "flex", alignItems:"center", justifyContent: "center", width: "100%", mt: 2, mb: 2}}>
-            <Typography component="h7" variant="h7" color={APPEARANCE.COLOR1}>
-              {props.user && ( props.user.vendorName + " product's list") } 
+            {/* <Box sx={{ display: "flex", alignItems:"center", justifyContent: "center", width: "100%", mt: 2, mb: 2}}>
+            <Typography component="h7" variant="h7" color={APPEARANCE.COLOR1} sx={{fontWeight: "bold"}} >
+              {props.user && ( "Products") } 
             </Typography>
-            </Box>
-          </Box>
-
-          <Box style={headStyle} sx={{ display: "flex", justifyContent:"space-between",  margin: "0 auto", maxWidth: "1100px"}} justifyContent={"center"} className="header-menu" >
+            </Box> */}
+          <Box style={findBoxStyle}>
           <TextField
                 margin="normal"
                 size="small" 
                 id="search-value"
-                label="Find products - art, ref, design, item name .."
+                label="Find products"
                 name="search"
-                sx={{ flex: 2 }}
+                style = {findTextStyle}
+                sx={{borderRadius: "0"}}
                 value={search}
                 onChange={ev => searchProducts(ev.target.value)}
                 InputProps={{
@@ -470,6 +463,29 @@ export default function ListProduct(props) {
                 }}
               />
           </Box>
+
+            <Tooltip title="Filters">
+            <IconButton onClick={handleShowHideFilter} style={toolButtonStyle} sx={{mr: 1, ml: 1}} >
+              <TuneIcon  sx={{color: APPEARANCE.BLACK}} />
+            </IconButton>
+            </Tooltip>
+
+            <Button
+              variant="text"
+               startIcon={<AddCircleOutlineIcon sx={{color: APPEARANCE.BLACK}} />}
+               
+               sx={{ backgroundColor: "#fff", color: APPEARANCE.BLACK, textTransform: "none", width: "140px", height: "26px", marginTop: "5px" }}>
+               Add product
+            </Button>
+
+            {/* <Tooltip title="Add a new product">
+            <IconButton onClick={handleAddProductShow} style={toolButtonStyle} sx={{mr: 1}} >
+              <AddCircleOutlineIcon  sx={{color: APPEARANCE.BLACK}} />
+            </IconButton>
+            </Tooltip> */}
+
+          </Box>
+
 
           <Box sx={{ backgroundColor: "none", display: filter==true? "block": "none", textAlign: "center", mt: 3, mb: 3  }} className="filter" >
           <Box className="filter" sx={{ textAlign: "left"}} >
