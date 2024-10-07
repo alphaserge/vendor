@@ -85,7 +85,7 @@ return (
         input={<OutlinedInput label={props.title} />}
         MenuProps={props.MenuProps}
     >
-    { props.data.map((elem) => (
+    { props.data && props.data.map((elem) => (
         <MenuItem 
             key={elem.id} 
             value={elem.id}

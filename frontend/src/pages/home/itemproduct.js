@@ -51,12 +51,12 @@ export default function ItemProduct(props) {
           <Link href={"/updateproduct?id=" + props.data.id} className="no-link" >
           <Swiper className="mySwiper" >
             {props.data.colors.map((cv, index) => {
-              return <>
-              <SwiperSlide key={"product-swiper"+index} sx={{ display: "flex", justifyContent: "center"}} >
-                <Box className="product-img-holder" ><Box component={"img"} key={index} 
+              return <Box key={"product-box-"+index} >
+              <SwiperSlide key={"product-swiper-"+index} sx={{ display: "flex", justifyContent: "center"}} >
+                <Box className="product-img-holder" ><Box component={"img"} key={"product-swiper-"+index} 
                 src={config.api + "/" + cv.imagePath[0]} 
                 alt={"photo"+(index+1)} className="product-img" /></Box>
-              </SwiperSlide></>
+              </SwiperSlide></Box>
             })}
             </Swiper>
 

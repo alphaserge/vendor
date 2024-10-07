@@ -122,7 +122,7 @@ export default function ColorVariant(props) {
       />
 
       <label htmlFor={"icon-button-file-" + props.cv.colorVariantId}>
-      <Input accept="image/*" id={"icon-button-file-"+props.cv.colorVariantId} type="file" onChange={onFileChange} />
+      <Input accept="image/*" id={"icon-button-file-"+props.cv.colorVariantId} type="file" onChange={onFileChange} value={""} />
       <IconButton
         color="success"
         aria-label="upload picture"

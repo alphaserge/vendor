@@ -454,7 +454,7 @@ export default function ListProduct(props) {
                 onChange={ev => searchProducts(ev.target.value)}
                 InputProps={{
                   endAdornment: (
-                    <InputAdornment>
+                    <InputAdornment position="end">
                       <IconButton>
                         <SearchIcon />
                       </IconButton>
@@ -644,12 +644,12 @@ export default function ListProduct(props) {
           {/* <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" > */}
           <Grid container spacing={2} >
             { view === "grid" && products.map((data, index) => (
-            <Grid item xs={12} md={6} >
+            <Grid item xs={12} md={6} key={"itemprod-"+index} >
               <ItemProduct data={data} index={index} />
               </Grid>
             ))}
             { view === "rows" && products.map((data, index) => (
-            <Grid item xs={12} md={12} >
+            <Grid item xs={12} md={12} key={"itemprod-"+index} >
               <ItemProductRow data={data} index={index} />
               </Grid>
             ))}

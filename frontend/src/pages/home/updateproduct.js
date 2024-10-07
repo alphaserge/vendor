@@ -68,7 +68,8 @@ const halfItemStyle1 = { width: "calc( 50% - 4px )", m: 0 }
 const thirdItemStyle = { width: "calc( 33% - 5px )", m: 0 }
 const labelStyle = { m: 0, ml: 0, mr: 4 }
 const labelStyle1 = { m: 0, ml: 0, mr: 4 }
-const buttonStyle = { width: 100, backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "5px 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
+const buttonStyle = { backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "5px 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
+const smallButtonStyle = { backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "5px 10px 5px 0", width: 150, height: "30px", textTransform: "none", borderRadius: "0" }
 const accordionStyle = { textAlign: "center", margin: "15px auto", justifyContent:"center", boxShadow: "none", border: "none", width: "100%" }
 const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto 20px auto", padding: "0 10px",  backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px" }
 const accordionDetailsStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 0px" }
@@ -533,7 +534,8 @@ const uploadProductColor = async (event) => {
 
 const uploadColorVariant = async (event) => {
 
-  const file = event.target.files[0]
+  setWindowColorVariant(true)
+  /*const file = event.target.files[0]
   const id = idFromUrl()
   const cv = 
   {
@@ -548,7 +550,7 @@ const uploadColorVariant = async (event) => {
     SelectedFile: file,
   }
   await postFile(cv, id)
-  loadProduct(id, setProduct)
+  loadProduct(id, setProduct)*/
   //navigate(loc)
 }
 
@@ -657,8 +659,6 @@ useEffect(() => {
   getTextileTypes(setTextileTypes)
 
   }, []);
-
-  console.log(productStyle)
 
   const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
 
@@ -790,7 +790,7 @@ useEffect(() => {
         <Header user={props.user} title={props.title} />
         <main>
  
-          <Typography component="h7" variant="h7" color={APPEARANCE.COLOR1}>
+          <Typography component="h6" variant="h6" color={APPEARANCE.COLOR1}>
           Change a product art. {artNo} - {itemName}
           </Typography>
           {/* <Typography component="p" variant="subtitle1" sx={{mb:2}}  color={APPEARANCE.COLOR1}>
@@ -832,7 +832,7 @@ useEffect(() => {
               />
               </Grid>
 
-            <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
+            <Grid item xs={12} md={6} sx={{...flexStyle}} >
             <TextField
                 margin="normal"
                 size="small" 
@@ -855,7 +855,7 @@ useEffect(() => {
               />
             </Grid>
 
-            <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
+            <Grid item xs={12} md={6} sx={{...flexStyle}} >
             <TextField
                 margin="normal"
                 size="small" 
@@ -888,7 +888,7 @@ useEffect(() => {
               />
               </Grid>
 
-              <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
+              <Grid item xs={12} md={6} sx={{...flexStyle}} >
               <TextField
                   margin="normal"
                   size="small" 
@@ -912,7 +912,7 @@ useEffect(() => {
                 />
                 </Grid>
 
-              <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
+              <Grid item xs={12} md={6} sx={{...flexStyle}} >
                 <TextField
                   margin="normal"
                   size="small" 
@@ -934,7 +934,7 @@ useEffect(() => {
                   onChange={ev => setMetersInKg(ev.target.value)}
                 />
               </Grid>
-              <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
+              <Grid item xs={12} md={6} sx={{...flexStyle}} >
                 <MySelect 
                   id="addproduct-productstyle"
                   url="ProductStyles"
@@ -949,7 +949,7 @@ useEffect(() => {
                   data={productStyles}
                 />
                 </Grid>
-                <Grid item xs={12} md={6} spacing={12} sx={{...flexStyle}} >
+                <Grid item xs={12} md={6} sx={{...flexStyle}} >
                 <></>
                 </Grid>
               </Grid>
@@ -972,9 +972,9 @@ useEffect(() => {
             <Grid container spacing={2} sx={accordionSummaryStyle}>
             
               { colorVariants && colorVariants.filter((el)=> el.colorVariantId != null).map((cv, index) => {
-                return <Grid item xs={6} md={3} sx={{}} className="product-img-holder-item" >
+                return <Grid item xs={6} md={3} sx={{}} className="product-img-holder-item" key={"color-item-"+index} >
                 {/* <Box > */}
-                  <Box className="product-img-holder-thumb" >
+                  <Box className="product-img-holder-thumb" key={"color-item-1-"+index}>
                   <Box 
                     component={"img"} 
                     key={index} 
@@ -1015,32 +1015,46 @@ useEffect(() => {
             {/* </Box> */}
 
             <Box>
+              
             <label htmlFor={"icon-button-file-prod"}>
               <Input accept="image/*" id={"icon-button-file-prod"} type="file" onChange={uploadProductColor} />
-              <IconButton aria-label="upload global photo" sx={{color: APPEARANCE.BLACK2}} component="span">
-                    <AddAPhotoIcon />
-                    <Box component="span" sx={{fontSize: 14, ml: 1, backgroundColor: APPEARANCE.BLACK2}}> Add global photo</Box>
-              </IconButton>
+              <Button aria-label="upload global photo" style={smallButtonStyle} component="span">
+                    <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
+                    Add global photo
+              </Button>
             </label>
+            
 
             <label htmlFor={"icon-button-file-cv"} sx={{ ml: 2 }}>
               <Input accept="image/*" id={"icon-button-file-cv"} type="file" onChange={uploadColorVariant} />
-              <IconButton aria-label="upload color photo" sx={{color: APPEARANCE.BLACK2}} component="span">
-                    <AddAPhotoIcon />
-                    <Box component="span" sx={{fontSize: 14, ml: 1}}> Add color</Box>
-              </IconButton>
+              <Button aria-label="upload global photo" style={smallButtonStyle} component="span">
+                    <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
+                    Add&nbsp;
+                    <span style={{color: "#f66", m:0, p:0}}>c</span>
+                    <span style={{color: "#aaf", m:0, p:0}}>o</span>
+                    <span style={{color: "#6f6", m:0, p:0}}>l</span>
+                    <span style={{color: "#ff6", m:0, p:0}}>o</span>
+                    <span style={{color: "#6ff", m:0, p:0}}>r</span>
+                    &nbsp;
+                    <span style={{color: "#f66", m:0, p:0}}>p</span>
+                    <span style={{color: "#aaf", m:0, p:0}}>h</span>
+                    <span style={{color: "#6f6", m:0, p:0}}>o</span>
+                    <span style={{color: "#ff6", m:0, p:0}}>t</span>
+                    <span style={{color: "#6ff", m:0, p:0}}>o</span>
+                    
+              </Button>
             </label>
 
             </Box>
 
             <Grid container spacing={2} >
-              { productColors.map((cv) => (
-                <Grid item xs={12} md={6} sx={{...flexStyle}} >
+              { productColors.map((cv,index) => (
+                <Grid item xs={12} md={6} sx={{...flexStyle}}  key={"color-prod-"+index} >
                     <ProductColor cv={cv} setColorItem={setProductColorItem} uploadFile={uploadProductColor} />
                  </Grid> ))}
 
-                { colorVariants && colorVariants.filter(it => !it.isProduct).map((cv) => (
-                  <Grid item xs={12} md={6} sx={{ ...flexStyle}} >
+                { colorVariants && colorVariants.filter(it => !it.isProduct).map((cv,index) => (
+                  <Grid item xs={12} md={6} sx={{ ...flexStyle}} key={"color-var-"+index} >
                     {/* { (cv.isProduct == true) &&
                     <ProductColor cv={cv} setColorItem={setProductColorItem}  />
                     } */}
@@ -1197,7 +1211,7 @@ useEffect(() => {
           </InputMask>
           </Grid>
 
-              <Grid item xs={12} md={6} spacing={2} >
+              <Grid item xs={12} md={6} >
               <FormControl sx = {halfItemStyle1}>
               <InputLabel id="fabric-shrinkage-label" sx={labelStyle1} size="small" >Fabric Shrinkage</InputLabel>
               <Select
@@ -1209,7 +1223,7 @@ useEffect(() => {
                 sx = {itemStyle1}
                 onChange={ev => setFabricShrinkage(ev.target.value)} >
                    { [...Array(11).keys()].map((elem, ix) => (
-                      <MenuItem key={"shr_"+ix} value={elem}
+                      <MenuItem key={"shr1_"+ix} value={elem}
                       style={getStyles(elem, fabricShrinkage, theme)}> { elem + "%"} </MenuItem> ))}
               </Select>
               </FormControl> &nbsp;
@@ -1224,7 +1238,7 @@ useEffect(() => {
                 sx = {itemStyle1}
                 onChange={ev => setColorFastness(ev.target.value)} >
                    {  [...Array(6).keys()].map((elem, ix) => (
-                      <MenuItem key={"shr_"+ix} value={elem}
+                      <MenuItem key={"shr2_"+ix} value={elem}
                       style={getStyles(elem, fabricShrinkage, theme)}> { elem } </MenuItem> ))}
               </Select>
               </FormControl>
@@ -1320,12 +1334,12 @@ useEffect(() => {
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'top' }}>
           <Box>
           { productTextileTypes && productTextileTypes.map((tt, ix) => (
-            <>
+            <Box key={"tt-item-"+ix} >
              <IconButton
               onClick={  function() { compositionRemove(tt.id) } }> <RemoveCircleOutlineIcon/>
               </IconButton>
               <span>{tt.value}%&nbsp;{tt.textileType};&nbsp;&nbsp;</span>
-              </>
+              </Box>
           ))}
             
           </Box>
@@ -1377,18 +1391,19 @@ useEffect(() => {
             <Box sx={{ mt: 0, display: 'flex', flexDirection: 'row', flexWrap: "wrap"}}>
             { BUTTONS.map((el, ix) => (
             
-            (<>
-            {ix % 3 == 0 && <div class="line-break"></div>}
+            (<Box key={"button-item-1-"+ix} >
+            {ix % 3 == 0 && <div className="line-break"></div>}
             <Button
                 variant="contained"
                 aria-label="add to composition"
                 size="small"
+                key={"button-item-"+ix} 
                 sx={{backgroundColor: "#888", width: "60px", height: "36px", mr: 1, mt: 1}}
                 onClick={function() { buttonClick(el) }}
                 >
                   {el}
             </Button>
-            </>)
+            </Box>)
             ))}
             </Box>
             </Box>
@@ -1397,14 +1412,15 @@ useEffect(() => {
               <Box sx={{backgroundColor: "#ddd", width: "100%", fontWeight: "555", p: 1, ml: 0, mt: 0, mb: 1}}>Similar compositions:</Box>
               <Box sx={{ mt: 1, ml: 1, textAlign: "left" }}>
               { compositionSamples && compositionSamples.map((el, ix) => (
-            (<>
+            (<Box key={"button-item-2-"+ix} >
             <Box
                 sx={{backgroundColor: "#fff", width: "100%", ml: 0, mt: 0, fontSize: "10pt", cursor: "pointer"}}
                 onClick={function() { compositionApplySample(el.productId) }}
+                key={"composition-item-"+ix} 
                 >
                   {el.composition}
             </Box>
-            </>)
+            </Box>)
             ))}
             </Box>
             </Box>

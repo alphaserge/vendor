@@ -56,19 +56,12 @@ export default function Header(props) {
 
   const handleMenuClick = (event) => {
     let value = event.currentTarget.dataset.menuValue;
-    console.log(value)
-    if (value == "My Products") { 
+    if (value == "Fabrics") { 
       console.log('redir')
       navigate("/listproduct")
-      //navigate("/") 
       return
     }
-    if (value == "Add Product") { 
-      console.log('>>addproduct')
-      //redirect("/addproduct")
-      navigate("/addproduct")
-      return
-    }
+
     if (value == "Contacts") { navigate("/contacts"); return; }
     if (value == "Profile") { navigate("/profile"); return; }
     if (value == "Account") { navigate("/account"); return; }
@@ -77,7 +70,6 @@ export default function Header(props) {
     if (value == "Logout") { navigate("/logout"); return; }
     if (value == "Register") { navigate("/register"); return; }
 
-    //['My Products', 'Add Product', 'Contacts' ]
     setAnchorElUser(null);
     setAnchorElNav(null);
   };
@@ -138,9 +130,9 @@ export default function Header(props) {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
+              {pages.map((page,index) => (
                 <MenuItem 
-                  key={page} 
+                  key={"key-"+index} 
                   data-menu-value={page}
                   //style={menuPagesStyle}
                   onClick={handleMenuClick}>
@@ -151,9 +143,9 @@ export default function Header(props) {
           </Box>
           
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: 2 }}>
-            {pages.map((page) => (
+            {pages.map((page,index) => (
               <Button
-                key={page}
+                key={"key1-"+index}
                 data-menu-value={page}
                 style={menuPagesStyle}
                 sx={{ ml: 1, mr: 1, display: 'block' }}
@@ -201,9 +193,9 @@ export default function Header(props) {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
+              {settings.map((setting,index) => (
                 <MenuItem 
-                  key={setting} 
+                  key={"key2-"+index} 
                   data-menu-value={setting}
                   onClick={handleMenuClick}>
                   <Typography textAlign="center">{setting}</Typography>
