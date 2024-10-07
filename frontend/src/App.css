@@ -122,7 +122,8 @@ img.product-img {
 
 .product-item .label {
   font-size: 13px;
-  color: #68f;
+  /* color: #68f; */
+  color: #77809f;
   font-weight: bold;
   /* width: 80px; */
   display: inline-block;

@@ -21,7 +21,7 @@ import { APPEARANCE } from '../../appearance';
 
 import config from "../../config.json"
 
-const pages = ['Products', 'Accessories', 'Contacts' ];
+const pages = ['Fabrics', 'Accessories', 'Help', 'Contacts' ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Login', 'Logout', 'Register'];
 
 const menuPagesStyle = { fontSize: "14px", fontWeight: "normal", color: APPEARANCE.WHITE2 }
@@ -156,7 +156,7 @@ export default function Header(props) {
                 key={page}
                 data-menu-value={page}
                 style={menuPagesStyle}
-                sx={{ ml: 2, mr: 2, display: 'block' }}
+                sx={{ ml: 1, mr: 1, display: 'block' }}
                 onClick={handleMenuClick}
               >
                 {page.toUpperCase()}

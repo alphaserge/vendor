@@ -37,7 +37,14 @@ import { getProductStyles } from '../../api/productstyles'
 import { getProductTypes } from '../../api/producttypes'
 import { getSeasons } from '../../api/seasons'
 import { getTextileTypes } from '../../api/textiletypes'
-import { postProduct, loadProduct, addComposition, removeComposition, finishComposition, sampleComposition } from '../../api/products'
+import { 
+  postProduct, 
+  postFile,
+  loadProduct, 
+  addComposition, 
+  removeComposition, 
+  finishComposition, 
+  sampleComposition } from '../../api/products'
 
 import Header from './header';
 import Footer from './footer';
@@ -47,8 +54,12 @@ import { APPEARANCE } from '../../appearance';
 import Modal from '@mui/material/Modal';
 import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import DoneIcon from '@mui/icons-material/Done';
+import { styled } from '@mui/material/styles';
 
 const defaultTheme = createTheme()
+const textStyle = { m: 0, mr: 1 }
 const itemStyle  = { width: "100%", mt: 3, ml: 0, mr: 0, mb: 0  }
 const itemStyle1 = { width: "calc( 100% - 0px )", mt: 0, ml: 0, mr: 0  }
 const flexStyle = { display: "flex", flexDirection: "row", alignItems : "center", justifyContent: "space-between" }
@@ -64,6 +75,10 @@ const accordionDetailsStyle = { maxWidth: "744px", margin: "0 auto", padding: "0
 const accordionCaption = { width: "100%", fontWeight: "bold", fontSize: "11pt" };
 
 const BUTTONS = ['1','2','3','4','5','6','7','8','9','X','0','ADD',]
+
+const Input = styled('input')({
+  display: 'none',
+});
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -167,6 +182,12 @@ export default function UpdateProduct(props) {
 
     const [colorVariants, setColorVariants] = useState([])
     const [productColors, setProductColors] = useState([])
+
+    const [windowColorVariant, setWindowColorVariant] = useState(false)
+    const [addColorIds, setAddColorIds] = useState([])
+    const [addColorNo, setAddColorNo] = useState("")
+    const [addQuantity, setAddQuantity] = useState("")
+    const [addSelectedFile, setAddSelectedFile] = useState(null)
     
     let loc = useLocation()
 
@@ -472,8 +493,6 @@ export default function UpdateProduct(props) {
     }
   }
 
-
-
   const saveColor = async (e) => {
 
     let r = await postColor(newColor, newColorRgb)
@@ -490,6 +509,69 @@ export default function UpdateProduct(props) {
       setErrorNewColor(r.message)
     }
 };
+
+const uploadProductColor = async (event) => {
+
+  const file = event.target.files[0]
+  const id = idFromUrl()
+  const cv = 
+  {
+    uuid: uuid(),
+    colorNames: 'PRODUCT',
+    colorNo: null,
+    colorIds: null,
+    colorVariantId: -1,
+    productId: id,
+    quantity: null,
+    isProduct: true,
+    SelectedFile: file,
+  }
+  await postFile(cv, id)
+  loadProduct(id, setProduct)
+  //navigate(loc)
+}
+
+const uploadColorVariant = async (event) => {
+
+  const file = event.target.files[0]
+  const id = idFromUrl()
+  const cv = 
+  {
+    uuid: uuid(),
+    colorNames: 'PRODUCT',
+    colorNo: null,
+    colorIds: null,
+    colorVariantId: -1,
+    productId: id,
+    quantity: null,
+    isProduct: true,
+    SelectedFile: file,
+  }
+  await postFile(cv, id)
+  loadProduct(id, setProduct)
+  //navigate(loc)
+}
+
+const setColorNo = (value) => {
+  setAddColorNo(parseInt(value))
+}
+
+const setQuantity = (value) => {
+  setAddQuantity(parseInt(value))
+}
+
+const setColorIds = (value) => {
+  setAddColorIds(value)
+}
+
+//?
+const setSelectedFile = (value) => {
+  setAddSelectedFile(value)
+}
+
+const onFileChange = (event) => {
+  setSelectedFile(event.target.files[0])
+}
 
 const [errorNewColor, setErrorNewColor] = React.useState("");
 const [openNewColor, setOpenNewColor] = React.useState(false);
@@ -578,6 +660,8 @@ useEffect(() => {
 
   console.log(productStyle)
 
+  const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -641,6 +725,66 @@ useEffect(() => {
           </Box>
         </Box>
       </Modal>
+
+
+      <Modal
+        open={windowColorVariant}
+        onClose={function() { setWindowColorVariant(false) }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{ width: "auto"}} >
+
+      <Box component="div" style={flexStyle}>
+      <TextField
+        margin="normal"
+        size="small" 
+        id="colorNo"
+        name="colorNo"
+        label="No."
+        sx = {{...textStyle, ...{width: "85px"}, ...existingStyle}}
+        value={addColorNo}
+        onChange={ev => setColorNo(ev.target.value) }
+        InputLabelProps={{ shrink: true }}
+      />
+      <TextField
+        margin="normal"
+        size="small" 
+        id="colorQuantity"
+        name="colorQuantity"
+        label="Qty."
+        sx = {{...textStyle, ...{width: "120px"}, ...existingStyle}}
+        value={addQuantity}
+        onChange={ev => setQuantity(ev.target.value) }
+        InputLabelProps={{ shrink: true }}
+      />
+      <MySelect 
+        id="addproduct-colorvariant"
+        url="Colors"
+        title="Color"
+        valueName="colorName"
+        labelStyle={labelStyle}
+        itemStyle={{...itemStyle, ...existingStyle}}
+        MenuProps={MySelectProps}
+        valueVariable={addColorIds}
+        setValueFn={setAddColorIds}
+        addNewFn={props.addNewFn}
+        data={props.data}
+      />
+
+      <label htmlFor={"icon-button-file-111"}>
+      <Input accept="image/*" id={"icon-button-file-111"} type="file" onChange={onFileChange} />
+      <IconButton
+        color="success"
+        aria-label="upload picture"
+        sx={{color: APPEARANCE.BLACK2}}
+        component="span">
+            {!addSelectedFile && <AddAPhotoIcon />}
+            { addSelectedFile && <DoneIcon />}
+      </IconButton>
+      </label>      
+      </Box>
+      </Modal>
+
 
       <Container sx={{maxWidth: "100%", padding: 0 }} className="header-container" >
         <Header user={props.user} title={props.title} />
@@ -855,13 +999,13 @@ useEffect(() => {
                     </Box>
                     }
                     <IconButton
-                  color="success"
-                  aria-label="upload picture"
-                  sx={{color: APPEARANCE.BLACK2, p: 0, m: 0}}
-                  component="span"
-                  onClick={ function() { handleRemoveCv(cv)}} >
+                      color="success"
+                      aria-label="upload picture"
+                      sx={{color: APPEARANCE.BLACK2, p: 0, m: 0}}
+                      component="span"
+                      onClick={ function() { handleRemoveCv(cv)}} >
                     {<DeleteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/>}
-                </IconButton>
+                    </IconButton>
                     </Box>
 
                     </Grid>    
@@ -870,10 +1014,29 @@ useEffect(() => {
             </Grid>
             {/* </Box> */}
 
+            <Box>
+            <label htmlFor={"icon-button-file-prod"}>
+              <Input accept="image/*" id={"icon-button-file-prod"} type="file" onChange={uploadProductColor} />
+              <IconButton aria-label="upload global photo" sx={{color: APPEARANCE.BLACK2}} component="span">
+                    <AddAPhotoIcon />
+                    <Box component="span" sx={{fontSize: 14, ml: 1, backgroundColor: APPEARANCE.BLACK2}}> Add global photo</Box>
+              </IconButton>
+            </label>
+
+            <label htmlFor={"icon-button-file-cv"} sx={{ ml: 2 }}>
+              <Input accept="image/*" id={"icon-button-file-cv"} type="file" onChange={uploadColorVariant} />
+              <IconButton aria-label="upload color photo" sx={{color: APPEARANCE.BLACK2}} component="span">
+                    <AddAPhotoIcon />
+                    <Box component="span" sx={{fontSize: 14, ml: 1}}> Add color</Box>
+              </IconButton>
+            </label>
+
+            </Box>
+
             <Grid container spacing={2} >
               { productColors.map((cv) => (
                 <Grid item xs={12} md={6} sx={{...flexStyle}} >
-                    <ProductColor cv={cv} setColorItem={setProductColorItem}  />
+                    <ProductColor cv={cv} setColorItem={setProductColorItem} uploadFile={uploadProductColor} />
                  </Grid> ))}
 
                 { colorVariants && colorVariants.filter(it => !it.isProduct).map((cv) => (

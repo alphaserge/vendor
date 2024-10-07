@@ -473,7 +473,6 @@ export default function ListProduct(props) {
             <Button
               variant="text"
                startIcon={<AddCircleOutlineIcon sx={{color: APPEARANCE.BLACK}} />}
-               
                sx={{ backgroundColor: "#fff", color: APPEARANCE.BLACK, textTransform: "none", width: "140px", height: "26px", marginTop: "5px" }}>
                Add product
             </Button>

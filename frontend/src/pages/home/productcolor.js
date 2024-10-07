@@ -53,6 +53,9 @@ export default function ProductColor(props) {
     const onFileChange = (event) => {
       let cv = props.cv;
       setSelectedFile(event.target.files[0])
+      if (props.uploadFile) {
+        props.uploadFile(event.target.files[0])
+      }
     }
 
     useEffect(() => {

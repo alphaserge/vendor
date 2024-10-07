@@ -40,11 +40,15 @@ namespace chiffon_back.Code
             if (Directory.Exists(fileUrl))
             {
                 string[] fileEntries = Directory.GetFiles(fileUrl);
+                if (fileEntries.Count() == 0)
+                {
+                    return new List<string> { @"colors\badpicture.png" };
+                }
                 return fileEntries.Select(x => Path.Combine(x)).ToList();
             }
             else
             {
-                return new List<string> { @"colors\nopicture.png" };
+                return new List<string> { @"colors\badpicture.png" };
             }
         }
     }
