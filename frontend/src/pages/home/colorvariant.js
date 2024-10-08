@@ -92,7 +92,7 @@ export default function ColorVariant(props) {
         name="colorNo"
         label="No."
         sx = {{...textStyle, ...{width: "85px"}, ...existingStyle}}
-        value={props.cv.colorNo}
+        value={props.cv.colorNo ? props.cv.colorNo : ""}
         onChange={ev => setColorNo(ev.target.value) }
         InputLabelProps={{ shrink: true }}
       />
@@ -103,7 +103,7 @@ export default function ColorVariant(props) {
         name="colorQuantity"
         label="Qty."
         sx = {{...textStyle, ...{width: "120px"}, ...existingStyle}}
-        value={props.cv.quantity}
+        value={props.cv.quantity ? props.cv.quantity : ""}
         onChange={ev => setQuantity(ev.target.value) }
         InputLabelProps={{ shrink: true }}
       />

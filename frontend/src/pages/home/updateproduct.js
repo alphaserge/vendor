@@ -935,7 +935,7 @@ useEffect(() => {
                 />
               </Grid>
               <Grid item xs={12} md={6} sx={{...flexStyle}} >
-                <MySelect 
+                <MySelect
                   id="addproduct-productstyle"
                   url="ProductStyles"
                   title="Product Style"
@@ -949,6 +949,7 @@ useEffect(() => {
                   data={productStyles}
                 />
                 </Grid>
+
                 <Grid item xs={12} md={6} sx={{...flexStyle}} >
                 <></>
                 </Grid>
@@ -966,9 +967,6 @@ useEffect(() => {
           </AccordionSummary>
 
           <AccordionDetails sx={accordionDetailsStyle}>
-          {/* <Box component={"div"} display={"flex"} justifyContent={"left"} alignItems={"left"} 
-            marginBottom={3} marginLeft={6} marginRight={6} 
-            paddingBottom={1} sx={accordionSummaryStyle} > */}
             <Grid container spacing={2} sx={accordionSummaryStyle}>
             
               { colorVariants && colorVariants.filter((el)=> el.colorVariantId != null).map((cv, index) => {
@@ -1009,13 +1007,10 @@ useEffect(() => {
                     </Box>
 
                     </Grid>    
-              {/* </Box> */}
             })}
             </Grid>
-            {/* </Box> */}
 
             <Box>
-              
             <label htmlFor={"icon-button-file-prod"}>
               <Input accept="image/*" id={"icon-button-file-prod"} type="file" onChange={uploadProductColor} />
               <Button aria-label="upload global photo" style={smallButtonStyle} component="span">
@@ -1055,10 +1050,7 @@ useEffect(() => {
 
                 { colorVariants && colorVariants.filter(it => !it.isProduct).map((cv,index) => (
                   <Grid item xs={12} md={6} sx={{ ...flexStyle}} key={"color-var-"+index} >
-                    {/* { (cv.isProduct == true) &&
-                    <ProductColor cv={cv} setColorItem={setProductColorItem}  />
-                    } */}
-                    { (cv.isProduct !== true) &&
+                    {(cv.isProduct !== true) &&
                     <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} data={colors} />
                     }
                     </Grid> ))}
@@ -1168,48 +1160,31 @@ useEffect(() => {
 
           <Grid container spacing={2} sx={{pt: 2}} >
 
-          <Grid item xs={12} md={6} >
+            <Grid item xs={12} md={6} >
+              <TextField
+                margin="normal"
+                size="small" 
+                id="fabricConstruction"
+                label="Fabric construction"
+                name="fabricConstruction"
+                sx = {itemStyle1}
+                value={fabricConstruction}
+                onChange={ev => setFabricConstruction(ev.target.value)}
+              />
+            </Grid>
 
-          <InputMask
-            mask="999 \* 999"
-            value={fabricConstruction}
-            disabled={false}
-            onChange={ev => setFabricConstruction(ev.target.value)}
-            maskChar=" " >
-
-            {() => <TextField
-              margin="normal"
-              size="small" 
-              id="fabricConstruction"
-              label="Fabric construction"
-              name="fabricConstruction"
-              sx = {itemStyle1}
-              value={fabricConstruction}
-            />}
-
-          </InputMask>
-
-          </Grid>
-
-          <Grid item xs={12} md={6} >
-
-          <InputMask
-            mask="999s \+ 999s"
-            value={fabricYarnCount}
-            disabled={false}
-            onChange={ev => setFabricYarnCount(ev.target.value)}
-            maskChar=" " >
-            {() => <TextField
-              margin="normal"
-              size="small" 
-              id="fabricYarnCount"
-              label="Fabric Yarn Count"
-              name="fabricYarnCount"
-              sx = {itemStyle1}
-              //value={fabricYarnCount}
-            />}
-          </InputMask>
-          </Grid>
+            <Grid item xs={12} md={6} >
+            <TextField
+                margin="normal"
+                size="small" 
+                id="fabricYarnCount"
+                label="Fabric Yarn Count"
+                name="fabricYarnCount"
+                sx = {itemStyle1}
+                onChange={ev => setFabricYarnCount(ev.target.value)}
+                value={fabricYarnCount}
+              />
+            </Grid>
 
               <Grid item xs={12} md={6} >
               <FormControl sx = {halfItemStyle1}>
