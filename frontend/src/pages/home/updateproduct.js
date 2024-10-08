@@ -1027,7 +1027,7 @@ useEffect(() => {
 
             <label htmlFor={"icon-button-file-cv"} sx={{ ml: 2 }}>
               <Input accept="image/*" id={"icon-button-file-cv"} type="file" onChange={uploadColorVariant} />
-              <Button aria-label="upload global photo" style={smallButtonStyle} component="span">
+              <Button aria-label="upload color photo" style={smallButtonStyle} component="span">
                     <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
                     Add&nbsp;
                     <span style={{color: "#f66", m:0, p:0}}>c</span>
@@ -1246,7 +1246,7 @@ useEffect(() => {
 
               <Grid item xs={12} md={6} >
             <MySelect 
-                id="addproduct-dyestaff"
+                id="addproduct-finishing"
                 url="Finishings"
                 title="Finishing"
                 valueName="finishingName"

@@ -58,9 +58,6 @@ export default function MySelect(props) {
         props.setValueFn(value);
       };
 
-      //console.log("MySelect {props.data}:")
-      //console.log(props.data)
-
     useEffect(() => {
       var a = 0;
     }, []);
