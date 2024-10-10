@@ -39,7 +39,7 @@ export default function MySelect(props) {
     const theme = useTheme();
 
     const dataChange = (event) => {
-        const { target: { value }, } = event;
+        const { target: { value } } = event;
 
         // processing of 'ALL' (-1) item (select all items)
         if (Array.isArray(value) && value.indexOf(-1) != -1) {
@@ -76,7 +76,7 @@ return (
         size="small" 
         label={props.title}
         multiple = {Array.isArray(props.valueVariable)}
-        value={props.valueVariable}
+        value={props.valueVariable ? props.valueVariable : ""}
         sx = {props.itemStyle}
         onChange={dataChange}
         input={<OutlinedInput label={props.title} />}

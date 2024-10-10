@@ -14,7 +14,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+//import AddIcon from '@mui/icons-material/Add';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import MenuItem from '@mui/material/MenuItem';
 import { HexColorPicker } from "react-colorful";
@@ -57,6 +58,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import DoneIcon from '@mui/icons-material/Done';
 import { styled } from '@mui/material/styles';
+import { non } from '../../functions/helper'
 
 const defaultTheme = createTheme()
 const textStyle = { m: 0, mr: 1 }
@@ -259,7 +261,7 @@ export default function UpdateProduct(props) {
 
     const addVariants = () => {
       let cv = [...colorVariants]
-      cv = cv.concat(moreVariants(6))
+      cv = cv.concat(moreVariants(2))
       setColorVariants(cv)
     }
 
@@ -361,6 +363,14 @@ export default function UpdateProduct(props) {
   };
   
   const openMyProducts = async (e) => {
+  }
+  
+  const handleEditColor = async (cv) => {
+
+  };
+
+  const fireChange = () => {
+    console.log('fireChange!')
   }
 
   const saveProduct = async (e) => {
@@ -585,33 +595,33 @@ const addNewColor = () => {
 }
 
 const setProduct = (prod) => {
-  setItemName(prod.itemName)
-  setArtNo(prod.artNo)
-  setRefNo(prod.refNo)
-  setDesign(prod.design)
-  setPrice(prod.price)
+  setItemName(non(prod.itemName))
+  setArtNo(non(prod.artNo))
+  setRefNo(non(prod.refNo))
+  setDesign(non(prod.design))
+  setPrice(non(prod.price))
   setPrice2((prod.price*1.05).toFixed(2))
   setPrice3((prod.price*1.10).toFixed(2))
-  setStock(prod.stock)
-  setWidth(prod.width)
-  setWeight(prod.weight)
-  setColorFastness(prod.colorFastness)
-  setFabricConstruction(prod.fabricConstruction)
-  setFabricYarnCount(prod.fabricYarnCount)
-  setFabricShrinkage(prod.fabricShrinkage)
-  setFindings(prod.findings)
-  setHsCode(prod.hsCode)
-  setProductStyle(prod.productStyle)
-  setProductType(prod.productType)
-  setPrintType(prod.printType)
-  setPlainDyedType(prod.plainDyedType)
-  setDyeStaff(prod.dyeStaff)
-  setFinishing(prod.finishing)
-  setSeason(prod.seasonIds)
-  setOverworkType(prod.overWorkTypeIds)
-  setDesignType(prod.designTypeIds)
-  setComposition(prod.composition)
-  setCompositionSamples(prod.compositionsSamples)
+  setStock(non(prod.stock))
+  setWidth(non(prod.width))
+  setWeight(non(prod.weight))
+  setColorFastness(non(prod.colorFastness))
+  setFabricConstruction(non(prod.fabricConstruction))
+  setFabricYarnCount(non(prod.fabricYarnCount))
+  setFabricShrinkage(non(prod.fabricShrinkage))
+  setFindings(non(prod.findings))
+  setHsCode(non(prod.hsCode))
+  setProductStyle(non(prod.productStyle))
+  setProductType(non(prod.productType))
+  setPrintType(non(prod.printType))
+  setPlainDyedType(non(prod.plainDyedType))
+  setDyeStaff(non(prod.dyeStaff))
+  setFinishing(non(prod.finishing))
+  setSeason(non(prod.seasonIds))
+  setOverworkType(non(prod.overWorkTypeIds))
+  setDesignType(non(prod.designTypeIds))
+  setComposition(non(prod.composition))
+  setCompositionSamples(non(prod.compositionsSamples))
 
   setProductTextileTypes(prod.textileTypes)
 
@@ -632,9 +642,8 @@ const setProduct = (prod) => {
   }
   //prod.colors = prod.colors.concat(moreProductColors(2))*/
   setProductColors(moreProductColors(2,prod.id))
-  let add = max % 2 == 1 ? 5 : 6
-
-  prod.colors = prod.colors.concat(moreVariants(add,max))
+  //let add = max % 2 == 1 ? 5 : 6
+  prod.colors = prod.colors.concat(moreVariants(2/*add*/,max))
   setColorVariants(prod.colors)
 
   wChanged(prod.width, prod.weight)
@@ -1001,16 +1010,20 @@ useEffect(() => {
                       aria-label="upload picture"
                       sx={{color: APPEARANCE.BLACK2, p: 0, m: 0}}
                       component="span"
-                      onClick={ function() { handleRemoveCv(cv)}} >
-                    {<DeleteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/>}
+                      onClick={ function() { handleEditColor(cv)}} >
+                    { 
+                      cv.isProduct!=true && <EditNoteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/>
+                    }
+                    {
+                      cv.isProduct==true && <DeleteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/>
+                    }
                     </IconButton>
                     </Box>
-
                     </Grid>    
             })}
             </Grid>
 
-            <Box>
+            <Box sx={{mb: 3}}>
             <label htmlFor={"icon-button-file-prod"}>
               <Input accept="image/*" id={"icon-button-file-prod"} type="file" onChange={uploadProductColor} />
               <Button aria-label="upload global photo" style={smallButtonStyle} component="span">
@@ -1043,15 +1056,12 @@ useEffect(() => {
             </Box>
 
             <Grid container spacing={2} >
-              { productColors.map((cv,index) => (
-                <Grid item xs={12} md={6} sx={{...flexStyle}}  key={"color-prod-"+index} >
-                    <ProductColor cv={cv} setColorItem={setProductColorItem} uploadFile={uploadProductColor} />
-                 </Grid> ))}
+              
 
                 { colorVariants && colorVariants.filter(it => !it.isProduct).map((cv,index) => (
                   <Grid item xs={12} md={6} sx={{ ...flexStyle}} key={"color-var-"+index} >
                     {(cv.isProduct !== true) &&
-                    <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} data={colors} />
+                    <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} fireChange={fireChange} data={colors} />
                     }
                     </Grid> ))}
             </Grid>

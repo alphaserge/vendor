@@ -45,10 +45,16 @@ export default function ColorVariant(props) {
       let cv = props.cv;
       cv.colorNo = parseInt(value)
       props.setColorItem(cv.id, cv)
+      if (cv.quantity && !cv.colorNo && props.fireChange) {
+        props.fireChange()
+      }
     }
 
     const setQuantity = (value) => {
       let cv = props.cv;
+      if (value && cv.colorNo && !cv.quantity && props.fireChange) {
+        props.fireChange()
+      }
       cv.quantity = parseInt(value)
       if (!cv.colorNo) {
         cv.colorNo = cv.no
