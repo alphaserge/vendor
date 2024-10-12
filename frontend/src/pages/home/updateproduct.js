@@ -125,7 +125,20 @@ function getStyles(name, values, theme) {
   }
 }
 
+function useForceUpdate(){
+  const [value, setValue] = useState(0); // integer state
+  return () => setValue(value => value + 1); // update state to force render
+  // A function that increment 👆🏻 the previous state like here 
+  // is better than directly setting `setValue(value + 1)`
+}
+
 export default function UpdateProduct(props) {
+
+    const forceUpdate = useForceUpdate();
+
+    const [, updateState] = React.useState();
+    const forceUpdate1 = React.useCallback(() => updateState({}), []);
+    
 
     const navigate = useNavigate();
     const theme = useTheme();
@@ -192,6 +205,8 @@ export default function UpdateProduct(props) {
     const [addQuantity, setAddQuantity] = useState("")
     const [addSelectedFile, setAddSelectedFile] = useState(null)
     
+    const [colorVariantIndex, setColorVariantIndex] = useState(-1)
+
     let loc = useLocation()
 
     const idFromUrl = () => {
@@ -365,12 +380,16 @@ export default function UpdateProduct(props) {
   const openMyProducts = async (e) => {
   }
   
-  const handleEditColor = async (cv) => {
-
+  const handleEditColor = async (index) => {
+    setColorVariantIndex(index)
+    setOpenEditColor(true)
   };
 
-  const fireChange = () => {
-    console.log('fireChange!')
+  const fireChange = (last) => {
+    console.log('fireChange last: ' + last)
+    if (last) {
+      setTimeout( addVariants, 100)
+    }
   }
 
   const saveProduct = async (e) => {
@@ -587,6 +606,7 @@ const onFileChange = (event) => {
 
 const [errorNewColor, setErrorNewColor] = React.useState("");
 const [openNewColor, setOpenNewColor] = React.useState(false);
+const [openEditColor, setOpenEditColor] = React.useState(false);
 const handleOpen = () => { setErrorNewColor(""); setOpenNewColor(true); }
 const handleClose = () => setOpenNewColor(false);
 
@@ -649,6 +669,8 @@ const setProduct = (prod) => {
   wChanged(prod.width, prod.weight)
 }
 
+var colorVars = null
+
 useEffect(() => {
 
   let id = idFromUrl()
@@ -667,13 +689,55 @@ useEffect(() => {
   getPrintTypes(setPrintTypes)
   getTextileTypes(setTextileTypes)
 
+  colorVars = colorVariants ? colorVariants.filter(it => !it.isProduct) : null
+
   }, []);
 
   const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
 
+  colorVars = colorVariants ? colorVariants.filter(it => !it.isProduct) : null
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
+
+      <Modal
+        open={openEditColor}
+        onClose={()=>{setOpenEditColor(false)}}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description" >
+
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                width: 475, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
+          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{textAlign: "center", m: 2, mb: 3}}>
+            Change color variant
+          </Typography>
+          <Box sx={{display: "flex", flexDirection: 'column', alignItems: "center"}} >
+          <ColorVariant 
+            cv={colorVariants[colorVariantIndex]} 
+            setColorItem={setColorVariantItem} 
+            addNewFn={addNewColor} 
+            fireChange={fireChange} 
+            data={colors} 
+            last={false} />
+          <Box sx={{display: "flex", flexDirection: 'row', alignItems: "center", m: 2, mt: 3}} >
+          <Button 
+              variant="contained"
+              style={buttonStyle}
+              sx={{marginTop: "40px"}}
+              onClick={()=> {setOpenEditColor(false)}} >
+                  Save
+          </Button>
+          <Button 
+              variant="contained"
+              style={buttonStyle}
+              onClick={()=> {setOpenEditColor(false)}} >
+                  Cancel
+          </Button>
+          </Box>
+          </Box>
+        </Box>
+      </Modal>
 
       <Modal
         open={openNewColor}
@@ -1010,7 +1074,7 @@ useEffect(() => {
                       aria-label="upload picture"
                       sx={{color: APPEARANCE.BLACK2, p: 0, m: 0}}
                       component="span"
-                      onClick={ function() { handleEditColor(cv)}} >
+                      onClick={ function() { handleEditColor(index)}} >
                     { 
                       cv.isProduct!=true && <EditNoteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/>
                     }
@@ -1056,12 +1120,16 @@ useEffect(() => {
             </Box>
 
             <Grid container spacing={2} >
-              
-
-                { colorVariants && colorVariants.filter(it => !it.isProduct).map((cv,index) => (
+                { colorVars && colorVars.map((cv,index) => (
                   <Grid item xs={12} md={6} sx={{ ...flexStyle}} key={"color-var-"+index} >
                     {(cv.isProduct !== true) &&
-                    <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} fireChange={fireChange} data={colors} />
+                    <ColorVariant 
+                      cv={cv} 
+                      setColorItem={setColorVariantItem} 
+                      addNewFn={addNewColor} 
+                      fireChange={fireChange} 
+                      data={colors} 
+                      last={index == colorVars.length-1} />
                     }
                     </Grid> ))}
             </Grid>
