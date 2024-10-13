@@ -77,7 +77,11 @@ export default function ColorVariant(props) {
     
     const onFileChange = (event) => {
       let cv = props.cv;
-      setSelectedFile(event.target.files[0])
+      let file = event.target.files[0]
+      setSelectedFile(file)
+      if (props.fileChange) {
+        props.fileChange(file)
+      }
     }
 
     useEffect(() => {

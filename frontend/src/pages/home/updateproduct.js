@@ -204,7 +204,8 @@ export default function UpdateProduct(props) {
     const [addColorNo, setAddColorNo] = useState("")
     const [addQuantity, setAddQuantity] = useState("")
     const [addSelectedFile, setAddSelectedFile] = useState(null)
-    
+    const [colorVariantFile, setColorVariantFile] = useState(null)
+        
     const [colorVariantIndex, setColorVariantIndex] = useState(-1)
 
     let loc = useLocation()
@@ -382,15 +383,20 @@ export default function UpdateProduct(props) {
   
   const handleEditColor = async (index) => {
     setColorVariantIndex(index)
+    setColorVariantFile(null)
     setOpenEditColor(true)
   };
 
   const fireChange = (last) => {
-    console.log('fireChange last: ' + last)
     if (last) {
       setTimeout( addVariants, 100)
     }
   }
+
+  const fileChange = (file) => {
+    setColorVariantFile(file)
+  }
+  
 
   const saveProduct = async (e) => {
     
@@ -427,17 +433,26 @@ export default function UpdateProduct(props) {
       globalPhotos: productColors.filter(it => !!it.SelectedFile)
     }
 
+    let id = idFromUrl()
     let r = await postProduct(prod, "ProductUpdate")
-
+    let needUpdate = false
     if (r) {
       props.setLastAction("Product has been saved")
       setSavingError(false)
-      let id = idFromUrl()
-      loadProduct(id, setProduct)
-
-      //navigate("/menu")
+      needUpdate = true //navigate("/menu")
     } else {
       setSavingError(true)
+    }
+
+    if (colorVariantFile) {
+      let cv = colorVariants[colorVariantIndex]
+      cv.SelectedFile = colorVariantFile
+      let rf = await postFile(cv, id)
+      needUpdate = true
+    }
+
+    if (needUpdate) {
+      loadProduct(id, setProduct)
     }
   }
 
@@ -716,16 +731,17 @@ useEffect(() => {
           <ColorVariant 
             cv={colorVariants[colorVariantIndex]} 
             setColorItem={setColorVariantItem} 
-            addNewFn={addNewColor} 
-            fireChange={fireChange} 
-            data={colors} 
+            addNewFn={addNewColor}
+            fireChange={fireChange}
+            fileChanges={fileChange}
+            data={colors}
             last={false} />
           <Box sx={{display: "flex", flexDirection: 'row', alignItems: "center", m: 2, mt: 3}} >
           <Button 
               variant="contained"
               style={buttonStyle}
               sx={{marginTop: "40px"}}
-              onClick={()=> {setOpenEditColor(false)}} >
+              onClick={()=> { setOpenEditColor(false); saveProduct(); }} >
                   Save
           </Button>
           <Button 
