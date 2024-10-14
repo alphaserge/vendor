@@ -378,9 +378,6 @@ export default function UpdateProduct(props) {
   })
   };
   
-  const openMyProducts = async (e) => {
-  }
-  
   const handleEditColor = async (index) => {
     setColorVariantIndex(index)
     setColorVariantFile(null)
@@ -396,7 +393,6 @@ export default function UpdateProduct(props) {
   const fileChange = (file) => {
     setColorVariantFile(file)
   }
-  
 
   const saveProduct = async (e) => {
     
@@ -488,7 +484,6 @@ export default function UpdateProduct(props) {
 
     setTextileTypeValue(textileTypeValue+e)
   }
-
   
   const compositionApplySample = async (productId) => {
     
@@ -555,6 +550,31 @@ export default function UpdateProduct(props) {
     }
 };
 
+const addColorVariant = async (cv) => {
+
+  fetch(config.api + '/Products/ProductAddCV', {
+    method: "POST",
+    headers: {
+        'Content-Type': 'application/json'
+      },
+    body: JSON.stringify({
+      Uuid: cv.uuid,
+      Num: cv.colorNo,
+      productId: cv.productId,
+      isProduct: false
+    })
+})
+//.then(r => r.json())
+.then(r => {
+  props.setLastAction("Color variant has been added")
+  return r.id
+})
+.catch (error => {
+  console.log(error)
+  return null
+})
+};
+
 const uploadProductColor = async (event) => {
 
   const file = event.target.files[0]
@@ -578,24 +598,33 @@ const uploadProductColor = async (event) => {
 
 const uploadColorVariant = async (event) => {
 
-  setWindowColorVariant(true)
-  /*const file = event.target.files[0]
+  const file = event.target.files[0]
+  let cvNums = colorVariants.map(x => x.colorNo)
+  let max = cvNums.length > 0 ?  Math.max(...cvNums)+1 : 1
   const id = idFromUrl()
-  const cv = 
-  {
+
+  let colVars = colorVariants.slice()
+  const cv = {
     uuid: uuid(),
-    colorNames: 'PRODUCT',
-    colorNo: null,
-    colorIds: null,
-    colorVariantId: -1,
+    no: null,
+    colorNo: max,
+    colorIds: [],
+    colorVariantId: null,
     productId: id,
     quantity: null,
-    isProduct: true,
     SelectedFile: file,
+    isProduct: false
   }
-  await postFile(cv, id)
-  loadProduct(id, setProduct)*/
-  //navigate(loc)
+
+  await addColorVariant(cv)
+
+  let index = colVars.length
+  colVars.push(cv)
+  let rf = await postFile(cv, null)
+  //setColorVariantIndex(index)
+  //setColorVariantFile(file)
+  loadProduct(id, setProduct)
+  setOpenEditColor(true)
 }
 
 const setColorNo = (value) => {

@@ -220,7 +220,6 @@ export const sampleComposition = async (productId, sampleId) => {
   return rc
 };
 
-
 export const postFile = async (colorVariant, prodId) => {
 
   if (!colorVariant.SelectedFile) {

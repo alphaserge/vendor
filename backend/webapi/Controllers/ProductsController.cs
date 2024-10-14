@@ -254,5 +254,33 @@ namespace chiffon_back.Controllers
             }
         }
 
+        [HttpPost("ProductAddCV")]
+        public ActionResult AddColorVariant(Models.PostCV c)
+        {
+            try
+            {
+                Context.ColorVariant cv = new Context.ColorVariant()
+                {
+                    Num = c.Num.Value,
+                    ProductId = c.ProductId.Value,
+                    Uuid = c.Uuid
+                };
+
+                ctx.ColorVariants.Add(cv);
+                ctx.SaveChanges();
+
+                return CreatedAtAction(nameof(Product), new { id = cv.Id }, "");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/AddColorVariant: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/AddColorVariant: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+                return CreatedAtAction(nameof(Product), new { id = -1 }, null);
+            }
+        }
+
     }
 }
