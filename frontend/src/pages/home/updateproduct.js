@@ -564,7 +564,7 @@ const addColorVariant = async (cv) => {
       isProduct: false
     })
 })
-//.then(r => r.json())
+.then(r => r.json())
 .then(r => {
   props.setLastAction("Color variant has been added")
   return r.id
@@ -609,21 +609,23 @@ const uploadColorVariant = async (event) => {
     no: null,
     colorNo: max,
     colorIds: [],
-    colorVariantId: null,
+    colorVariantId: 0,
     productId: id,
     quantity: null,
     SelectedFile: file,
     isProduct: false
   }
 
-  await addColorVariant(cv)
+  let newCvId = await addColorVariant(cv)
+  let rp = await loadProduct(id, setProduct)
 
-  let index = colVars.length
-  colVars.push(cv)
-  let rf = await postFile(cv, null)
-  //setColorVariantIndex(index)
-  //setColorVariantFile(file)
-  loadProduct(id, setProduct)
+  let newCv = colorVariants.find(x => x.colorVariantId == newCvId)
+  //colVars.push(cv)
+  let rf = await postFile(newCv, null)
+    //setColorVariantIndex(index)
+    //setColorVariantFile(file)
+  setColorVariantIndex(colorVariants.length-1)
+  setColorVariantFile(null)
   setOpenEditColor(true)
 }
 
@@ -1114,19 +1116,27 @@ useEffect(() => {
                     <span style={{backgroundColor: "rgb(108 255 145)", padding: "5px 3px", borderRadius: 3 }}> GLOBAL PHOTO </span>                    
                     </Box>
                     }
+
+                    { cv.isProduct!=true &&
                     <IconButton
                       color="success"
                       aria-label="upload picture"
                       sx={{color: APPEARANCE.BLACK2, p: 0, m: 0}}
                       component="span"
                       onClick={ function() { handleEditColor(index)}} >
-                    { 
-                      cv.isProduct!=true && <EditNoteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/>
-                    }
-                    {
-                      cv.isProduct==true && <DeleteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/>
-                    }
+                      <EditNoteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/>
                     </IconButton>
+                    }
+
+                    <IconButton
+                      color="success"
+                      aria-label="delete picture"
+                      sx={{color: APPEARANCE.BLACK2, p: 0, m: 0}}
+                      component="span"
+                      onClick={ function() { handleRemoveCv(cv)}} >
+                        <DeleteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/>
+                    </IconButton>
+
                     </Box>
                     </Grid>    
             })}
