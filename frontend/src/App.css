@@ -95,7 +95,13 @@ div.product-img-holder-item {
   overflow:hidden;
   padding: 0px;
 }
-
+div.product-img-buttons {
+  /* position: relative; */
+   z-index: 100; 
+  margin-top: -36px;
+  margin-right: 10px;
+  text-align: right;
+}
 
 image.product-img {
   min-width:100%;

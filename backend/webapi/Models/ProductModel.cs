@@ -637,7 +637,7 @@ namespace chiffon_back.Models
 
                     if (product.ColorVariants != null)
                     {
-                        foreach (var item in product.ColorVariants.Where(x => x.ColorNo != null && x.Quantity != null))
+                        foreach (var item in product.ColorVariants.Where(x => x.ColorNo != null)) //&& x.Quantity != null))
                         {
                             Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.ColorVariantId);
                             if (cv == null)

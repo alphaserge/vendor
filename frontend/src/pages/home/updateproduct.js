@@ -59,6 +59,7 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import DoneIcon from '@mui/icons-material/Done';
 import { styled } from '@mui/material/styles';
 import { non } from '../../functions/helper'
+import axios from "axios";
 
 const defaultTheme = createTheme()
 const textStyle = { m: 0, mr: 1 }
@@ -196,6 +197,7 @@ export default function UpdateProduct(props) {
 
     const [savingError, setSavingError] = useState(false)
 
+    const [colorVariantsAdd, setColorVariantsAdd] = useState([])
     const [colorVariants, setColorVariants] = useState([])
     const [productColors, setProductColors] = useState([])
 
@@ -276,15 +278,15 @@ export default function UpdateProduct(props) {
     }
 
     const addVariants = () => {
-      let cv = [...colorVariants]
+      let cv = [...colorVariantsAdd]
       cv = cv.concat(moreVariants(2))
-      setColorVariants(cv)
+      setColorVariantsAdd(cv)
     }
 
     const moreVariants = (add, max) => {
-      let cv = [] //colorVariants.slice()
+      let cv = [] 
       if (!max) {
-        let cvNums = colorVariants.map(x => x.colorNo)
+        let cvNums = colorVariantsAdd.map(x => x.colorNo)
         max = cvNums.length > 0 ?  Math.max(...cvNums) : 0
       }
       let i=max+1
@@ -306,7 +308,7 @@ export default function UpdateProduct(props) {
     }
   
     const moreProductColors = (num, prodId) => {
-      let cv = [] //productColors.slice()
+      let cv = [] 
       let i=0
       while (i<num){
         cv.push({
@@ -322,7 +324,6 @@ export default function UpdateProduct(props) {
         i++
       }
       return cv
-      //setProductColors(cv)
     }
   
     const handleRemoveCv = async (cv) => {
@@ -425,7 +426,7 @@ export default function UpdateProduct(props) {
       dyeStaff: dyeStaff,
       finishing: finishing,
       plainDyedType: plainDyedType,
-      colorVariants: colorVariants,//.filter(it => !!it.colorNo),
+      colorVariants: colorVariants.concat(colorVariantsAdd),
       globalPhotos: productColors.filter(it => !!it.SelectedFile)
     }
 
@@ -552,6 +553,23 @@ export default function UpdateProduct(props) {
 
 const addColorVariant = async (cv) => {
 
+  await axios.post(config.api + '/Products/ProductAddCV', 
+    {
+      Uuid: cv.uuid,
+      Num: cv.colorNo,
+      productId: cv.productId,
+      isProduct: false
+    })
+    .then(function (response) {
+      console.log(response);
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return null;
+    })
+
+  /*
   fetch(config.api + '/Products/ProductAddCV', {
     method: "POST",
     headers: {
@@ -564,7 +582,7 @@ const addColorVariant = async (cv) => {
       isProduct: false
     })
 })
-.then(r => r.json())
+//.then(r => r.json())
 .then(r => {
   props.setLastAction("Color variant has been added")
   return r.id
@@ -572,7 +590,7 @@ const addColorVariant = async (cv) => {
 .catch (error => {
   console.log(error)
   return null
-})
+}) */
 };
 
 const uploadProductColor = async (event) => {
@@ -603,7 +621,6 @@ const uploadColorVariant = async (event) => {
   let max = cvNums.length > 0 ?  Math.max(...cvNums)+1 : 1
   const id = idFromUrl()
 
-  let colVars = colorVariants.slice()
   const cv = {
     uuid: uuid(),
     no: null,
@@ -616,17 +633,26 @@ const uploadColorVariant = async (event) => {
     isProduct: false
   }
 
-  let newCvId = await addColorVariant(cv)
-  let rp = await loadProduct(id, setProduct)
-
-  let newCv = colorVariants.find(x => x.colorVariantId == newCvId)
-  //colVars.push(cv)
-  let rf = await postFile(newCv, null)
-    //setColorVariantIndex(index)
-    //setColorVariantFile(file)
-  setColorVariantIndex(colorVariants.length-1)
-  setColorVariantFile(null)
-  setOpenEditColor(true)
+  await postFile(cv, null)
+  await addColorVariant(cv)
+  axios.get(config.api + '/Products/Product', {
+    params: {
+      id: id
+    }})
+  .then(function (response) {
+    let prod = response.data
+    setProduct(prod)
+    let cc = prod.colors.filter(it => !it.isProduct)
+    setColorVariantIndex(prod.colors.length-1)
+    setColorVariantFile(null)
+    setOpenEditColor(true)
+  })
+  .catch(function (error) {
+    console.log(error);
+  })
+  .finally(function () {
+    // always executed
+  });
 }
 
 const setColorNo = (value) => {
@@ -709,13 +735,12 @@ const setProduct = (prod) => {
   //prod.colors = prod.colors.concat(moreProductColors(2))*/
   setProductColors(moreProductColors(2,prod.id))
   //let add = max % 2 == 1 ? 5 : 6
-  prod.colors = prod.colors.concat(moreVariants(2/*add*/,max))
+  prod.colors = prod.colors //.concat(moreVariants(2/*add*/,max))
   setColorVariants(prod.colors)
+  setColorVariantsAdd(moreVariants(2/*add*/,max))
 
   wChanged(prod.width, prod.weight)
 }
-
-var colorVars = null
 
 useEffect(() => {
 
@@ -734,14 +759,9 @@ useEffect(() => {
   getPlainDyedTypes(setPlainDyedTypes)
   getPrintTypes(setPrintTypes)
   getTextileTypes(setTextileTypes)
-
-  colorVars = colorVariants ? colorVariants.filter(it => !it.isProduct) : null
-
   }, []);
 
   const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
-
-  colorVars = colorVariants ? colorVariants.filter(it => !it.isProduct) : null
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -1089,54 +1109,57 @@ useEffect(() => {
           <AccordionDetails sx={accordionDetailsStyle}>
             <Grid container spacing={2} sx={accordionSummaryStyle}>
             
-              { colorVariants && colorVariants.filter((el)=> el.colorVariantId != null).map((cv, index) => {
+              { colorVariants && colorVariants.map((cv, index) => {
                 return <Grid item xs={6} md={3} sx={{}} className="product-img-holder-item" key={"color-item-"+index} >
-                {/* <Box > */}
                   <Box className="product-img-holder-thumb" key={"color-item-1-"+index}>
-                  <Box 
-                    component={"img"} 
-                    key={index} 
-                    src={config.api + "/" + cv.imagePath} 
-                    alt={"photo"+(index+1)} 
-                    className="product-img" />
-                    <br/>
+                    <Box 
+                      component={"img"} 
+                      key={index} 
+                      src={config.api + "/" + cv.imagePath} 
+                      alt={"photo"+(index+1)} 
+                      className="product-img" />
+                    <Box 
+                      key={"toolbox" + index} 
+                      className="product-img-buttons" >
+                        { cv.isProduct!=true &&
+                          <Button
+                            variant="contained"
+                            component={"div"}
+                            aria-label="upload picture"
+                            sx={{color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, pl: 2}}
+                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}
+                            onClick={ function() { handleEditColor(index)}}
+                            startIcon={<EditNoteIcon/>}>
+                            {/* <EditNoteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/> */}
+                          </Button>
+                          }
+
+                          <Button
+                            variant="contained"
+                            component={"div"}
+                            aria-label="delete picture"
+                            sx={{color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, pl: 1.5, ml: 1}}
+                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}
+                            onClick={ function() { handleRemoveCv(cv)}} 
+                            startIcon={<DeleteIcon/>}>  
+                          </Button>
                     </Box>
+                    <br/>
+                  </Box>
                   <Box component={"div"} 
-                    sx={{ m: 0, mt: 2, ml: 0, pb: 1, height: "22px", width: "135px", wordBreak: "break-all", wordWrap: "break-word", display: "flex", justifyContent: "space-between" }} 
+                    sx={{ m: 0, mt: 1, ml: 0, pb: 1, height: "22px", width: "135px", wordBreak: "break-all", wordWrap: "break-word", display: "flex", justifyContent: "space-between" }} 
                     textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > 
                     
                     { cv.isProduct==false &&
-                    <Box sx={{textAlign: "left"}}>
-                    <span style={{backgroundColor: "rgb(251 178 96)", padding: "5px 3px", borderRadius: 3}}> 
-                      { 'COLOR ' + (cv.colorNo ? cv.colorNo + ' : ' : ' ? ') + (cv.quantity ? cv.quantity : ' -') + ' m'} </span>
+                    <Box sx={{textAlign: "center"}} style={{backgroundColor: "rgb(251 178 96)", width: "100%", height: "24px", padding: "5px 3px", borderRadius: 3}}>
+                      { 'COLOR ' + (cv.colorNo ? cv.colorNo + ' : ' : ' ? ') + (cv.quantity ? cv.quantity : ' -') + ' m'}
                     </Box>
                     }
                     { cv.isProduct==true &&
-                    <Box sx={{textAlign: "left"}}>
-                    <span style={{backgroundColor: "rgb(108 255 145)", padding: "5px 3px", borderRadius: 3 }}> GLOBAL PHOTO </span>                    
+                    <Box sx={{textAlign: "center"}} style={{backgroundColor: "rgb(88 203 117)", width: "100%", height: "24px", padding: "5px 3px", borderRadius: 3}}>
+                    GLOBAL PHOTO
                     </Box>
                     }
-
-                    { cv.isProduct!=true &&
-                    <IconButton
-                      color="success"
-                      aria-label="upload picture"
-                      sx={{color: APPEARANCE.BLACK2, p: 0, m: 0}}
-                      component="span"
-                      onClick={ function() { handleEditColor(index)}} >
-                      <EditNoteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/>
-                    </IconButton>
-                    }
-
-                    <IconButton
-                      color="success"
-                      aria-label="delete picture"
-                      sx={{color: APPEARANCE.BLACK2, p: 0, m: 0}}
-                      component="span"
-                      onClick={ function() { handleRemoveCv(cv)}} >
-                        <DeleteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/>
-                    </IconButton>
-
                     </Box>
                     </Grid>    
             })}
@@ -1171,11 +1194,10 @@ useEffect(() => {
                     
               </Button>
             </label>
-
             </Box>
 
             <Grid container spacing={2} >
-                { colorVars && colorVars.map((cv,index) => (
+                { colorVariantsAdd && colorVariantsAdd.map((cv,index) => (
                   <Grid item xs={12} md={6} sx={{ ...flexStyle}} key={"color-var-"+index} >
                     {(cv.isProduct !== true) &&
                     <ColorVariant 
@@ -1184,26 +1206,10 @@ useEffect(() => {
                       addNewFn={addNewColor} 
                       fireChange={fireChange} 
                       data={colors} 
-                      last={index == colorVars.length-1} />
+                      last={index == colorVariantsAdd.length-1} />
                     }
                     </Grid> ))}
             </Grid>
-          <FormControl sx = {{itemStyle}} > 
-                <Box sx={{ textAlign: "center", marginTop: 2 }}>
-                    <Button 
-                    variant="contained"
-                    style={buttonStyle}
-                    onClick={moreProductColors} >
-                        Add photos
-                    </Button>
-                    <Button 
-                    variant="contained"
-                    style={buttonStyle}
-                    onClick={addVariants} >
-                        Add colors
-                    </Button>
-                    </Box>
-          </FormControl>
           </AccordionDetails>
           </Accordion>
 

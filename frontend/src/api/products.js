@@ -238,8 +238,22 @@ export const postFile = async (colorVariant, prodId) => {
 
 export const loadProduct = async (id, setFn) => {
 
+  axios.get(config.api + '/Products/Product', {
+    params: {
+      id: id
+    }})
+  .then(function (response) {
+    setFn(response.data)
+  })
+  .catch(function (error) {
+    console.log(error);
+  })
+  .finally(function () {
+    // always executed
+  });
+
   //let rc = await axios.get(config.api + '/Products/Product?='+id, { params: { id: id }})
-  const rc = await fetch(config.api + '/Products/Product?id='+id, {
+  /*const rc = await fetch(config.api + '/Products/Product?id='+id, {
     //params: { id: id },
     method: "GET",
     headers: {
@@ -252,7 +266,7 @@ export const loadProduct = async (id, setFn) => {
       })
   .catch (error => {
     console.log(error)
-  })
+  })*/
 
 }
 
