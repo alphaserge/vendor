@@ -32,6 +32,7 @@ namespace chiffon_back.Models
         public string? PhotoDir { get; set; }
         public string? Uuid { get; set; }
         public string? PhotoUuids { get; set; }
+        public string? VideoUuids { get; set; }
         public string? FileName { get; set; }
 
         public int? DyeStaffId { get; set; }
@@ -77,6 +78,7 @@ namespace chiffon_back.Models
         public string? Uuid { get; set; }
         public int? ProductId { get; set; }
         public bool IsProduct { get; set; }
+        public bool IsVideo { get; set; }
     }
 
     public class ProductColor
@@ -90,6 +92,7 @@ namespace chiffon_back.Models
         public decimal?       Quantity { get; set; }
         public int?           ProductId { get; set; }
         public bool           IsProduct { get; set; }
+        public bool           IsVideo { get; set; }
     }
 
     public class PostProduct
@@ -129,6 +132,7 @@ namespace chiffon_back.Models
         public int []? Seasons { get; set; }
         public PostColorVariant[]? ColorVariants { get; set; }
         public string? PhotoUuids { get; set; }
+        public string? VideoUuids { get; set; }
 
     }
 

@@ -125,6 +125,7 @@ namespace chiffon_back.Models
                             VendorId = p.VendorId,
                             Uuid = p.Uuid,
                             PhotoUuids = p.PhotoUuids,
+                            VideoUuids = p.VideoUuids,
                             Vendor = p.Vendor!.VendorName,
                             ProductStyle = p.ProductStyle!.StyleName,
                             ProductType = p.ProductType!.TypeName,
@@ -246,6 +247,23 @@ namespace chiffon_back.Models
                     }
                 }
 
+                // VIDEO
+                if (!String.IsNullOrEmpty(p.VideoUuids))
+                {
+                    foreach (string uuid in PhotoHelper.GetPhotoUuids(p.VideoUuids))
+                    {
+                        var imageFiles = DirectoryHelper.GetImageFiles(uuid);
+                        p.Colors.Add(new ProductColor()
+                        {
+                            ColorNames = "VIDEO",
+                            ColorVariantId = -id,
+                            ColorNo = null,
+                            ImagePath = imageFiles
+                        });
+                        id++;
+                    }
+                }
+
                 // 2) COLOR VARIANTS
                 foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == p.Id).ToList())
                 {
@@ -272,6 +290,7 @@ namespace chiffon_back.Models
                         Quantity = cv.Quantity,
                         ProductId = p.Id,
                         IsProduct = false,
+                        IsVideo = false,
                         ColorIds = colorsIds,
                         ImagePath = imageFiles,
                         Uuid = cv.Uuid
@@ -337,6 +356,7 @@ namespace chiffon_back.Models
                             Width = p.Width,
                             Uuid = p.Uuid,
                             PhotoUuids = p.PhotoUuids,
+                            VideoUuids = p.VideoUuids,
                             ProductStyleId = p.ProductStyleId,
                             ProductTypeId = p.ProductTypeId,
                             VendorId = p.VendorId,
@@ -379,6 +399,25 @@ namespace chiffon_back.Models
                         Uuid = uuid,
                         ProductId = prod.Id,
                         IsProduct = true,
+                        IsVideo = false,
+                        ImagePath = imageFiles
+                    });
+                    colorId++;
+                }
+
+                // VIDEO
+                foreach (string uuid in PhotoHelper.GetPhotoUuids(prod.VideoUuids))
+                {
+                    var imageFiles = DirectoryHelper.GetImageFiles(uuid);
+                    prod.Colors.Add(new ProductColor()
+                    {
+                        ColorNames = "VIDEO",
+                        ColorVariantId = -colorId,
+                        ColorNo = null,
+                        Uuid = uuid,
+                        ProductId = prod.Id,
+                        IsProduct = false,
+                        IsVideo = true,
                         ImagePath = imageFiles
                     });
                     colorId++;
@@ -399,6 +438,7 @@ namespace chiffon_back.Models
                         Quantity = cv.Quantity,
                         ProductId = prod.Id,
                         IsProduct = false,
+                        IsVideo = false,
                         Uuid = cv.Uuid,
                         ImagePath = DirectoryHelper.GetImageFiles(cv.Uuid!)
                     });

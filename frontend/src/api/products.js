@@ -220,7 +220,7 @@ export const sampleComposition = async (productId, sampleId) => {
   return rc
 };
 
-export const postFile = async (colorVariant, prodId) => {
+export const postFile = async (colorVariant, prodId, type) => {
 
   if (!colorVariant.SelectedFile) {
     return
@@ -229,6 +229,7 @@ export const postFile = async (colorVariant, prodId) => {
   formData.append("formFile", colorVariant.SelectedFile);
   formData.append("uid", colorVariant.uuid); //!? Id);
   formData.append("productId", prodId);
+  formData.append("type", type);
   try {
     const res = await axios.post(config.api + "/Products/ImportFile", formData);
   } catch (ex) {

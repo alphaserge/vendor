@@ -25,6 +25,7 @@
         public string? PhotoDir { get; set; }
         public string? Uuid { get; set; }
         public string? PhotoUuids { get; set; }
+        public string? VideoUuids { get; set; }
         public string? FileName { get; set; }
 
         public int? DyeStaffId { get; set; }

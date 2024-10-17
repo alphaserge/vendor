@@ -300,7 +300,8 @@ export default function UpdateProduct(props) {
           productId: null,
           quantity: null,
           SelectedFile: null,
-          isProduct: false
+          isProduct: false,
+          isVideo: false,
         })
         i++
       }
@@ -319,7 +320,8 @@ export default function UpdateProduct(props) {
           colorVariantId: -1,
           productId: prodId,
           quantity: null,
-          isProduct: true
+          isProduct: true,
+          isVideo: false,
         })
         i++
       }
@@ -337,7 +339,8 @@ export default function UpdateProduct(props) {
           Id: cv.colorVariantId,
           Uuid: cv.uuid,
           ProductId: cv.productId,
-          IsProduct: cv.isProduct
+          IsProduct: cv.isProduct,
+          IsVideo: cv.isVideo
         })
     })
     //.then(r => r.json())
@@ -558,7 +561,8 @@ const addColorVariant = async (cv) => {
       Uuid: cv.uuid,
       Num: cv.colorNo,
       productId: cv.productId,
-      isProduct: false
+      isProduct: false,
+      isVideo: false,
     })
     .then(function (response) {
       console.log(response);
@@ -593,23 +597,24 @@ const addColorVariant = async (cv) => {
 }) */
 };
 
-const uploadProductColor = async (event) => {
+const uploadProductColor = async (event, type) => {
 
   const file = event.target.files[0]
   const id = idFromUrl()
   const cv = 
   {
     uuid: uuid(),
-    colorNames: 'PRODUCT',
+    colorNames: type,
     colorNo: null,
     colorIds: null,
     colorVariantId: -1,
     productId: id,
     quantity: null,
-    isProduct: true,
+    isProduct: type == 'PRODUCT',
+    isVideo: type == 'VIDEO',
     SelectedFile: file,
   }
-  await postFile(cv, id)
+  await postFile(cv, id, type)
   loadProduct(id, setProduct)
   //navigate(loc)
 }
@@ -630,7 +635,8 @@ const uploadColorVariant = async (event) => {
     productId: id,
     quantity: null,
     SelectedFile: file,
-    isProduct: false
+    isProduct: false,
+    isVideo: false
   }
 
   await postFile(cv, null)
@@ -642,7 +648,6 @@ const uploadColorVariant = async (event) => {
   .then(function (response) {
     let prod = response.data
     setProduct(prod)
-    let cc = prod.colors.filter(it => !it.isProduct)
     setColorVariantIndex(prod.colors.length-1)
     setColorVariantFile(null)
     setOpenEditColor(true)
@@ -721,21 +726,11 @@ const setProduct = (prod) => {
     prod.colors = []
   }
 
-  let cvNums = prod.colors.filter(it => !it.isProduct).map(x => x.colorNo)
+  let cvNums = prod.colors.filter(it => (!it.isProduct && !it.isVideo)).map(x => x.colorNo)
   let max = cvNums.length > 0 ?  Math.max(...cvNums) : 0
 
-  /*let lengthProd = prod.colors.filter(function(item){
-    return item.isProduct;
-  }).length;*/
-
-  /*while(lengthProd<2) {
-    prod.colors.splice(lengthProd,0,moreProductColors(1,prod.id)[0])
-    lengthProd++
-  }
-  //prod.colors = prod.colors.concat(moreProductColors(2))*/
   setProductColors(moreProductColors(2,prod.id))
-  //let add = max % 2 == 1 ? 5 : 6
-  prod.colors = prod.colors //.concat(moreVariants(2/*add*/,max))
+  prod.colors = prod.colors
   setColorVariants(prod.colors)
   setColorVariantsAdd(moreVariants(2/*add*/,max))
 
@@ -1121,7 +1116,7 @@ useEffect(() => {
                     <Box 
                       key={"toolbox" + index} 
                       className="product-img-buttons" >
-                        { cv.isProduct!=true &&
+                        { cv.isProduct!=true && cv.isVideo!=true &&
                           <Button
                             variant="contained"
                             component={"div"}
@@ -1147,17 +1142,23 @@ useEffect(() => {
                     <br/>
                   </Box>
                   <Box component={"div"} 
-                    sx={{ m: 0, mt: 1, ml: 0, pb: 1, height: "22px", width: "135px", wordBreak: "break-all", wordWrap: "break-word", display: "flex", justifyContent: "space-between" }} 
-                    textAlign={"center"} fontSize={"11px"} fontWeight={"600"} > 
+                    sx={{ m: 0, mt: 1, ml: 0, pb: 1, height: "22px", width: "135px", 
+                    wordBreak: "normal", wordWrap: "break-word", 
+                    display: "flex", fontSize:"11px", fontWeight: "600"}} > 
                     
-                    { cv.isProduct==false &&
-                    <Box sx={{textAlign: "center"}} style={{backgroundColor: "rgb(251 178 96)", width: "100%", height: "24px", padding: "5px 3px", borderRadius: 3}}>
-                      { 'COLOR ' + (cv.colorNo ? cv.colorNo + ' : ' : ' ? ') + (cv.quantity ? cv.quantity : ' -') + ' m'}
+                    { cv.isProduct==false && cv.isVideo==false &&
+                    <Box sx={{ width: "100%", height: "24px", padding: "5px 3px", borderRadius: 3, textAlign: "left"}}>
+                      { 'COLOR ' + (cv.colorNo ? cv.colorNo + ' : ' : ' ? ') + (cv.quantity ? cv.quantity : ' -') + ' m - ' + cv.colorNames }
                     </Box>
                     }
                     { cv.isProduct==true &&
-                    <Box sx={{textAlign: "center"}} style={{backgroundColor: "rgb(88 203 117)", width: "100%", height: "24px", padding: "5px 3px", borderRadius: 3}}>
+                    <Box sx={{width: "100%", height: "24px", padding: "5px 3px", borderRadius: 3, textAlign: "left"}}>
                     GLOBAL PHOTO
+                    </Box>
+                    }
+                    { cv.isVideo==true &&
+                    <Box sx={{width: "100%", height: "24px", padding: "5px 3px", borderRadius: 3, textAlign: "left"}}>
+                    VIDEO
                     </Box>
                     }
                     </Box>
@@ -1167,13 +1168,20 @@ useEffect(() => {
 
             <Box sx={{mb: 3}}>
             <label htmlFor={"icon-button-file-prod"}>
-              <Input accept="image/*" id={"icon-button-file-prod"} type="file" onChange={uploadProductColor} />
+              <Input accept="image/*" id={"icon-button-file-prod"} type="file" onChange={(e) => {uploadProductColor(e,'PRODUCT')}} />
               <Button aria-label="upload global photo" style={smallButtonStyle} component="span">
                     <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
                     Add global photo
               </Button>
             </label>
             
+            <label htmlFor={"icon-button-file-video"}>
+              <Input accept="video/*" id={"icon-button-file-video"} type="file" onChange={(e) => {uploadProductColor(e,'VIDEO')}} />
+              <Button aria-label="upload video" style={smallButtonStyle} component="span">
+                    <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
+                    Add video
+              </Button>
+            </label>
 
             <label htmlFor={"icon-button-file-cv"} sx={{ ml: 2 }}>
               <Input accept="image/*" id={"icon-button-file-cv"} type="file" onChange={uploadColorVariant} />
@@ -1199,7 +1207,7 @@ useEffect(() => {
             <Grid container spacing={2} >
                 { colorVariantsAdd && colorVariantsAdd.map((cv,index) => (
                   <Grid item xs={12} md={6} sx={{ ...flexStyle}} key={"color-var-"+index} >
-                    {(cv.isProduct !== true) &&
+                    {(cv.isProduct !== true) && (cv.isVideo !== true) &&
                     <ColorVariant 
                       cv={cv} 
                       setColorItem={setColorVariantItem} 

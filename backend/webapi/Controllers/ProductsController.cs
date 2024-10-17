@@ -126,7 +126,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost("ImportFile")]
-        public /*async*/ ActionResult ImportFile([FromForm] IFormFile formFile, [FromForm] string uid, [FromForm] string? productId)
+        public /*async*/ ActionResult ImportFile([FromForm] IFormFile formFile, [FromForm] string uid, [FromForm] string? productId, [FromForm] string type)
         {
             try
             {
@@ -153,12 +153,25 @@ namespace chiffon_back.Controllers
                         //await formFile.CopyToAsync(stream);
                         formFile.CopyTo(stream);
                     }
-                    var product = ctx.Products.FirstOrDefault(x => x.Id.ToString() == productId);
-                    if (product != null)
+                    if (type.ToUpper() == "PRODUCT")
                     {
-                        product.PhotoUuids = 
-                            String.IsNullOrEmpty(product.PhotoUuids) ? uid : product.PhotoUuids + "," + uid;
-                        ctx.SaveChanges();
+                        var product = ctx.Products.FirstOrDefault(x => x.Id.ToString() == productId);
+                        if (product != null)
+                        {
+                            product.PhotoUuids =
+                                String.IsNullOrEmpty(product.PhotoUuids) ? uid : product.PhotoUuids + "," + uid;
+                            ctx.SaveChanges();
+                        }
+                    }
+                    if (type.ToUpper() == "VIDEO")
+                    {
+                        var product = ctx.Products.FirstOrDefault(x => x.Id.ToString() == productId);
+                        if (product != null)
+                        {
+                            product.VideoUuids =
+                                String.IsNullOrEmpty(product.VideoUuids) ? uid : product.VideoUuids + "," + uid;
+                            ctx.SaveChanges();
+                        }
                     }
                 }
                 return CreatedAtAction(nameof(Product), new { id = -1 }, true);
@@ -223,6 +236,12 @@ namespace chiffon_back.Controllers
                 {
                     var prod = ctx.Products.FirstOrDefault(x => x.Id == c.ProductId);
                     prod.PhotoUuids = PhotoHelper.RemovePhotoUuid(prod.PhotoUuids, c.Uuid);
+                    ctx.SaveChanges();
+                }
+                else if (c.IsVideo)
+                {
+                    var prod = ctx.Products.FirstOrDefault(x => x.Id == c.ProductId);
+                    prod.VideoUuids = PhotoHelper.RemovePhotoUuid(prod.VideoUuids, c.Uuid);
                     ctx.SaveChanges();
                 }
                 else
