@@ -107,6 +107,16 @@ image.product-img {
   min-width:100%;
 }
 
+video.product---img {
+  /* position: absolute;
+  min-width: 100%;
+  min-height: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);         */
+  object-fit: cover;
+}
+
 div.product-img {
   width: 190px;
   height: 150px;

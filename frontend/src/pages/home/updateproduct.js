@@ -19,6 +19,10 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import MenuItem from '@mui/material/MenuItem';
 import { HexColorPicker } from "react-colorful";
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
 import InputMask from "react-input-mask";
 
 import { v4 as uuid } from 'uuid'
@@ -209,6 +213,8 @@ export default function UpdateProduct(props) {
     const [colorVariantFile, setColorVariantFile] = useState(null)
         
     const [colorVariantIndex, setColorVariantIndex] = useState(-1)
+    const [videoPath, setVideoPath] = useState("")
+    const [photoPath, setPhotoPath] = useState("")
 
     let loc = useLocation()
 
@@ -684,6 +690,8 @@ const onFileChange = (event) => {
 const [errorNewColor, setErrorNewColor] = React.useState("");
 const [openNewColor, setOpenNewColor] = React.useState(false);
 const [openEditColor, setOpenEditColor] = React.useState(false);
+const [openVideo, setOpenVideo] = React.useState(false);
+const [openPhoto, setOpenPhoto] = React.useState(false);
 const handleOpen = () => { setErrorNewColor(""); setOpenNewColor(true); }
 const handleClose = () => setOpenNewColor(false);
 
@@ -795,6 +803,73 @@ useEffect(() => {
               style={buttonStyle}
               onClick={()=> {setOpenEditColor(false)}} >
                   Cancel
+          </Button>
+          </Box>
+          </Box>
+        </Box>
+      </Modal>
+
+      <Modal
+        open={openVideo}
+        onClose={()=>{setOpenVideo(false)}}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description" >
+
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                width: "auto", bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
+          {/* <Typography id="modal-modal-title" variant="h6" component="h2" sx={{textAlign: "center", m: 2, mb: 3}}>
+            Change color variant
+          </Typography> */}
+          <Box sx={{display: "flex", flexDirection: 'column', alignItems: "center"}} >
+          <CardMedia 
+              component={"video"}
+              autoPlay={"autoplay"}
+              muted
+              key={"card-video"} 
+              src={videoPath} 
+              alt={"Product video"} 
+              sx={{ width: "auto", height:"auto"}}
+              // className="product-img"
+              
+                />
+          <Box sx={{display: "flex", flexDirection: 'row', alignItems: "center", m: 2, mt: 3}} >
+          <Button 
+              variant="contained"
+              style={buttonStyle}
+              sx={{marginTop: "40px"}}
+              onClick={()=> { setOpenVideo(false) }} >
+                  Close
+          </Button>
+          </Box>
+          </Box>
+        </Box>
+      </Modal>
+
+      <Modal
+        open={openPhoto}
+        onClose={()=>{setOpenPhoto(false)}}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description" >
+
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                width: "auto", bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
+          {/* <Typography id="modal-modal-title" variant="h6" component="h2" sx={{textAlign: "center", m: 2, mb: 3}}>
+            Change color variant
+          </Typography> */}
+          <Box sx={{display: "flex", flexDirection: 'column', alignItems: "center"}} >
+          <Box 
+                      component={"img"} 
+                      key={"photoView"} 
+                      src={photoPath} 
+                      alt={"photo"} 
+                      className="product-img" />
+          <Box sx={{display: "flex", flexDirection: 'row', alignItems: "center", m: 2, mt: 3}} >
+          <Button 
+              variant="contained"
+              style={buttonStyle}
+              sx={{marginTop: "40px"}}
+              onClick={()=> { setOpenPhoto(false) }} >
+                  Close
           </Button>
           </Box>
           </Box>
@@ -1104,15 +1179,31 @@ useEffect(() => {
           <AccordionDetails sx={accordionDetailsStyle}>
             <Grid container spacing={2} sx={accordionSummaryStyle}>
             
-              { colorVariants && colorVariants.map((cv, index) => {
+              { colorVariants && colorVariants.sort((a, b) => a.isVideo > b.isVideo ? 1 : -1).map((cv, index) => {
                 return <Grid item xs={6} md={3} sx={{}} className="product-img-holder-item" key={"color-item-"+index} >
                   <Box className="product-img-holder-thumb" key={"color-item-1-"+index}>
-                    <Box 
+                  { cv.isVideo!=true && <Box 
                       component={"img"} 
                       key={index} 
                       src={config.api + "/" + cv.imagePath} 
                       alt={"photo"+(index+1)} 
-                      className="product-img" />
+                      className="product-img" 
+                      onClick={(e)=>{ setOpenPhoto(true); setPhotoPath(config.api + "/" + cv.imagePath); }}
+                      />
+                  }
+                  { cv.isVideo==true && <CardMedia 
+                      component={"video"}
+                      autoPlay={"autoplay"}
+                      muted
+                      key={index} 
+                      src={config.api + "/" + cv.imagePath} 
+                      alt={"photo"+(index+1)} 
+                      sx={{ width: "180%", height:"auto"}}
+                      className="product-img"
+                      onClick={(e)=>{ setOpenVideo(true); setVideoPath(config.api + "/" + cv.imagePath); }}
+                       />
+                  }
+
                     <Box 
                       key={"toolbox" + index} 
                       className="product-img-buttons" >
