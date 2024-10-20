@@ -212,7 +212,7 @@ export default function UpdateProduct(props) {
     const [addSelectedFile, setAddSelectedFile] = useState(null)
     const [colorVariantFile, setColorVariantFile] = useState(null)
         
-    const [colorVariantIndex, setColorVariantIndex] = useState(-1)
+    const [colorVariantUuid, setColorVariantUuid] = useState("")
     const [videoPath, setVideoPath] = useState("")
     const [photoPath, setPhotoPath] = useState("")
 
@@ -388,8 +388,8 @@ export default function UpdateProduct(props) {
   })
   };
   
-  const handleEditColor = async (index) => {
-    setColorVariantIndex(index)
+  const handleEditColor = async (uuid) => {
+    setColorVariantUuid(uuid)
     setColorVariantFile(null)
     setOpenEditColor(true)
   };
@@ -451,7 +451,7 @@ export default function UpdateProduct(props) {
     }
 
     if (colorVariantFile) {
-      let cv = colorVariants[colorVariantIndex]
+      let cv = colorVariants[colorVariantUuid]
       cv.SelectedFile = colorVariantFile
       let rf = await postFile(cv, id)
       needUpdate = true
@@ -654,7 +654,7 @@ const uploadColorVariant = async (event) => {
   .then(function (response) {
     let prod = response.data
     setProduct(prod)
-    setColorVariantIndex(prod.colors.length-1)
+    setColorVariantUuid(cv.uuid)
     setColorVariantFile(null)
     setOpenEditColor(true)
   })
@@ -766,6 +766,8 @@ useEffect(() => {
 
   const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
 
+  console.log(colorVariants)
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -783,7 +785,7 @@ useEffect(() => {
           </Typography>
           <Box sx={{display: "flex", flexDirection: 'column', alignItems: "center"}} >
           <ColorVariant 
-            cv={colorVariants[colorVariantIndex]} 
+            cv={colorVariants.find((v)=> v.uuid == colorVariantUuid)} 
             setColorItem={setColorVariantItem} 
             addNewFn={addNewColor}
             fireChange={fireChange}
@@ -1214,7 +1216,7 @@ useEffect(() => {
                             aria-label="upload picture"
                             sx={{color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, pl: 2}}
                             style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}
-                            onClick={ function() { handleEditColor(index)}}
+                            onClick={ function() { handleEditColor(cv.uuid)}}
                             startIcon={<EditNoteIcon/>}>
                             {/* <EditNoteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/> */}
                           </Button>
