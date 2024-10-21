@@ -91,7 +91,7 @@ div.product-img-holder-thumb {
   padding: 0px;
 }
 div.product-img-holder-item {
-  height:210px;    
+  /* height:210px;     */
   overflow:hidden;
   padding: 0px;
 }

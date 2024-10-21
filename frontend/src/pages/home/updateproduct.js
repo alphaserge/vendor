@@ -334,7 +334,12 @@ export default function UpdateProduct(props) {
       return cv
     }
   
-    const handleRemoveCv = async (cv) => {
+    const handleRemoveCv = async (uuid) => {
+
+      let cv = colorVariants.find((v)=> v.uuid == colorVariantUuid)
+      if (!cv) {
+        return
+      }
 
       fetch(config.api + '/Products/ProductRemoveCV', {
         method: "POST",
@@ -690,6 +695,7 @@ const onFileChange = (event) => {
 const [errorNewColor, setErrorNewColor] = React.useState("");
 const [openNewColor, setOpenNewColor] = React.useState(false);
 const [openEditColor, setOpenEditColor] = React.useState(false);
+const [openConfirmDelete, setOpenConfirmDelete] = React.useState(false);
 const [openVideo, setOpenVideo] = React.useState(false);
 const [openPhoto, setOpenPhoto] = React.useState(false);
 const handleOpen = () => { setErrorNewColor(""); setOpenNewColor(true); }
@@ -792,7 +798,7 @@ useEffect(() => {
             fileChanges={fileChange}
             data={colors}
             last={false} />
-          <Box sx={{display: "flex", flexDirection: 'row', alignItems: "center", m: 2, mt: 3}} >
+          <Box sx={{display: "flex", flexDirection: 'row', justifyContent: "center", m: 2, mt: 3}} >
           <Button 
               variant="contained"
               style={buttonStyle}
@@ -810,6 +816,36 @@ useEffect(() => {
           </Box>
         </Box>
       </Modal>
+
+      <Modal
+        open={openConfirmDelete}
+        onClose={()=>{setOpenConfirmDelete(false)}}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description" >
+
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                width: 475, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
+          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{textAlign: "center", m: 2, mb: 3}}>
+            Delete item?
+          </Typography>
+          <Box sx={{display: "flex", flexDirection: 'row', justifyContent: "center", m: 2, mt: 3}} >
+          <Button 
+              variant="contained"
+              style={buttonStyle}
+              sx={{marginTop: "40px"}}
+              onClick={()=> { setOpenConfirmDelete(false); handleRemoveCv(); }} >
+                  Delete
+          </Button>
+          <Button 
+              variant="contained"
+              style={buttonStyle}
+              onClick={()=> {setOpenConfirmDelete(false)}} >
+                  Cancel
+          </Button>
+          </Box>
+        </Box>
+      </Modal>
+
 
       <Modal
         open={openVideo}
@@ -1179,7 +1215,7 @@ useEffect(() => {
           </AccordionSummary>
 
           <AccordionDetails sx={accordionDetailsStyle}>
-            <Grid container spacing={2} sx={accordionSummaryStyle}>
+            <Grid container spacing={2} sx={{...accordionSummaryStyle, ...{height: "218px"}}}>
             
               { colorVariants && colorVariants.sort((a, b) => a.isVideo > b.isVideo ? 1 : -1).map((cv, index) => {
                 return <Grid item xs={6} md={3} sx={{}} className="product-img-holder-item" key={"color-item-"+index} >
@@ -1228,14 +1264,14 @@ useEffect(() => {
                             aria-label="delete picture"
                             sx={{color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, pl: 1.5, ml: 1}}
                             style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}
-                            onClick={ function() { handleRemoveCv(cv)}} 
+                            onClick={ function() { setOpenConfirmDelete(true); setColorVariantUuid(cv.uuid)}} 
                             startIcon={<DeleteIcon/>}>  
                           </Button>
                     </Box>
                     <br/>
                   </Box>
                   <Box component={"div"} 
-                    sx={{ m: 0, mt: 1, ml: 0, pb: 1, height: "22px", width: "135px", 
+                    sx={{ m: 0, mt: 1, ml: 0, pb: 1, height: "auto", width: "135px", 
                     wordBreak: "normal", wordWrap: "break-word", 
                     display: "flex", fontSize:"11px", fontWeight: "600"}} > 
                     
