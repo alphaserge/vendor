@@ -1215,10 +1215,10 @@ useEffect(() => {
           </AccordionSummary>
 
           <AccordionDetails sx={accordionDetailsStyle}>
-            <Grid container spacing={2} sx={{...accordionSummaryStyle, ...{height: "218px"}}}>
+            <Grid container spacing={2} sx={{...accordionSummaryStyle, ...{height: "auto"}}}>
             
               { colorVariants && colorVariants.sort((a, b) => a.isVideo > b.isVideo ? 1 : -1).map((cv, index) => {
-                return <Grid item xs={6} md={3} sx={{}} className="product-img-holder-item" key={"color-item-"+index} >
+                return <Grid item xs={4} md={3} sx={{}} className="product-img-holder-item" key={"color-item-"+index} >
                   <Box className="product-img-holder-thumb" key={"color-item-1-"+index}>
                   { cv.isVideo!=true && <Box 
                       component={"img"} 
@@ -1276,17 +1276,17 @@ useEffect(() => {
                     display: "flex", fontSize:"11px", fontWeight: "600"}} > 
                     
                     { cv.isProduct==false && cv.isVideo==false &&
-                    <Box sx={{ width: "100%", height: "24px", padding: "5px 3px", borderRadius: 3, textAlign: "left"}}>
+                    <Box sx={{ width: "100%", height: "auto", padding: "5px 3px", borderRadius: 3, textAlign: "left"}}>
                       { 'COLOR ' + (cv.colorNo ? cv.colorNo + ' : ' : ' ? ') + (cv.quantity ? cv.quantity : ' -') + ' m - ' + cv.colorNames }
                     </Box>
                     }
                     { cv.isProduct==true &&
-                    <Box sx={{width: "100%", height: "24px", padding: "5px 3px", borderRadius: 3, textAlign: "left"}}>
+                    <Box sx={{width: "100%", height: "auto", padding: "5px 3px", borderRadius: 3, textAlign: "left"}}>
                     GLOBAL PHOTO
                     </Box>
                     }
                     { cv.isVideo==true &&
-                    <Box sx={{width: "100%", height: "24px", padding: "5px 3px", borderRadius: 3, textAlign: "left"}}>
+                    <Box sx={{width: "100%", height: "auto", padding: "5px 3px", borderRadius: 3, textAlign: "left"}}>
                     VIDEO
                     </Box>
                     }

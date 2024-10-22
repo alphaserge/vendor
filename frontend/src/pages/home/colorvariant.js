@@ -15,10 +15,10 @@ import InputAdornment from '@mui/material/InputAdornment';
 import MySelect from '../../components/myselect';
 import { APPEARANCE } from '../../appearance';
 
-const itemStyle = { width: "197px" }
+const itemStyle = { width: "185px" }
 const labelStyle = {  }
 const textStyle = { m: 0, mr: 1 }
-const divStyle = { width: 360, mt: 0, ml: 0, mr: 0 }
+const divStyle = { width: 365, mt: 0, ml: 0, mr: 0 }
 const flexStyle = { display: "flex", justifyContent: "space-between", alignContent: "space-between", alignItems: "center", mr: 1 }
 
 const ITEM_HEIGHT = 48;
@@ -43,11 +43,11 @@ export default function ColorVariant(props) {
 
     const setColorNo = (value) => {
       let cv = props.cv;
-      cv.colorNo = parseInt(value)
-      props.setColorItem(cv.id, cv)
       if (value && !cv.colorNo && props.fireChange) {
         props.fireChange(props.last)
       }
+      cv.colorNo = parseInt(value)
+      props.setColorItem(cv.id, cv)
     }
 
     const setQuantity = (value) => {
@@ -100,8 +100,8 @@ export default function ColorVariant(props) {
         size="small" 
         id="colorNo"
         name="colorNo"
-        label="No."
-        sx = {{...textStyle, ...{width: "85px"}, ...existingStyle}}
+        label="Col. No"
+        sx = {{...textStyle, ...{width: "125px"}, ...existingStyle}}
         value={props.cv.colorNo ? props.cv.colorNo : ""}
         onChange={ev => setColorNo(ev.target.value) }
         InputLabelProps={{ shrink: true }}
@@ -111,8 +111,8 @@ export default function ColorVariant(props) {
         size="small" 
         id="colorQuantity"
         name="colorQuantity"
-        label="Qty."
-        sx = {{...textStyle, ...{width: "120px"}, ...existingStyle}}
+        label="Quantity"
+        sx = {{...textStyle, ...{width: "140px"}, ...existingStyle}}
         value={props.cv.quantity ? props.cv.quantity : ""}
         onChange={ev => setQuantity(ev.target.value) }
         InputLabelProps={{ shrink: true }}
@@ -132,11 +132,11 @@ export default function ColorVariant(props) {
       />
 
       <label htmlFor={"icon-button-file-" + props.cv.colorVariantId}>
-      <Input accept="image/*" id={"icon-button-file-"+props.cv.colorVariantId} type="file" onChange={onFileChange} value={""} />
+      <Input accept="image/*" id={"icon-button-file-"+props.cv.colorVariantId} type="file" onChange={onFileChange} value={""}  />
       <IconButton
         color="success"
         aria-label="upload picture"
-        sx={{color: APPEARANCE.BLACK2}}
+        sx={{color: APPEARANCE.BLACK2, ml: 1}}
         component="span">
             {!props.cv.SelectedFile && <AddAPhotoIcon />}
             { props.cv.SelectedFile && <DoneIcon />}
