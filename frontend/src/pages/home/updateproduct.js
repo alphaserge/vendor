@@ -69,7 +69,8 @@ const defaultTheme = createTheme()
 const textStyle = { m: 0, mr: 1 }
 const itemStyle  = { width: "100%", mt: 3, ml: 0, mr: 0, mb: 0  }
 const itemStyle1 = { width: "calc( 100% - 0px )", mt: 0, ml: 0, mr: 0  }
-const flexStyle = { display: "flex", flexDirection: "row", alignItems : "center", justifyContent: "space-between" }
+const itemStyle2 = { width: "calc( 100% + 1px )", mt: 0, ml: 0, mr: 0  }
+const flexStyle = { display: "flex", flexDirection: "row", alignItems : "start", justifyContent: "space-between" }
 const halfItemStyle = { width: "calc( 50% - 3px )", m: 0 }
 const halfItemStyle1 = { width: "calc( 50% - 4px )", m: 0 }
 const thirdItemStyle = { width: "calc( 33% - 5px )", m: 0 }
@@ -1196,10 +1197,10 @@ useEffect(() => {
                 <MySelect
                   id="addproduct-productstyle"
                   url="ProductStyles"
-                  title="Product Style"
+                  title="Fabric Style"
                   valueName="styleName"
                   labelStyle={labelStyle1}
-                  itemStyle = {itemStyle1}
+                  itemStyle = {halfItemStyle}
                   sx={itemStyle1}
                   MenuProps={MySelectProps1}
                   valueVariable={productStyle}
@@ -1374,7 +1375,7 @@ useEffect(() => {
                 <MySelect 
                   id="addproduct-producttype"
                   url="ProductTypes"
-                  title="Product Type"
+                  title="Fabric type"
                   valueName="typeName"
                   labelStyle={labelStyle1}
                   itemStyle = {itemStyle1}
@@ -1447,27 +1448,26 @@ useEffect(() => {
 
           <Grid container spacing={2} sx={{pt: 2}} >
 
-            <Grid item xs={12} md={6} >
+            <Grid item xs={12} md={6} sx={{...flexStyle}} >
               <TextField
                 margin="normal"
                 size="small" 
                 id="fabricConstruction"
                 label="Fabric construction"
+                helperText="Example: 112*110"
                 name="fabricConstruction"
-                sx = {itemStyle1}
+                sx = {halfItemStyle}
                 value={fabricConstruction}
                 onChange={ev => setFabricConstruction(ev.target.value)}
               />
-            </Grid>
-
-            <Grid item xs={12} md={6} >
-            <TextField
+              <TextField
                 margin="normal"
                 size="small" 
                 id="fabricYarnCount"
                 label="Fabric Yarn Count"
                 name="fabricYarnCount"
-                sx = {itemStyle1}
+                helperText="Example: 40s+32s"
+                sx = {halfItemStyle}
                 onChange={ev => setFabricYarnCount(ev.target.value)}
                 value={fabricYarnCount}
               />
@@ -1506,34 +1506,39 @@ useEffect(() => {
               </FormControl>
               </Grid>
 
-              <Grid item xs={12} md={6} >
-            <MySelect 
-                id="addproduct-finishing"
-                url="Finishings"
-                title="Finishing"
-                valueName="finishingName"
-                labelStyle={labelStyle}
-                itemStyle={itemStyle1}
-                MenuProps={MySelectProps}
-                valueVariable={finishing}
-                setValueFn={setFinishing}
-                data={finishings}
-              />
-              </Grid>
-              <Grid item xs={12} md={6} >
-            <TextField
-                margin="normal"
-                size="small" 
-                id="hsCode"
-                label="HS Code"
-                name="hsCode"
-                sx = {itemStyle1}
-                value={hsCode}
-                onChange={ev => setHsCode(ev.target.value)}
-              />
-              </Grid>
+            <Grid item xs={12} md={6} sx={{...flexStyle}} >
+              <FormControl sx = {halfItemStyle1}>
+                <MySelect 
+                  id="addproduct-finishing"
+                  url="Finishings"
+                  title="Finishing"
+                  valueName="finishingName"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle2}
+                  MenuProps={MySelectProps}
+                  valueVariable={finishing}
+                  setValueFn={setFinishing}
+                  data={finishings}
+                />
+              </FormControl> &nbsp;
+                
+              <FormControl sx = {halfItemStyle1}>
+                <TextField
+                    margin="normal"
+                    size="small" 
+                    id="hsCode"
+                    label="HS Code"
+                    helperText="Example: 6400 0120 300"
+                    name="hsCode"
+                    sx = {{...itemStyle1, ...{ ml: "3px" }}}
+                    value={hsCode}
+                    onChange={ev => setHsCode(ev.target.value)}
+                  />
+              </FormControl> &nbsp;
+            </Grid>
 
-            <Grid item xs={12} md={6} >
+            <Grid item xs={12} md={6} sx={{...flexStyle}} >
+              <FormControl sx = {halfItemStyle1}>
                <MySelect 
                 id="addproduct-printttype"
                 url="PrintTypes"
@@ -1546,28 +1551,9 @@ useEffect(() => {
                 setValueFn={setPrintType}
                 data={printTypes}
               />
-              </Grid>
+              </FormControl>
 
-
-              { (productStyle == config.product.plain_dyed_type) &&
-              (<Grid item xs={12} md={6} >
-              <MySelect 
-                id="addproduct-plaindyedtype"
-                url="PlainDyedTypes"
-                title="Plain Dyed Type"
-                valueName="plainDyedTypeName"
-                labelStyle={labelStyle}
-                itemStyle={itemStyle1}
-                MenuProps={MySelectProps}
-                valueVariable={plainDyedType}
-                setValueFn={setPlainDyedType}
-                data={plainDyedTypes}
-                
-              />
-              </Grid>)
-              }
-
-              <Grid item xs={12} md={6} >
+              <FormControl sx = {halfItemStyle1}>
               <MySelect 
                 id="addproduct-dyestaff"
                 url="DyeStaffs"
@@ -1580,8 +1566,25 @@ useEffect(() => {
                 setValueFn={setDyeStaff}
                 data={dyeStaffs}
               />
+              </FormControl> 
+              </Grid>
 
-          </Grid>
+              { (productStyle == config.product.plain_dyed_type) && (
+                <Grid item xs={12} md={6} >
+                <MySelect 
+                  id="addproduct-plaindyedtype"
+                  url="PlainDyedTypes"
+                  title="Plain Dyed Type"
+                  valueName="plainDyedTypeName"
+                  labelStyle={labelStyle}
+                  itemStyle={halfItemStyle}
+                  MenuProps={MySelectProps}
+                  valueVariable={plainDyedType}
+                  setValueFn={setPlainDyedType}
+                  data={plainDyedTypes}
+                /> </Grid> )}
+
+              
           </Grid>
           </AccordionDetails>
 
