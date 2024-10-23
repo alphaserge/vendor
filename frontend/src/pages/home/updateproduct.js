@@ -1083,7 +1083,7 @@ useEffect(() => {
                 margin="normal"
                 size="small" 
                 id="design"
-                label="Design"
+                label="Design No"
                 name="design"
                 sx = {itemStyle1}
                 value={design}
@@ -1197,7 +1197,7 @@ useEffect(() => {
                 <MySelect
                   id="addproduct-productstyle"
                   url="ProductStyles"
-                  title="Fabric Style"
+                  title="Plain or Print"
                   valueName="styleName"
                   labelStyle={labelStyle1}
                   itemStyle = {halfItemStyle}
