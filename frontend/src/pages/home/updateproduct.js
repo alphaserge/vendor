@@ -283,6 +283,16 @@ export default function UpdateProduct(props) {
       setPrice3((value*1.10).toFixed(2))
     }
 
+
+    const productStyleChanged = (value) => {
+      //setTimeout( function() { setProductStyle(value); }, 200 )
+      setProductStyle(value)
+
+      //setWeight(value)
+      //wChanged(width, value)
+    }
+
+
     const addVariants = () => {
       let cv = [...colorVariantsAdd]
       cv = cv.concat(moreVariants(2))
@@ -772,7 +782,7 @@ useEffect(() => {
 
   const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
 
-  console.log(colorVariants)
+  console.log(config.plain_dyed_type)
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -1193,7 +1203,7 @@ useEffect(() => {
                   sx={itemStyle1}
                   MenuProps={MySelectProps1}
                   valueVariable={productStyle}
-                  setValueFn={setProductStyle}
+                  setValueFn={productStyleChanged}
                   data={productStyles}
                 />
                 </Grid>
@@ -1390,7 +1400,8 @@ useEffect(() => {
                 />
                 </Grid>
 
-                <Grid item xs={12} md={6}  >
+                { (productStyle != config.product.plain_dyed_type) && 
+                (<Grid item xs={12} md={6}  >
                 <MySelect 
                   id="addproduct-designtype"
                   url="DesignTypes"
@@ -1403,7 +1414,7 @@ useEffect(() => {
                   setValueFn={setDesignType}
                   data={designTypes}
                 />
-              </Grid>
+              </Grid>)}
 
                 <Grid item xs={12} md={6}  >
                 <MySelect 
@@ -1537,7 +1548,9 @@ useEffect(() => {
               />
               </Grid>
 
-              <Grid item xs={12} md={6} sx={{display: config.product.plain_dyed_types.includes(productStyle) ? "block" : "none" }} >
+
+              { (productStyle == config.product.plain_dyed_type) &&
+              (<Grid item xs={12} md={6} >
               <MySelect 
                 id="addproduct-plaindyedtype"
                 url="PlainDyedTypes"
@@ -1551,7 +1564,8 @@ useEffect(() => {
                 data={plainDyedTypes}
                 
               />
-              </Grid>
+              </Grid>)
+              }
 
               <Grid item xs={12} md={6} >
               <MySelect 
