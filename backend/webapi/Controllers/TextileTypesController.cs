@@ -33,11 +33,14 @@ namespace chiffon_back.Controllers
         [HttpGet(Name = "TextileTypes")]
         public IEnumerable<Models.TextileType> Get()
         {
-            return ctx.TextileTypes.OrderBy(x => x.TextileTypeName)
+            var list = ctx.TextileTypes.OrderBy(x => x.TextileTypeName)
                 .Select(x =>
                     config.CreateMapper()
                         .Map<Models.TextileType>(x))
                 .ToList();
+
+            list.Add(new Models.TextileType() { Id = -2, TextileTypeName = "ADD NEW" });
+            return list.AsEnumerable();
         }
 
         [HttpPost(Name = "TextileTypes")]

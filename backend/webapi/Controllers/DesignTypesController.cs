@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Net;
 
 namespace chiffon_back.Controllers
@@ -28,11 +29,14 @@ namespace chiffon_back.Controllers
         [HttpGet(Name = "DesignTypes")]
         public IEnumerable<Models.DesignType> Get()
         {
-            return ctx.DesignTypes.OrderBy(x => x.DesignName)
+            var list = ctx.DesignTypes.OrderBy(x => x.DesignName)
                 .Select(x =>
                     config.CreateMapper()
                         .Map<Models.DesignType>(x))
-                .ToList();
+            .ToList();
+
+            list.Add(new Models.DesignType() { Id = -2, DesignName = "ADD NEW" });
+            return list.AsEnumerable();
         }
 
         [HttpPost(Name = "DesignTypes")]

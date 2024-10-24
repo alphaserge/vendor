@@ -28,11 +28,15 @@ namespace chiffon_back.Controllers
         [HttpGet(Name = "OverWorkTypes")]
         public IEnumerable<Models.OverWorkType> Get()
         {
-            return ctx.OverWorkTypes.OrderBy(x => x.OverWorkName)
+            var overworks = ctx.OverWorkTypes.OrderBy(x => x.OverWorkName)
                 .Select(x =>
                     config.CreateMapper()
                         .Map<Models.OverWorkType>(x))
                 .ToList();
+            
+            overworks.Add(new Models.OverWorkType() { Id = -2, OverWorkName = "ADD NEW" });
+
+            return overworks.AsEnumerable();
         }
 
         [HttpPost(Name = "OverWorkTypes")]

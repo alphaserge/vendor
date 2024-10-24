@@ -35,7 +35,7 @@ import { getColors, postColor } from '../../api/colors'
 import { getDesignTypes } from '../../api/designtypes'
 import { getDyeStaffs } from '../../api/dyestaffs'
 import { getFinishings } from '../../api/finishings'
-import { getOverworkTypes } from '../../api/overworktypes'
+import { getOverworkTypes, postOverworkType } from '../../api/overworktypes'
 import { getPlainDyedTypes } from '../../api/plaindyedtypes'
 import { getPrintTypes } from '../../api/printtypes'
 import { getProductStyles } from '../../api/productstyles'
@@ -131,20 +131,7 @@ function getStyles(name, values, theme) {
   }
 }
 
-function useForceUpdate(){
-  const [value, setValue] = useState(0); // integer state
-  return () => setValue(value => value + 1); // update state to force render
-  // A function that increment 👆🏻 the previous state like here 
-  // is better than directly setting `setValue(value + 1)`
-}
-
 export default function UpdateProduct(props) {
-
-    const forceUpdate = useForceUpdate();
-
-    const [, updateState] = React.useState();
-    const forceUpdate1 = React.useCallback(() => updateState({}), []);
-    
 
     const navigate = useNavigate();
     const theme = useTheme();
@@ -379,31 +366,6 @@ export default function UpdateProduct(props) {
     })
   };
   
-  const handleRemoveProductPhoto = async (id) => {
-
-    fetch(config.api + '/Products/ProductRemoveProductPhoto', {
-      method: "POST",
-      headers: {
-          'Content-Type': 'application/json'
-        },
-      body: JSON.stringify({
-        Id: id,
-        ProductId: productId
-      })
-  })
-  .then(r => r.json())
-  .then(r => {
-  
-    loadProduct(id)
-    
-    props.setLastAction("Product photo variant has been removed")
-    navigate(loc)
-  })
-  .catch (error => {
-    console.log(error)
-  })
-  };
-  
   const handleEditColor = async (uuid) => {
     setColorVariantUuid(uuid)
     setColorVariantFile(null)
@@ -543,8 +505,6 @@ export default function UpdateProduct(props) {
 
   const compositionRemove = async (id) => {
     
-    //let id = idFromUrl()
-
     let r = await removeComposition(id)
 
     if (r) {
@@ -564,7 +524,7 @@ export default function UpdateProduct(props) {
     let r = await postColor(newColor, newColorRgb)
 
     if (!r.ok) {
-      setErrorNewColor(r.message)
+      setErrorNewValue(r.message)
       return
     }
     if (r.ok == true) {
@@ -572,9 +532,36 @@ export default function UpdateProduct(props) {
       getColors(setColors)
       handleClose()
     } else {
-      setErrorNewColor(r.message)
+      setErrorNewValue(r.message)
     }
-};
+  };
+
+  const addNewValue = async (e) => {
+
+    setOpenedNewValue(false);
+
+    var r = null
+    switch(newValueEntity) {
+      case 'overwork':
+          r = await postOverworkType(newColor, newColorRgb)
+          break;
+        case 'textiletype':
+          break;
+      }
+
+    if (!r.ok) {
+      setErrorNewValue(r.message)
+      return
+    }
+    if (r.ok == true) {
+      props.setLastAction(r.message)
+      getColors(setColors)
+      handleClose()
+    } else {
+      setErrorNewValue(r.message)
+    }
+  };
+
 
 const addColorVariant = async (cv) => {
 
@@ -703,13 +690,15 @@ const onFileChange = (event) => {
   setSelectedFile(event.target.files[0])
 }
 
-const [errorNewColor, setErrorNewColor] = React.useState("");
 const [openNewColor, setOpenNewColor] = React.useState(false);
 const [openEditColor, setOpenEditColor] = React.useState(false);
+const [openedNewValue, setOpenedNewValue] = React.useState(false);
+const [errorNewValue, setErrorNewValue] = React.useState("");
+const [newValueEntity, setNewValueEntity] = React.useState("");
 const [openConfirmDelete, setOpenConfirmDelete] = React.useState(false);
 const [openVideo, setOpenVideo] = React.useState(false);
 const [openPhoto, setOpenPhoto] = React.useState(false);
-const handleOpen = () => { setErrorNewColor(""); setOpenNewColor(true); }
+const handleOpen = () => { setErrorNewValue(""); setOpenNewColor(true); }
 const handleClose = () => setOpenNewColor(false);
 
 const addNewColor = () => {
@@ -953,7 +942,7 @@ useEffect(() => {
                 component={"div"}
                   shrink={true}
                   sx={{ wordBreak: "break-word", whiteSpace: "pre-line" }} >
-                    {errorNewColor}
+                    {errorNewValue}
                   </InputLabel>
           </Box>
           <Box sx={{flex: 2, ml: 2, mr: 2, display: "flex", flexDirection: 'column', alignItems: "center"}} >
@@ -984,7 +973,6 @@ useEffect(() => {
           </Box>
         </Box>
       </Modal>
-
 
       <Modal
         open={windowColorVariant}
@@ -1044,6 +1032,52 @@ useEffect(() => {
       </Box>
       </Modal>
 
+      <Modal
+        open={openedNewValue}
+        onClose={(e)=>{ setOpenedNewValue(false); }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description" >
+
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                width: 475, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Adding a new {newValueEntity}
+          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', flex: 3 }}>
+            <TextField
+                  margin="normal"
+                  size="small" 
+                  id="newColor"
+                  label="Color value"
+                  name="newColorRgb"
+                  value={newColorRgb}
+                  InputProps={{ readOnly: true }}
+                  // onChange={ev => setNewColorRgb(ev.target.value)}
+                /> 
+                <InputLabel
+                component={"div"}
+                  shrink={true}
+                  sx={{ wordBreak: "break-word", whiteSpace: "pre-line" }} >
+                    {errorNewValue}
+                  </InputLabel>
+          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'top' }}>
+          <Button 
+              variant="contained"
+              style={buttonStyle}
+              sx={{marginTop: "40px"}}
+              onClick={addNewValue} >
+                  Save
+          </Button>
+          <Button 
+              variant="contained"
+              style={buttonStyle}
+              onClick={(e)=>{ setOpenedNewValue(false); }} >
+                  Cancel
+          </Button>
+          </Box>
+          </Box>
+        </Box>
+      </Modal>
 
       <Container sx={{maxWidth: "100%", padding: 0 }} className="header-container" >
         <Header user={props.user} title={props.title} />
@@ -1428,6 +1462,7 @@ useEffect(() => {
                   MenuProps={MySelectProps}
                   valueVariable={overworkType}
                   setValueFn={setOverworkType}
+                  addNewFn={(e) => { setNewValueEntity("overwork"); setOpenedNewValue(true); }}
                   data={overworkTypes}
                 />
             </Grid>
