@@ -60,6 +60,13 @@ const MenuProps = {
   },
 };
 
+const getFromUrl = (name) => {
+  const search = window.location.search
+  const params = new URLSearchParams(search)
+  return params.get(name)
+}
+
+
 export default function ListProduct(props) {
 
     const navigate = useNavigate();
@@ -302,6 +309,12 @@ export default function ListProduct(props) {
       loadOverworkTypes()
       loadProductTypes()
       loadProductStyles()
+
+      if (getFromUrl("new")==1) {
+        setAddProduct(true)
+      }
+  
+  
     }, []);
 
   if (!props.user || props.user.Id == 0) {

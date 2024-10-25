@@ -1794,13 +1794,13 @@ useEffect(() => {
                     onClick={saveProduct} >
                         Save
                   </Button>
-                  {/* <Button 
+                  <Button 
                     variant="contained"
                     style={buttonStyle}
                     sx={{margin: "0 10px", height: 70}}
-                    onClick={openMyProducts} >
-                        View products
-                  </Button> */}
+                    onClick={(e) => { navigate("/listproduct?new=1") }} >
+                        Add Next
+                  </Button>
                 </Box>
           </FormControl>
         </main>
