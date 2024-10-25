@@ -47,13 +47,13 @@ namespace chiffon_back.Controllers
         {
             try
             {
-                Context.Season vendor = config.CreateMapper()
+                Context.Season item = config.CreateMapper()
                     .Map<Context.Season>(Season);
 
-                ctx.Seasons.Add(vendor);
+                ctx.Seasons.Add(item);
                 ctx.SaveChanges();
 
-                return CreatedAtAction(nameof(Get), new { id = vendor.Id }, vendor);
+                return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }
             catch (Exception ex)
             {

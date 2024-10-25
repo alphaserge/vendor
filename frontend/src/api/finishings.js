@@ -14,3 +14,21 @@ export const getFinishings= (setFn) => {
   }
   
   
+  export const postFinishing = async (name) => {
+
+    const responce = await fetch(config.api + '/Finishings', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        finishingName: name,
+      })
+    })
+
+    console.log(responce);
+
+    return {
+      ok: true,
+      message: "The new finishing has been added"
+    }
+};
+  

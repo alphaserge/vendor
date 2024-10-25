@@ -13,4 +13,20 @@ export const getDyeStaffs = (setFn) => {
     })
   }
   
-  
+  export const postDyeStaff = async (name) => {
+
+    const responce = await fetch(config.api + '/DyeStaffs', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        dyeStaffName: name,
+      })
+    })
+
+    console.log(responce);
+
+    return {
+      ok: true,
+      message: "The new dye staff has been added"
+    }
+};

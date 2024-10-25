@@ -13,4 +13,20 @@ export const getDesignTypes = (setFn) => {
     })
   }
   
-  
+  export const postDesignType = async (name) => {
+
+    const responce = await fetch(config.api + '/DesignTypes', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        designName: name,
+      })
+    })
+
+    console.log(responce);
+
+    return {
+      ok: true,
+      message: "The new design type has been added"
+    }
+};

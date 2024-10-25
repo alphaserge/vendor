@@ -15,7 +15,7 @@ export const getOverworkTypes = (setFn) => {
   
   export const postOverworkType = async (name) => {
 
-    const responce = await fetch(config.api + '/OverWorksType', {
+    const responce = await fetch(config.api + '/OverWorkTypes', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

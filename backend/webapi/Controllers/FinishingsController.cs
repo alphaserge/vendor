@@ -36,17 +36,17 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost(Name = "Finishings")]
-        public ActionResult<Models.Vendor> Post(Models.Finishings finishing)
+        public ActionResult<Models.Finishings> Post(Models.Finishings finishing)
         {
             try
             {
-                Context.Finishing vendor = config.CreateMapper()
+                Context.Finishing item = config.CreateMapper()
                     .Map<Context.Finishing>(finishing);
 
-                ctx.Finishings.Add(vendor);
+                ctx.Finishings.Add(item);
                 ctx.SaveChanges();
 
-                return CreatedAtAction(nameof(Get), new { id = vendor.Id }, vendor);
+                return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }
             catch (Exception ex)
             {

@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Web.Http.Cors; // пространство имен CORS
 
 namespace chiffon_back.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [EnableCors(origins: "http://185.40.31.18:3000", headers: "*", methods: "*")]
     public class OverWorkTypesController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>
@@ -40,17 +42,17 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost(Name = "OverWorkTypes")]
-        public ActionResult<Models.Vendor> Post(Models.OverWorkType Vendor)
+        public ActionResult<Models.OverWorkType> Post(Models.OverWorkType overwork)
         {
             try
             {
-                Context.OverWorkType vendor = config.CreateMapper()
-                    .Map<Context.OverWorkType>(Vendor);
+                Context.OverWorkType item = config.CreateMapper()
+                    .Map<Context.OverWorkType>(overwork);
 
-                ctx.OverWorkTypes.Add(vendor);
+                ctx.OverWorkTypes.Add(item);
                 ctx.SaveChanges();
 
-                return CreatedAtAction(nameof(Get), new { id = vendor.Id }, vendor);
+                return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }
             catch (Exception ex)
             {

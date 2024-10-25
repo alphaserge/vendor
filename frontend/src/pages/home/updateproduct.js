@@ -32,16 +32,16 @@ import ColorVariant from './colorvariant';
 import MySelect from '../../components/myselect';
 import ProductColor from './productcolor';
 import { getColors, postColor } from '../../api/colors'
-import { getDesignTypes } from '../../api/designtypes'
-import { getDyeStaffs } from '../../api/dyestaffs'
-import { getFinishings } from '../../api/finishings'
+import { getDesignTypes, postDesignType } from '../../api/designtypes'
+import { getDyeStaffs, postDyeStaff } from '../../api/dyestaffs'
+import { getFinishings, postFinishing } from '../../api/finishings'
 import { getOverworkTypes, postOverworkType } from '../../api/overworktypes'
-import { getPlainDyedTypes } from '../../api/plaindyedtypes'
-import { getPrintTypes } from '../../api/printtypes'
+import { getPlainDyedTypes, postPlainDyedType } from '../../api/plaindyedtypes'
+import { getPrintTypes, postPrintType } from '../../api/printtypes'
 import { getProductStyles } from '../../api/productstyles'
-import { getProductTypes } from '../../api/producttypes'
+import { getProductTypes, postProductType } from '../../api/producttypes'
 import { getSeasons } from '../../api/seasons'
-import { getTextileTypes } from '../../api/textiletypes'
+import { getTextileTypes, postTextileType } from '../../api/textiletypes'
 import { 
   postProduct, 
   postFile,
@@ -51,19 +51,19 @@ import {
   finishComposition, 
   sampleComposition } from '../../api/products'
 
-import Header from './header';
-import Footer from './footer';
+import Header from './header'
+import Footer from './footer'
 
 import { APPEARANCE } from '../../appearance';
 
-import Modal from '@mui/material/Modal';
-import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/material";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
-import DoneIcon from '@mui/icons-material/Done';
-import { styled } from '@mui/material/styles';
+import Modal from '@mui/material/Modal'
+import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/material"
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
+import DoneIcon from '@mui/icons-material/Done'
+import { styled } from '@mui/material/styles'
 import { non } from '../../functions/helper'
-import axios from "axios";
+import axios from "axios"
 
 const defaultTheme = createTheme()
 const textStyle = { m: 0, mr: 1 }
@@ -89,8 +89,8 @@ const Input = styled('input')({
   display: 'none',
 });
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
+const ITEM_HEIGHT = 48
+const ITEM_PADDING_TOP = 8
 
 const MySelectProps = {
   PaperProps: {
@@ -99,7 +99,7 @@ const MySelectProps = {
       width: 250,
     },
   },
-};
+}
 
 const MySelectProps1 = {
   PaperProps: {
@@ -108,7 +108,7 @@ const MySelectProps1 = {
       width: 160,
     },
   },
-};
+}
 
 function getStyles(name, values, theme) {
   try 
@@ -171,7 +171,7 @@ export default function UpdateProduct(props) {
     const [composition, setComposition] = useState([])
     const [compositionSamples, setCompositionSamples] = useState([])
 
-    const [newColor, setNewColor] = useState("")
+    const [newValue, setNewValue] = useState("")
     const [newColorRgb, setNewColorRgb] = useState("")
 
     const [colors, setColors] = useState([])
@@ -521,7 +521,7 @@ export default function UpdateProduct(props) {
 
   const saveColor = async (e) => {
 
-    let r = await postColor(newColor, newColorRgb)
+    let r = await postColor(newValue, newColorRgb)
 
     if (!r.ok) {
       setErrorNewValue(r.message)
@@ -543,20 +543,64 @@ export default function UpdateProduct(props) {
     var r = null
     switch(newValueEntity) {
       case 'overwork':
-          r = await postOverworkType(newColor, newColorRgb)
+          r = await postOverworkType(newValue)
           break;
-        case 'textiletype':
+      case 'design type':
+        r = await postDesignType(newValue)
+        break;
+      case 'textile type':
+        r = await postTextileType(newValue)
+        break;
+      case 'finishing':
+        r = await postFinishing(newValue)
+        break;
+      case 'plain dyed type':
+        r = await postPlainDyedType(newValue)
+        break;
+      case 'print type':
+        r = await postPrintType(newValue)
+        break;
+      case 'product type':
+        r = await postProductType(newValue)
+        break;
+        case 'dye staff':
+          r = await postDyeStaff(newValue)
           break;
-      }
+        }
 
     if (!r.ok) {
       setErrorNewValue(r.message)
       return
     }
+
     if (r.ok == true) {
       props.setLastAction(r.message)
-      getColors(setColors)
-      handleClose()
+      switch(newValueEntity) {
+        case 'overwork':
+          getOverworkTypes(setOverworkTypes)
+            break;
+            case 'design type':
+              getDesignTypes(setDesignTypes)
+              break;
+            case 'textile type':
+              getTextileTypes(setTextileTypes)
+              break;
+            case 'finishing':
+              getFinishings(setFinishings)
+              break;
+            case 'plain dyed type':
+              getPlainDyedTypes(setPlainDyedTypes)
+              break;
+            case 'print type':
+              getPrintTypes(setPrintTypes)
+              break;
+            case 'product type':
+              getProductTypes(setPlainDyedTypes)
+              break;
+              case 'dye staff':
+                getDyeStaffs(setDyeStaffs)
+                break;
+                }
     } else {
       setErrorNewValue(r.message)
     }
@@ -772,8 +816,6 @@ useEffect(() => {
 
   const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
 
-  console.log(config.plain_dyed_type)
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -952,9 +994,9 @@ useEffect(() => {
                   id="newColor"
                   label="Color name"
                   name="newColor"
-                  value={newColor}
+                  value={newValue}
                   sx={{ width: "200px", mb: 6}}
-                  onChange={ev => setNewColor(ev.target.value)}
+                  onChange={ev => setNewValue(ev.target.value)}
                 />
           <Button 
               variant="contained"
@@ -1047,12 +1089,11 @@ useEffect(() => {
             <TextField
                   margin="normal"
                   size="small" 
-                  id="newColor"
-                  label="Color value"
-                  name="newColorRgb"
-                  value={newColorRgb}
-                  InputProps={{ readOnly: true }}
-                  // onChange={ev => setNewColorRgb(ev.target.value)}
+                  id="newValue"
+                  label={"New value of " + newValueEntity}
+                  name="newValue"
+                  value={newValue}
+                  onChange={ev => setNewValue(ev.target.value)}
                 /> 
                 <InputLabel
                 component={"div"}
@@ -1416,6 +1457,7 @@ useEffect(() => {
                   MenuProps={MySelectProps1}
                   valueVariable={productType}
                   setValueFn={setProductType}
+                  addNewFn={(e) => { setNewValueEntity("product type"); setOpenedNewValue(true); }}
                   data={productTypes}
                 />
                 </Grid>
@@ -1447,6 +1489,7 @@ useEffect(() => {
                   MenuProps={MySelectProps}
                   valueVariable={designType}
                   setValueFn={setDesignType}
+                  addNewFn={(e) => { setNewValueEntity("design type"); setOpenedNewValue(true); }}
                   data={designTypes}
                 />
               </Grid>)}
@@ -1553,6 +1596,7 @@ useEffect(() => {
                   MenuProps={MySelectProps}
                   valueVariable={finishing}
                   setValueFn={setFinishing}
+                  addNewFn={(e) => { setNewValueEntity("finishing"); setOpenedNewValue(true); }}
                   data={finishings}
                 />
               </FormControl> &nbsp;
@@ -1584,6 +1628,7 @@ useEffect(() => {
                 MenuProps={MySelectProps}
                 valueVariable={printType}
                 setValueFn={setPrintType}
+                addNewFn={(e) => { setNewValueEntity("print type"); setOpenedNewValue(true); }}
                 data={printTypes}
               />
               </FormControl>
@@ -1599,6 +1644,7 @@ useEffect(() => {
                 MenuProps={MySelectProps}
                 valueVariable={dyeStaff}
                 setValueFn={setDyeStaff}
+                addNewFn={(e) => { setNewValueEntity("dye staff"); setOpenedNewValue(true); }}
                 data={dyeStaffs}
               />
               </FormControl> 
@@ -1616,6 +1662,7 @@ useEffect(() => {
                   MenuProps={MySelectProps}
                   valueVariable={plainDyedType}
                   setValueFn={setPlainDyedType}
+                  addNewFn={(e) => { setNewValueEntity("plain dyed type"); setOpenedNewValue(true); }}
                   data={plainDyedTypes}
                 /> </Grid> )}
 
@@ -1658,6 +1705,7 @@ useEffect(() => {
                   MenuProps={MySelectProps}
                   valueVariable={textileType}
                   setValueFn={setTextileType}
+                  addNewFn={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
                   data={textileTypes}
                 />
           <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>

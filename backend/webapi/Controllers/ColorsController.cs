@@ -43,7 +43,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost(Name = "Colors")]
-        public ActionResult<Models.Vendor> Post(Models.Color color)
+        public ActionResult<Models.Color> Post(Models.Color color)
         {
             try
             {

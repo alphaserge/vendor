@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Net;
+using System.Web.Http.Cors; // пространство имен CORS
 
 namespace chiffon_back.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [EnableCors(origins: "http://185.40.31.18:3000", headers: "*", methods: "*")]
     public class PrintTypesController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>
@@ -40,17 +42,17 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost(Name = "PrintTypes")]
-        public ActionResult<Models.Vendor> Post(Models.PrintType printType)
+        public ActionResult<Models.PrintType> Post(Models.PrintType printType)
         {
             try
             {
-                Context.PrintType vendor = config.CreateMapper()
+                Context.PrintType item = config.CreateMapper()
                     .Map<Context.PrintType>(printType);
 
-                ctx.PrintTypes.Add(vendor);
+                ctx.PrintTypes.Add(item);
                 ctx.SaveChanges();
 
-                return CreatedAtAction(nameof(Get), new { id = vendor.Id }, vendor);
+                return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }
             catch (Exception ex)
             {

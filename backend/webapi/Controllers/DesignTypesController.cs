@@ -40,17 +40,17 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost(Name = "DesignTypes")]
-        public ActionResult<Models.Vendor> Post(Models.DesignType designType)
+        public ActionResult<Models.DesignType> Post(Models.DesignType designType)
         {
             try
             {
-                Context.DesignType vendor = config.CreateMapper()
+                Context.DesignType item = config.CreateMapper()
                     .Map<Context.DesignType>(designType);
 
-                ctx.DesignTypes.Add(vendor);
+                ctx.DesignTypes.Add(item);
                 ctx.SaveChanges();
 
-                return CreatedAtAction(nameof(Get), new { id = vendor.Id }, vendor);
+                return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }
             catch (Exception ex)
             {

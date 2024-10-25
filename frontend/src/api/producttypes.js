@@ -13,4 +13,20 @@ export const getProductTypes = (setFn) => {
     })
   }
   
-  
+  export const postProductType = async (name) => {
+
+    const responce = await fetch(config.api + '/ProductTypes', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        typeName: name,
+      })
+    })
+
+    console.log(responce);
+
+    return {
+      ok: true,
+      message: "The new product type has been added"
+    }
+};

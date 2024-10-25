@@ -54,6 +54,10 @@ export default function MySelect(props) {
           return
         }
 
+        if (!Array.isArray(value) && value == -2) {
+          props.addNewFn()
+        }
+
         setSelectedValue(value);
         props.setValueFn(value);
       };

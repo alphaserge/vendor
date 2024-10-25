@@ -13,4 +13,21 @@ export const getTextileTypes = (setFn) => {
     })
   }
   
-  
+  export const postTextileType = async (name) => {
+
+    const responce = await fetch(config.api + '/TextileTypes', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        textileTypeName: name,
+        textileTypeNameRu: "",
+      })
+    })
+
+    console.log(responce);
+
+    return {
+      ok: true,
+      message: "The new textile type has been added"
+    }
+};

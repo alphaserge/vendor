@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Web.Http.Cors; // пространство имен CORS
 
 namespace chiffon_back.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [EnableCors(origins: "http://185.40.31.18:3000", headers: "*", methods: "*")]
     public class ProductStylesController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>
@@ -36,17 +38,17 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost(Name = "ProductStyles")]
-        public ActionResult<Models.Vendor> Post(Models.ProductStyle Vendor)
+        public ActionResult<Models.ProductStyle> Post(Models.ProductStyle productStyle)
         {
             try
             {
-                Context.ProductStyle vendor = config.CreateMapper()
-                    .Map<Context.ProductStyle>(Vendor);
+                Context.ProductStyle item = config.CreateMapper()
+                    .Map<Context.ProductStyle>(productStyle);
 
-                ctx.ProductStyles.Add(vendor);
+                ctx.ProductStyles.Add(item);
                 ctx.SaveChanges();
 
-                return CreatedAtAction(nameof(Get), new { id = vendor.Id }, vendor);
+                return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }
             catch (Exception ex)
             {

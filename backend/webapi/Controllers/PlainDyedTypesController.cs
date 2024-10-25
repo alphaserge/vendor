@@ -2,12 +2,15 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Net;
+using System.Web.Http.Cors; // пространство имен CORS
 
 namespace chiffon_back.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [EnableCors(origins: "http://185.40.31.18:3000", headers: "*", methods: "*")]
     public class PlainDyedTypesController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>
@@ -28,25 +31,27 @@ namespace chiffon_back.Controllers
         [HttpGet(Name = "PlainDyedTypes")]
         public IEnumerable<Models.PlainDyedType> Get()
         {
-            return ctx.PlainDyedTypes.OrderBy(x => x.PlainDyedTypeName)
+            var list = ctx.PlainDyedTypes.OrderBy(x => x.PlainDyedTypeName)
                 .Select(x =>
                     config.CreateMapper()
                         .Map<Models.PlainDyedType>(x))
                 .ToList();
+            list.Add(new Models.PlainDyedType() { Id = -2, PlainDyedTypeName = "ADD NEW" });
+            return list.AsEnumerable();
         }
 
         [HttpPost(Name = "PlainDyedTypes")]
-        public ActionResult<Models.Vendor> Post(Models.PlainDyedType plainDyedType)
+        public ActionResult<Models.PlainDyedType> Post(Models.PlainDyedType plainDyedType)
         {
             try
             {
-                Context.PlainDyedType vendor = config.CreateMapper()
+                Context.PlainDyedType item = config.CreateMapper()
                     .Map<Context.PlainDyedType>(plainDyedType);
 
-                ctx.PlainDyedTypes.Add(vendor);
+                ctx.PlainDyedTypes.Add(item);
                 ctx.SaveChanges();
 
-                return CreatedAtAction(nameof(Get), new { id = vendor.Id }, vendor);
+                return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }
             catch (Exception ex)
             {

@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Net;
+using System.Web.Http.Cors; // пространство имен CORS
 
 namespace chiffon_back.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [EnableCors(origins: "http://185.40.31.18:3000", headers: "*", methods: "*")]
     public class DyeStaffsController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>
@@ -40,17 +42,17 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost(Name = "DyeStaffs")]
-        public ActionResult<Models.Vendor> Post(Models.DyeStaff dyeStaff)
+        public ActionResult<Models.DyeStaff> Post(Models.DyeStaff dyeStaff)
         {
             try
             {
-                Context.DyeStaff vendor = config.CreateMapper()
+                Context.DyeStaff item = config.CreateMapper()
                     .Map<Context.DyeStaff>(dyeStaff);
 
-                ctx.DyeStaffs.Add(vendor);
+                ctx.DyeStaffs.Add(item);
                 ctx.SaveChanges();
 
-                return CreatedAtAction(nameof(Get), new { id = vendor.Id }, vendor);
+                return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }
             catch (Exception ex)
             {

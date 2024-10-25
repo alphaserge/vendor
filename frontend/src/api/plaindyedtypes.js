@@ -14,3 +14,20 @@ export const getPlainDyedTypes = (setFn) => {
   }
   
   
+  export const postPlainDyedType = async (name) => {
+
+    const responce = await fetch(config.api + '/PlainDyedTypes', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        plainDyedTypeName: name,
+      })
+    })
+
+    console.log(responce);
+
+    return {
+      ok: true,
+      message: "The new plain dyed type has been added"
+    }
+};
