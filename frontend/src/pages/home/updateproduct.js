@@ -30,6 +30,7 @@ import { v4 as uuid } from 'uuid'
 import config from "../../config.json"
 import ColorVariant from './colorvariant';
 import MySelect from '../../components/myselect';
+import MyAutocomplete from '../../components/myautocomplete';
 import ProductColor from './productcolor';
 import { getColors, postColor } from '../../api/colors'
 import { getDesignTypes, postDesignType } from '../../api/designtypes'
@@ -1695,7 +1696,7 @@ useEffect(() => {
           </Box>
           <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>
           <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'column', alignItems: 'top'}}>
-            <MySelect 
+          <MyAutocomplete
                   id="addproduct-textiletype"
                   url="TextileTypes"
                   title="Textile type"
@@ -1707,7 +1708,22 @@ useEffect(() => {
                   setValueFn={setTextileType}
                   addNewFn={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
                   data={textileTypes}
+                  // data={textileTypes.map((item) => { return item.value }) }
                 />
+
+           {/* <MySelect 
+                  id="addproduct-textiletype"
+                  url="TextileTypes"
+                  title="Textile type"
+                  valueName="textileTypeName"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle1}
+                  MenuProps={MySelectProps}
+                  valueVariable={textileType}
+                  setValueFn={setTextileType}
+                  addNewFn={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
+                  data={textileTypes}
+                /> */}
           <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>
           <TextField
                   margin="normal"
