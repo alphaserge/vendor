@@ -1694,7 +1694,7 @@ useEffect(() => {
           ))}
             
           </Box>
-          <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>
+          <Box sx={{ mt: 1, width: "340px", height: "100px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>
           <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'column', alignItems: 'top'}}>
           <MyAutocomplete
                   id="addproduct-textiletype"
