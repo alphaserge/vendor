@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 
-const possibleValues = ["ANGORA", "ACRYLIC", "COTTON", "CHIFFON"]
+//const possibleValues = ["ANGORA", "ACRYLIC", "COTTON", "CHIFFON"]
 
-function MyAutocomplete() {
+export default function MyAutocomplete(props) 
+{
   const [lastValue, setLastValue] = useState('');
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -11,7 +12,7 @@ function MyAutocomplete() {
     if (event.code == 'Enter')
     {
       let ev = event;
-      const filteredSuggestions = possibleValues.filter(suggestion =>
+      const filteredSuggestions = props.data.filter(suggestion =>
         suggestion.toLowerCase().includes(lastValue.toLowerCase())
       );
 
@@ -29,7 +30,9 @@ function MyAutocomplete() {
        })
 
       if (filteredSuggestions.length>0) {
-        setInputValue(input + ' ' + filteredSuggestions[0]);
+        let newValue = input + ' ' + filteredSuggestions[0]
+        setInputValue(newValue);
+        props.setValueFn(newValue);
         setSuggestions([]);
       }
     }
@@ -41,8 +44,9 @@ function MyAutocomplete() {
     const last = parts.length > 0 ? parts[parts.length-1] : "";
     setLastValue(last);
     setInputValue(value);
+    props.setValueFn(value);
     if (last.length > 0) {
-      const filteredSuggestions = possibleValues.filter(suggestion =>
+      const filteredSuggestions = props.data.filter(suggestion =>
         suggestion.toLowerCase().includes(last.toLowerCase())
       );
       setSuggestions(filteredSuggestions.length > 0 ? filteredSuggestions : ['No matches found']);
@@ -63,13 +67,12 @@ function MyAutocomplete() {
       }
      })
 
-    setInputValue(input + ' ' + value);
+    let newValue = input + ' ' + value
+    setInputValue(newValue);
+    props.setValueFn(newValue);
     setSuggestions([]);
-  
   };
 
-
-  
   return (
     <div className="autocomplete-wrapper">
       <input
@@ -99,4 +102,3 @@ function MyAutocomplete() {
     </div>
   );
 }
-export default MyAutocomplete;

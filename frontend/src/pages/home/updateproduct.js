@@ -436,6 +436,19 @@ export default function UpdateProduct(props) {
       needUpdate = true
     }
 
+
+    /*let rc = await addComposition(idFromUrl(), textileType, textileTypeValue)
+    if (rc) {
+      props.setLastAction("Composition has been saved")
+      setSavingError(false)
+      loadProduct(idFromUrl(), setProduct)
+    } else {
+      setSavingError(true)
+    }*/
+
+    console.log('textileType:')
+    console.log(textileType)
+
     if (needUpdate) {
       loadProduct(id, setProduct)
     }
@@ -460,7 +473,7 @@ export default function UpdateProduct(props) {
     }
   }
 
-  const buttonClick = async (e) => {
+  /*const buttonClick = async (e) => {
 
     if (e==='X') {
       setTextileTypeValue('')
@@ -518,7 +531,7 @@ export default function UpdateProduct(props) {
     } else {
       setSavingError(true)
     }
-  }
+  }*/
 
   const saveColor = async (e) => {
 
@@ -1683,7 +1696,8 @@ useEffect(() => {
 
           <AccordionDetails sx={accordionDetailsStyle}>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'top' }}>
-          <Box>
+          
+          {/* <Box>
           { productTextileTypes && productTextileTypes.map((tt, ix) => (
             <Box key={"tt-item-"+ix} >
              <IconButton
@@ -1692,8 +1706,8 @@ useEffect(() => {
               <span>{tt.value}%&nbsp;{tt.textileType};&nbsp;&nbsp;</span>
               </Box>
           ))}
-            
-          </Box>
+          </Box> */}
+
           <Box sx={{ mt: 1, width: "340px", height: "100px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>
           <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'column', alignItems: 'top'}}>
           <MyAutocomplete
@@ -1707,7 +1721,7 @@ useEffect(() => {
                   valueVariable={textileType}
                   setValueFn={setTextileType}
                   addNewFn={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
-                  data={textileTypes}
+                  data={textileTypes.map((e)=>{return e.value})}
                   // data={textileTypes.map((item) => { return item.value }) }
                 />
 
@@ -1724,7 +1738,7 @@ useEffect(() => {
                   addNewFn={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
                   data={textileTypes}
                 /> */}
-          <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>
+          {/* <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>
           <TextField
                   margin="normal"
                   size="small" 
@@ -1735,15 +1749,6 @@ useEffect(() => {
                   value={textileTypeValue}
                   onChange={ev => setTextileTypeValue(ev.target.value)}
                 /> 
-            {/* <Button
-                variant="contained"
-                aria-label="add to composition"
-                size="small"
-                sx={{backgroundColor: "#888", width: "60px", height: "36px", ml: 1}}
-                onClick={compositionAdd}
-                >
-                  Add
-            </Button> */}
             <Button
                 variant="contained"
                 aria-label="finish composition"
@@ -1753,8 +1758,8 @@ useEffect(() => {
                 >
                   Make 100%
             </Button>
-            </Box>
-            <Box sx={{ mt: 0, display: 'flex', flexDirection: 'column'}}>
+            </Box> */}
+            {/* <Box sx={{ mt: 0, display: 'flex', flexDirection: 'column'}}>
             <Box sx={{ mt: 0, display: 'flex', flexDirection: 'row', flexWrap: "wrap"}}>
             { BUTTONS.map((el, ix) => (
             
@@ -1773,9 +1778,9 @@ useEffect(() => {
             </Box>)
             ))}
             </Box>
+            </Box> */}
             </Box>
-            </Box>
-            <Box sx={{ mt: 1, ml: 1, minWidth: "340px", display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            {/* <Box sx={{ mt: 1, ml: 1, minWidth: "340px", display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
               <Box sx={{backgroundColor: "#ddd", width: "100%", fontWeight: "555", p: 1, ml: 0, mt: 0, mb: 1}}>Similar compositions:</Box>
               <Box sx={{ mt: 1, ml: 1, textAlign: "left" }}>
               { compositionSamples && compositionSamples.map((el, ix) => (
@@ -1790,7 +1795,7 @@ useEffect(() => {
             </Box>)
             ))}
             </Box>
-            </Box>
+            </Box> */}
             </Box>
             </Box>
             </AccordionDetails>
