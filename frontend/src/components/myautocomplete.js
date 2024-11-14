@@ -39,10 +39,20 @@ export default function MyAutocomplete(props)
   }
 
   const handleInputChange = (event) => {
-    const value = event.target.value;
+    let value = event.target.value;
     const parts = value.split(/;|,| /) ;//split(' ');
     const last = parts.length > 0 ? parts[parts.length-1] : "";
     setLastValue(last);
+    let char_prior = last.length>1 ? last[last.length-2] : null
+    let char_last = last.length ? last[last.length-1] : null
+    if (char_prior && char_last && parts.length > 0) {
+      if (isNaN(char_prior) && !isNaN(char_last)) {
+        let v = value.substring(0, value.length - last.length)
+        v = v + last.substring(0, last.length-1) + ' ' + char_last
+        value = v.replace(/^\s+/g, ''); // remove start spaces
+      }
+    }
+
     setInputValue(value);
     props.setValueFn(value);
     if (last.length > 0) {
@@ -60,10 +70,12 @@ export default function MyAutocomplete(props)
     let input = "";
     parts.pop();
     parts.forEach((p) => { 
-      if (isNaN(p)) {
-        input += p + ' ';
-      } else {
-        input += p + '; ';
+      if (p!='' && p!=' ' && p!=';') {
+        if (isNaN(p)) {
+          input = input.length > 0 ? input + ' ' + p : p;
+        } else {
+          input += ' ' + p + ';';
+        }
       }
      })
 
