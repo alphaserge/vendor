@@ -80,6 +80,41 @@ namespace chiffon_back.Controllers
             }
         }
 
+        [HttpPost("ProductSaveComposition")]
+        public ActionResult Composition(Models.ProductsAddComposition comp)
+        {
+            try
+            {
+                ctx.ProductsInTextileTypes.RemoveRange(ctx.ProductsInTextileTypes.Where(x => x.ProductId == comp.ProductId));
+                foreach (var part in comp.Composition.Trim().Split(';'))
+                {
+                    string[] s = part.Trim().Split(' ');
+                    if (s.Length == 2)
+                    {
+                        
+                        var textileType = ctx.TextileTypes.FirstOrDefault(x => x.TextileTypeName.Trim().ToUpper() == s[0].Trim().ToUpper());
+                        int n;
+                        if (textileType != null && int.TryParse(s[1].Replace("%", ""), out n))
+                        {
+                            ctx.ProductsInTextileTypes.Add(
+                                new Context.ProductsInTextileTypes()
+                                {
+                                    ProductId = comp.ProductId.Value,
+                                    TextileTypeId = textileType.Id,
+                                    Value = n
+                                });
+                        }
+                    }
+                }
+                ctx.SaveChanges();
+                return CreatedAtAction(nameof(Get), new { Ok = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
         [HttpPost("ProductRemoveTextileType")]
         public ActionResult Remove(RemoveTextileTypes data)
         {

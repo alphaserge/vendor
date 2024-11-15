@@ -70,7 +70,7 @@ namespace chiffon_back.Context
                     .Build();
                 var connectionString = configuration.GetConnectionString("DefaultConnection");
                 optionsBuilder.UseSqlServer(connectionString);
-                optionsBuilder.UseLazyLoadingProxies();
+                //!!??optionsBuilder.UseLazyLoadingProxies();
             }
         }
     }

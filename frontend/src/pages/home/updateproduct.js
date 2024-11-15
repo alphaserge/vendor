@@ -48,9 +48,8 @@ import {
   postFile,
   loadProduct, 
   addComposition, 
-  removeComposition, 
-  finishComposition, 
-  sampleComposition } from '../../api/products'
+  saveComposition
+} from '../../api/products'
 
 import Header from './header'
 import Footer from './footer'
@@ -436,18 +435,14 @@ export default function UpdateProduct(props) {
       needUpdate = true
     }
 
-
-    /*let rc = await addComposition(idFromUrl(), textileType, textileTypeValue)
+    let rc = await saveComposition(idFromUrl(), textileType)
     if (rc) {
       props.setLastAction("Composition has been saved")
       setSavingError(false)
       loadProduct(idFromUrl(), setProduct)
     } else {
       setSavingError(true)
-    }*/
-
-    console.log('textileType:')
-    console.log(textileType)
+    }
 
     if (needUpdate) {
       loadProduct(id, setProduct)

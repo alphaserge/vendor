@@ -103,6 +103,34 @@ export const postProduct = async (prod, action) => {
   return rc
 };
 
+export const saveComposition = async (productId, composition) => {
+
+  let rc = await fetch(config.api + '/TextileTypes/ProductSaveComposition', {
+      method: "POST",
+      headers: {
+          'Content-Type': 'application/json'
+        },
+      body: JSON.stringify({
+        ProductId: getInt(productId),
+        Composition: composition
+      })
+  })
+  .then(r => r.json())
+  .then(r => {
+    if (r.status !== undefined && r.status == 400) {
+      return false;
+    }
+
+    return true;
+  })
+  .catch (error => {
+    console.log(error)
+    return false
+  })
+
+  return rc
+};
+
 export const addComposition = async (productId, textileTypeId, value) => {
 
   let data = {

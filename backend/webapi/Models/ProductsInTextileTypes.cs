@@ -13,6 +13,12 @@
         //public virtual TextileType? TextileType { get; set; }
     }
 
+    public class ProductsAddComposition
+    {
+        public int? ProductId { get; set; }
+        public string? Composition { get; set; }
+    }
+
     public class FinishTextileTypes
     {
         public int? ProductId { get; set; }
