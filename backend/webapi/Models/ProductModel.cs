@@ -143,7 +143,7 @@ namespace chiffon_back.Models
                             OverWorkTypes = p.ProductsInOverWorkTypes!.Select(x => new Models.OverWorkType { Id = x.OverWorkTypeId, OverWorkName = x.OverWorkType.OverWorkName }).ToArray(),
                             Seasons = p.ProductsInSeasons!.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
                             Colors = new List<ProductColor>(),
-                            TextileTypes = new List<ProductsInTextileTypes>()
+                            Composition = p.Composition
                         };
 
             if (filter.VendorId > 0)
@@ -225,10 +225,6 @@ namespace chiffon_back.Models
 
             foreach (var p in prods)
             {
-                if (p.RefNo=="20300")
-                {
-                    int a = 0;
-                }
                 // 1) ALL COLORS
                 int id = 1;
                 if (!String.IsNullOrEmpty(p.PhotoUuids))
@@ -268,16 +264,6 @@ namespace chiffon_back.Models
                 foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == p.Id).ToList())
                 {
                     var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
-                    /*string colors1 = String.Join(", ",
-                                        ctx.Colors.Where(col =>
-                                            ctx.ColorVariantsInColors
-                                            .Where(x =>
-                                                x.ColorVariantId == cv.Id)
-                                            .Select(x => x.ColorId)
-                                            .ToList()
-                                            .Contains(col.Id))
-                                        .Select(col => col.ColorName));*/
-
                     var colorsIds = ctx.ColorVariantsInColors.Where(cvc => cvc.ColorVariantId == cv.Id).Select(x => (int?)x.ColorId).ToList();
                     var colors = ctx.Colors.Where(x => colorsIds.Contains(x.Id)).OrderBy(x => x.ColorName).ToList();
                     string colorNames = String.Join(", ", colors.Select(col => col.ColorName));
@@ -307,30 +293,7 @@ namespace chiffon_back.Models
                         ImagePath = new List<string>() { @"colors\nopicture.png" }
                     });
                 }
-
-                // 3) TEXTILE TYPES
-                string composition = "";
-                foreach (var cv in ctx.ProductsInTextileTypes.Where(x => x.ProductId == p.Id).ToList())
-                {
-                    var tt = ctx.TextileTypes.FirstOrDefault(x => x.Id == cv.TextileTypeId);
-                    string name = tt != null ? tt.TextileTypeName : "UNKNOWN";
-                    p.TextileTypes.Add(new ProductsInTextileTypes()
-                    {
-                        Id = cv.Id,
-                        ProductId = p.Id,
-                        TextileTypeId = cv.TextileTypeId,
-                        Value = cv.Value,
-                        TextileType = name,
-                    });
-                    composition += name + String.Format(" {0}", cv.Value);
-                }
-                p.Composition = composition;
             }
-
-            /*prods.AddRange(prods);
-            prods.AddRange(prods);
-            prods.AddRange(prods);
-            prods.AddRange(prods);*/
 
             return prods;
         }
@@ -338,8 +301,6 @@ namespace chiffon_back.Models
         public static Models.Product? Get(string id)
         {
             ChiffonDbContext ctx = ContextHelper.ChiffonContext();
-
-            //var p1 = ctx.Products.Where(x => x.Id.ToString() == id).Select(x=>x).FirstOrDefault();
 
             var query = from p in ctx.Products
                         where p.Id.ToString() == id
@@ -350,6 +311,7 @@ namespace chiffon_back.Models
                             ArtNo = p.ArtNo,
                             ItemName = p.ItemName,
                             Design = p.Design,
+                            Composition = p.Composition,
                             Price = p.Price,
                             Stock = p.Stock,
                             Weight = p.Weight,
@@ -371,7 +333,6 @@ namespace chiffon_back.Models
                             OverWorkTypeIds = p.ProductsInOverWorkTypes!.Select(x => x.OverWorkTypeId).ToArray(),
                             SeasonIds = p.ProductsInSeasons!.Select(x => x.SeasonId).ToArray(),
                             Colors = new List<ProductColor>(),
-                            TextileTypes = new List<ProductsInTextileTypes>(),
                             Findings = p.Findings,
                             GSM = p.GSM,
                             MetersInKG = p.MetersInKG,
@@ -443,106 +404,6 @@ namespace chiffon_back.Models
                         ImagePath = DirectoryHelper.GetImageFiles(cv.Uuid!)
                     });
                 }
-
-                // 3) TEXTILE TYPES
-                string composition = "";
-                string delim = "";
-                int percent = 0;
-                List<CompositionItem> textileTypesIds = new List<CompositionItem>();
-                List<ProductsInTextileTypes> tts = new List<ProductsInTextileTypes>();
-                foreach (var cv in ctx.ProductsInTextileTypes.Where(x => x.ProductId == prod.Id).ToList())
-                {
-                    var tt = ctx.TextileTypes.FirstOrDefault(x => x.Id == cv.TextileTypeId);
-                    string name = tt != null ? tt.TextileTypeName : "UNKNOWN";
-                    tts.Add(new ProductsInTextileTypes()
-                    {
-                        Id = cv.Id,
-                        ProductId = prod.Id,
-                        TextileTypeId = cv.TextileTypeId,
-                        Value = cv.Value,
-                        TextileType = name,
-                    });
-                    textileTypesIds.Add(new CompositionItem() { TextileTypeId = cv.TextileTypeId, Value = cv.Value });
-                    percent += cv.Value;
-                    composition += delim + String.Format("{0}% ", cv.Value) + name;
-                    delim = ", ";
-                }
-
-                prod.TextileTypes = tts.OrderByDescending(x => x.Value).ThenBy(x=>x.TextileType).ToList();
-                prod.Composition = composition;
-
-                // 4) COMPOSITION SAMPLES
-                if (percent < 100)
-                {
-                    //var prods = ctx.ProductsInTextileTypes.Where(x => textileTypesIds.Contains(x.TextileTypeId)).Select(x => x.ProductId).Distinct();
-
-                    prod.CompositionsSamples = new List<CompositionSample>();
-                    CompositionList compositionList = new CompositionList();
-                    compositionList.ProductId = -1;
-                    var ptts = ctx.ProductsInTextileTypes.Where(x=>x.ProductId != prod.Id).OrderBy(x => x.ProductId).ToList();
-                    ptts.Add(new Context.ProductsInTextileTypes() { Id = -2, ProductId = -2, TextileTypeId = -2 });
-                    int n = 0;
-                    foreach (var comp in ptts)
-                    {
-                        if (n == 0)
-                            compositionList.ProductId = comp.ProductId;
-
-                        if (comp.ProductId != compositionList.ProductId)
-                        {
-                            bool accept = true;
-                            List<CompositionItem> list = new List<CompositionItem>();
-                            foreach (var tt in compositionList.TextileTypes)
-                            {
-                                list.Add( new CompositionItem() { TextileTypeId = tt.TextileTypeId, Value = tt.Value });
-                            }
-                            foreach (var ttid in textileTypesIds)
-                            {
-                                if (list.FirstOrDefault(x=>x.TextileTypeId == ttid.TextileTypeId && x.Value == ttid.Value) == null)
-                                {
-                                    accept = false;
-                                    break;
-                                }
-                            }
-
-                            if (list.Count == textileTypesIds.Count)
-                                accept = false;
-
-                            if (accept)
-                            {
-                                CompositionSample sample = new CompositionSample();
-                                foreach (var tt in compositionList.TextileTypes.OrderByDescending(x=>x.Value).ThenBy(x=>x.TextileTypeName))
-                                {
-                                    sample.Composition += String.Format("{0}% {1}; ", tt.Value, ctx.TextileTypes.FirstOrDefault(x => x.Id == tt.TextileTypeId).TextileTypeName);
-                                    sample.ProductId = compositionList.ProductId;
-                                    list.Add(new CompositionItem() { TextileTypeId = tt.TextileTypeId, Value = tt.Value });
-                                }
-                                prod.CompositionsSamples.Add(sample);
-                            }
-                            compositionList = new CompositionList();
-                            compositionList.ProductId = comp.ProductId;
-                        }
-
-                        var textileType = ctx.TextileTypes.FirstOrDefault(x => x.Id == comp.TextileTypeId);
-                        compositionList.TextileTypes.Add(new CompositionItem()
-                        {
-                            TextileTypeId = comp.TextileTypeId,
-                            Value = comp.Value,
-                            TextileTypeName = textileType != null ? textileType.TextileTypeName : "?"
-                        });
-                        n++;
-                    }
-                }
-
-                /*if (!String.IsNullOrWhiteSpace(prod.Uuid))
-                {
-                    prod.Colors.Add(new ProductColor()
-                    {
-                        ColorNames = "COMMON",
-                        ColorVariantId = 0,
-                        ColorNo = 0,
-                        ImagePath = DirectoryHelper.GetImageFiles(prod.Uuid)
-                    });
-                }*/
             }
 
             return prod;
@@ -673,6 +534,7 @@ namespace chiffon_back.Models
                     prod.PlainDyedTypeId = product.PlainDyedTypeId;
                     prod.DyeStaffId = product.DyeStaffId;
                     prod.FinishingId = product.FinishingId;
+                    prod.Composition = product.Composition;
                     ctx.SaveChanges();
 
                     if (product.ColorVariants != null)
@@ -764,6 +626,8 @@ namespace chiffon_back.Models
             }
 
         }
+
+
 
     }
 }

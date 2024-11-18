@@ -280,7 +280,6 @@ export default function UpdateProduct(props) {
       //wChanged(width, value)
     }
 
-
     const addVariants = () => {
       let cv = [...colorVariantsAdd]
       cv = cv.concat(moreVariants(2))
@@ -394,6 +393,7 @@ export default function UpdateProduct(props) {
       price: price,
       stock: stock,
       refNo: refNo,
+      composition: textileType,
       season: season,
       weight: weight,
       width: width,
@@ -433,15 +433,6 @@ export default function UpdateProduct(props) {
       cv.SelectedFile = colorVariantFile
       let rf = await postFile(cv, id)
       needUpdate = true
-    }
-
-    let rc = await saveComposition(idFromUrl(), textileType)
-    if (rc) {
-      props.setLastAction("Composition has been saved")
-      setSavingError(false)
-      loadProduct(idFromUrl(), setProduct)
-    } else {
-      setSavingError(true)
     }
 
     if (needUpdate) {

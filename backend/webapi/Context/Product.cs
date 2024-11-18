@@ -12,6 +12,7 @@
         public string? HSCode { get; set; }
         public string? ItemName { get; set; }
         public string? RefNo { get; set; }
+        public string? Composition { get; set; }
 
         public int? Weight { get; set; }
         public int? Width { get; set; }
