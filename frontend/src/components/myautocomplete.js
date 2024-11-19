@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 //const possibleValues = ["ANGORA", "ACRYLIC", "COTTON", "CHIFFON"]
 
 export default function MyAutocomplete(props) 
 {
   const [lastValue, setLastValue] = useState('');
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(props.valueVariable);
   const [suggestions, setSuggestions] = useState([]);
 
   const handleKeyUp = (event) => {
     if (event.code == 'Enter')
     {
       let ev = event;
+      //console.log('ddd:')
+      //console.log(props.valueVariable)
       const filteredSuggestions = props.data.filter(suggestion =>
         suggestion.toLowerCase().includes(lastValue.toLowerCase())
       );
@@ -85,18 +87,39 @@ export default function MyAutocomplete(props)
     setSuggestions([]);
   };
 
+  useEffect(() => {
+    setInputValue(props.valueVariable)
+    //setTimeout(function() { setInputValue(props.valueVariable); console.log('vvvvv:'); console.log(props.valueVariable); }, 2000)
+    /*console.log('------------------------')
+    console.log('MyAutocomplete useEffect')
+    console.log('props.getValueFn():')
+    console.log(props.getValueFn())
+    console.log('------------------------')*/
+
+    //setTimeout(function() { setInputValue(props.valueVariable); console.log('vv:'); console.log(props.valueVariable); },500)
+    
+
+  }, [props.valueVariable]);
+
+  //setInputValue(props.getValueFn())
+  /*console.log('------------------------')
+  console.log('MyAutocomplete render')
+  console.log('props.getValueFn():')
+  console.log(props.getValueFn())
+  console.log('------------------------')*/
+
   return (
-    <div className="autocomplete-wrapper">
+    <div className="autocomplete-wrapper"  >
       <input
+        ////key="my-autocomp"
+        ////id="my-autocomp"
         type="text"
         value={inputValue}
         onChange={handleInputChange}
         onKeyUp={handleKeyUp}
         aria-autocomplete="list"
         aria-controls="autocomplete-list"
-        className="autocomplete-input"
-        // Additional props
-      />
+        className="autocomplete-input" />
       {suggestions.length > 0 && (
         <ul id="autocomplete-list" className="suggestions-list" role="listbox">
           {suggestions.map((suggestion, index) => (
@@ -104,7 +127,6 @@ export default function MyAutocomplete(props)
               key={index}
               onClick={() => handleSuggestionClick(suggestion)}
               role="option"
-              // Additional props
             >
               {suggestion}
             </li>

@@ -534,7 +534,7 @@ namespace chiffon_back.Models
                     prod.PlainDyedTypeId = product.PlainDyedTypeId;
                     prod.DyeStaffId = product.DyeStaffId;
                     prod.FinishingId = product.FinishingId;
-                    prod.Composition = product.Composition;
+                    prod.Composition = product.Composition != null ? product.Composition.ToLower() : null;
                     ctx.SaveChanges();
 
                     if (product.ColorVariants != null)

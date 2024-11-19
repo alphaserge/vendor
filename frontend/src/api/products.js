@@ -43,6 +43,7 @@ const makeProduct = (prod)  => {
     Price: getDecimal(prod.price),
     Stock: getDecimal(prod.stock),
     RefNo: prod.refNo,
+    Composition: prod.composition,
     Weight: getInt(prod.weight),
     Width: getInt(prod.width),
     Uuid: prod.uuid,

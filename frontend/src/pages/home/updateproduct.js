@@ -440,84 +440,6 @@ export default function UpdateProduct(props) {
     }
   }
 
-  const compositionAdd = async (e) => {
-    
-    if (!textileType || !textileTypeValue) {
-      return
-    }
-
-    let r = await addComposition(idFromUrl(), textileType, textileTypeValue)
-
-    if (r) {
-      props.setLastAction("Product has been saved")
-      setSavingError(false)
-      setTextileTypeValue('')
-      setTextileType('')
-      loadProduct(idFromUrl(), setProduct)
-    } else {
-      setSavingError(true)
-    }
-  }
-
-  /*const buttonClick = async (e) => {
-
-    if (e==='X') {
-      setTextileTypeValue('')
-      return
-    }
-
-    if (e==='ADD') {
-      compositionAdd()
-    }
-
-    setTextileTypeValue(textileTypeValue+e)
-  }
-  
-  const compositionApplySample = async (productId) => {
-    
-    let r = await sampleComposition(idFromUrl(), productId)
-
-    if (r) {
-      props.setLastAction("Product has been saved")
-      setSavingError(false)
-      loadProduct(idFromUrl(), setProduct)
-    } else {
-      setSavingError(true)
-    }
-  }
-
-  const compositionFinish = async (e) => {
-    
-    if (!textileType) {
-      return
-    }
-
-    let r = await finishComposition(idFromUrl(), textileType)
-
-    if (r) {
-      props.setLastAction("Product has been saved")
-      setSavingError(false)
-      loadProduct(idFromUrl(), setProduct)
-    } else {
-      setSavingError(true)
-    }
-  }
-
-  const compositionRemove = async (id) => {
-    
-    let r = await removeComposition(id)
-
-    if (r) {
-      props.setLastAction("Product has been saved")
-      setSavingError(false)
-      let id = idFromUrl()
-      loadProduct(id, setProduct)
-
-      //navigate("/menu")
-    } else {
-      setSavingError(true)
-    }
-  }*/
 
   const saveColor = async (e) => {
 
@@ -775,7 +697,7 @@ const setProduct = (prod) => {
   setSeason(non(prod.seasonIds))
   setOverworkType(non(prod.overWorkTypeIds))
   setDesignType(non(prod.designTypeIds))
-  setComposition(non(prod.composition))
+  setTextileType(non(prod.composition))
   setCompositionSamples(non(prod.compositionsSamples))
 
   setProductTextileTypes(prod.textileTypes)
@@ -800,6 +722,10 @@ useEffect(() => {
   let id = idFromUrl()
   loadProduct(id, setProduct)
 
+  /*console.log('------------------------')
+  console.log('UpdateProduct useEffect')
+  console.log('------------------------')*/
+
   getColors(setColors)
   getDesignTypes(setDesignTypes)
   getOverworkTypes(setOverworkTypes)
@@ -815,6 +741,12 @@ useEffect(() => {
   }, []);
 
   const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
+
+  /*console.log('------------------------')
+  console.log('UpdateProduct render')
+  console.log('textileType:')
+  console.log(textileType)
+  console.log('------------------------')*/
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -1697,18 +1629,18 @@ useEffect(() => {
           <Box sx={{ mt: 1, width: "340px", height: "100px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>
           <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'column', alignItems: 'top'}}>
           <MyAutocomplete
-                  id="addproduct-textiletype"
-                  url="TextileTypes"
+                  ////id="addproduct-textiletype"
+                  ////key="addproduct-textiletype"
                   title="Textile type"
-                  valueName="textileTypeName"
                   labelStyle={labelStyle}
                   itemStyle={itemStyle1}
                   MenuProps={MySelectProps}
                   valueVariable={textileType}
                   setValueFn={setTextileType}
+                  //getValueFn={ function() { return textileType }}
                   addNewFn={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
-                  data={textileTypes.map((e)=>{return e.value})}
-                  // data={textileTypes.map((item) => { return item.value }) }
+                  data={ textileTypes.map((e) => { return e.value }) }
+                  //data={textileTypes.map((item) => { return item.value }) }
                 />
 
            {/* <MySelect 
