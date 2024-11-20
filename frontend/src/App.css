@@ -261,11 +261,23 @@ a.no-link {
   display: flex;
   flex-wrap: wrap;
 
-  padding: 8px 14px;
+  padding: 9px 14px;
   border: 1px #bbb solid;
   border-radius: 4px;
   /* margin:10px;  
    width: 300px; */
+}
+
+.autocomplete-wrapper > label{
+  position:absolute;
+  top:-10px;
+  left:20px;
+  color: #666;
+  background-color:white;
+  padding: 0 5px;
+  font-size: 11px;
+  font-family: "Roboto","Helvetica","Arial",sans-serif; 
+  font-weight: 300;
 }
 
 .suggestions-list {

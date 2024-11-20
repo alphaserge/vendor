@@ -110,6 +110,7 @@ export default function MyAutocomplete(props)
 
   return (
     <div className="autocomplete-wrapper"  >
+      <label>{props.title}</label>
       <input
         ////key="my-autocomp"
         ////id="my-autocomp"

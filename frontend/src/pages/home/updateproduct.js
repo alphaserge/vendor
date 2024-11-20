@@ -1598,127 +1598,24 @@ useEffect(() => {
                   data={plainDyedTypes}
                 /> </Grid> )}
 
-              
+
+              <Grid item xs={12} md={6} >
+              <MyAutocomplete
+                  title="Composition"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle1}
+                  MenuProps={MySelectProps}
+                  valueVariable={textileType}
+                  setValueFn={setTextileType}
+                  addNewFn={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
+                  data={ textileTypes.map((e) => { return e.value }) }
+                />
+              </Grid>
           </Grid>
           </AccordionDetails>
 
           {/* </Box> */}
           </Accordion>
-
-          {/* Composition */}
-          <Accordion style={accordionStyle} className="header-menu" defaultExpanded={true} >
-
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={accordionSummaryStyle} >
-            <Typography align="center" sx={accordionCaption}>Composition</Typography>
-          </AccordionSummary>
-
-          <AccordionDetails sx={accordionDetailsStyle}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'top' }}>
-          
-          {/* <Box>
-          { productTextileTypes && productTextileTypes.map((tt, ix) => (
-            <Box key={"tt-item-"+ix} >
-             <IconButton
-              onClick={  function() { compositionRemove(tt.id) } }> <RemoveCircleOutlineIcon/>
-              </IconButton>
-              <span>{tt.value}%&nbsp;{tt.textileType};&nbsp;&nbsp;</span>
-              </Box>
-          ))}
-          </Box> */}
-
-          <Box sx={{ mt: 1, width: "340px", height: "100px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>
-          <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'column', alignItems: 'top'}}>
-          <MyAutocomplete
-                  ////id="addproduct-textiletype"
-                  ////key="addproduct-textiletype"
-                  title="Textile type"
-                  labelStyle={labelStyle}
-                  itemStyle={itemStyle1}
-                  MenuProps={MySelectProps}
-                  valueVariable={textileType}
-                  setValueFn={setTextileType}
-                  //getValueFn={ function() { return textileType }}
-                  addNewFn={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
-                  data={ textileTypes.map((e) => { return e.value }) }
-                  //data={textileTypes.map((item) => { return item.value }) }
-                />
-
-           {/* <MySelect 
-                  id="addproduct-textiletype"
-                  url="TextileTypes"
-                  title="Textile type"
-                  valueName="textileTypeName"
-                  labelStyle={labelStyle}
-                  itemStyle={itemStyle1}
-                  MenuProps={MySelectProps}
-                  valueVariable={textileType}
-                  setValueFn={setTextileType}
-                  addNewFn={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
-                  data={textileTypes}
-                /> */}
-          {/* <Box sx={{ mt: 1, width: "340px", display: 'flex', flexDirection: 'row', alignItems: 'top'}}>
-          <TextField
-                  margin="normal"
-                  size="small" 
-                  id="textile-type-value"
-                  label="Value"
-                  name="textileTypeValue"
-                  sx = {{...itemStyle1, ...{width: "73px"}}}
-                  value={textileTypeValue}
-                  onChange={ev => setTextileTypeValue(ev.target.value)}
-                /> 
-            <Button
-                variant="contained"
-                aria-label="finish composition"
-                size="small"
-                sx={{backgroundColor: "#888", width: "90px", height: "36px", ml: 1}}
-                onClick={compositionFinish}
-                >
-                  Make 100%
-            </Button>
-            </Box> */}
-            {/* <Box sx={{ mt: 0, display: 'flex', flexDirection: 'column'}}>
-            <Box sx={{ mt: 0, display: 'flex', flexDirection: 'row', flexWrap: "wrap"}}>
-            { BUTTONS.map((el, ix) => (
-            
-            (<Box key={"button-item-1-"+ix} >
-            {ix % 3 == 0 && <div className="line-break"></div>}
-            <Button
-                variant="contained"
-                aria-label="add to composition"
-                size="small"
-                key={"button-item-"+ix} 
-                sx={{backgroundColor: "#888", width: "60px", height: "36px", mr: 1, mt: 1}}
-                onClick={function() { buttonClick(el) }}
-                >
-                  {el}
-            </Button>
-            </Box>)
-            ))}
-            </Box>
-            </Box> */}
-            </Box>
-            {/* <Box sx={{ mt: 1, ml: 1, minWidth: "340px", display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <Box sx={{backgroundColor: "#ddd", width: "100%", fontWeight: "555", p: 1, ml: 0, mt: 0, mb: 1}}>Similar compositions:</Box>
-              <Box sx={{ mt: 1, ml: 1, textAlign: "left" }}>
-              { compositionSamples && compositionSamples.map((el, ix) => (
-            (<Box key={"button-item-2-"+ix} >
-            <Box
-                sx={{backgroundColor: "#fff", width: "100%", ml: 0, mt: 0, fontSize: "10pt", cursor: "pointer"}}
-                onClick={function() { compositionApplySample(el.productId) }}
-                key={"composition-item-"+ix} 
-                >
-                  {el.composition}
-            </Box>
-            </Box>)
-            ))}
-            </Box>
-            </Box> */}
-            </Box>
-            </Box>
-            </AccordionDetails>
-          </Accordion>
-
 
           <FormControl sx = {{itemStyle}} > 
           { savingError && 
