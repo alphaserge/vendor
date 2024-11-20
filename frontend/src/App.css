@@ -247,14 +247,25 @@ a.no-link {
 /* autocomplete */
 
 .autocomplete-input {
-  width: 440px;
+  /* width: 440px; */
+  border: none;
+  width: 100%;
+}
+
+.autocomplete-input:focus, input:focus{
+  outline: none;
 }
 
 .autocomplete-wrapper {
   position: relative; 
   display: flex;
   flex-wrap: wrap;
-  width: 300px;
+
+  padding: 8px 14px;
+  border: 1px #bbb solid;
+  border-radius: 4px;
+  /* margin:10px;  
+   width: 300px; */
 }
 
 .suggestions-list {

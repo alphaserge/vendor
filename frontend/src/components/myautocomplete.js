@@ -119,7 +119,9 @@ export default function MyAutocomplete(props)
         onKeyUp={handleKeyUp}
         aria-autocomplete="list"
         aria-controls="autocomplete-list"
-        className="autocomplete-input" />
+        className="autocomplete-input"
+        sx={{ ...props.itemStyle,  ...{  } }}
+        />
       {suggestions.length > 0 && (
         <ul id="autocomplete-list" className="suggestions-list" role="listbox">
           {suggestions.map((suggestion, index) => (
