@@ -12,6 +12,12 @@ li > .color_select_item {
   display: inline;
 }
 
+
+.site-logo {
+  font-size: 26px;
+  font-weight: 600;
+}
+
 /* .mainContainer {
   flex-direction: column;
   display: flex;

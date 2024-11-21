@@ -424,7 +424,7 @@ export default function Home(props) {
       </Modal>
 
       <Container sx={{padding: 0 }} className="header-container" >
-        <Header user={props.user} title={props.title} />
+        {/* <Header user={props.user} title={props.title} /> */}
         <MainSection user={props.user} title={props.title} />
         <div>
         
