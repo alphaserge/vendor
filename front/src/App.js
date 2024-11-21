@@ -12,7 +12,6 @@ import Info from './pages/auth/info';
 import Error from './pages/auth/error';
 import Success from './pages/auth/success';
 import PrimarySearchAppBar from './pages/home/header';
-import Blog from './pages/home/blog/Blog';
 
 import './App.css';
 import { useEffect, useState } from 'react';
@@ -84,7 +83,6 @@ function App() {
           <Route path="/info" element={<Info />} />
           <Route path="/success" element={<Success />} />
           <Route path="/error" element={<Error />} />
-          <Route path="/blog" element={<Blog />} />
           <Route path="/addproduct" element={<AddProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/updateproduct" element={<UpdateProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/listproduct" element={<ListProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />

@@ -24,7 +24,7 @@ namespace chiffon_back.Controllers
 
     [ApiController]
     [Route("[controller]")]
-    [EnableCors(origins: "http://185.40.31.18:3000", headers: "*", methods: "*")]
+    [EnableCors(origins: "http://185.40.31.18:3000,http://185.40.31.18:3010", headers: "*", methods: "*")]
     public class ProductsController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>

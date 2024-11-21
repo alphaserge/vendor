@@ -34,6 +34,7 @@ import { postProduct } from '../../api/products'
 
 import { APPEARANCE } from '../../appearance';
 import { Button } from "@mui/material";
+import MainSection from "./mainsection";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -424,18 +425,9 @@ export default function ListProduct(props) {
 
       <Container sx={{padding: 0 }} className="header-container" >
         <Header user={props.user} title={props.title} />
-        {/* <MainBanner user={props.user} title={props.title} /> */}
+        <MainSection user={props.user} title={props.title} />
         <div>
         
-          {/* <Avatar sx={{ mb: 2, bgcolor: 'secondary.main' }}>
-            <AddCircleIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5" sx={{mb:2}}>
-            Add product
-          </Typography> */}
-
-          
-
           <Box component="form" noValidate style={outboxStyle}>
 
           <Box style={headStyle} sx={{ display: "flex", justifyContent:"left", margin: "0", alignItems: "center" }}  >
