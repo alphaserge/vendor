@@ -16,6 +16,13 @@ li > .color_select_item {
 .site-logo {
   font-size: 26px;
   font-weight: 600;
+  margin: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+.main-section {
+  /* font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
 }
 
 /* .mainContainer {
