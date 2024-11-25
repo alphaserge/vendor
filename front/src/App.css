@@ -15,10 +15,17 @@ li > .color_select_item {
 
 .site-logo {
   font-size: 26px;
-  font-weight: 600;
+  font-weight: 400;
   margin: 0;
   margin-block-start: 0;
   margin-block-end: 0;
+}
+
+.header-logo-picture {
+  display: block;
+  height: 47px;
+  width: 363px;
+  margin-top: 10px;;
 }
 
 .main-section {

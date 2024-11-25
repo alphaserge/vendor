@@ -425,7 +425,7 @@ export default function Home(props) {
 
       <Container sx={{padding: 0 }} className="header-container" >
         {/* <Header user={props.user} title={props.title} /> */}
-        <MainSection user={props.user} title={props.title} />
+        <MainSection user={props.user} title={props.title} searchProducts={searchProducts} />
         <div>
         
           {/* <Avatar sx={{ mb: 2, bgcolor: 'secondary.main' }}>

@@ -32,12 +32,12 @@ export default function MainSection(props) {
         paddingBottom: 0,
         marginTop: 0,
         fontWeight: 500,
-        borderRadius: '20px'
+        backgroundColor: 'green'
     },
     input: {
-        color: 'white'
+        backgroundColor: 'green'
     }
-  });
+});
 
 useEffect(() => {
     //console.log(props.title)
@@ -63,25 +63,37 @@ useEffect(() => {
 
     <Box sx={{ backgroundColor: "#fff", color: "#424242", alignContent: "center" }} style={{ height: "100px" }}  >
       <Grid container spacing={2} >
-      <Grid item xs={12} md={3} key={"mainsect-left"} sx={{ justifyItems : "center" }} >
+      <Grid item xs={12} md={4} key={"mainsect-left"} sx={{ justifyItems : "center" }} >
         <p>left</p>
       </Grid>
-      <Grid item xs={12} md={6} key={"mainsect-center"} sx={{ justifyItems : "center" }}  >
-        <p className="site-logo">Angelica fabric market</p>
+      <Grid item xs={12} md={4} key={"mainsect-center"} sx={{ justifyItems : "center", alignContent: "center" }} >
+        {/* <p className="site-logo">Angelica fabric market</p> */}
+        {/* <Box
+            component="img"
+            sx={{ width: 360, height: 60, display: { xs: 'block', sm: 'block' } }}
+            image="/afm.png"
+            alt={""}
+          /> */}
+          <picture class="header-logo-picture">
+          <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img">
+          </img>
+          </picture>
+
       </Grid>
-      <Grid item xs={12} md={3} key={"mainsect-right"} sx={{ justifyItems : "center" }} >
-      <Box style={findBoxStyle}>
+      <Grid item xs={12} md={4} key={"mainsect-right"} sx={{ justifyItems : "center" }} >
+      <Box>
           <TextField
                 margin="normal"
                 size="small" 
                 id="search-value"
-                label="Find products"
+                placeholder="What are you looking for?"
                 name="search"
                 value={search}
-                className={styles.textField}
-                onChange={ev => props.searchProducts(ev.target.value)}
+                style={{ width: "280px", border: "none", borderRadius: "4px", backgroundColor: "#f0f0f0", padding: "8px 12px" }}
+                onChange={ev => { setSearch(ev.target.value); props.searchProducts(ev.target.value)}}
+                variant="standard"
                 InputProps={{
-                  className: styles.input,
+                  disableUnderline: true,
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton>
@@ -91,7 +103,7 @@ useEffect(() => {
                   )
                 }}
               />
-          </Box>
+      </Box>
       </Grid>
       </Grid>
     </Box>
