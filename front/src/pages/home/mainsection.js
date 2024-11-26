@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import { Icon } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
@@ -10,7 +12,8 @@ import TextField from '@mui/material/TextField';
 import Menu from '@mui/material/Menu';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import PersonIcon from '@mui/icons-material/Person';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 
 import { APPEARANCE } from '../../appearance';
 import { Height } from "@mui/icons-material";
@@ -29,6 +32,7 @@ export default function MainSection(props) {
 
   const [search, setSearch] = useState("")
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
 
   const styles = theme => ({
     textField: {
@@ -52,6 +56,13 @@ export default function MainSection(props) {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const handleMenuClick = (event) => {
+    let value = event.currentTarget.dataset.menuValue;
+    if (value == "Register") { navigate("/register"); return; }
+    setAnchorElUser(null);
+  };
+
 
 useEffect(() => {
     //console.log(props.title)
@@ -78,10 +89,18 @@ useEffect(() => {
     <Box sx={{ backgroundColor: "#fff", color: "#424242", alignContent: "center" }} style={{ height: "100px" }}  >
       <Grid container spacing={2} >
       <Grid item xs={12} md={4} key={"mainsect-left"} sx={{ justifyItems : "center" }} >
+      <Box sx={{ 
+        border: "none", 
+        padding: "8px 12px", 
+        marginTop: "20px",
+        display: 'flex', 
+        flexDirection: "row" }}>
+
+        <Box>
         <Tooltip title={props.user != undefined ? props.user.firstName: "Sign In"}>
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 2, mr: 4, color: "#eee" }}>
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1, color: "#222" }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
-            <PersonIcon />
+            <PersonOutlineOutlinedIcon fontSize="large" />
           </IconButton>
         </Tooltip>
         <Menu
@@ -100,13 +119,25 @@ useEffect(() => {
           open={Boolean(anchorElUser)}
           onClose={handleCloseUserMenu}
         >
-          {/* <MenuItem
+          <MenuItem
             key={"menu-1"} 
-            data-menu-value={setting}
+            data-menu-value={"menu-1"}
             onClick={handleMenuClick}>
-            <Typography textAlign="center">Log out</Typography>
-          </MenuItem> */}
+            <Typography textAlign="center">Sign In</Typography>
+          </MenuItem>
         </Menu>
+        </Box>
+
+        <Box>
+        <Tooltip title={props.user != undefined ? props.user.firstName: "Your shopping cart is empty"}>
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1, color: "#222" }}>
+            {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
+            <ShoppingCartOutlinedIcon fontSize="large" />
+          </IconButton>
+        </Tooltip>
+        </Box>
+
+        </Box>
       </Grid>
       <Grid item xs={12} md={4} key={"mainsect-center"} sx={{ justifyItems : "center", alignContent: "center" }} >
         {/* <p className="site-logo">Angelica fabric market</p> */}
@@ -131,7 +162,7 @@ useEffect(() => {
                 placeholder="What are you looking for?"
                 name="search"
                 value={search}
-                style={{ width: "280px", border: "none", borderRadius: "4px", backgroundColor: "#f0f0f0", padding: "8px 12px" }}
+                sx={{ width: "280px", border: "none", borderRadius: "4px", backgroundColor: "#f0f0f0", padding: "8px 12px" }}
                 onChange={ev => { setSearch(ev.target.value); props.searchProducts(ev.target.value)}}
                 variant="standard"
                 InputProps={{
