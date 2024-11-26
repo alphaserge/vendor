@@ -7,6 +7,11 @@ import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 
+import Menu from '@mui/material/Menu';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import PersonIcon from '@mui/icons-material/Person';
+
 import { APPEARANCE } from '../../appearance';
 import { Height } from "@mui/icons-material";
 
@@ -23,6 +28,7 @@ function FabricIcon(props) {
 export default function MainSection(props) {
 
   const [search, setSearch] = useState("")
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const styles = theme => ({
     textField: {
@@ -37,7 +43,15 @@ export default function MainSection(props) {
     input: {
         backgroundColor: 'green'
     }
-});
+  });
+
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
 useEffect(() => {
     //console.log(props.title)
@@ -64,7 +78,35 @@ useEffect(() => {
     <Box sx={{ backgroundColor: "#fff", color: "#424242", alignContent: "center" }} style={{ height: "100px" }}  >
       <Grid container spacing={2} >
       <Grid item xs={12} md={4} key={"mainsect-left"} sx={{ justifyItems : "center" }} >
-        <p>left</p>
+        <Tooltip title={props.user != undefined ? props.user.firstName: "Sign In"}>
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 2, mr: 4, color: "#eee" }}>
+            {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
+            <PersonIcon />
+          </IconButton>
+        </Tooltip>
+        <Menu
+          sx={{ mt: '45px' }}
+          id="menu-appbar"
+          anchorEl={anchorElUser}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          open={Boolean(anchorElUser)}
+          onClose={handleCloseUserMenu}
+        >
+          {/* <MenuItem
+            key={"menu-1"} 
+            data-menu-value={setting}
+            onClick={handleMenuClick}>
+            <Typography textAlign="center">Log out</Typography>
+          </MenuItem> */}
+        </Menu>
       </Grid>
       <Grid item xs={12} md={4} key={"mainsect-center"} sx={{ justifyItems : "center", alignContent: "center" }} >
         {/* <p className="site-logo">Angelica fabric market</p> */}
