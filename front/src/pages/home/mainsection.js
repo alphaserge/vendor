@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, redirect } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { Icon } from '@mui/material';
@@ -6,11 +7,14 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 import Menu from '@mui/material/Menu';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import PersonIcon from '@mui/icons-material/Person';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 
 import { APPEARANCE } from '../../appearance';
 import { Height } from "@mui/icons-material";
@@ -29,6 +33,7 @@ export default function MainSection(props) {
 
   const [search, setSearch] = useState("")
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
 
   const styles = theme => ({
     textField: {
@@ -53,6 +58,13 @@ export default function MainSection(props) {
     setAnchorElUser(null);
   };
 
+  const handleMenuClick = (event) => {
+    let value = event.currentTarget.dataset.menuValue;
+    if (value == "Sign up") { navigate("/register"); return; }
+    setAnchorElUser(null);
+  };
+
+
 useEffect(() => {
     //console.log(props.title)
   }, []);
@@ -75,13 +87,14 @@ useEffect(() => {
       </Grid>
     </Box>
 
-    <Box sx={{ backgroundColor: "#fff", color: "#424242", alignContent: "center" }} style={{ height: "100px" }}  >
-      <Grid container spacing={2} >
-      <Grid item xs={12} md={4} key={"mainsect-left"} sx={{ justifyItems : "center" }} >
+    <Box sx={{ backgroundColor: "#fff", color: "#eee", alignContent: "center" }} style={{ height: "100px" }}  >
+      <Grid container spacing={2} sx={{ alignContent: "center" }} >
+      <Grid item xs={12} md={4} key={"mainsect-left"} sx={{ justifyItems : "right" }} className="center-content" >
+        <Box sx={{display: "flex", flexDirection: "row", paddingTop: "25px", color: APPEARANCE.BLACK }}>
         <Tooltip title={props.user != undefined ? props.user.firstName: "Sign In"}>
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 2, mr: 4, color: "#eee" }}>
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1 }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
-            <PersonIcon />
+            <PersonOutlineOutlinedIcon fontSize="large" />
           </IconButton>
         </Tooltip>
         <Menu
@@ -100,13 +113,38 @@ useEffect(() => {
           open={Boolean(anchorElUser)}
           onClose={handleCloseUserMenu}
         >
-          {/* <MenuItem
+          {!props.user &&
+          <MenuItem
             key={"menu-1"} 
-            data-menu-value={setting}
+            data-menu-value={"menu-1"}
+            onClick={handleMenuClick}>
+            <Typography textAlign="center">Sign up</Typography>
+          </MenuItem>}
+
+          {props.user &&
+          <MenuItem
+            key={"menu-1"} 
+            data-menu-value={"menu-1"}
             onClick={handleMenuClick}>
             <Typography textAlign="center">Log out</Typography>
-          </MenuItem> */}
+          </MenuItem>}
         </Menu>
+
+        <Tooltip title={props.cart != undefined ? props.cart.amount : "Your shopping cart is empty"}>
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1 }}>
+            {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
+            <ShoppingCartOutlinedIcon fontSize="large" />
+          </IconButton>
+        </Tooltip>
+
+        <Tooltip title={props.cart != undefined ? props.favorites.amount : "Your favorite list is empty"}>
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1 }}>
+            {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
+            <FavoriteBorderOutlinedIcon fontSize="large" />
+          </IconButton>
+        </Tooltip>
+
+        </Box>
       </Grid>
       <Grid item xs={12} md={4} key={"mainsect-center"} sx={{ justifyItems : "center", alignContent: "center" }} >
         {/* <p className="site-logo">Angelica fabric market</p> */}
@@ -122,7 +160,7 @@ useEffect(() => {
           </picture>
 
       </Grid>
-      <Grid item xs={12} md={4} key={"mainsect-right"} sx={{ justifyItems : "center" }} >
+      <Grid item xs={12} md={4} key={"mainsect-right"} sx={{ justifyItems : "left" }} >
       <Box>
           <TextField
                 margin="normal"
@@ -148,6 +186,31 @@ useEffect(() => {
       </Box>
       </Grid>
       </Grid>
+    </Box>
+
+    <Box sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center" }}  >
+    <Box sx={{ alignContent: "center" }} style={{ height: "30px" }} className="center-content"  >
+      <Grid container spacing={2} sx={{ alignContent: "center" }}  >
+      <Grid item xs={2} md={2} sx={{ justifyItems : "left" }} >
+      Textile type
+      </Grid>
+      <Grid item xs={2} md={2} sx={{ justifyItems : "left" }} >
+         Fabric type
+      </Grid>
+      <Grid item xs={2} md={2} sx={{ justifyItems : "left" }} >
+         Season
+      </Grid>
+      <Grid item xs={2} md={2} sx={{ justifyItems : "left" }} >
+         Color
+      </Grid>
+      <Grid item xs={2} md={2} sx={{ justifyItems : "left" }} >
+         Print type
+      </Grid>
+      <Grid item xs={2} md={2} sx={{ justifyItems : "left" }} >
+      </Grid>
+
+      </Grid>
+    </Box>
     </Box>
     </Box>
   );
