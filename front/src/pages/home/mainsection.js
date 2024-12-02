@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, redirect } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
 import { Icon } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 import Menu from '@mui/material/Menu';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 
 import { APPEARANCE } from '../../appearance';
 import { Height } from "@mui/icons-material";
 
 const findBoxStyle = { width: "calc(100% - 80px)", border: "none" }
 const findTextStyle = { width: "100%", borderRadius : "8px", border: "2px solid #18515e" }
+const mainMenuStyle = { padding: "0 30px" }
+
 
 function FabricIcon(props) {
   return (
@@ -59,7 +62,7 @@ export default function MainSection(props) {
 
   const handleMenuClick = (event) => {
     let value = event.currentTarget.dataset.menuValue;
-    if (value == "Register") { navigate("/register"); return; }
+    if (value == "Sign up") { navigate("/register"); return; }
     setAnchorElUser(null);
   };
 
@@ -86,19 +89,12 @@ useEffect(() => {
       </Grid>
     </Box>
 
-    <Box sx={{ backgroundColor: "#fff", color: "#424242", alignContent: "center" }} style={{ height: "100px" }}  >
-      <Grid container spacing={2} >
-      <Grid item xs={12} md={4} key={"mainsect-left"} sx={{ justifyItems : "center" }} >
-      <Box sx={{ 
-        border: "none", 
-        padding: "8px 12px", 
-        marginTop: "20px",
-        display: 'flex', 
-        flexDirection: "row" }}>
-
-        <Box>
+    <Box sx={{ backgroundColor: "#fff", color: "#eee", alignContent: "center" }} style={{ height: "100px" }}  >
+      <Grid container spacing={2} sx={{ alignContent: "center" }} >
+      <Grid item xs={12} md={4} key={"mainsect-left"} sx={{ justifyItems : "right" }} className="center-content" >
+        <Box sx={{display: "flex", flexDirection: "row", paddingTop: "25px", color: APPEARANCE.BLACK }}>
         <Tooltip title={props.user != undefined ? props.user.firstName: "Sign In"}>
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1, color: "#222" }}>
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1 }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
             <PersonOutlineOutlinedIcon fontSize="large" />
           </IconButton>
@@ -119,23 +115,36 @@ useEffect(() => {
           open={Boolean(anchorElUser)}
           onClose={handleCloseUserMenu}
         >
+          {!props.user &&
           <MenuItem
             key={"menu-1"} 
             data-menu-value={"menu-1"}
             onClick={handleMenuClick}>
-            <Typography textAlign="center">Sign In</Typography>
-          </MenuItem>
-        </Menu>
-        </Box>
+            <Typography textAlign="center">Sign up</Typography>
+          </MenuItem>}
 
-        <Box>
-        <Tooltip title={props.user != undefined ? props.user.firstName: "Your shopping cart is empty"}>
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1, color: "#222" }}>
+          {props.user &&
+          <MenuItem
+            key={"menu-1"} 
+            data-menu-value={"menu-1"}
+            onClick={handleMenuClick}>
+            <Typography textAlign="center">Log out</Typography>
+          </MenuItem>}
+        </Menu>
+
+        <Tooltip title={props.cart != undefined ? props.cart.amount : "Your shopping cart is empty"}>
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1 }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
             <ShoppingCartOutlinedIcon fontSize="large" />
           </IconButton>
         </Tooltip>
-        </Box>
+
+        <Tooltip title={props.cart != undefined ? props.favorites.amount : "Your favorite list is empty"}>
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1 }}>
+            {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
+            <FavoriteBorderOutlinedIcon fontSize="large" />
+          </IconButton>
+        </Tooltip>
 
         </Box>
       </Grid>
@@ -153,7 +162,7 @@ useEffect(() => {
           </picture>
 
       </Grid>
-      <Grid item xs={12} md={4} key={"mainsect-right"} sx={{ justifyItems : "center" }} >
+      <Grid item xs={12} md={4} key={"mainsect-right"} sx={{ justifyItems : "left" }} >
       <Box>
           <TextField
                 margin="normal"
@@ -162,7 +171,7 @@ useEffect(() => {
                 placeholder="What are you looking for?"
                 name="search"
                 value={search}
-                sx={{ width: "280px", border: "none", borderRadius: "4px", backgroundColor: "#f0f0f0", padding: "8px 12px" }}
+                style={{ width: "280px", border: "none", borderRadius: "4px", backgroundColor: "#f0f0f0", padding: "8px 12px" }}
                 onChange={ev => { setSearch(ev.target.value); props.searchProducts(ev.target.value)}}
                 variant="standard"
                 InputProps={{
@@ -180,6 +189,36 @@ useEffect(() => {
       </Grid>
       </Grid>
     </Box>
+
+    <Box sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center" }}  >
+    <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} style={{ height: "30px" }} className="center-content"  >
+      <Box sx={ mainMenuStyle}>
+      Textile type
+      </Box>
+      <Box sx={ mainMenuStyle}>
+         Fabric type
+         </Box>
+         <Box sx={ mainMenuStyle}>
+         Season
+         </Box>
+         <Box sx={ mainMenuStyle}>
+         Color
+         </Box>
+         <Box sx={ mainMenuStyle}>
+         Print type
+         </Box>
+      <Box>
+      </Box>
+
+    </Box>
+    </Box>
+
+    <Box sx={{ backgroundColor: "#eeeeff", color: "#222" }}  >
+    <Box sx={{ }} >
+
+    </Box>
+    </Box>
+
     </Box>
   );
 }

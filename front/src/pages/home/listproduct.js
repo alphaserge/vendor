@@ -79,7 +79,7 @@ export default function ListProduct(props) {
     const [addProduct, setAddProduct] = useState(false)
     
     const [colors, setColors] = useState([])
-    const [seasons, setSeasons] = useState([])
+    //const [seasons, setSeasons] = useState([])
     const [designTypes, setDesignTypes] = useState([])
     const [overworkTypes, setOverworkTypes] = useState([])
     const [productTypes, setProductTypes] = useState([])
@@ -199,78 +199,6 @@ export default function ListProduct(props) {
       })
     }
     
-    const loadColors = () => {
-      axios.get(config.api + '/Colors')
-      .then(function (res) {
-          let items = res.data.map((item)=>({ id:item.id, value:item.colorName, rgb:item.rgb }))
-          setColors(items)
-      })
-      .catch (error => {
-        console.log('Addproduct loadColors error:' )
-        console.log(error)
-      })
-    }
-    
-    const loadSeasons = () => {
-      axios.get(config.api + '/Seasons')
-      .then(function (res) {
-          let items = res.data.map((item)=>({ id:item.id, value:item.seasonName }))
-          setSeasons(items)
-      })
-      .catch (error => {
-        console.log('Addproduct loadSeasons error:' )
-        console.log(error)
-      })
-    }
-    
-    const loadDesignTypes = () => {
-      axios.get(config.api + '/DesignTypes')
-      .then(function (res) {
-          let items = res.data.map((item)=>({ id:item.id, value:item.designName }))
-          setDesignTypes(items)
-      })
-      .catch (error => {
-        console.log('Addproduct loadDesignTypes error:' )
-        console.log(error)
-      })
-    }
-    
-    const loadOverworkTypes = () => {
-      axios.get(config.api + '/OverworkTypes')
-      .then(function (res) {
-          let items = res.data.map((item)=>({ id:item.id, value:item.overWorkName }))
-          setOverworkTypes(items)
-      })
-      .catch (error => {
-        console.log('Addproduct loadDesignTypes error:' )
-        console.log(error)
-      })
-    }
-    
-    const loadProductTypes = () => {
-      axios.get(config.api + '/ProductTypes')
-      .then(function (res) {
-          let items = res.data.map((item)=>({ id:item.id, value:item.typeName }))
-          setProductTypes(items)
-      })
-      .catch (error => {
-        console.log('Addproduct loadProductTypes error:' )
-        console.log(error)
-      })
-    }
-    
-    const loadProductStyles = () => {
-      axios.get(config.api + '/ProductStyles')
-      .then(function (res) {
-          let items = res.data.map((item)=>({ id:item.id, value:item.styleName }))
-          setProductStyles(items)
-      })
-      .catch (error => {
-        console.log('Addproduct loadProductStyles error:' )
-        console.log(error)
-      })
-    }
-        
     const saveProduct = async (e) => {
     
       let vendorId = props.user ? props.user.vendorId : -1;
@@ -299,17 +227,9 @@ export default function ListProduct(props) {
         setSavingError(true)
       }
     }
-  
-  
 
     useEffect(() => {
       loadProducts()
-      loadColors()
-      loadSeasons()
-      loadDesignTypes()
-      loadOverworkTypes()
-      loadProductTypes()
-      loadProductStyles()
 
       if (getFromUrl("new")==1) {
         setAddProduct(true)
@@ -491,7 +411,6 @@ export default function ListProduct(props) {
 
           </Box>
 
-
           <Box sx={{ backgroundColor: "none", display: filter==true? "block": "none", textAlign: "center", mt: 3, mb: 3  }} className="filter" >
           <Box className="filter" sx={{ textAlign: "left"}} >
           <Typography component="p" variant="p" sx={{ mb: 2, fontSize: "10pt", fontWeight: "bold"}} >
@@ -557,7 +476,7 @@ export default function ListProduct(props) {
                   MenuProps={MenuProps}
                   valueVariable={productType}
                   setValueFn={setProductType}
-                  data={productTypes}
+                  data={props.productTypes}
                 />
                 </Grid>
 
@@ -572,7 +491,7 @@ export default function ListProduct(props) {
                   MenuProps={MenuProps}
                   valueVariable={productStyle}
                   setValueFn={setProductStyle}
-                  data={productStyles}
+                  data={props.productStyles}
                 />
                 </Grid>
 
@@ -587,7 +506,7 @@ export default function ListProduct(props) {
                   MenuProps={MenuProps}
                   valueVariable={season}
                   setValueFn={setSeason}
-                  data={seasons}
+                  data={props.seasons}
                 />
                 </Grid>
 
@@ -602,7 +521,7 @@ export default function ListProduct(props) {
                   MenuProps={MenuProps}
                   valueVariable={color}
                   setValueFn={setColor}
-                  data={colors}
+                  data={props.colors}
                 />
                 </Grid>
 
@@ -617,7 +536,7 @@ export default function ListProduct(props) {
                   MenuProps={MenuProps}
                   valueVariable={designType}
                   setValueFn={setDesignType}
-                  data={designTypes}
+                  data={props.designTypes}
                 />
                 </Grid>
 
@@ -632,10 +551,9 @@ export default function ListProduct(props) {
                   MenuProps={MenuProps}
                   valueVariable={overworkType}
                   setValueFn={setOverworkType}
-                  data={overworkTypes}
+                  data={props.overworkTypes}
                 />
                 </Grid>
-
               </Grid>
 
           </Box>

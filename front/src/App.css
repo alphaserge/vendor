@@ -28,6 +28,17 @@ li > .color_select_item {
   margin-top: 25px;
 }
 
+.center-content {
+  margin: 15px auto;
+  justify-content: center;
+  max-width: 1260px;  
+}
+
+/* .main-content {
+  max-width: 1260px;
+  margin: 40px auto; } */
+
+
 .main-section {
   /* font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
 }
