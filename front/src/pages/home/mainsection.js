@@ -16,12 +16,15 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 
+import HoverPopover from 'material-ui-popup-state/HoverPopover';
+import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state';
+
 import { APPEARANCE } from '../../appearance';
 import { Height } from "@mui/icons-material";
 
 const findBoxStyle = { width: "calc(100% - 80px)", border: "none" }
 const findTextStyle = { width: "100%", borderRadius : "8px", border: "2px solid #18515e" }
-const mainMenuStyle = { padding: "0 30px" }
+const mainMenuStyle = { padding: "0 30px", cursor: "pointer" }
 
 
 function FabricIcon(props) {
@@ -51,6 +54,44 @@ export default function MainSection(props) {
         backgroundColor: 'green'
     }
   });
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openMenu, setOpenMenu] = useState(false);
+
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpenMenu(true);
+  };
+
+  const handleCloseMenu = (e) => {
+    return;
+    if (e.currentTarget.localName !== "ul") {
+      const menu = document.getElementById("simple-menu");//.children[2];
+      const parn = document.getElementById("simple-menu").parentElement;//.children[2];
+      const menuBoundary = {
+        left: menu.offsetLeft,
+        top: e.currentTarget.offsetTop + e.currentTarget.offsetHeight,
+        //top: menu.offsetTop,
+        right: menu.offsetLeft + menu.offsetWidth,
+        bottom: e.currentTarget.offsetTop + menu.offsetHeight
+      };
+      console.log(menu.offsetTop + ' ' + menu.offsetHeight)
+      console.log(menuBoundary)
+      console.log(e.clientX + ' ' + e.clientY)
+      console.log(parn.offsetLeft)
+      if (
+        e.clientX >= menuBoundary.left &&
+        e.clientX <= menuBoundary.right &&
+        e.clientY <= menuBoundary.bottom &&
+        e.clientY >= menuBoundary.top
+      ) {
+        return;
+      }
+    }
+
+    setOpenMenu(false);
+  };
+
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -190,31 +231,87 @@ useEffect(() => {
       </Grid>
     </Box>
 
-    <Box sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center" }}  >
-    <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} style={{ height: "30px" }} className="center-content"  >
-      <Box sx={ mainMenuStyle}>
+    <Box sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center", zIndex: 100 }}  >
+    <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content"  >
+      <Box 
+        sx={mainMenuStyle}
+        onMouseOver={handleOpenMenu}
+        onMouseLeave={handleCloseMenu} >
       Textile type
       </Box>
-      <Box sx={ mainMenuStyle}>
+      <Box 
+        sx={mainMenuStyle}
+        onMouseOver={handleOpenMenu}
+        onMouseLeave={handleCloseMenu} >
          Fabric type
          </Box>
-         <Box sx={ mainMenuStyle}>
+         <Box 
+        sx={mainMenuStyle}
+        onMouseOver={handleOpenMenu}
+        onMouseLeave={handleCloseMenu} >
          Season
          </Box>
-         <Box sx={ mainMenuStyle}>
+         <Box 
+        sx={mainMenuStyle}
+        onMouseOver={handleOpenMenu}
+        onMouseLeave={handleCloseMenu} >
          Color
          </Box>
-         <Box sx={ mainMenuStyle}>
+         <Box 
+        sx={mainMenuStyle}
+        onMouseOver={handleOpenMenu}
+        onMouseLeave={handleCloseMenu} >
          Print type
          </Box>
       <Box>
       </Box>
 
     </Box>
-    </Box>
+    </Box> 
 
-    <Box sx={{ backgroundColor: "#eeeeff", color: "#222" }}  >
-    <Box sx={{ }} >
+    {/* <Box sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center" }}  >
+    <Box className="center-content"  >
+    <PopupState variant="popover" popupId="demoPopover" >
+      {(popupState) => (
+        <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }}  >
+          <Typography {...bindHover(popupState)} sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center" }} >
+            Hover with a Popover.
+          </Typography>
+          <Typography {...bindHover(popupState)} sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center" }} >
+            Hover with a Popover1.
+          </Typography>
+          <HoverPopover
+            {...bindPopover(popupState)}
+            slotProps={{
+              paper: { style: { padding: 10 } },
+            }}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+          >
+            <Box sx={{left: 200}}>
+            <Typography  >The content of the Popover.</Typography>
+            </Box>
+          </HoverPopover>
+        </Box>
+      )}
+    </PopupState>
+
+    </Box>
+    </Box> */}
+
+    <Box sx={{ backgroundColor: "#eeeeff", color: "#222", zIndex: 10, position: "absolute", left: 0, width: "100%"  }} display={openMenu?"block":"none"} >
+    <Box sx={{ }} id="simple-menu" onMouseLeave={handleCloseMenu} className="center-content" >
+      Menu<br/>
+      Menu<br/>
+      Menu<br/>
+      Menu<br/>
+      
 
     </Box>
     </Box>
