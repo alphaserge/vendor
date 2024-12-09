@@ -21,6 +21,8 @@ import { Height } from "@mui/icons-material";
 
 const findBoxStyle = { width: "calc(100% - 80px)", border: "none" }
 const findTextStyle = { width: "100%", borderRadius : "8px", border: "2px solid #18515e" }
+const mainMenuStyle = { padding: "0 30px" }
+
 
 function FabricIcon(props) {
   return (
@@ -189,29 +191,34 @@ useEffect(() => {
     </Box>
 
     <Box sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center" }}  >
-    <Box sx={{ alignContent: "center" }} style={{ height: "30px" }} className="center-content"  >
-      <Grid container spacing={2} sx={{ alignContent: "center" }}  >
-      <Grid item xs={2} md={2} sx={{ justifyItems : "left" }} >
+    <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} style={{ height: "30px" }} className="center-content"  >
+      <Box sx={ mainMenuStyle}>
       Textile type
-      </Grid>
-      <Grid item xs={2} md={2} sx={{ justifyItems : "left" }} >
+      </Box>
+      <Box sx={ mainMenuStyle}>
          Fabric type
-      </Grid>
-      <Grid item xs={2} md={2} sx={{ justifyItems : "left" }} >
+         </Box>
+         <Box sx={ mainMenuStyle}>
          Season
-      </Grid>
-      <Grid item xs={2} md={2} sx={{ justifyItems : "left" }} >
+         </Box>
+         <Box sx={ mainMenuStyle}>
          Color
-      </Grid>
-      <Grid item xs={2} md={2} sx={{ justifyItems : "left" }} >
+         </Box>
+         <Box sx={ mainMenuStyle}>
          Print type
-      </Grid>
-      <Grid item xs={2} md={2} sx={{ justifyItems : "left" }} >
-      </Grid>
+         </Box>
+      <Box>
+      </Box>
 
-      </Grid>
     </Box>
     </Box>
+
+    <Box sx={{ backgroundColor: "#eeeeff", color: "#222" }}  >
+    <Box sx={{ }} >
+
+    </Box>
+    </Box>
+
     </Box>
   );
 }

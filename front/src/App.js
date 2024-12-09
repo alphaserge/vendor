@@ -12,6 +12,9 @@ import Info from './pages/auth/info';
 import Error from './pages/auth/error';
 import Success from './pages/auth/success';
 import PrimarySearchAppBar from './pages/home/header';
+import axios from 'axios'
+
+import config from "./config.json"
 
 import './App.css';
 import { useEffect, useState } from 'react';
@@ -33,6 +36,12 @@ const userInitialValue = () => {
 function App() {
   const [loggedIn, setLoggedIn] = useState(false)
   const [user, setUser] = useState(userInitialValue)
+  const [seasons, setSeasons] = useState([])
+  const [colors, setColors] = useState([])
+  const [designTypes, setDesignTypes] = useState([])
+  const [overworkTypes, setOverworkTypes] = useState([])
+  const [productTypes, setProductTypes] = useState([])
+  const [productStyles, setProductStyles] = useState([])
   /*useState({
     id: 0,
     firstName: "",
@@ -47,7 +56,87 @@ function App() {
 
   const [lastAction, setLastAction] = useState("")
 
+  const loadSeasons = () => {
+    axios.get(config.api + '/Seasons')
+    .then(function (res) {
+        let items = res.data.map((item)=>({ id:item.id, value:item.seasonName }))
+        setSeasons(items)
+    })
+    .catch (error => {
+      console.log('Addproduct loadSeasons error:' )
+      console.log(error)
+    })
+  }
+
+  const loadColors = () => {
+    axios.get(config.api + '/Colors')
+    .then(function (res) {
+        let items = res.data.map((item)=>({ id:item.id, value:item.colorName, rgb:item.rgb }))
+        setColors(items)
+    })
+    .catch (error => {
+      console.log('Addproduct loadColors error:' )
+      console.log(error)
+    })
+  }
+  
+  const loadDesignTypes = () => {
+    axios.get(config.api + '/DesignTypes')
+    .then(function (res) {
+        let items = res.data.map((item)=>({ id:item.id, value:item.designName }))
+        setDesignTypes(items)
+    })
+    .catch (error => {
+      console.log('Addproduct loadDesignTypes error:' )
+      console.log(error)
+    })
+  }
+  
+  const loadOverworkTypes = () => {
+    axios.get(config.api + '/OverworkTypes')
+    .then(function (res) {
+        let items = res.data.map((item)=>({ id:item.id, value:item.overWorkName }))
+        setOverworkTypes(items)
+    })
+    .catch (error => {
+      console.log('Addproduct loadDesignTypes error:' )
+      console.log(error)
+    })
+  }
+  
+  const loadProductTypes = () => {
+    axios.get(config.api + '/ProductTypes')
+    .then(function (res) {
+        let items = res.data.map((item)=>({ id:item.id, value:item.typeName }))
+        setProductTypes(items)
+    })
+    .catch (error => {
+      console.log('Addproduct loadProductTypes error:' )
+      console.log(error)
+    })
+  }
+  
+  const loadProductStyles = () => {
+    axios.get(config.api + '/ProductStyles')
+    .then(function (res) {
+        let items = res.data.map((item)=>({ id:item.id, value:item.styleName }))
+        setProductStyles(items)
+    })
+    .catch (error => {
+      console.log('Addproduct loadProductStyles error:' )
+      console.log(error)
+    })
+  }
+
   useEffect(() => {
+
+    loadColors()
+    loadSeasons()
+    loadDesignTypes()
+    loadOverworkTypes()
+    loadProductTypes()
+    loadProductStyles()
+
     // Fetch the user email and token from local storage
     const user = JSON.parse(localStorage.getItem("user"))
 
@@ -85,7 +174,7 @@ function App() {
           <Route path="/error" element={<Error />} />
           <Route path="/addproduct" element={<AddProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/updateproduct" element={<UpdateProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
-          <Route path="/listproduct" element={<ListProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
+          <Route path="/listproduct" element={<ListProduct user={user} lastAction={lastAction} setLastAction={setLastAction} seasons={seasons} />} />
           <Route path="/menu" element={<Menu lastAction={lastAction} setLastAction={setLastAction} />} />
           {/* <Route path="/header" element={<PrimarySearchAppBar />} /> */}
         </Routes>
