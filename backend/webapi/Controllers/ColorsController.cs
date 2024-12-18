@@ -38,7 +38,7 @@ namespace chiffon_back.Controllers
                         .Map<Models.Color>(x))
                 .ToList();
 
-            colors.Add(new Models.Color() { Id = -2, ColorName = "ADD NEW" });
+            //!!colors.Add(new Models.Color() { Id = -2, ColorName = "ADD NEW" });
             return colors.AsEnumerable();
         }
 

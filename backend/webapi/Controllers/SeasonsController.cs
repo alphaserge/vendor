@@ -36,7 +36,7 @@ namespace chiffon_back.Controllers
                         .Map<Models.Season>(x))
                 .ToList();
 
-            seasons.Add(new Models.Season() { Id = -1, SeasonName = "ALL" });
+            //seasons.Add(new Models.Season() { Id = -1, SeasonName = "ALL" });
 
             return seasons.AsEnumerable();
         }

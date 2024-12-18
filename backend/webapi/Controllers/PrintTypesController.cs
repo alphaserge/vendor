@@ -37,7 +37,7 @@ namespace chiffon_back.Controllers
                         .Map<Models.PrintType>(x))
             .ToList();
 
-            list.Add(new Models.PrintType() { Id = -2, TypeName = "ADD NEW" });
+            //!!list.Add(new Models.PrintType() { Id = -2, TypeName = "ADD NEW" });
             return list.AsEnumerable();
         }
 

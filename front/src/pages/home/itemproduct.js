@@ -2,14 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import TextField from '@mui/material/TextField';
-import FormControl from '@mui/material/FormControl';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
+import FormControl from '@mui/material/FormControl';
 import Box from '@mui/material/Box';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -47,12 +43,12 @@ export default function ItemProduct(props) {
 
   return (
     
-    <FormControl  sx={{ mb: 2, width: 340 }} > 
+    <FormControl sx={{ mb: 2, width: "320px" }} > 
           <Link href={"/updateproduct?id=" + props.data.id} className="no-link" >
-          <Swiper className="mySwiper" >
+          <Swiper className="swiper" >
             {props.data.colors.map((cv, index) => {
               return <Box key={"product-box-"+index} >
-              <SwiperSlide key={"product-swiper-"+index} sx={{ display: "flex", justifyContent: "center"}} >
+              <SwiperSlide key={"product-swiper-"+index} sx={{ display: "flex", justifyContent: "center", width: "240px" }} >
                 <Box className="product-img-holder" ><Box component={"img"} key={"product-swiper-"+index} 
                 src={config.api + "/" + cv.imagePath[0]} 
                 alt={"photo"+(index+1)} className="product-img" /></Box>

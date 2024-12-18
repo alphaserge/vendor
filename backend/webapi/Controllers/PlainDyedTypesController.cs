@@ -36,7 +36,7 @@ namespace chiffon_back.Controllers
                     config.CreateMapper()
                         .Map<Models.PlainDyedType>(x))
                 .ToList();
-            list.Add(new Models.PlainDyedType() { Id = -2, PlainDyedTypeName = "ADD NEW" });
+            //!!list.Add(new Models.PlainDyedType() { Id = -2, PlainDyedTypeName = "ADD NEW" });
             return list.AsEnumerable();
         }
 

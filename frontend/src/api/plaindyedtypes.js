@@ -5,6 +5,7 @@ export const getPlainDyedTypes = (setFn) => {
     axios.get(config.api + '/PlainDyedTypes')
     .then(function (res) {
         let items = res.data.map((item)=>({ id:item.id, value:item.plainDyedTypeName }))
+        items.push({ id:-2, value:"Add new.." })
         setFn(items)
     })
     .catch (error => {

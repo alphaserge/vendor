@@ -5,6 +5,7 @@ export const getOverworkTypes = (setFn) => {
     axios.get(config.api + '/OverworkTypes')
     .then(function (res) {
         let items = res.data.map((item)=>({ id:item.id, value:item.overWorkName }))
+        items.push({ id:-2, value:"Add new.." })
         setFn(items)
     })
     .catch (error => {

@@ -30,6 +30,7 @@ import Footer from './footer';
 import MainSection from './mainsection';
 import ItemProduct from './itemproduct';
 import ItemProductRow from './itemproductrow';
+import CheckboxList from '../../components/checkboxlist';
 import MySelect from '../../components/myselect';
 import { postProduct } from '../../api/products'
 
@@ -42,7 +43,7 @@ const itemStyle = { width: 330, m: 1, ml: 0 }
 const smallItemStyle = { width: 161, m: 1, ml: 0 }
 const labelStyle1 = { m: 0, mt: 1, ml: 0, mr: 4 }
 const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, m: 1 }
-const outboxStyle = { maxWidth: "744px", margin: "80px auto 20px auto", padding: "0 10px" }
+const outboxStyle = { margin: "80px auto 20px auto", padding: "0 10px" }
 const findBoxStyle = { width: "calc(100% - 80px)" }
 const findTextStyle = { width: "100%", border: "none" }
 //const findTextStyle = { width: "100%", border: "none", border: "solid 1px #888", borderRadius: 1 }
@@ -81,8 +82,10 @@ export default function Home(props) {
     const [colors, setColors] = useState([])
     const [seasons, setSeasons] = useState([])
     const [designTypes, setDesignTypes] = useState([])
+    const [textileTypes, setTextileTypes] = useState([])
     const [overworkTypes, setOverworkTypes] = useState([])
     const [productTypes, setProductTypes] = useState([])
+    const [printTypes, setPrintTypes] = useState([])
     const [productStyles, setProductStyles] = useState([])
 
     const [productStyle, setProductStyle] = useState("")
@@ -206,7 +209,7 @@ export default function Home(props) {
           setColors(items)
       })
       .catch (error => {
-        console.log('Addproduct loadColors error:' )
+        console.log('Home loadColors error:' )
         console.log(error)
       })
     }
@@ -218,7 +221,7 @@ export default function Home(props) {
           setSeasons(items)
       })
       .catch (error => {
-        console.log('Addproduct loadSeasons error:' )
+        console.log('Home loadSeasons error:' )
         console.log(error)
       })
     }
@@ -230,7 +233,19 @@ export default function Home(props) {
           setDesignTypes(items)
       })
       .catch (error => {
-        console.log('Addproduct loadDesignTypes error:' )
+        console.log('Home loadDesignTypes error:' )
+        console.log(error)
+      })
+    }
+    
+    const loadTextileTypes = () => {
+      axios.get(config.api + '/TextileTypes')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.textileTypeName }))
+          setTextileTypes(items)
+      })
+      .catch (error => {
+        console.log('Home loadDesignTypes error:' )
         console.log(error)
       })
     }
@@ -242,7 +257,7 @@ export default function Home(props) {
           setOverworkTypes(items)
       })
       .catch (error => {
-        console.log('Addproduct loadDesignTypes error:' )
+        console.log('Home loadDesignTypes error:' )
         console.log(error)
       })
     }
@@ -254,7 +269,19 @@ export default function Home(props) {
           setProductTypes(items)
       })
       .catch (error => {
-        console.log('Addproduct loadProductTypes error:' )
+        console.log('Home loadProductTypes error:' )
+        console.log(error)
+      })
+    }
+    
+    const loadPrintTypes = () => {
+      axios.get(config.api + '/PrintTypes')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.typeName }))
+          setPrintTypes(items)
+      })
+      .catch (error => {
+        console.log('Home loadPrintTypes error:' )
         console.log(error)
       })
     }
@@ -266,7 +293,7 @@ export default function Home(props) {
           setProductStyles(items)
       })
       .catch (error => {
-        console.log('Addproduct loadProductStyles error:' )
+        console.log('Home loadProductStyles error:' )
         console.log(error)
       })
     }
@@ -307,8 +334,10 @@ export default function Home(props) {
       loadColors()
       loadSeasons()
       loadDesignTypes()
+      loadTextileTypes()
       loadOverworkTypes()
       loadProductTypes()
+      loadPrintTypes()
       loadProductStyles()
 
       if (getFromUrl("new")==1) {
@@ -321,343 +350,40 @@ export default function Home(props) {
   if (!props.user || props.user.Id == 0) {
     navigate("/")
   }
-    
+  console.log(colors)
+  console.log(colors.map((it) => ({ key: it.id, name: it.colorName })))
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
 
-      <Modal
-        open={addProduct}
-        onClose={function() { setAddProduct(false) }}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        sx={{ width: "auto"}} >
-
-        <Box sx={{ 
-          position: 'absolute', 
-          top: '50%', 
-          left: '50%', 
-          transform: 'translate(-50%, -50%)',
-          width: "auto", 
-          bgcolor: 'background.paper', 
-          border: '2px solid #000', 
-          boxShadow: 24, 
-          p: 4,
-          display: "flex",
-          flexDirection: 'column', 
-          alignItems: 'left' }}>
-          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{textAlign: "center"}} >
-            Adding a new product
-          </Typography>
-
-          {/* General */}
-            <TextField
-                margin="normal"
-                size="small" 
-                id="itemName"
-                label="Item name"
-                name="itemName"
-                sx = {itemStyle}
-                value={addItemName}
-                onChange={ev => setAddItemName(ev.target.value)}
-              />
-            <TextField
-                margin="normal"
-                size="small" 
-                id="design"
-                label="Design"
-                name="design"
-                sx = {itemStyle}
-                value={addDesign}
-                onChange={ev => setAddDesign(ev.target.value)}
-              />
-              <Box sx={{ 
-                display: "flex",
-                flexDirection: 'row', 
-                alignItems: 'left' }}>
-                <TextField
-                    margin="normal"
-                    size="small" 
-                    id="refNo"
-                    label="Ref No"
-                    name="refNo"
-                    value={addRefNo}
-                    sx = {smallItemStyle}
-                    onChange={ev => setAddRefNo(ev.target.value)}
-                  />
-                <TextField
-                    margin="normal"
-                    size="small" 
-                    id="artNo"
-                    label="Art No"
-                    name="artNo"
-                    sx = {smallItemStyle}
-                    value={addArtNo}
-                    onChange={ev => setAddArtNo(ev.target.value)}
-                  />
-                  </Box>
-
-                  { savingError && 
-                    <Box sx={{ textAlign: "center", marginTop: 2, fontSize: "12pt", color: "red" }}>
-                    An error has occurred. Please check that all fields are filled in correctly and completely and try saving again.
-                    </Box> }
-
-                  <Box sx={{ 
-                    display: "flex",
-                    flexDirection: 'row', 
-                    justifyContent: 'center' }}>
-                      <Button 
-                          variant="contained"
-                          style={buttonStyle}
-                          sx={buttonStyle}
-                          onClick={handleAddProductSave} >
-                              Next
-                      </Button>
-                      <Button 
-                          variant="contained"
-                          sx={buttonStyle}
-                          onClick={handleAddProductCancel} >
-                              Cancel
-                      </Button>
-                  </Box>
-        </Box>
-      </Modal>
-
       <Container sx={{padding: 0 }} className="header-container" >
-        {/* <Header user={props.user} title={props.title} /> */}
-        <MainSection user={props.user} title={props.title} searchProducts={searchProducts} />
-        <div>
-        
-          {/* <Avatar sx={{ mb: 2, bgcolor: 'secondary.main' }}>
-            <AddCircleIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5" sx={{mb:2}}>
-            Add product
-          </Typography> */}
+      </Container>
 
-          <Box component="form" noValidate style={outboxStyle}>
+        <MainSection 
+          user={props.user} 
+          title={props.title} 
+          searchProducts={searchProducts} 
+          textileTypes={textileTypes}
+          designTypes={designTypes}
+          seasons={seasons}
+          colors={colors}
+          printTypes={printTypes} />
 
-          <Box style={headStyle} sx={{ display: "flex", justifyContent:"left", margin: "0", alignItems: "center" }}  >
-            <Tooltip title="Rows interface">
-            <IconButton onClick={ (e) => { setView("rows")} } style={toolButtonStyle} sx={{mr: 0}} >
-              <TableRowsIcon sx={{color: view=="grid" ? APPEARANCE.BLACK : APPEARANCE.GREY }} />
-            </IconButton>
-            </Tooltip>
-            <Tooltip title="Grid interface">
-            <IconButton onClick={ (e) => { setView("grid")} } style={toolButtonStyle} sx={{mr: 1}} >
-              <GridViewIcon sx={{color: view=="grid" ? APPEARANCE.GREY : APPEARANCE.BLACK }} />
-            </IconButton>
-            </Tooltip>
-            {/* <Box sx={{ display: "flex", alignItems:"center", justifyContent: "center", width: "100%", mt: 2, mb: 2}}>
-            <Typography component="h7" variant="h7" color={APPEARANCE.COLOR1} sx={{fontWeight: "bold"}} >
-              {props.user && ( "Products") } 
-            </Typography>
-            </Box> */}
-          <Box style={findBoxStyle}>
-          <TextField
-                margin="normal"
-                size="small" 
-                id="search-value"
-                label="Find products"
-                name="search"
-                style = {findTextStyle}
-                sx={{borderRadius: "0"}}
-                value={search}
-                onChange={ev => searchProducts(ev.target.value)}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton>
-                        <SearchIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
+        <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" >
+          <Box sx={{ display: "flex", flexDirection: "column", width: 270 }}  >
+             <CheckboxList list={colors.map((it) => ({ key: it.id, name: it.value }))}  title="Colours" height={310} expanded={true} />
+             <CheckboxList list={seasons.map((it) => ({ key: it.id, name: it.value }))}  title="Seasons" height={120} expanded={true} />
+             <CheckboxList list={designTypes.map((it) => ({ key: it.id, name: it.value }))}  title="Design types" expanded={true} />
+             <CheckboxList list={printTypes.map((it) => ({ key: it.id, name: it.value }))}  title="Print types" expanded={true} />
+             <CheckboxList list={productTypes.map((it) => ({ key: it.id, name: it.value }))}  title="Product types" height={80} expanded={true} />
           </Box>
 
-            <Tooltip title="Filters">
-            <IconButton onClick={handleShowHideFilter} style={toolButtonStyle} sx={{mr: 1, ml: 1}} >
-              <TuneIcon  sx={{color: APPEARANCE.BLACK}} />
-            </IconButton>
-            </Tooltip>
-
-            <Button
-              variant="text"
-               startIcon={<AddCircleOutlineIcon sx={{color: APPEARANCE.BLACK}} />}
-               sx={{ backgroundColor: "#fff", color: APPEARANCE.BLACK, textTransform: "none", width: "140px", height: "26px", marginTop: "5px" }}
-               onClick={handleAddProductShow}>
-               Add product
-            </Button>
-
-            {/* <Tooltip title="Add a new product">
-            <IconButton onClick={handleAddProductShow} style={toolButtonStyle} sx={{mr: 1}} >
-              <AddCircleOutlineIcon  sx={{color: APPEARANCE.BLACK}} />
-            </IconButton>
-            </Tooltip> */}
-
-          </Box>
-
-
-          <Box sx={{ backgroundColor: "none", display: filter==true? "block": "none", textAlign: "center", mt: 3, mb: 3  }} className="filter" >
-          <Box className="filter" sx={{ textAlign: "left"}} >
-          <Typography component="p" variant="p" sx={{ mb: 2, fontSize: "10pt", fontWeight: "bold"}} >
-              Product's filters
-            </Typography>
-            <Grid container spacing={1} >
-            <Grid item xs={12} md={6} sx={{...flexStyle}} >
-          <TextField
-                margin="normal"
-                size="small" 
-                id="itemName"
-                label="Item name"
-                name="itemName"
-                sx = {itemStyle}
-                value={itemName}
-                onChange={ev => setItemName(ev.target.value)}
-              />
-              </Grid>
-            <Grid item xs={12} md={6} sx={{...flexStyle}} >
-            <TextField
-                margin="normal"
-                size="small" 
-                id="refNo"
-                label="Ref No"
-                name="refNo"
-                sx = {itemStyle}
-                value={refNo}
-                onChange={ev => setRefNo(ev.target.value)}
-              />
-              </Grid>
-              <Grid item xs={12} md={6} sx={{...flexStyle}} >
-            <TextField
-                margin="normal"
-                size="small" 
-                id="artNo"
-                label="Art No"
-                name="artNo"
-                sx = {itemStyle}
-                value={artNo}
-                onChange={ev => setArtNo(ev.target.value)}
-              />
-              </Grid>
-              <Grid item xs={12} md={6} sx={{...flexStyle}} >
-            <TextField
-                margin="normal"
-                size="small" 
-                id="design"
-                label="Design"
-                name="design"
-                sx = {itemStyle}
-                value={design}
-                onChange={ev => setDesign(ev.target.value)}
-              />
-              </Grid>
-              <Grid item xs={12} md={6} sx={{...flexStyle}} >
-                <MySelect 
-                  id="addproduct-producttype"
-                  url="ProductTypes"
-                  title="Product Type"
-                  valueName="typeName"
-                  labelStyle={labelStyle1}
-                  itemStyle={itemStyle}
-                  MenuProps={MenuProps}
-                  valueVariable={productType}
-                  setValueFn={setProductType}
-                  data={productTypes}
-                />
-                </Grid>
-
-                <Grid item xs={12} md={6} sx={{...flexStyle}} >
-                <MySelect 
-                  id="addproduct-productstyle"
-                  url="ProductStyles"
-                  title="Product Style"
-                  valueName="styleName"
-                  labelStyle={labelStyle1}
-                  itemStyle={itemStyle}
-                  MenuProps={MenuProps}
-                  valueVariable={productStyle}
-                  setValueFn={setProductStyle}
-                  data={productStyles}
-                />
-                </Grid>
-
-                <Grid item xs={12} md={6} sx={{...flexStyle}} >
-                <MySelect 
-                  id="addproduct-season"
-                  url="Seasons"
-                  title="Season"
-                  valueName="seasonName"
-                  labelStyle={labelStyle1}
-                  itemStyle={itemStyle}
-                  MenuProps={MenuProps}
-                  valueVariable={season}
-                  setValueFn={setSeason}
-                  data={seasons}
-                />
-                </Grid>
-
-                <Grid item xs={12} md={6} sx={{...flexStyle}} >
-                <MySelect 
-                  id="addproduct-color"
-                  url="Colors"
-                  title="Color"
-                  valueName="colorName"
-                  labelStyle={labelStyle1}
-                  itemStyle={itemStyle}
-                  MenuProps={MenuProps}
-                  valueVariable={color}
-                  setValueFn={setColor}
-                  data={colors}
-                />
-                </Grid>
-
-                <Grid item xs={12} md={6} sx={{...flexStyle}} >  
-                <MySelect 
-                  id="addproduct-designtype"
-                  url="DesignTypes"
-                  title="Design type"
-                  valueName="designName"
-                  labelStyle={labelStyle1}
-                  itemStyle={itemStyle}
-                  MenuProps={MenuProps}
-                  valueVariable={designType}
-                  setValueFn={setDesignType}
-                  data={designTypes}
-                />
-                </Grid>
-
-                <Grid item xs={12} md={6} sx={{...flexStyle}} >
-                <MySelect 
-                  id="addproduct-overworktype"
-                  url="OverWorkTypes"
-                  title="Overwork type"
-                  valueName="overWorkName"
-                  labelStyle={labelStyle1}
-                  itemStyle={itemStyle}
-                  MenuProps={MenuProps}
-                  valueVariable={overworkType}
-                  setValueFn={setOverworkType}
-                  data={overworkTypes}
-                />
-                </Grid>
-
-              </Grid>
-
-          </Box>
-                <Button variant="contained" className="action-button" onClick={loadProducts} >
-                  Apply
-                </Button>
-                <Button variant="outlined" className="clear-button" onClick={clearFilter} sx={{ml:2}} >
-                  Clear
-                </Button>
-          </Box>
-
+          <Box sx={{ padding: "10px" }} >
           {/* <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" > */}
-          <Grid container spacing={2} >
+          <Grid container spacing={0} >
             { view === "grid" && products.map((data, index) => (
-            <Grid item xs={12} md={6} key={"itemprod-"+index} >
+            <Grid item xs={12} md={4} key={"itemprod-"+index} >
               <ItemProduct data={data} index={index} />
               </Grid>
             ))}
@@ -669,9 +395,9 @@ export default function Home(props) {
           </Grid>
 
           </Box>
-        </div>
+          </Box>
+
         <Footer sx={{ mt: 2, mb: 2 }} />
-         </Container>
               
     </ThemeProvider>
   );

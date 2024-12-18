@@ -37,7 +37,7 @@ namespace chiffon_back.Controllers
                         .Map<Models.DyeStaff>(x))
             .ToList();
 
-            list.Add(new Models.DyeStaff() { Id = -2, DyeStaffName = "ADD NEW" });
+            //!!list.Add(new Models.DyeStaff() { Id = -2, DyeStaffName = "ADD NEW" });
             return list.AsEnumerable();
         }
 

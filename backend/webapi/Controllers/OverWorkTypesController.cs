@@ -35,8 +35,8 @@ namespace chiffon_back.Controllers
                     config.CreateMapper()
                         .Map<Models.OverWorkType>(x))
                 .ToList();
-            
-            overworks.Add(new Models.OverWorkType() { Id = -2, OverWorkName = "ADD NEW" });
+
+            //!!overworks.Add(new Models.OverWorkType() { Id = -2, OverWorkName = "ADD NEW" });
 
             return overworks.AsEnumerable();
         }

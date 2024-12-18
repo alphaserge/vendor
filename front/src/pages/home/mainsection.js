@@ -8,6 +8,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 
 import Menu from '@mui/material/Menu';
 import Tooltip from '@mui/material/Tooltip';
@@ -16,15 +19,7 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 
-import HoverPopover from 'material-ui-popup-state/HoverPopover';
-import PopupState, { bindHover, bindPopover } from 'material-ui-popup-state';
-
 import { APPEARANCE } from '../../appearance';
-import { Height } from "@mui/icons-material";
-
-const findBoxStyle = { width: "calc(100% - 80px)", border: "none" }
-const findTextStyle = { width: "100%", borderRadius : "8px", border: "2px solid #18515e" }
-const mainMenuStyle = { padding: "0 30px", cursor: "pointer" }
 
 function FabricIcon(props) {
   return (
@@ -32,6 +27,8 @@ function FabricIcon(props) {
   </Icon>
   );
   }
+
+const itemStyle = { padding: 0, margin: 0, cursor: "pointer" }  
 
 export default function MainSection(props) {
 
@@ -56,6 +53,7 @@ export default function MainSection(props) {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [openMenu, setOpenMenu] = useState(false);
+  const [page, setPage] = useState(0);
 
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -63,34 +61,14 @@ export default function MainSection(props) {
   };
 
   const handleCloseMenu = (e) => {
-    return;
-    if (e.currentTarget.localName !== "ul") {
-      const menu = document.getElementById("simple-menu");//.children[2];
-      const parn = document.getElementById("simple-menu").parentElement;//.children[2];
-      const menuBoundary = {
-        left: menu.offsetLeft,
-        top: e.currentTarget.offsetTop + e.currentTarget.offsetHeight,
-        //top: menu.offsetTop,
-        right: menu.offsetLeft + menu.offsetWidth,
-        bottom: e.currentTarget.offsetTop + menu.offsetHeight
-      };
-      console.log(menu.offsetTop + ' ' + menu.offsetHeight)
-      console.log(menuBoundary)
-      console.log(e.clientX + ' ' + e.clientY)
-      console.log(parn.offsetLeft)
-      if (
-        e.clientX >= menuBoundary.left &&
-        e.clientX <= menuBoundary.right &&
-        e.clientY <= menuBoundary.bottom &&
-        e.clientY >= menuBoundary.top
-      ) {
-        return;
-      }
+    const mnu = document.getElementById("simple-menu");  // or document.querySelector('#simple-menu') too works
+
+    if (mnu.matches(':hover')) {
+      return;
     }
 
     setOpenMenu(false);
   };
-
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -131,7 +109,7 @@ useEffect(() => {
 
     <Box sx={{ backgroundColor: "#fff", color: "#eee", alignContent: "center" }} style={{ height: "100px" }}  >
       <Grid container spacing={2} sx={{ alignContent: "center" }} >
-      <Grid item xs={12} md={4} key={"mainsect-left"} sx={{ justifyItems : "right" }} className="center-content" >
+      <Grid item xs={12} md={4} key={"mainsect-left"} sx={{ justifyItems : "right" }} >
         <Box sx={{display: "flex", flexDirection: "row", paddingTop: "25px", color: APPEARANCE.BLACK }}>
         <Tooltip title={props.user != undefined ? props.user.firstName: "Sign In"}>
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1 }}>
@@ -230,90 +208,119 @@ useEffect(() => {
       </Grid>
     </Box>
 
-    <Box sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center", zIndex: 100 }}  >
+    <Box id="simple-menu" onMouseLeave={handleCloseMenu} >
+    <Box sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center", zIndex: 100 }} >
     <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content"  >
       <Box 
-        sx={mainMenuStyle}
-        onMouseOver={handleOpenMenu}
+        sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
+        onMouseOver={e => { setPage(0); handleOpenMenu(e) }}
         onMouseLeave={handleCloseMenu} >
-      Textile type
+        Textile type
       </Box>
       <Box 
-        sx={mainMenuStyle}
-        onMouseOver={handleOpenMenu}
+        sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
+        onMouseOver={e => { setPage(1); handleOpenMenu(e) }}
         onMouseLeave={handleCloseMenu} >
-         Fabric type
+         Design type
          </Box>
          <Box 
-        sx={mainMenuStyle}
-        onMouseOver={handleOpenMenu}
+        sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
+        onMouseOver={e => { setPage(2); handleOpenMenu(e) }}
         onMouseLeave={handleCloseMenu} >
          Season
          </Box>
          <Box 
-        sx={mainMenuStyle}
-        onMouseOver={handleOpenMenu}
+        sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
+        onMouseOver={e => { setPage(3); handleOpenMenu(e) }}
         onMouseLeave={handleCloseMenu} >
-         Color
+         Colour
          </Box>
          <Box 
-        sx={mainMenuStyle}
-        onMouseOver={handleOpenMenu}
+        sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
+        onMouseOver={e => { setPage(4); handleOpenMenu(e) }}
         onMouseLeave={handleCloseMenu} >
          Print type
          </Box>
-      <Box>
-      </Box>
+         <Box 
+        sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
+        onMouseOver={e => { setPage(5); handleOpenMenu(e) }}
+        onMouseLeave={handleCloseMenu} >
+         About
+         </Box>
+         <Box 
+        sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
+        onMouseOver={e => { setPage(6); handleOpenMenu(e) }}
+        onMouseLeave={handleCloseMenu} >
+         Contact
+         </Box>
 
     </Box>
     </Box> 
 
-    {/* <Box sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center" }}  >
-    <Box className="center-content"  >
-    <PopupState variant="popover" popupId="demoPopover" >
-      {(popupState) => (
-        <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }}  >
-          <Typography {...bindHover(popupState)} sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center" }} >
-            Hover with a Popover.
-          </Typography>
-          <Typography {...bindHover(popupState)} sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center" }} >
-            Hover with a Popover1.
-          </Typography>
-          <HoverPopover
-            {...bindPopover(popupState)}
-            slotProps={{
-              paper: { style: { padding: 10 } },
-            }}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-          >
-            <Box sx={{left: 200}}>
-            <Typography  >The content of the Popover.</Typography>
-            </Box>
-          </HoverPopover>
-        </Box>
-      )}
-    </PopupState>
+    <Box  sx={{ backgroundColor: "#fff", color: "#222", zIndex: 10, position: "absolute", left: 0, width: "100%", paddingBottom: "12px"  }} display={openMenu?"block":"none"} >
 
-    </Box>
-    </Box> */}
-
-    <Box sx={{ backgroundColor: "#eeeeff", color: "#222", zIndex: 10, position: "absolute", left: 0, width: "100%"  }} display={openMenu?"block":"none"} >
-    <Box sx={{ }} id="simple-menu" onMouseLeave={handleCloseMenu} className="center-content" >
-      Menu<br/>
-      Menu<br/>
-      Menu<br/>
-      Menu<br/>
-
-    </Box>
+    <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==0?"block":"none"}>
+    <ul sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="four-column-list center-content-menu" >
+      {props.textileTypes && props.textileTypes.map((item) => {
+        return (
+          <ListItem key={item.key} sx={itemStyle} >
+            <ListItemText primary={item.value} />
+          </ListItem>
+        );
+      })}
+    </ul>
     </Box>
 
+    <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==1?"block":"none"}>
+    <ul sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="four-column-list center-content-menu" >
+      {props.designTypes && props.designTypes.map((item) => {
+        return (
+          <ListItem key={item.key} sx={itemStyle} >
+            <ListItemText primary={item.value} />
+          </ListItem>
+        );
+      })}
+    </ul>
+    </Box>
+    
+    <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==2?"block":"none"}>
+    <ul sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="four-column-list center-content-menu" >
+      {props.seasons && props.seasons.map((item) => {
+        return (
+          <ListItem key={item.key} sx={itemStyle} >
+            <ListItemText primary={item.value} />
+          </ListItem>
+        );
+      })}
+    </ul>
+    </Box>
+
+    <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==3?"block":"none"}>
+    <ul sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="four-column-list center-content-menu" >
+      {props.colors && props.colors.map((item) => {
+        return (
+          <ListItem key={item.key} sx={itemStyle} >
+            <ListItemText primary={item.value} />
+          </ListItem>
+        );
+      })}
+    </ul>
+    </Box>
+
+    <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==4?"block":"none"}>
+    <ul sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="four-column-list center-content-menu" >
+      {props.printTypes && props.printTypes.map((item) => {
+        return (
+          <ListItem key={item.key} sx={itemStyle} >
+            <ListItemText primary={item.value} />
+          </ListItem>
+        );
+      })}
+    </ul>
+    </Box>
+
+    </Box>
+    </Box>
     </Box>
   );
 }

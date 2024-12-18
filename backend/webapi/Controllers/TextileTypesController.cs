@@ -41,7 +41,7 @@ namespace chiffon_back.Controllers
                         .Map<Models.TextileType>(x))
                 .ToList();
 
-            list.Add(new Models.TextileType() { Id = -2, TextileTypeName = "ADD NEW" });
+            //!!list.Add(new Models.TextileType() { Id = -2, TextileTypeName = "ADD NEW" });
             return list.AsEnumerable();
         }
 

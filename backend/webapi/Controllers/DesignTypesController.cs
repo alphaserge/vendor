@@ -35,7 +35,7 @@ namespace chiffon_back.Controllers
                         .Map<Models.DesignType>(x))
             .ToList();
 
-            list.Add(new Models.DesignType() { Id = -2, DesignName = "ADD NEW" });
+            //!!list.Add(new Models.DesignType() { Id = -2, DesignName = "ADD NEW" });
             return list.AsEnumerable();
         }
 
