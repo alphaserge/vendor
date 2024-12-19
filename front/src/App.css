@@ -30,7 +30,7 @@ li > .color_select_item {
 
 .center-content {
   margin: 15px auto;
-  justify-content: center;
+  /* justify-content: center; */
   width: auto;
   max-width: 1260px;  
 }

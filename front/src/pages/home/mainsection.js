@@ -262,7 +262,7 @@ useEffect(() => {
 
     <Box id="simple-menu" onMouseLeave={handleCloseMenu} >
     <Box sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center", zIndex: 100 }} >
-    <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content"  >
+    <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row", justifyContent: "center" }} className="center-content"  >
       <Box 
         sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
         onMouseOver={e => { setPage(0); handleOpenMenu(e) }}
