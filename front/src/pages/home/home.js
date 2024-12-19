@@ -99,7 +99,21 @@ export default function Home(props) {
     const [artNo, setArtNo] = useState("")
     const [design, setDesign] = useState("")
     const [view, setView] = useState("grid")
-    
+
+    const [selectedTextileType, setSelectedTextileType] = useState([])
+    const [selectedDesignType, setSelectedDesignType] = useState([])
+    const [selectedSeason, setSelectedSeason] = useState([])
+    const [selectedColor, setSelectedColor] = useState([])
+    const [selectedPrintType, setSelectedPrintType] = useState([])
+    const [selectedOverworkType, setSelectedOverworkType] = useState([])
+
+    const [filterTextileType, setFilterTextileType] = useState([])
+    const [filterDesignType, setFilterDesignType] = useState([])
+    const [filterSeason, setFilterSeason] = useState([])
+    const [filterColor, setFilterColor] = useState([])
+    const [filterPrintType, setFilterPrintType] = useState([])
+    const [filterProductType, setFilterProductType] = useState([])
+
     const [addItemName, setAddItemName] = useState("")
     const [addRefNo, setAddRefNo] = useState("")
     const [addArtNo, setAddArtNo] = useState("")
@@ -186,10 +200,12 @@ export default function Home(props) {
               artno: artNo,
               refno: refNo,
               design: design,
-              colors: JSON.stringify(color),
-              seasons: JSON.stringify(season),
+              colors: JSON.stringify(selectedColor), //color
+              seasons: JSON.stringify(selectedSeason),
               overworks: JSON.stringify(overworkType),
-              designtypes: JSON.stringify(designType),
+              designtypes: JSON.stringify(selectedDesignType),
+              textiletypes: JSON.stringify(selectedTextileType),
+              printypes: JSON.stringify(selectedPrintType),
               search: search
             }})
       .then(function (res) {
@@ -343,15 +359,15 @@ export default function Home(props) {
       if (getFromUrl("new")==1) {
         setAddProduct(true)
       }
+
+      //console.log('use effect:' + selectedSeason)
   
-  
-    }, []);
+    }, [selectedSeason, selectedColor, selectedDesignType, selectedPrintType, selectedTextileType]);
 
   if (!props.user || props.user.Id == 0) {
     navigate("/")
   }
-  console.log(colors)
-  console.log(colors.map((it) => ({ key: it.id, name: it.colorName })))
+  //console.log(colors.map((it) => ({ key: it.id, name: it.colorName })))
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -368,7 +384,14 @@ export default function Home(props) {
           designTypes={designTypes}
           seasons={seasons}
           colors={colors}
-          printTypes={printTypes} />
+          printTypes={printTypes}
+          setSeason = {setSelectedSeason} 
+          setTextileType = {setSelectedTextileType} 
+          setDesignType = {setSelectedDesignType} 
+          setColor = {setSelectedColor} 
+          setPrintType = {setSelectedPrintType} 
+          setOverworkType = {setSelectedOverworkType} 
+          />
 
         <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" >
           <Box sx={{ display: "flex", flexDirection: "column", width: 270 }}  >
@@ -383,14 +406,14 @@ export default function Home(props) {
           {/* <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" > */}
           <Grid container spacing={0} >
             { view === "grid" && products.map((data, index) => (
-            <Grid item xs={12} md={4} key={"itemprod-"+index} >
+            <Grid item xs={12} md={4} key={"itemprod-"+index} sx={{ minWidth: "320px" }} >
               <ItemProduct data={data} index={index} />
-              </Grid>
+            </Grid>
             ))}
             { view === "rows" && products.map((data, index) => (
             <Grid item xs={12} md={12} key={"itemprod-"+index} >
               <ItemProductRow data={data} index={index} />
-              </Grid>
+            </Grid>
             ))}
           </Grid>
 

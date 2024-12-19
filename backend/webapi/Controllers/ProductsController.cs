@@ -110,6 +110,8 @@ namespace chiffon_back.Controllers
                     Seasons = HttpContext.Request.Query["seasons"].ToString(),
                     Overworks = HttpContext.Request.Query["overworks"].ToString(),
                     DesignTypes = HttpContext.Request.Query["designtypes"].ToString(),
+                    PrintTypes = HttpContext.Request.Query["printypes"].ToString(),
+                    TextileTypes = HttpContext.Request.Query["textiletypes"].ToString(),
                 });
 
                 return prods;

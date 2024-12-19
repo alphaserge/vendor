@@ -55,6 +55,58 @@ export default function MainSection(props) {
   const [openMenu, setOpenMenu] = useState(false);
   const [page, setPage] = useState(0);
 
+  const dropFilters = () => {
+    if(props.setSeason) { props.setSeason([]) }
+    if(props.setTextileType) { props.setTextileType([]) }
+    if(props.setDesignType) { props.setDesignType([]) }
+    if(props.setColor) { props.setColor([]) }
+    if(props.setPrintType) { props.setPrintType([]) }
+    if(props.setOverworkType) { props.setOverworkType([]) }
+  }
+
+  const handleSeason = (event) => {
+    dropFilters()
+    if(props.setSeason) {
+      props.setSeason([event.id])
+    }
+    setOpenMenu(false);
+  }
+  const handleTextileType = (event) => {
+    dropFilters()
+    if(props.setTextileType) {
+      props.setTextileType([event.id])
+    }
+    setOpenMenu(false);
+  }
+  const handleDesignType = (event) => {
+    dropFilters()
+    if(props.setDesignType) {
+      props.setDesignType([event.id])
+    }
+    setOpenMenu(false);
+  }
+  const handleColor = (event) => {
+    dropFilters()
+    if(props.setColor) {
+      props.setColor([event.id])
+    }
+    setOpenMenu(false);
+  }
+  const handlePrintType = (event) => {
+    dropFilters()
+    if(props.setPrintType) {
+      props.setPrintType([event.id])
+    }
+    setOpenMenu(false);
+  }
+  const handleOverworkType = (event) => {
+    dropFilters()
+    if(props.setOverworkType) {
+      props.setOverworkType([event.id])
+    }
+    setOpenMenu(false);
+  }
+
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
     setOpenMenu(true);
@@ -264,7 +316,7 @@ useEffect(() => {
       {props.textileTypes && props.textileTypes.map((item) => {
         return (
           <ListItem key={item.key} sx={itemStyle} >
-            <ListItemText primary={item.value} />
+            <ListItemText primary={item.value} onClick={() => handleTextileType(item)} />
           </ListItem>
         );
       })}
@@ -276,7 +328,7 @@ useEffect(() => {
       {props.designTypes && props.designTypes.map((item) => {
         return (
           <ListItem key={item.key} sx={itemStyle} >
-            <ListItemText primary={item.value} />
+            <ListItemText primary={item.value} onClick={() => handleDesignType(item)} />
           </ListItem>
         );
       })}
@@ -287,8 +339,8 @@ useEffect(() => {
     <ul sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="four-column-list center-content-menu" >
       {props.seasons && props.seasons.map((item) => {
         return (
-          <ListItem key={item.key} sx={itemStyle} >
-            <ListItemText primary={item.value} />
+          <ListItem key={item.key} sx={itemStyle}  >
+            <ListItemText primary={item.value} key={item.key} onClick={() => handleSeason(item)} />
           </ListItem>
         );
       })}
@@ -300,7 +352,7 @@ useEffect(() => {
       {props.colors && props.colors.map((item) => {
         return (
           <ListItem key={item.key} sx={itemStyle} >
-            <ListItemText primary={item.value} />
+            <ListItemText primary={item.value} onClick={() => handleColor(item)} />
           </ListItem>
         );
       })}
@@ -312,11 +364,32 @@ useEffect(() => {
       {props.printTypes && props.printTypes.map((item) => {
         return (
           <ListItem key={item.key} sx={itemStyle} >
-            <ListItemText primary={item.value} />
+            <ListItemText primary={item.value} onClick={() => handlePrintType(item)} />
           </ListItem>
         );
       })}
     </ul>
+    </Box>
+
+    <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==5?"block":"none"}>
+    <Box sx={{ width: '100%', maxWidth: 800, height: '100%', textAlign: "justify" }} className="center-content-menu">
+      JSC Textile Company Anzhelika is a company in Russia, with its main office in Moscow. It operates in the industry of wholesale trade in clothing, textiles and related products. The company was founded on January 13, 2003.
+      <br/><br/>Being part of the light industrial complex, the company in its activities is primarily focused on satisfying the current needs of the end consumer. In order to saturate the market with its products, the organization cooperates with a number of large and small retail outlets in Moscow and other regions.
+    </Box>
+    </Box>
+
+    <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==6?"block":"none"}>
+    <Box sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="center-content-menu">
+      Showroom address:<br/>
+      <Box sx={{margin: "5px 0 0 10px"}}>Yaroslavskoe shosse, possession 1 building 1, Mytishchi, Moscow region, Russia<br/>
+      Postal code: 141009<br/>
+      Phones: +7 (926)0180125  +7(916)8762008</Box><br/>
+      Headquarters:<br/>
+      <Box sx={{padding: "5px 0 0 10px"}}>
+      Bolshaya Gruzinskaya, 20, 3A/P Moscow, Russia<br/>
+      Postal code: 123242</Box>
+    </Box>
+    
     </Box>
 
     </Box>

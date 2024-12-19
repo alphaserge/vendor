@@ -228,6 +228,7 @@ img.product-img {
   text-align: center;
   font-size: 18px;
   background: #fff;
+  width: 320px;
 
   /* Center slide text vertically */
   display: flex;
