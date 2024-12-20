@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from "react";
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -11,7 +11,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Typography from '@mui/material/Typography';
 
 export default function CheckboxList(props) {
-  const [checked, setChecked] = React.useState([0]);
+  const value = props.value ? props.value : [];
+  const [checked, setChecked] = React.useState(value);
+  const [selectedValue, setSelectedValue] = useState([])
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -24,7 +26,20 @@ export default function CheckboxList(props) {
     }
 
     setChecked(newChecked);
+    props.setValueFn(newChecked);
   };
+
+   useEffect(() => {
+      const value = props.value ? props.value : [];
+      setChecked(value)
+  }, [props.value]);
+
+  /*const dataChange = (event) => {
+    const { target: { value } } = event;
+
+    setSelectedValue(value);
+    props.setValueFn(value);
+  };*/
 
   return (
     <Box sx={{ border: "none", width: "100%", paddingTop: "10px" }} >
@@ -53,6 +68,7 @@ export default function CheckboxList(props) {
                   disableRipple
                   inputProps={{ 'aria-labelledby': labelId }}
                   sx={{ padding: 0, margin: 0 }}
+                  //onChange={dataChange}
                 />
               </ListItemIcon>
               <ListItemText id={labelId} primary={item.name} sx={{ padding: "2px 0px", margin: 0 }}/>

@@ -105,6 +105,7 @@ export default function Home(props) {
     const [selectedSeason, setSelectedSeason] = useState([])
     const [selectedColor, setSelectedColor] = useState([])
     const [selectedPrintType, setSelectedPrintType] = useState([])
+    const [selectedProductType, setSelectedProductType] = useState([])
     const [selectedOverworkType, setSelectedOverworkType] = useState([])
 
     const [filterTextileType, setFilterTextileType] = useState([])
@@ -126,6 +127,16 @@ export default function Home(props) {
     const handleShowHideFilter = (event) => {
       setFilter(!filter);
     };
+
+    const dropFilters = (e) => {
+      setSelectedTextileType([])
+      setSelectedDesignType([])
+      setSelectedSeason([])
+      setSelectedColor([])
+      setSelectedPrintType([])
+      setSelectedProductType([])
+      setSelectedOverworkType([])
+    }
 
     const clearFilter = (e) => {
       setProductStyle("")
@@ -206,12 +217,13 @@ export default function Home(props) {
               designtypes: JSON.stringify(selectedDesignType),
               textiletypes: JSON.stringify(selectedTextileType),
               printypes: JSON.stringify(selectedPrintType),
+              producttypes: JSON.stringify(selectedProductType),
               search: search
             }})
-      .then(function (res) {
-          var result = res.data;
-          setProducts(result)
+      .then(function (result) {
+          setProducts(result.data)
           setFilter(false)
+          console.log(result.data)
       })
       .catch (error => {
         console.log(error)
@@ -362,7 +374,7 @@ export default function Home(props) {
 
       //console.log('use effect:' + selectedSeason)
   
-    }, [selectedSeason, selectedColor, selectedDesignType, selectedPrintType, selectedTextileType]);
+    }, [selectedSeason, selectedColor, selectedDesignType, selectedPrintType, selectedProductType, selectedTextileType]);
 
   if (!props.user || props.user.Id == 0) {
     navigate("/")
@@ -385,26 +397,59 @@ export default function Home(props) {
           seasons={seasons}
           colors={colors}
           printTypes={printTypes}
-          setSeason = {setSelectedSeason} 
-          setTextileType = {setSelectedTextileType} 
-          setDesignType = {setSelectedDesignType} 
-          setColor = {setSelectedColor} 
-          setPrintType = {setSelectedPrintType} 
-          setOverworkType = {setSelectedOverworkType} 
+          setSeason       = {(v)=>{ dropFilters(); setSelectedSeason(v)}}
+          setTextileType  = {(v)=>{ dropFilters(); setSelectedTextileType(v)}}  
+          setDesignType   = {(v)=>{ dropFilters(); setSelectedDesignType(v)}} 
+          setColor        = {(v)=>{ dropFilters(); setSelectedColor(v)}} 
+          setPrintType    = {(v)=>{ dropFilters(); setSelectedPrintType(v)}} 
+          setOverworkType = {(v)=>{ dropFilters(); setSelectedOverworkType(v)}}
           />
 
         <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" >
           <Box sx={{ display: "flex", flexDirection: "column", width: 270 }}  >
-             <CheckboxList list={colors.map((it) => ({ key: it.id, name: it.value }))}  title="Colours" height={310} expanded={true} />
-             <CheckboxList list={seasons.map((it) => ({ key: it.id, name: it.value }))}  title="Seasons" height={120} expanded={true} />
-             <CheckboxList list={designTypes.map((it) => ({ key: it.id, name: it.value }))}  title="Design types" expanded={true} />
-             <CheckboxList list={printTypes.map((it) => ({ key: it.id, name: it.value }))}  title="Print types" expanded={true} />
-             <CheckboxList list={productTypes.map((it) => ({ key: it.id, name: it.value }))}  title="Product types" height={80} expanded={true} />
+            <CheckboxList 
+              list={colors.map((it) => ({ key: it.id, name: it.value }))}
+              title="Colours"
+              height={310}
+              expanded={true}
+              setValueFn={setSelectedColor} 
+              value={selectedColor}
+            />
+            <CheckboxList 
+              list={seasons.map((it) => ({ key: it.id, name: it.value }))}  
+              title="Seasons" 
+              height={120} 
+              expanded={true} 
+              setValueFn={setSelectedSeason } 
+              value={selectedSeason}
+            />
+            <CheckboxList 
+              list={designTypes.map((it) => ({ key: it.id, name: it.value }))}  
+              title="Design types" 
+              expanded={true} 
+              setValueFn={setSelectedDesignType} 
+              value={selectedDesignType}
+            />
+            <CheckboxList 
+              list={printTypes.map((it) => ({ key: it.id, name: it.value }))}
+              title="Print types" 
+              expanded={true} 
+              setValueFn={setSelectedPrintType} 
+              value={selectedPrintType}
+            />
+            <CheckboxList 
+              list={productTypes.map((it) => ({ key: it.id, name: it.value }))}  
+              title="Product types" 
+              height={80} 
+              expanded={true} 
+              setValueFn={setSelectedProductType} 
+              value={selectedProductType}
+            />
           </Box>
 
           <Box sx={{ padding: "10px" }} >
           {/* <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" > */}
-          <Grid container spacing={0} >
+          <Grid container spacing={1} >
             { view === "grid" && products.map((data, index) => (
             <Grid item xs={12} md={4} key={"itemprod-"+index} sx={{ minWidth: "320px" }} >
               <ItemProduct data={data} index={index} />

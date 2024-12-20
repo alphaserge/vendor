@@ -166,8 +166,22 @@ img.product-img {
   width: 100%;
 }
 
+.product-price {
+  font-size: 16px;
+  margin-right: 10px;
+  text-align: right;
+}
+
+.product-price-text {
+  display: inline-block;
+  color: #fff;
+  background-color: #18515e;
+  border-radius: 4px;
+  padding: 1px 8px;
+}
+
 .product-item {
-  font-size: 15px;
+  font-size: 16px;
   /* width: 200px;
   height: 26px;
   margin-left: 20px;
@@ -193,6 +207,22 @@ img.product-img {
 
 .product-item.price > span {
   padding: 4px;
+}
+
+.product-quickview {
+  font-size: 18px;
+  display: inline-block;
+  color: #fff;
+  background-color: #18515e;
+  border-radius: 4px;
+  padding: 1px 8px;
+  align-items: center;
+  position: absolute;
+  z-index: 100;
+  top: 50%;
+  left: calc(50% - 35px);
+  margin: 0 auto;
+
 }
 
 .width80 {

@@ -25,6 +25,7 @@ namespace chiffon_back.Models
         public int? ProductTypeId { get; set; }
         public string Colors { get; set; }
         public string PrintTypes { get; set; }
+        public string ProductTypes { get; set; }
         public string DesignTypes { get; set; }
         public string Seasons { get; set; }
         public string Overworks { get; set; }
@@ -44,6 +45,7 @@ namespace chiffon_back.Models
             DesignTypes = String.Empty;
             TextileTypes = String.Empty;
             PrintTypes = String.Empty;
+            ProductTypes = String.Empty;
             Search = String.Empty;
             Price = Array.Empty<decimal>();
             Weight = Array.Empty<int>();
@@ -219,18 +221,25 @@ namespace chiffon_back.Models
 
                 List<int?> textileTypesIds = new List<int?>();
                 int[]? itextileTypes = JsonConvert.DeserializeObject<int[]>(filter.TextileTypes);
-                if (itextileTypes!.Length > 0)
+                if (itextileTypes != null && itextileTypes!.Length > 0)
                 {
                     //!!!??????
-                    textileTypesIds = (from ps in ctx.ProductsInTextileTypes where itextileTypes.Contains(ps.TextileTypeId) select ps.ProductId as int?).Distinct().ToList();
+                    textileTypesIds = (from ps in ctx.ProductsInTextileTypes where itextileTypes!.Contains(ps.TextileTypeId) select ps.ProductId as int?).Distinct().ToList();
                     query = query.Where(x => textileTypesIds.Contains(x.Id));
                 }
 
                 List<int?> printTypesIds = new List<int?>();
                 int[]? iprintTypes = JsonConvert.DeserializeObject<int[]>(filter.PrintTypes);
-                if (iprintTypes!.Length > 0)
+                if (iprintTypes != null && iprintTypes!.Length > 0)
                 {
                     query = query.Where(x => x.PrintTypeId == iprintTypes[0]);
+                }
+
+                List<int?> productTypesIds = new List<int?>();
+                int[]? iproductTypes = JsonConvert.DeserializeObject<int[]>(filter.ProductTypes);
+                if (iproductTypes != null && iproductTypes!.Length > 0)
+                {
+                    query = query.Where(x => x.ProductTypeId == iproductTypes[0]);
                 }
 
                 //List<int?> ids = colorsIds.Union(seasonsIds).Union(overworkIds).Union(designTypesIds).Distinct().ToList();

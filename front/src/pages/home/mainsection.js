@@ -373,18 +373,18 @@ useEffect(() => {
 
     <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==5?"block":"none"}>
     <Box sx={{ width: '100%', maxWidth: 800, height: '100%', textAlign: "justify" }} className="center-content-menu">
-      JSC Textile Company Anzhelika is a company in Russia, with its main office in Moscow. It operates in the industry of wholesale trade in clothing, textiles and related products. The company was founded on January 13, 2003.
+    <b>JSC Textile Company Anzhelika</b> is a company in Russia, with its main office in Moscow. It operates in the industry of wholesale trade in clothing, textiles and related products. The company was founded on January 13, 2003.
       <br/><br/>Being part of the light industrial complex, the company in its activities is primarily focused on satisfying the current needs of the end consumer. In order to saturate the market with its products, the organization cooperates with a number of large and small retail outlets in Moscow and other regions.
     </Box>
     </Box>
 
     <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==6?"block":"none"}>
     <Box sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="center-content-menu">
-      Showroom address:<br/>
+      <b>Showroom address:</b><br/>
       <Box sx={{margin: "5px 0 0 10px"}}>Yaroslavskoe shosse, possession 1 building 1, Mytishchi, Moscow region, Russia<br/>
       Postal code: 141009<br/>
-      Phones: +7 (926)0180125  +7(916)8762008</Box><br/>
-      Headquarters:<br/>
+      Phones: +7 (926) 018-01-25,&nbsp;&nbsp;+7(916) 876-20-08</Box><br/>
+      <b>Headquarters:</b><br/>
       <Box sx={{padding: "5px 0 0 10px"}}>
       Bolshaya Gruzinskaya, 20, 3A/P Moscow, Russia<br/>
       Postal code: 123242</Box>
