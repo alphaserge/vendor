@@ -9,8 +9,9 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
-import TuneIcon from '@mui/icons-material/Tune';
+//import CloseIcon from '@material-ui/icons/Close'
+//import  from '@mui/icons-material/Close';
+import CloseIcon from '@mui/icons-material/Close';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import InputAdornment from '@mui/material/InputAdornment';
 
@@ -36,6 +37,18 @@ import { postProduct } from '../../api/products'
 
 import { APPEARANCE } from '../../appearance';
 import { Button } from "@mui/material";
+
+// import Swiper core and required modules
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Thumbs } from 'swiper/modules';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+import 'swiper/css/thumbs';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -121,8 +134,12 @@ export default function Home(props) {
     const [addDesign, setAddDesign] = useState("")
 
     const [savingError, setSavingError] = useState(false)
+    const [showQuickView, setShowQuickView] = React.useState(false);
+    const [quickViewProduct, setQuickViewProduct] = React.useState({ colors: [{ imagePath: [''] }]});
     
     const headStyle = { maxWidth: "744px", width: "auto", margin: "0", padding: "0 10px" }
+    // store thumbs swiper instance
+    const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
     const handleShowHideFilter = (event) => {
       setFilter(!filter);
@@ -354,9 +371,13 @@ export default function Home(props) {
         setSavingError(true)
       }
     }
-  
-  
 
+
+    const quickView = (e, data) => {
+      setShowQuickView(true)
+      setQuickViewProduct(data)
+    }
+  
     useEffect(() => {
       loadProducts()
       loadColors()
@@ -379,11 +400,98 @@ export default function Home(props) {
   if (!props.user || props.user.Id == 0) {
     navigate("/")
   }
-  //console.log(colors.map((it) => ({ key: it.id, name: it.colorName })))
-
+  console.log(products)
+  
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
+
+
+      <Modal
+        open={showQuickView}
+        onClose={function() { setAddProduct(false) }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{ width: "auto", outline: "none" }} >
+      
+        <Box sx={{ 
+          position: 'absolute', 
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)',
+          width: "890px", 
+          boxShadow: 24,
+          padding: "20px 20px 20px 20px",
+          outline: "none",
+          bgcolor: 'background.paper',
+          display: "flex",
+          flexDirection: 'row', 
+          alignItems: 'center', justifyContent: "right" }}>
+        {/* <Typography>Modal title</Typography> */}
+        <IconButton
+           sx={{ position: "absolute", top: 6  }}
+           onClick={() => { setShowQuickView(false) }}>
+            <CloseIcon />
+        </IconButton>
+
+          <Box sx = {{
+             width:'640px',
+             display: "flex",
+             flexDirection: 'row'}} >
+                <Swiper 
+                className="swiper" 
+                modules={[Thumbs, Navigation, Pagination,]} // Navigation, Pagination, Scrollbar, A11y]}
+                /*slidesPerView={1}
+                //navigation */
+                thumbs={{ swiper: thumbsSwiper }}
+                //watchSlidesProgress
+                //onSwiper={setThumbsSwiper}
+                //onSwiper={(swiper) => console.log(swiper)}
+                //pagination={{ clickable: true }}
+                //scrollbar={{ draggable: true }}
+                
+                onSlideChange={() => console.log('slide change')} >
+                  {quickViewProduct.colors.map((cv, index) => {
+                   return <Box key={"product-box-00"} >
+                   <SwiperSlide key={"product-swiper-00"} sx={{ display: "flex", justifyContent: "center" }} >
+                    <Box className="product-img-holder" ><Box component={"img"} key={"product-swiper-00"} 
+                    src={config.api + "/" + cv.imagePath[0]} 
+                    alt={"photo_00"} className="product-img" /></Box>
+                   </SwiperSlide></Box>
+                })}
+                </Swiper>
+          </Box>
+          <Box sx = {{
+             display: "flex",
+             flexDirection: 'column'}} >
+              <p>Item name</p>  
+              <p>Art No.</p>  
+              <p>Ref No.</p>  
+
+                  <Box sx={{ 
+                    display: "flex",
+                    flexDirection: 'row', 
+                    justifyContent: 'center' }}>
+                      <Button 
+                          variant="contained"
+                          style={buttonStyle}
+                          sx={buttonStyle}
+                          onClick={handleAddProductSave} >
+                              Next
+                      </Button>
+                      <Button 
+                          variant="contained"
+                          sx={buttonStyle}
+                          onClick={handleAddProductCancel} >
+                              Cancel
+                      </Button>
+                  </Box>
+
+          </Box>
+
+        </Box>
+      </Modal>
+
 
       <Container sx={{padding: 0 }} className="header-container" >
       </Container>
@@ -452,7 +560,7 @@ export default function Home(props) {
           <Grid container spacing={1} >
             { view === "grid" && products.map((data, index) => (
             <Grid item xs={12} md={4} key={"itemprod-"+index} sx={{ minWidth: "320px" }} >
-              <ItemProduct data={data} index={index} />
+              <ItemProduct data={data} index={index} quickView={quickView} />
             </Grid>
             ))}
             { view === "rows" && products.map((data, index) => (

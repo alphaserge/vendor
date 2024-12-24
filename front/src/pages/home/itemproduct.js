@@ -42,9 +42,8 @@ export default function ItemProduct(props) {
 
   return (
     
-    <FormControl sx={{ mb: 2, width: "320px" }} > 
-          <Link href={"/updateproduct?id=" + props.data.id} className="no-link" >
-          <Box className="product-quickview" >Quick view</Box>
+          <Box className="no-link" sx={{ mb: 0, width: "320px" }} >
+          <Box className="product-quickview" onClick={(e)=>{props.quickView(e, props.data)}} >Quick view</Box>
           <Swiper className="swiper" >
             {props.data.colors.map((cv, index) => {
               return <Box key={"product-box-"+index} >
@@ -54,7 +53,8 @@ export default function ItemProduct(props) {
                 alt={"photo"+(index+1)} className="product-img" /></Box>
               </SwiperSlide></Box>
             })}
-            </Swiper>
+          
+          </Swiper>
             
           <Box sx={{ display: "flex", flexDirection: 'column', alignItems: "left", ml: 1}}>
             <Box className="product-item">{props.data.itemName}</Box>
@@ -73,7 +73,6 @@ export default function ItemProduct(props) {
             </Box> */}
            <div style={{ clear: "left" }} >
            </div>
-           </Link>
-           </FormControl>
+           </Box>
 );
 }
