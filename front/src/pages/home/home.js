@@ -21,6 +21,8 @@ import TableRowsIcon from '@mui/icons-material/TableRows';
 import Tooltip from '@mui/material/Tooltip';
 import Modal from '@mui/material/Modal';
 
+import useMediaQuery from '@mui/material/useMediaQuery';
+
 import axios from 'axios'
 
 import config from "../../config.json"
@@ -144,6 +146,8 @@ export default function Home(props) {
     const handleShowHideFilter = (event) => {
       setFilter(!filter);
     };
+
+    const matches_sm = useMediaQuery(theme.breakpoints.up('md'));
 
     const dropFilters = (e) => {
       setSelectedTextileType([])
@@ -400,7 +404,7 @@ export default function Home(props) {
   if (!props.user || props.user.Id == 0) {
     navigate("/")
   }
-  console.log(products)
+  console.log(products)// matches_sm)
   
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -419,7 +423,8 @@ export default function Home(props) {
           top: '50%', 
           left: '50%', 
           transform: 'translate(-50%, -50%)',
-          width: "890px", 
+          width: (matches_sm ? "890px" : "330px"), 
+          //width: "330px", 
           boxShadow: 24,
           padding: "20px 20px 20px 20px",
           outline: "none",
@@ -434,11 +439,9 @@ export default function Home(props) {
             <CloseIcon />
         </IconButton>
 
-          <Box sx = {{
-             width:'640px',
-             display: "flex",
-             flexDirection: 'row'}} >
-                <Swiper 
+        <Grid container spacing={2} >
+          <Grid item xs={12} md={6} >
+          <Swiper 
                 className="swiper" 
                 modules={[Thumbs, Navigation, Pagination,]} // Navigation, Pagination, Scrollbar, A11y]}
                 /*slidesPerView={1}
@@ -460,14 +463,14 @@ export default function Home(props) {
                    </SwiperSlide></Box>
                 })}
                 </Swiper>
-          </Box>
-          <Box sx = {{
-             display: "flex",
-             flexDirection: 'column'}} >
-              <p>Item name</p>  
-              <p>Art No.</p>  
-              <p>Ref No.</p>  
-
+          </Grid>
+          <Grid item xs={12} md={6} >
+          <Box sx = {{ display: "flex",flexDirection: 'column'}} >
+              <div class="product-item">{quickViewProduct.itemName}</div>
+              <div class="product-item">{quickViewProduct.artNo}</div>
+              <div class="product-item">{quickViewProduct.refNo}</div>
+              <div class="product-item">{quickViewProduct.design}</div>
+              <div class="product-item">{quickViewProduct.composition}</div>
                   <Box sx={{ 
                     display: "flex",
                     flexDirection: 'row', 
@@ -486,9 +489,9 @@ export default function Home(props) {
                               Cancel
                       </Button>
                   </Box>
-
           </Box>
-
+          </Grid>
+        </Grid>
         </Box>
       </Modal>
 
