@@ -466,11 +466,15 @@ export default function Home(props) {
           </Grid>
           <Grid item xs={12} md={6} >
           <Box sx = {{ display: "flex",flexDirection: 'column'}} >
-              <div class="product-item">{quickViewProduct.itemName}</div>
-              <div class="product-item">{quickViewProduct.artNo}</div>
-              <div class="product-item">{quickViewProduct.refNo}</div>
-              <div class="product-item">{quickViewProduct.design}</div>
-              <div class="product-item">{quickViewProduct.composition}</div>
+              <div class="product-item"><div class="label">Item name:</div>{quickViewProduct.itemName}</div>
+              <div class="product-item"><div class="label">Art No:</div>{quickViewProduct.artNo}</div>
+              <div class="product-item"><div class="label">Ref No:</div>{quickViewProduct.refNo}</div>
+              <div class="product-item"><div class="label">Design:</div>{quickViewProduct.design}</div>
+              <div class="product-item"><div class="label">Composition:</div>{quickViewProduct.composition}</div>
+              <div class="product-item"><div class="label">Product type:</div>{quickViewProduct.productType}</div>
+              <div class="product-item"><div class="label">Product style:</div>{quickViewProduct.productStyle}</div>
+              <div class="product-item"><div class="label">Print style:</div>{quickViewProduct.printType}</div>
+              <div class="product-item"><div class="label">Price per meter from:</div><b>{quickViewProduct.price}$</b></div>
                   <Box sx={{ 
                     display: "flex",
                     flexDirection: 'row', 
