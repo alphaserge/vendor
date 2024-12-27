@@ -12,6 +12,7 @@ import Info from './pages/auth/info';
 import Error from './pages/auth/error';
 import Success from './pages/auth/success';
 import PrimarySearchAppBar from './pages/home/header';
+import { addShoppingCart, getShoppingCart, setShoppingCart } from './functions/shoppingcart';
 import axios from 'axios'
 
 import config from "./config.json"
@@ -42,6 +43,8 @@ function App() {
   const [overworkTypes, setOverworkTypes] = useState([])
   const [productTypes, setProductTypes] = useState([])
   const [productStyles, setProductStyles] = useState([])
+  const [cart, setCart] = useState(getShoppingCart())
+
   /*useState({
     id: 0,
     firstName: "",
@@ -55,6 +58,11 @@ function App() {
   })*/
 
   const [lastAction, setLastAction] = useState("")
+
+  const addToCart = (item) => {
+    cart.push(item)
+    setCart(cart)
+  }
 
   const loadSeasons = () => {
     axios.get(config.api + '/Seasons')
@@ -129,6 +137,10 @@ function App() {
   }
 
   useEffect(() => {
+    //...
+  }, [cart])
+
+  useEffect(() => {
 
     loadColors()
     loadSeasons()
@@ -160,11 +172,15 @@ function App() {
         })*/
   }, [])
 
+
+  console.log("cart::")
+  console.log(cart.length)
+
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home user={user} loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>} />
+          <Route path="/" element={<Home user={user} loggedIn={loggedIn} setLoggedIn={setLoggedIn} cart={cart} addToCart={addToCart} />} />
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setUser={setUser} />} />
           <Route path="/logout" element={<Logout setLoggedIn={setLoggedIn} setUser={setUser} />} />
           <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setUser={setUser} />} />

@@ -202,15 +202,16 @@ useEffect(() => {
           </MenuItem>}
         </Menu>
 
-        <Tooltip title={props.cart != undefined ? props.cart.amount : "Your shopping cart is empty"}>
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1 }}>
-            {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
+        
+        <Tooltip title={props.cart != undefined ? props.cart.length + " items" : "Your shopping cart is empty"}>
+          <Box className="cart-label">{props.cart && props.cart.length}</Box>
+          <IconButton onClick={(e)=>{ props.openShoppingCart(true) }} sx={{ p: 0, ml: "-10px", mr: 1 }}>
             <ShoppingCartOutlinedIcon fontSize="large" />
           </IconButton>
         </Tooltip>
 
-        <Tooltip title={props.cart != undefined ? props.favorites.amount : "Your favorite list is empty"}>
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1 }}>
+        <Tooltip title={props.favorites != undefined ? props.favorites.amount : "Your favorite list is empty"}>
+          <IconButton onClick={props.openFavorites} sx={{ p: 0, ml: 1, mr: 1 }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
             <FavoriteBorderOutlinedIcon fontSize="large" />
           </IconButton>

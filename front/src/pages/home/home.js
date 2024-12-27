@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 //import CloseIcon from '@material-ui/icons/Close'
 //import  from '@mui/icons-material/Close';
 import CloseIcon from '@mui/icons-material/Close';
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import InputAdornment from '@mui/material/InputAdornment';
 
@@ -34,7 +35,8 @@ import MainSection from './mainsection';
 import ItemProduct from './itemproduct';
 import ItemProductRow from './itemproductrow';
 import CheckboxList from '../../components/checkboxlist';
-import MySelect from '../../components/myselect';
+import { addShoppingCart, getShoppingCart, setShoppingCart } from '../../functions/shoppingcart';
+import QuantityInput from '../../components/quantityinput';
 import { postProduct } from '../../api/products'
 
 import { APPEARANCE } from '../../appearance';
@@ -57,13 +59,21 @@ const defaultTheme = createTheme()
 const itemStyle = { width: 330, m: 1, ml: 0 }
 const smallItemStyle = { width: 161, m: 1, ml: 0 }
 const labelStyle1 = { m: 0, mt: 1, ml: 0, mr: 4 }
-const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, m: 1 }
+const buttonStyle = { width: 150, height: 40, backgroundColor: APPEARANCE.BLACK3, m: 1, backgroundColor: "#18515E" }
 const outboxStyle = { margin: "80px auto 20px auto", padding: "0 10px" }
 const findBoxStyle = { width: "calc(100% - 80px)" }
 const findTextStyle = { width: "100%", border: "none" }
 //const findTextStyle = { width: "100%", border: "none", border: "solid 1px #888", borderRadius: 1 }
 const toolButtonStyle = { width: "26px", height: "26px", marginTop: "5px" }
 const flexStyle = { display: "flex", flexDirection: "row", alignItems : "center", justifyContent: "space-between" }
+/*const setShoppingCart = (c) => localStorage.setItem('shoppingCart', JSON.stringify(c));
+const getShoppingCart = ()  => { 
+const cart = localStorage.getItem('shoppingCart')
+if (cart) {
+  return JSON.parse(cart)
+} else {
+  return [];
+}}*/
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -82,7 +92,6 @@ const getFromUrl = (name) => {
   const params = new URLSearchParams(search)
   return params.get(name)
 }
-
 
 export default function Home(props) {
 
@@ -134,18 +143,27 @@ export default function Home(props) {
     const [addRefNo, setAddRefNo] = useState("")
     const [addArtNo, setAddArtNo] = useState("")
     const [addDesign, setAddDesign] = useState("")
-
+    
     const [savingError, setSavingError] = useState(false)
     const [showQuickView, setShowQuickView] = React.useState(false);
     const [quickViewProduct, setQuickViewProduct] = React.useState({ colors: [{ imagePath: [''] }]});
+
+    const [showShoppingCart, setShowShoppingCart] = React.useState(false);
     
     const headStyle = { maxWidth: "744px", width: "auto", margin: "0", padding: "0 10px" }
     // store thumbs swiper instance
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
+    const [cartAmount, setCartAmount] = useState(1)
+    //const [cart, setCart] = useState(props.cart);
+
     const handleShowHideFilter = (event) => {
       setFilter(!filter);
     };
+
+    /*useEffect(() => {
+      localStorage.setItem('shoppingCart', shoppingCart);
+    }, [shoppingCart]);*/
 
     const matches_sm = useMediaQuery(theme.breakpoints.up('md'));
 
@@ -187,6 +205,10 @@ export default function Home(props) {
       })
    }
 
+   const handleShowShoppingCart = (event) => {
+    setShowShoppingCart(event)
+   }
+
    const handleAddProductShow = (event) => {
     setAddProduct(true)
   };
@@ -196,8 +218,22 @@ export default function Home(props) {
     setAddProduct(false)
   };
 
-  const handleAddProductCancel = (event) => {
-    setAddProduct(false);
+  const handleAddToCart = (event) => {
+    props.addToCart({
+      product: quickViewProduct,
+      amount: cartAmount
+    })
+    /*addShoppingCart({
+      product: quickViewProduct,
+      amount: cartAmount
+    })*/
+    /*let cart = getShoppingCart()
+    cart.push(item)
+    setShoppingCart(cart)*/
+  };
+
+  const handleRemoveFromCart = (id) => {
+    props.removeFromCart(id)
   };
 
     const url = require('url');
@@ -376,7 +412,6 @@ export default function Home(props) {
       }
     }
 
-
     const quickView = (e, data) => {
       setShowQuickView(true)
       setQuickViewProduct(data)
@@ -396,15 +431,20 @@ export default function Home(props) {
       if (getFromUrl("new")==1) {
         setAddProduct(true)
       }
-
       //console.log('use effect:' + selectedSeason)
-  
     }, [selectedSeason, selectedColor, selectedDesignType, selectedPrintType, selectedProductType, selectedTextileType]);
 
   if (!props.user || props.user.Id == 0) {
     navigate("/")
   }
   console.log(products)// matches_sm)
+
+  // useEffect(() => {
+  //   const items = JSON.parse(localStorage.getItem('items'));
+  //   if (items) {
+  //    setItems(items);
+  //   }
+  // }, []);
   
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -439,8 +479,8 @@ export default function Home(props) {
             <CloseIcon />
         </IconButton>
 
-        <Grid container spacing={2} >
-          <Grid item xs={12} md={6} >
+        <Grid container spacing={0} >
+          <Grid item xs={12} md={5} sx={{paddingLeft:"0px"}} >
           <Swiper 
                 className="swiper" 
                 modules={[Thumbs, Navigation, Pagination,]} // Navigation, Pagination, Scrollbar, A11y]}
@@ -464,39 +504,88 @@ export default function Home(props) {
                 })}
                 </Swiper>
           </Grid>
-          <Grid item xs={12} md={6} >
+          <Grid item xs={12} md={7} sx={{paddingLeft: "10px"}} >
           <Box sx = {{ display: "flex",flexDirection: 'column'}} >
-              <div class="product-item"><div class="label">Item name:</div>{quickViewProduct.itemName}</div>
-              <div class="product-item"><div class="label">Art No:</div>{quickViewProduct.artNo}</div>
-              <div class="product-item"><div class="label">Ref No:</div>{quickViewProduct.refNo}</div>
-              <div class="product-item"><div class="label">Design:</div>{quickViewProduct.design}</div>
-              <div class="product-item"><div class="label">Composition:</div>{quickViewProduct.composition}</div>
-              <div class="product-item"><div class="label">Product type:</div>{quickViewProduct.productType}</div>
-              <div class="product-item"><div class="label">Product style:</div>{quickViewProduct.productStyle}</div>
-              <div class="product-item"><div class="label">Print style:</div>{quickViewProduct.printType}</div>
-              <div class="product-item"><div class="label">Price per meter from:</div><b>{quickViewProduct.price}$</b></div>
+              <div class="product-item"><div class="label">Item name:</div><div class="text">{quickViewProduct.itemName}</div></div>
+              <div class="product-item"><div class="label">Art No:</div><div class="text">{quickViewProduct.artNo}</div></div>
+              <div class="product-item"><div class="label">Ref No:</div><div class="text">{quickViewProduct.refNo}</div></div>
+              <div class="product-item"><div class="label">Design:</div><div class="text">{quickViewProduct.design}</div></div>
+              <div class="product-item"><div class="label">Composition:</div><div class="text">{quickViewProduct.composition}</div></div>
+              <div class="product-item"><div class="label">Product type:</div><div class="text">{quickViewProduct.productType}</div></div>
+              <div class="product-item"><div class="label">Product style:</div><div class="text">{quickViewProduct.productStyle}</div></div>
+              <div class="product-item"><div class="label">Print style:</div><div class="text">{quickViewProduct.printType}</div></div>
+              <div class="product-item"><div class="label">Price per meter:</div><div class="text"><b>from&nbsp;{quickViewProduct.price}$</b></div></div>
                   <Box sx={{ 
                     display: "flex",
                     flexDirection: 'row', 
                     justifyContent: 'center' }}>
+                      <QuantityInput onChange={(e,v)=>{ setCartAmount(v)}} />
+
                       <Button 
                           variant="contained"
-                          style={buttonStyle}
-                          sx={buttonStyle}
-                          onClick={handleAddProductSave} >
-                              Next
-                      </Button>
-                      <Button 
-                          variant="contained"
-                          sx={buttonStyle}
-                          onClick={handleAddProductCancel} >
-                              Cancel
+                          startIcon={<ShoppingCartOutlinedIcon/>}
+                          sx={{...buttonStyle, ...{ml: 3}}}
+                          onClick={handleAddToCart} >
+                              Add to Cart
                       </Button>
                   </Box>
           </Box>
           </Grid>
         </Grid>
         </Box>
+      </Modal>
+
+      <Modal
+        open={showShoppingCart}
+        onClose={function() { setShowShoppingCart(false) }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{ width: "auto", outline: "none" }} >
+      
+        <Box sx={{ 
+          position: 'absolute', 
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)',
+          width: (matches_sm ? "700px" : "330px"), 
+          //width: "330px", 
+          boxShadow: 24,
+          padding: "20px 20px 20px 20px",
+          outline: "none",
+          bgcolor: 'background.paper',
+           }}>
+        {/* <Typography>Modal title</Typography> */}
+        <Box sx={{ width: "100%", textAlign:"right", pr: 3, pb: 2 }} >
+        <IconButton
+           sx={{ position: "absolute", top: 6, mr: 0 }}
+           onClick={() => { setShowShoppingCart(false) }}>
+            <CloseIcon />
+        </IconButton>
+        </Box>
+
+      <Box>
+        <table class="shopping-cart" cellPadding={0} cellSpacing={0}>
+          <thead>
+            <th>Photo</th>
+            <th>Art.No</th>
+            <th>Item name</th>
+            <th>Design</th>
+            <th>Amount</th>
+          </thead>
+          <tbody>
+        {props.cart.map((data, index) => (
+          <tr>
+            <td><img src={data.product.colors[0].imagePath ? (config.api + "/" + data.product.colors[0].imagePath[0]) : ""}  alt={"photo_00"} className="product-img" /></td>
+            <td>{data.product.artNo}</td>
+            <td>{data.product.itemName}</td>
+            <td>{data.product.design}</td>
+            <td>{data.amount}</td>
+            </tr>
+            ))}
+          </tbody>
+        </table>
+        </Box>
+        </Box>        
       </Modal>
 
 
@@ -512,6 +601,8 @@ export default function Home(props) {
           seasons={seasons}
           colors={colors}
           printTypes={printTypes}
+          cart={props.cart}
+          openShoppingCart={handleShowShoppingCart}
           setSeason       = {(v)=>{ dropFilters(); setSelectedSeason(v)}}
           setTextileType  = {(v)=>{ dropFilters(); setSelectedTextileType(v)}}  
           setDesignType   = {(v)=>{ dropFilters(); setSelectedDesignType(v)}} 
