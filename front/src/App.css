@@ -228,14 +228,14 @@ img.product-img {
   font-size: 18px;
   display: inline-block;
   visibility: hidden;
-  /* color: #fff;
-  background-color: #18515e; */
-  color: #000;
-  background-color: #fff;
-  border-radius: 16px;
-  padding: 4px 6px;
+  color: #fff;
+  background-color: #18515e;
+  /* color: #000;
   border: 1px solid black;
-  width: 116px;
+  background-color: #fff; */
+  border-radius: 19px;
+  border: 2px solid white;
+  padding: 4px 16px;
   text-align: center;
   align-items: center;
   position: relative;
@@ -270,7 +270,7 @@ table.shopping-cart {
 }
 
 table.shopping-cart td {
-  padding: 3px 10px; 
+  padding: 6px 6px 0 6px; 
   text-align: center; 
   height: 55px;
 }
@@ -280,7 +280,7 @@ table.shopping-cart thead {
 }
 
 table.shopping-cart th {
-  padding: 10px;
+  padding: 15px;
 }
 
 table.shopping-cart  td img {

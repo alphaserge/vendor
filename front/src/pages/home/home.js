@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 //import CloseIcon from '@material-ui/icons/Close'
 //import  from '@mui/icons-material/Close';
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -59,7 +60,8 @@ const defaultTheme = createTheme()
 const itemStyle = { width: 330, m: 1, ml: 0 }
 const smallItemStyle = { width: 161, m: 1, ml: 0 }
 const labelStyle1 = { m: 0, mt: 1, ml: 0, mr: 4 }
-const buttonStyle = { width: 150, height: 40, backgroundColor: APPEARANCE.BLACK3, m: 1, backgroundColor: "#18515E" }
+//const buttonStyle = { width: 150, height: 40, m: 1, backgroundColor: "#18515E" }
+const roundButtonStyle = { height: 40, m: 1, pl: 4, pr: 4, backgroundColor: "#18515E", borderRadius: "20px" }
 const outboxStyle = { margin: "80px auto 20px auto", padding: "0 10px" }
 const findBoxStyle = { width: "calc(100% - 80px)" }
 const findTextStyle = { width: "100%", border: "none" }
@@ -166,6 +168,40 @@ export default function Home(props) {
     }, [shoppingCart]);*/
 
     const matches_sm = useMediaQuery(theme.breakpoints.up('md'));
+
+    const setOrderAmount = (productId, value) => {
+      
+      let cart = [...getShoppingCart()]
+      let i=0
+      for(i=0; i<cart.length; i++) {
+        if (cart[i].product.id == productId) {
+          cart[i].amount = value
+          break
+        }
+      }
+      //setShoppingCart(cart)
+      props.updateCart(cart)
+    }
+
+    const deleteFromCart = (productId, amount) => {
+      
+      let cart = [...getShoppingCart()]
+      let i=0
+      let ix=-1
+      for(i=0; i<cart.length; i++) {
+        if (cart[i].product.id == productId && cart[i].amount == amount) {
+          ix=i
+          break
+        }
+      }
+      if (i!=-1) {
+        cart.splice(ix, 1);
+      }
+      //setShoppingCart(cart)
+      props.updateCart(cart)
+    }
+
+    
 
     const dropFilters = (e) => {
       setSelectedTextileType([])
@@ -524,7 +560,7 @@ export default function Home(props) {
                       <Button 
                           variant="contained"
                           startIcon={<ShoppingCartOutlinedIcon/>}
-                          sx={{...buttonStyle, ...{ml: 3}}}
+                          sx={{...roundButtonStyle, ...{ml: 3}}}
                           onClick={handleAddToCart} >
                               Add to Cart
                       </Button>
@@ -547,10 +583,10 @@ export default function Home(props) {
           top: '50%', 
           left: '50%', 
           transform: 'translate(-50%, -50%)',
-          width: (matches_sm ? "700px" : "330px"), 
+          width: (matches_sm ? "800px" : "330px"), 
           //width: "330px", 
           boxShadow: 24,
-          padding: "20px 20px 20px 20px",
+          padding: "20px 40px 40px 40px",
           outline: "none",
           bgcolor: 'background.paper',
            }}>
@@ -562,16 +598,17 @@ export default function Home(props) {
             <CloseIcon />
         </IconButton>
         </Box>
-
+        <Typography sx={{fontSize: "24px", fontWeight: 500, color: "#333", p:0, pb: 2}}>Your shopping basket:&nbsp;<span style={{fontSize: "18px"}} >{props.cart.length}&nbsp;items</span></Typography>
       <Box>
         <table class="shopping-cart" cellPadding={0} cellSpacing={0}>
           <thead>
-            <th>Photo</th>
+          <th>Photo</th>
             <th>Art.No</th>
             <th>Item name</th>
             <th>Design</th>
             <th>Amount</th>
-          </thead>
+            <th>&nbsp;</th>
+            </thead>
           <tbody>
         {props.cart.map((data, index) => (
           <tr>
@@ -579,11 +616,25 @@ export default function Home(props) {
             <td>{data.product.artNo}</td>
             <td>{data.product.itemName}</td>
             <td>{data.product.design}</td>
-            <td>{data.amount}</td>
+            <td><QuantityInput onChange={(e,v)=>{ setOrderAmount(data.product.id,v)}} defaultValue={data.amount} /> </td>
+            <td>
+            <IconButton aria-label="delete">
+              <DeleteIcon onClick={(e)=>{deleteFromCart(data.product.id,data.amount)}} />
+            </IconButton>
+                
+              </td>
             </tr>
             ))}
           </tbody>
         </table>
+        </Box>
+        <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "right"}}>
+        <Button 
+            variant="contained"
+            sx={{...roundButtonStyle, ...{ml: 3}}}
+            onClick={handleAddToCart} >
+                Make order
+        </Button>
         </Box>
         </Box>        
       </Modal>

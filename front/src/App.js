@@ -64,6 +64,11 @@ function App() {
     setCart(cart)
   }
 
+  const updateCart = (cart) => {
+    setCart(cart)
+    setShoppingCart(cart)
+  }
+
   const loadSeasons = () => {
     axios.get(config.api + '/Seasons')
     .then(function (res) {
@@ -180,7 +185,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home user={user} loggedIn={loggedIn} setLoggedIn={setLoggedIn} cart={cart} addToCart={addToCart} />} />
+          <Route path="/" element={<Home user={user} loggedIn={loggedIn} setLoggedIn={setLoggedIn} cart={cart} addToCart={addToCart} updateCart={updateCart} />} />
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setUser={setUser} />} />
           <Route path="/logout" element={<Logout setLoggedIn={setLoggedIn} setUser={setUser} />} />
           <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setUser={setUser} />} />
