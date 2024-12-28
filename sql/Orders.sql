@@ -8,8 +8,12 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+alter TABLE [dbo].[Orders] add [Uuid] [varchar](36) NULL
+GO
+
 CREATE TABLE [dbo].[Orders](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Uuid] [varchar](36) NULL,
 	[VendorId] [int] NOT NULL,
 	[Number] [int] NOT NULL,
 	[ClientName] [varchar](100) NULL,
