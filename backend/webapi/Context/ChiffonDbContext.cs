@@ -19,6 +19,8 @@ namespace chiffon_back.Context
         public DbSet<DesignType> DesignTypes { get; set; }
         public DbSet<DyeStaff> DyeStaffs { get; set; }
         public DbSet<Finishing> Finishings { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<OverWorkType> OverWorkTypes { get; set; }
         public DbSet<PlainDyedType> PlainDyedTypes { get; set; }
         public DbSet<PrintType> PrintTypes { get; set; }
@@ -44,6 +46,8 @@ namespace chiffon_back.Context
             modelBuilder.Entity<TextileType>().ToTable("TextileTypes");
             modelBuilder.Entity<DyeStaff>().ToTable("DyeStaffs");
             modelBuilder.Entity<Finishing>().ToTable("Finishings");
+            modelBuilder.Entity<Order>().ToTable("Orders");
+            modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
             modelBuilder.Entity<OverWorkType>().ToTable("OverWorkTypes");
             modelBuilder.Entity<PlainDyedType>().ToTable("PlainDyedTypes");
             modelBuilder.Entity<PrintType>().ToTable("PrintTypes");

@@ -62,6 +62,7 @@ function App() {
   const addToCart = (item) => {
     cart.push(item)
     setCart(cart)
+    setShoppingCart(cart)
   }
 
   const updateCart = (cart) => {
