@@ -1,9 +1,18 @@
 ﻿using AutoMapper;
+using chiffon_back.Code;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting.Server;
+
 //using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 using System.Net;
+using System.Net.Mail;
+using System.Net.Mime;
+using System.Text;
+using System.Web;
 using System.Web.Http.Cors; // пространство имен CORS
 
 namespace chiffon_back.Controllers
@@ -23,11 +32,17 @@ namespace chiffon_back.Controllers
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
 
+        private IConfiguration _configuration;
+
         private readonly ILogger<OrdersController> _logger;
 
-        public OrdersController(ILogger<OrdersController> logger)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public OrdersController(ILogger<OrdersController> logger, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             _logger = logger;
+            _configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet(Name = "Orders")]
@@ -77,7 +92,7 @@ namespace chiffon_back.Controllers
             return orders.AsEnumerable();
         }
 
-        [HttpGet(Name = "Order")]
+        [HttpGet("{id}")]
         //public Models.Product? Product([FromQuery] string id)
         public Models.Order? GetOrder([FromQuery] string id)
         {
@@ -130,18 +145,141 @@ namespace chiffon_back.Controllers
             {
                 Context.Order newOrder = config.CreateMapper()
                     .Map<Context.Order>(order);
+                newOrder.Created = DateTime.Now;
+                newOrder.VendorId = 1;
+
+                int? max = 0;
+                try { 
+                    max = ctx.Orders.Max(x => x.Number);
+                    if (!max.HasValue)
+                    max = 0;
+                } catch (Exception ex)
+                {
+                    max = 0;
+                }
+                newOrder.Number = max.Value + 1;
 
                 ctx.Orders.Add(newOrder);
 
+                ctx.SaveChanges();
+
+                string label = "'font-weight: normal; font-size: 90%; padding: 5px 12px;'";
+                string rightAlign = "'text-align: right;'";
+
+                int numItem = 0;
+                decimal total = 0m;
+                string itemsBody = $"<table style='background-color: #def; padding: 10px;'><thead><th style={label}>Photo</th><th style={label}>Fabric name</th><th style={label}>Ref No.</th><th style={label}>Art No.</th><th style={label}>Design</th><th style={label}>Quantity</th><th style={label}>Price (per 1 m.)</th></thead>";
+                List<LinkedResource> linkedRes = new List<LinkedResource>();
                 foreach(var item in order.Items)
                 {
+                    numItem++;
                     Context.OrderItem newItem = config.CreateMapper()
                         .Map<Context.OrderItem>(item);
+                    
+                    newItem.OrderId = newOrder.Id;
 
                     ctx.OrderItems.Add(newItem);
+
+                    Context.Product? product = ctx.Products.FirstOrDefault(x => x.Id == newItem.ProductId);
+
+                    if (product != null)
+                    {
+                        string img = String.Empty;
+                        foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == product.Id).ToList())
+                        {
+                            var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                            if (imageFiles.Count > 0)
+                            {
+                                img = imageFiles[0];
+                                break;
+                            }
+                        }
+
+                        if (String.IsNullOrEmpty(img))
+                        {
+                            img = @"colors\nopicture.png";
+                        }
+
+                        string webRootPath = _webHostEnvironment.WebRootPath;
+                        string contentRootPath = _webHostEnvironment.ContentRootPath;
+                        string path = Path.Combine(contentRootPath, img);
+                        string mediaType = MediaTypeNames.Image.Jpeg;
+                        switch (Path.GetExtension(path).ToLower())
+                        {
+                            case ".png": mediaType = MediaTypeNames.Image.Png; break;
+                            case ".webp": mediaType = MediaTypeNames.Image.Webp; break;
+                            case ".bmp": mediaType = MediaTypeNames.Image.Bmp; break;
+                            case ".gif": mediaType = MediaTypeNames.Image.Gif; break;
+                            case ".tiff": mediaType = MediaTypeNames.Image.Tiff; break;
+                        }
+                        
+                        LinkedResource LinkedImg = new LinkedResource(path, mediaType);
+                        LinkedImg.ContentId = $"img{numItem}";
+                        itemsBody += $"<tr><td><img src=cid:{LinkedImg.ContentId} id='img' alt='' width='100px' height='100px'/></td><td>" + product.ItemName + "</td><td>" + product.RefNo + "</td><td>" + product.ArtNo + "</td><td>" + product.Design + $"</td><td style={rightAlign}>" + newItem.Quantity + $"m. </td><td style={rightAlign}>" + String.Format("{0:0.0#}", product.Price) + " $</td></tr>";
+                        linkedRes.Add(LinkedImg);
+
+                        if (product.Price != null && newItem.Quantity != null)
+                            total += product.Price.Value  * newItem.Quantity.Value;
+                    }
                 }
+                itemsBody += "</table>";
 
                 ctx.SaveChanges();
+
+                //------------------------------mail
+                using (MailMessage mess = new MailMessage())
+                {
+                    string? frontendUrl = _configuration.GetValue<string>("Url:Frontend");
+                    string? ordersManager = _configuration.GetValue<string>("Orders:Manager");
+
+                    string body = $"<p><i><b>Dear {newOrder.ClientName}!</b></i></br></br>You have successfully created a new order with number " + newOrder.Number + "</p>";
+                    body += "<table cellspacing=2>";
+                    body += $"<tr><td style={label}>Order number:</td><td>{newOrder.Number}</tr></td>";
+                    body += $"<tr><td style={label}>Order date:</td><td>{newOrder.Created}</tr></td>";
+                    body += $"<tr><td style={label}>Client name:</td><td>{newOrder.ClientName}</tr></td>";
+                    body += $"<tr><td style={label}>Client phone:</td><td>{newOrder.ClientPhone}</tr></td>";
+                    body += $"<tr><td style={label}>Client email:</td><td>{newOrder.ClientEmail}</tr></td>";
+                    body += $"<tr><td style={label}>Client address:</td><td>{newOrder.ClientAddress}</td></tr></table>";
+                    body += $"<p><b>Your order composition:</b></p>{itemsBody}";
+                    body += $"<p>This is your <a href='{frontendUrl}/orders/{newOrder.Id}'>order link</a> </p>";
+                    body += $"<p><b>Total price: {total} $</b></p>";
+                    body += "<p><b>Best regards! Angelika company</b></p>";
+
+                    AlternateView AV = AlternateView.CreateAlternateViewFromString(body, null, MediaTypeNames.Text.Html);
+                    foreach(LinkedResource res in linkedRes)
+                        AV.LinkedResources.Add(res);
+
+                    SmtpClient client = new SmtpClient("smtp.mail.ru", Convert.ToInt32(587))
+                    {
+                        Credentials = new NetworkCredential("elizarov.sa@mail.ru", "KZswYNWrd9eY1xVfvkre"),
+                        EnableSsl = true,
+                        DeliveryMethod = SmtpDeliveryMethod.Network,
+                        Timeout = 5000
+                    };
+                    
+                    mess.From = new MailAddress("elizarov.sa@mail.ru");
+                    mess.To.Add(new MailAddress(newOrder.ClientEmail));
+                    mess.To.Add(new MailAddress(ordersManager));
+                    mess.Subject = "A new order has been created in the company Angelika";
+                    mess.SubjectEncoding = Encoding.UTF8;
+                    //mess.Body = $"<h2>Hello, {mdUser.FirstName}!</h2><p>You received this letter because this address was used when creating an account on the Anzhelika company website</p><p>To complete your account creation, click <a href='{frontendUrl}/confirm?token={hash}'>this link</a></p>";
+                    // !! to do - add link to order !!
+                    mess.Body = body;
+                    mess.AlternateViews.Add(AV);
+                    mess.IsBodyHtml = true;
+                    /*try
+                    {
+                        mess.Attachments.Add(new Attachment(какой файл добавлять для отправки));
+                    }
+                    catch { }*/
+                    client.Send(mess);
+                    mess.Dispose();
+                    client.Dispose();
+                    Console.WriteLine("SignUp: Email was sended");
+                }
+
+                //------------------------------
+
 
                 return CreatedAtAction(nameof(Get), new { id = newOrder.Id }, newOrder);
             }

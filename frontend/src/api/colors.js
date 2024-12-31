@@ -31,6 +31,11 @@ export const getColors = (setFn) => {
         message: "Incorrect RGB value.\n Should be as example: FA240C, DD34CC"
       }
     }
+
+    console.log({
+      colorName: colorName,
+      rgb: colorRgb,
+    })
   
     const responce = await fetch(config.api + '/Colors', {
       method: "POST",

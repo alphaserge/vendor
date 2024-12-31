@@ -39,6 +39,8 @@ import CheckboxList from '../../components/checkboxlist';
 import { addShoppingCart, getShoppingCart, setShoppingCart } from '../../functions/shoppingcart';
 import QuantityInput from '../../components/quantityinput';
 import { postProduct } from '../../api/products'
+import { postOrder } from '../../api/orders'
+import { v4 as uuid } from 'uuid'
 
 import { APPEARANCE } from '../../appearance';
 import { Button } from "@mui/material";
@@ -57,25 +59,8 @@ import 'swiper/css/thumbs';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
-const itemStyle = { width: 330, m: 1, ml: 0 }
-const smallItemStyle = { width: 161, m: 1, ml: 0 }
-const labelStyle1 = { m: 0, mt: 1, ml: 0, mr: 4 }
-//const buttonStyle = { width: 150, height: 40, m: 1, backgroundColor: "#18515E" }
+const textStyle = { m: 0, mb: 2 }
 const roundButtonStyle = { height: 40, m: 1, pl: 4, pr: 4, backgroundColor: "#18515E", borderRadius: "20px" }
-const outboxStyle = { margin: "80px auto 20px auto", padding: "0 10px" }
-const findBoxStyle = { width: "calc(100% - 80px)" }
-const findTextStyle = { width: "100%", border: "none" }
-//const findTextStyle = { width: "100%", border: "none", border: "solid 1px #888", borderRadius: 1 }
-const toolButtonStyle = { width: "26px", height: "26px", marginTop: "5px" }
-const flexStyle = { display: "flex", flexDirection: "row", alignItems : "center", justifyContent: "space-between" }
-/*const setShoppingCart = (c) => localStorage.setItem('shoppingCart', JSON.stringify(c));
-const getShoppingCart = ()  => { 
-const cart = localStorage.getItem('shoppingCart')
-if (cart) {
-  return JSON.parse(cart)
-} else {
-  return [];
-}}*/
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -145,18 +130,27 @@ export default function Home(props) {
     const [addRefNo, setAddRefNo] = useState("")
     const [addArtNo, setAddArtNo] = useState("")
     const [addDesign, setAddDesign] = useState("")
+
+    const [clientAddress, setClientAddress] = useState("")
+    const [clientName, setClientName] = useState("")
+    const [clientPhone, setClientPhone] = useState("")
+    const [clientEmail, setClientEmail] = useState("")
     
+    const [orderError, setOrderError] = useState(false)
     const [savingError, setSavingError] = useState(false)
     const [showQuickView, setShowQuickView] = React.useState(false);
     const [quickViewProduct, setQuickViewProduct] = React.useState({ colors: [{ imagePath: [''] }]});
 
     const [showShoppingCart, setShowShoppingCart] = React.useState(false);
+    const [showInfo, setShowInfo] = React.useState(false);
+    const [info, setInfo] = React.useState("");
     
     const headStyle = { maxWidth: "744px", width: "auto", margin: "0", padding: "0 10px" }
     // store thumbs swiper instance
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
     const [cartAmount, setCartAmount] = useState(1)
+    const [addToCartFunction, setAddToCartFunction] = useState("Add to Cart")
     //const [cart, setCart] = useState(props.cart);
 
     const handleShowHideFilter = (event) => {
@@ -243,6 +237,7 @@ export default function Home(props) {
 
    const handleShowShoppingCart = (event) => {
     setShowShoppingCart(event)
+    setAddToCartFunction("Add to Cart");
    }
 
    const handleAddProductShow = (event) => {
@@ -254,11 +249,53 @@ export default function Home(props) {
     setAddProduct(false)
   };
 
+  const handleMakeOrder = async (event) => {
+
+    if (!clientAddress || !clientEmail || !clientName || !clientPhone) {
+      setOrderError(true)
+      return
+    }
+    
+    let items = props.cart.map( (it) => { return {
+      productId: it.product.id,      
+      quantity: it.amount,
+      itemName: it.product.itemName,
+      refNo: it.product.refNo,
+      artNo: it.product.artNo,
+      design: it.product.design,
+    }} )
+
+    let order = {
+      uuid : uuid(),
+      clientName : clientName,
+      clientPhone : clientPhone,
+      clientEmail : clientEmail,
+      clientAddress : clientAddress,
+      items : items
+    }
+
+    let r = await postOrder(order)
+
+    if (r && r.ok == true) {
+      //props.setLastAction("Order has been created")
+      setOrderError(false)
+      setShowShoppingCart(false)
+      setShowInfo(true)
+      setInfo("Your order has been successfully created. Please check the email address you provided when placing your order.")
+      props.updateCart([])
+      //navigate("/updateproduct?id=" + r.id)
+    } else {
+      setOrderError(true)
+    }
+  }
+
   const handleAddToCart = (event) => {
     props.addToCart({
       product: quickViewProduct,
       amount: cartAmount
     })
+
+    setAddToCartFunction("Open cart")
     /*addShoppingCart({
       product: quickViewProduct,
       amount: cartAmount
@@ -267,6 +304,12 @@ export default function Home(props) {
     cart.push(item)
     setShoppingCart(cart)*/
   };
+
+  const handleOpenCart = (event) => {
+    setShowQuickView(false)
+    setShowShoppingCart(true)
+    setAddToCartFunction("Add to Cart")
+  }
 
   const handleRemoveFromCart = (id) => {
     props.removeFromCart(id)
@@ -451,6 +494,7 @@ export default function Home(props) {
     const quickView = (e, data) => {
       setShowQuickView(true)
       setQuickViewProduct(data)
+      setAddToCartFunction("Add to Cart")
     }
   
     useEffect(() => {
@@ -561,8 +605,8 @@ export default function Home(props) {
                           variant="contained"
                           startIcon={<ShoppingCartOutlinedIcon/>}
                           sx={{...roundButtonStyle, ...{ml: 3}}}
-                          onClick={handleAddToCart} >
-                              Add to Cart
+                          onClick={ (e) => { addToCartFunction=="Add to Cart" ? handleAddToCart(e) : handleOpenCart(e) } } >
+                              {addToCartFunction}
                       </Button>
                   </Box>
           </Box>
@@ -573,7 +617,7 @@ export default function Home(props) {
 
       <Modal
         open={showShoppingCart}
-        onClose={function() { setShowShoppingCart(false) }}
+        onClose={function() { setShowShoppingCart(false); }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         sx={{ width: "auto", outline: "none" }} >
@@ -594,7 +638,9 @@ export default function Home(props) {
         <Box sx={{ width: "100%", textAlign:"right", pr: 3, pb: 2 }} >
         <IconButton
            sx={{ position: "absolute", top: 6, mr: 0 }}
-           onClick={() => { setShowShoppingCart(false) }}>
+           onClick={() => { 
+              setShowShoppingCart(false); 
+              }}>
             <CloseIcon />
         </IconButton>
         </Box>
@@ -628,17 +674,107 @@ export default function Home(props) {
           </tbody>
         </table>
         </Box>
+        <Box sx={{pt: 3, display: "flex", flexDirection: "column"}} >
+                <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2}}> Delivery information </Typography>
+                <Box sx={{p: 0, display: "flex", flexDirection: "row", width: "100%", m: 0, mb: 1}} >
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="clientName"
+                  name="clientName"
+                  label="Client name"
+                  sx = {{...textStyle, ...{width: "42%", pr: 2}}}
+                  value={clientName}
+                  onChange={ev => setClientName(ev.target.value) }
+                />
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="clientPhone"
+                  name="clientPhone"
+                  label="Client phone"
+                  sx = {{...textStyle, ...{width: "42%", pr: 2}}}
+                  value={clientPhone}
+                  onChange={ev => setClientPhone(ev.target.value) }
+                />
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="clientEmail"
+                  name="clientEmail"
+                  label="Client email"
+                  sx = {{...textStyle, ...{width: "42%"}}}
+                  value={clientEmail}
+                  onChange={ev => setClientEmail(ev.target.value) }
+                />
+                </Box>
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="clientAddress"
+                  name="clientAddress"
+                  label="Client address"
+                  sx = {{...textStyle, ...{width: "100%"}}}
+                  value={clientAddress}
+                  onChange={ev => setClientAddress(ev.target.value) }
+                />
+          
+        </Box>
+
+        { orderError && 
+            <Box sx={{ textAlign: "center", marginTop: 2, fontSize: "12pt", color: "red" }}>
+            An error has occurred. Please check that all fields are filled in correctly and completely and try saving again.
+            </Box> }
+
         <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "right"}}>
         <Button 
             variant="contained"
             sx={{...roundButtonStyle, ...{ml: 3}}}
-            onClick={handleAddToCart} >
+            onClick={handleMakeOrder} >
                 Make order
         </Button>
         </Box>
         </Box>        
       </Modal>
 
+      <Modal
+        open={showInfo}
+        onClose={function() { setShowInfo(false) }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{ width: "auto", outline: "none" }} >
+      
+        <Box sx={{ 
+          position: 'absolute', 
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)',
+          width: (matches_sm ? "330px" : "330px"), 
+          //width: "330px", 
+          boxShadow: 24,
+          padding: "45px 40px 40px 40px",
+          outline: "none",
+          bgcolor: 'background.paper',
+           }}>
+        {/* <Typography>Modal title</Typography> */}
+        <Box sx={{ width: "100%", textAlign:"right", pr: 3, pb: 2 }} >
+        <IconButton
+           sx={{ position: "absolute", top: 6, mr: 0 }}
+           onClick={() => { setShowInfo(false) }}>
+            <CloseIcon />
+        </IconButton>
+        </Box>
+        <Typography sx={{fontSize: "16px", color: "#333" , textAlign: "center" }}>{info}</Typography>
+        <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "center", pt: 3}}>
+        <Button 
+            variant="contained"
+            onClick={(e) => { setShowInfo(false) }} >
+                Close
+        </Button>
+        </Box>
+
+        </Box>        
+      </Modal>
 
       <Container sx={{padding: 0 }} className="header-container" >
       </Container>
