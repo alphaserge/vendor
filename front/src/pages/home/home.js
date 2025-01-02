@@ -221,7 +221,7 @@ export default function Home(props) {
       setDesign("")
       setSearch("")
 
-      axios.get(config.api + '/Products/Products?id='+props.user.id, 
+      axios.get(config.api + '/Products/Products?id='+'0', //+props.user.id, 
         { params: 
             { 
               vendorId: null

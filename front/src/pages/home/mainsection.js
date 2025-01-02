@@ -159,10 +159,10 @@ useEffect(() => {
       </Grid>
     </Box>
 
-    <Box sx={{ backgroundColor: "#fff", color: "#eee", alignContent: "center" }} style={{ height: "100px" }}  >
-      <Grid container spacing={2} sx={{ alignContent: "center" }} >
-      <Grid item xs={12} md={4} key={"mainsect-left"} sx={{ justifyItems : "right" }} >
-        <Box sx={{display: "flex", flexDirection: "row", paddingTop: "25px", color: APPEARANCE.BLACK }}>
+    <Box sx={{ backgroundColor: "#fff", color: "#eee", alignContent: "center" }} style={{ height: "150px" }}  >
+      <Grid container spacing={2} sx={{ alignContent: "center"  }} >
+      <Grid item xs={12} md={4} key={"mainsect-left"} sx={{ justifyItems : "right" , alignContent: "center" }} >
+        <Box sx={{display: "flex", flexDirection: "row", color: APPEARANCE.BLACK }}>
         <Tooltip title={props.user != undefined ? props.user.firstName: "Sign In"}>
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1 }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
@@ -228,12 +228,12 @@ useEffect(() => {
             alt={""}
           /> */}
           <picture class="header-logo-picture">
-          <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img">
+          <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" style={{padding: 0, margin: 0}}>
           </img>
           </picture>
 
       </Grid>
-      <Grid item xs={12} md={4} key={"mainsect-right"} sx={{ justifyItems : "left" }} >
+      <Grid item xs={12} md={4} key={"mainsect-right"} sx={{ justifyItems : "left", alignContent: "center" }} >
       <Box>
           <TextField
                 margin="normal"

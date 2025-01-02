@@ -60,7 +60,9 @@ namespace chiffon_back.Controllers
                 var items = from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
                             join p in ctx.Products on oi.ProductId equals p.Id into jointable
                             from j in jointable.DefaultIfEmpty()
-                            select new { oi, j };
+                            join v in ctx.Vendors on j.VendorId equals v.Id into joinvendors
+                            from jv in joinvendors.DefaultIfEmpty()
+                            select new { oi, j, jv };
                 
                 List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
                 foreach (var item in items) {
@@ -75,7 +77,9 @@ namespace chiffon_back.Controllers
                         Composition = item.j.Composition,
                         Design = item.j.Design,
                         Price = item.oi.Price,
-                        Quantity = item.oi.Quantity
+                        Quantity = item.oi.Quantity,
+                        VendorId = item.j.VendorId,
+                        VendorName = item.jv.VendorName
                     };
 
                     string imagePath = string.Empty;

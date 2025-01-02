@@ -94,9 +94,10 @@ namespace chiffon_back.Controllers
             try
             {
                 var user = ctx.Users.FirstOrDefault(x => x.Id.ToString() == id);
-                int? vendorId = user != null ? user.VendorId : 1;
+                int? vendorId = user != null ? user.VendorId : 0;
 
-                if (vendorId <= 0) vendorId = 1;
+                //if (vendorId <= 0) vendorId = 1;
+                if (vendorId < 0) vendorId = 0;
 
                 var prods = ProductModel.Get(new ProductFilter()
                 {

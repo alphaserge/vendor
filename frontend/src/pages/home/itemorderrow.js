@@ -58,10 +58,10 @@ console.log(props.data)
     <CardContent sx={{ pb: 0}}>
       <Box sx={{ display: "flex", flexDirection: "row" }}>
       <Typography gutterBottom variant="h7" component="div" mr={10} className="order-header">
-      Order No. {props.data.number} from {formattedDate(props.data.created)}
+      <b>Order No. {props.data.number} from {formattedDate(props.data.created)}</b>
       </Typography>
       <Typography gutterBottom variant="h7" component="div" className="order-header">
-      Client name: {props.data.clientName}  {props.data.clientPhone}
+      Client name: <b>{props.data.clientName}</b>  {props.data.clientPhone}
       </Typography>
       </Box>
       {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
@@ -101,7 +101,7 @@ console.log(props.data)
               <tr>
                 <td className="order-item-label">Design:</td>
                 <td className="order-item-value">{item.design}</td>
-                <td></td>
+                <td className="order-item-label">Vendor:&nbsp;<span className="order-caption">{item.vendorName}</span></td>
                 <td></td>
                 <td></td>
                 <td className="order-item-label">Total:</td>

@@ -23,9 +23,9 @@ li > .color_select_item {
 
 .header-logo-picture {
   display: block;
-  height: 47px;
+  /* height: 47px;
   width: 363px;
-  margin-top: 25px;
+  margin-top: 25px; */
 }
 
 .center-content {
@@ -180,6 +180,7 @@ img.product-img {
 .product-price-text {
   display: inline-block;
   font-weight: bold;
+  color: #77809f;
   /* color: #fff; */
   /* background-color: #18515e; */
   border-radius: 4px;
