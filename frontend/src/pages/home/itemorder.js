@@ -37,7 +37,7 @@ const Input = styled('input')({
   display: 'none',
 });
 
-export default function ItemProduct(props) {
+export default function ItemOrder(props) {
 
     const navigate = useNavigate();
     const theme = useTheme();
@@ -51,8 +51,6 @@ export default function ItemProduct(props) {
           <Link href={"/updateproduct?id=" + props.data.id} className="no-link" >
           <Swiper className="mySwiper" >
             {props.data.colors.map((cv, index) => {
-              //console.log('cv.imagePath[0]')
-              //console.log(config.api + "/" + cv.imagePath[0])
               return <Box key={"product-box-"+index} >
               <SwiperSlide key={"product-swiper-"+index} sx={{ display: "flex", justifyContent: "center"}} >
                 <Box className="product-img-holder" ><Box component={"img"} key={"product-swiper-"+index} 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using chiffon_back.Code;
+using chiffon_back.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.Server;
 
@@ -73,10 +74,38 @@ namespace chiffon_back.Controllers
                         ItemName = item.j.ItemName,
                         Composition = item.j.Composition,
                         Design = item.j.Design,
-                        Price = item.j.Price,
+                        Price = item.oi.Price,
                         Quantity = item.oi.Quantity
                     };
 
+                    string imagePath = string.Empty;
+                    if (!String.IsNullOrEmpty(item.j.PhotoUuids))
+                    {
+                        foreach (string uuid in PhotoHelper.GetPhotoUuids(item.j.PhotoUuids))
+                        {
+                            var imageFiles = DirectoryHelper.GetImageFiles(uuid);
+                            if (imageFiles.Count > 0)
+                            {
+                                imagePath = imageFiles[0];
+                                break;
+                            }
+                        }
+                    }
+
+                    if (String.IsNullOrEmpty(imagePath))
+                    {
+                        foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == item.j.Id).ToList())
+                        {
+                            var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                            if (imageFiles.Count > 0)
+                            {
+                                imagePath = imageFiles[0];
+                                break;
+                            }
+                        }
+                    }
+
+                    orderItem.imagePath = imagePath;    
                     orderItems.Add(orderItem);
                 }
                 o.Items = orderItems.ToArray();
@@ -120,7 +149,7 @@ namespace chiffon_back.Controllers
                     ItemName = item.j.ItemName,
                     Composition = item.j.Composition,
                     Design = item.j.Design,
-                    Price = item.j.Price,
+                    Price = item.oi.Price,
                     Quantity = item.oi.Quantity
                 };
 
@@ -163,12 +192,20 @@ namespace chiffon_back.Controllers
 
                 ctx.SaveChanges();
 
-                string label = "'font-weight: normal; font-size: 90%; padding: 5px 12px;'";
-                string rightAlign = "'text-align: right;'";
+                string label = "'font-weight: normal; font-size: 100%; padding: 5px 12px;'";
+                string cell = "'padding: 10px 20px;'";
+                string rightAlign = "'text-align: right;padding: 10px 20px;'";
+                string header = "'font-weight: #400; color: #66f;'";
+                string headerBlack = "'font-weight: bold; color: #000;'";
 
                 int numItem = 0;
                 decimal total = 0m;
-                string itemsBody = $"<table style='background-color: #def; padding: 10px;'><thead><th style={label}>Photo</th><th style={label}>Fabric name</th><th style={label}>Ref No.</th><th style={label}>Art No.</th><th style={label}>Design</th><th style={label}>Quantity</th><th style={label}>Price (per 1 m.)</th></thead>";
+                string itemsBody = $"<table style='background-color: #def; padding: 20px;'>" + 
+                    $"<thead><th style={label}><b>Photo</b></th><th style={label}><b>Fabric name</b></th>" + 
+                    $"<th style={label}><b>Ref No.</b></th><th style={label}><b>Art No.</b></th>" + 
+                    $"<th style={label}><b>Design</b></th><th style={label}><b>Quantity</b></th>" + 
+                    $"<th style={label}><b>Price (per 1 m.)</b></th></thead>";
+
                 List<LinkedResource> linkedRes = new List<LinkedResource>();
                 foreach(var item in order.Items)
                 {
@@ -215,11 +252,17 @@ namespace chiffon_back.Controllers
                         
                         LinkedResource LinkedImg = new LinkedResource(path, mediaType);
                         LinkedImg.ContentId = $"img{numItem}";
-                        itemsBody += $"<tr><td><img src=cid:{LinkedImg.ContentId} id='img' alt='' width='100px' height='100px'/></td><td>" + product.ItemName + "</td><td>" + product.RefNo + "</td><td>" + product.ArtNo + "</td><td>" + product.Design + $"</td><td style={rightAlign}>" + newItem.Quantity + $"m. </td><td style={rightAlign}>" + String.Format("{0:0.0#}", product.Price) + " $</td></tr>";
+                        itemsBody += $"<tr><td style={cell}><img src=cid:{LinkedImg.ContentId} id='img' alt='' width='80px' height='80px'/></td><td style={cell}>" 
+                            + product.ItemName + $"</td><td style={cell}>" 
+                            + product.RefNo + $"</td style={cell}><td>" 
+                            + product.ArtNo + $"</td><td style={cell}>" 
+                            + product.Design + $"</td><td style={rightAlign}>" 
+                            + newItem.Quantity + $" m </td><td style={rightAlign}>" 
+                            + String.Format("{0:0.0#}", item.Price) + " $</td></tr>";
                         linkedRes.Add(LinkedImg);
 
-                        if (product.Price != null && newItem.Quantity != null)
-                            total += product.Price.Value  * newItem.Quantity.Value;
+                        if (item.Price != null && newItem.Quantity != null)
+                            total += item.Price.Value  * newItem.Quantity.Value;
                     }
                 }
                 itemsBody += "</table>";
@@ -232,18 +275,21 @@ namespace chiffon_back.Controllers
                     string? frontendUrl = _configuration.GetValue<string>("Url:Frontend");
                     string? ordersManager = _configuration.GetValue<string>("Orders:Manager");
 
-                    string body = $"<p><i><b>Dear {newOrder.ClientName}!</b></i></br></br>You have successfully created a new order with number " + newOrder.Number + "</p>";
+                    string body = $"<p style={header}>Dear {newOrder.ClientName}!</p><p style={header}>You have successfully created a new order with number " + newOrder.Number + "</p>";
                     body += "<table cellspacing=2>";
-                    body += $"<tr><td style={label}>Order number:</td><td>{newOrder.Number}</tr></td>";
+                    body += $"<tr><td style={label}>Your order number:</td><td>{newOrder.Number}</tr></td>";
                     body += $"<tr><td style={label}>Order date:</td><td>{newOrder.Created}</tr></td>";
                     body += $"<tr><td style={label}>Client name:</td><td>{newOrder.ClientName}</tr></td>";
                     body += $"<tr><td style={label}>Client phone:</td><td>{newOrder.ClientPhone}</tr></td>";
                     body += $"<tr><td style={label}>Client email:</td><td>{newOrder.ClientEmail}</tr></td>";
-                    body += $"<tr><td style={label}>Client address:</td><td>{newOrder.ClientAddress}</td></tr></table>";
-                    body += $"<p><b>Your order composition:</b></p>{itemsBody}";
-                    body += $"<p>This is your <a href='{frontendUrl}/orders/{newOrder.Id}'>order link</a> </p>";
+                    body += $"<tr><td style={label}>Delivery address:</td><td>{newOrder.ClientAddress}</td></tr></table>";
+                    body += $"<p style={headerBlack}>Your order composition:</p>{itemsBody}";
                     body += $"<p><b>Total price: {total} $</b></p>";
-                    body += "<p><b>Best regards! Angelika company</b></p>";
+                    body += $"<p>Your order link <a href='{frontendUrl}/orders/{newOrder.Id}'>here</a> </p>";
+                    body += $"<p style={header}>Best regards, textile company Angelika</p>";
+                    body += $"<p style={headerBlack}>Our contacts:</p>";
+                    body += "<p>Showroom address:<br/>Yaroslavskoe shosse, possession 1 building 1, Mytishchi, Moscow region, Russia.<br/>Postal code: 141009<br/>Phones: +7(926)018-01-25, +7(916)876-20-08";
+                    body += "<p>Headquarters:<br/>Bolshaya Gruzinskaya, 20, 3A/P Moscow, Russia.<br/>Postal code: 123242</p>";
 
                     AlternateView AV = AlternateView.CreateAlternateViewFromString(body, null, MediaTypeNames.Text.Html);
                     foreach(LinkedResource res in linkedRes)

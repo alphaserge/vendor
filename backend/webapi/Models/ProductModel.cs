@@ -123,6 +123,8 @@ namespace chiffon_back.Models
                             //ColorName = p.ColorName,
                             PhotoDir = p.PhotoDir,
                             Price = p.Price,
+                            Price1 = Helper.Round(p.Price * 1.05m, 2),
+                            Price2 = Helper.Round(p.Price * 1.10m, 2),
                             Stock = p.Stock,
                             Weight = p.Weight,
                             Width = p.Width,

@@ -26,7 +26,9 @@ namespace chiffon_back.Models
         public int? ColorFastness { get; set; }
         public decimal? FabricShrinkage { get; set; }
         public decimal? MetersInKG { get; set; }
-        public decimal? Price { get; set; }
+        public decimal? Price { get; set; } // more 500
+        public decimal? Price1 { get; set; } // 301-500
+        public decimal? Price2 { get; set; }  // 300 and less
         public decimal? Stock { get; set; }
 
 

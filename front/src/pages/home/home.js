@@ -37,6 +37,7 @@ import ItemProduct from './itemproduct';
 import ItemProductRow from './itemproductrow';
 import CheckboxList from '../../components/checkboxlist';
 import { addShoppingCart, getShoppingCart, setShoppingCart } from '../../functions/shoppingcart';
+import { computePrice } from '../../functions/helper';
 import QuantityInput from '../../components/quantityinput';
 import { postProduct } from '../../api/products'
 import { postOrder } from '../../api/orders'
@@ -263,6 +264,7 @@ export default function Home(props) {
       refNo: it.product.refNo,
       artNo: it.product.artNo,
       design: it.product.design,
+      price: (it.amount > 500 ? it.product.price : ( it.amount > 300 ? it.product.price1 : it.product.price2 ))
     }} )
 
     let order = {
@@ -359,7 +361,7 @@ export default function Home(props) {
       .then(function (result) {
           setProducts(result.data)
           setFilter(false)
-          console.log(result.data)
+          //console.log(result.data)
       })
       .catch (error => {
         console.log(error)
@@ -517,7 +519,8 @@ export default function Home(props) {
   if (!props.user || props.user.Id == 0) {
     navigate("/")
   }
-  console.log(products)// matches_sm)
+  //console.log(products)// matches_sm)
+  console.log(props.cart)
 
   // useEffect(() => {
   //   const items = JSON.parse(localStorage.getItem('items'));
@@ -599,7 +602,7 @@ export default function Home(props) {
                     display: "flex",
                     flexDirection: 'row', 
                     justifyContent: 'center' }}>
-                      <QuantityInput onChange={(e,v)=>{ setCartAmount(v)}} />
+                      <QuantityInput step={50} onChange={(e,v)=>{ setCartAmount(v)}} />
 
                       <Button 
                           variant="contained"
@@ -652,6 +655,7 @@ export default function Home(props) {
             <th>Art.No</th>
             <th>Item name</th>
             <th>Design</th>
+            <th>Price</th>
             <th>Amount</th>
             <th>&nbsp;</th>
             </thead>
@@ -660,9 +664,10 @@ export default function Home(props) {
           <tr>
             <td><img src={data.product.colors[0].imagePath ? (config.api + "/" + data.product.colors[0].imagePath[0]) : ""}  alt={"photo_00"} className="product-img" /></td>
             <td>{data.product.artNo}</td>
-            <td>{data.product.itemName}</td>
+            <td style={{wordBreak: "break-all"}}>{data.product.itemName}</td>
             <td>{data.product.design}</td>
-            <td><QuantityInput onChange={(e,v)=>{ setOrderAmount(data.product.id,v)}} defaultValue={data.amount} /> </td>
+            <td>{ (data.amount > 500 ? data.product.price : ( data.amount > 300 ? data.product.price1 : data.product.price2 ))} $</td>
+            <td><QuantityInput step={50} onChange={(e,v)=>{ setOrderAmount(data.product.id,v)}} defaultValue={data.amount} /> </td>
             <td>
             <IconButton aria-label="delete">
               <DeleteIcon onClick={(e)=>{deleteFromCart(data.product.id,data.amount)}} />

@@ -21,7 +21,7 @@ import { APPEARANCE } from '../../appearance';
 
 import config from "../../config.json"
 
-const pages = ['Fabrics', 'Accessories', 'Help', 'Contacts' ];
+const pages = ['Fabrics', 'Accessories', 'Orders', 'Help', 'Contacts' ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Login', 'Logout', 'Register'];
 
 const menuPagesStyle = { fontSize: "14px", fontWeight: "normal", color: APPEARANCE.WHITE2 }
@@ -62,6 +62,7 @@ export default function Header(props) {
       return
     }
 
+    if (value == "Orders") { navigate("/listorders"); return; }
     if (value == "Contacts") { navigate("/contacts"); return; }
     if (value == "Profile") { navigate("/profile"); return; }
     if (value == "Account") { navigate("/account"); return; }

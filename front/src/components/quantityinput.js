@@ -14,23 +14,25 @@ const NumberInput = React.forwardRef(function CustomNumberInput(props, ref) {
         decrementButton: StyledButton,
       }}
       slotProps={{
-        incrementButton: {
-          children: <AddIcon fontSize="small" />,
-          className: 'increment',
-        },
-        decrementButton: {
-          children: <RemoveIcon fontSize="small" />,
-        },
+         incrementButton: {
+           children: <AddIcon fontSize="small" />,
+           className: 'increment',
+         },
+         decrementButton: {
+           children: <RemoveIcon fontSize="small" />,
+         },
       }}
       {...props}
       ref={ref}
+      value={props.defaultValue}
       defaultValue={props.defaultValue}
+      step={props.step}
     />
   );
 });
 
 export default function QuantityInput(props) {
-  return <NumberInput aria-label="Quantity Input" min={1} max={99} onChange={props.onChange} defaultValue={props.defaultValue} />;
+  return <NumberInput aria-label="Quantity Input" min={1} max={100000} step={props.step} onChange={props.onChange} defaultValue={props.defaultValue} />;
 }
 
 const blue = {

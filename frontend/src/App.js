@@ -3,6 +3,7 @@ import Home from './pages/home/home';
 import UpdateProduct from './pages/home/updateproduct';
 import AddProduct from './pages/home/addproduct';
 import ListProduct from './pages/home/listproduct';
+import ListOrders from './pages/home/orders';
 import Menu from './pages/home/menu';
 import Login from './pages/auth/login';
 import Logout from './pages/auth/logout';
@@ -88,6 +89,7 @@ function App() {
           <Route path="/addproduct" element={<AddProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/updateproduct" element={<UpdateProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/listproduct" element={<ListProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
+          <Route path="/listorders" element={<ListOrders user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/menu" element={<Menu lastAction={lastAction} setLastAction={setLastAction} />} />
           {/* <Route path="/header" element={<PrimarySearchAppBar />} /> */}
         </Routes>

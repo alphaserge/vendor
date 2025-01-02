@@ -12,5 +12,6 @@
         public string? Design { get; set; }
         public decimal? Price { get; set; }
         public string? Composition { get; set; }
+        public string? imagePath { get; set; }
     }
 }
