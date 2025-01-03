@@ -602,7 +602,7 @@ export default function Home(props) {
                     display: "flex",
                     flexDirection: 'row', 
                     justifyContent: 'center' }}>
-                      <QuantityInput step={50} onChange={(e,v)=>{ setCartAmount(v)}} />
+                      <QuantityInput step={1} onChange={(e,v)=>{ setCartAmount(v)}} />
 
                       <Button 
                           variant="contained"
@@ -667,7 +667,7 @@ export default function Home(props) {
             <td style={{wordBreak: "break-all"}}>{data.product.itemName}</td>
             <td>{data.product.design}</td>
             <td>{ (data.amount > 500 ? data.product.price : ( data.amount > 300 ? data.product.price1 : data.product.price2 ))} $</td>
-            <td><QuantityInput step={50} onChange={(e,v)=>{ setOrderAmount(data.product.id,v)}} defaultValue={data.amount} /> </td>
+            <td><QuantityInput step={1} onChange={(e,v)=>{ setOrderAmount(data.product.id,v)}} defaultValue={data.amount} /> </td>
             <td>
             <IconButton aria-label="delete">
               <DeleteIcon onClick={(e)=>{deleteFromCart(data.product.id,data.amount)}} />

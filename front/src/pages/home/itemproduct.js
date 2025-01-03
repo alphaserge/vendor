@@ -56,10 +56,13 @@ export default function ItemProduct(props) {
           
           </Swiper>
             
-          <Box sx={{ display: "flex", flexDirection: 'column', alignItems: "left", ml: 1}}>
+          <Box sx={{ display: "flex", flexDirection: 'column', alignItems: "left", ml: 1, mt: 1}}>
             <Box className="product-item">{props.data.itemName}</Box>
-            <Box className="product-item">Product code:&nbsp;{props.data.refNo}</Box> 
-            <Box className="product-price"><Box className="product-price-text"> From&nbsp;${props.data.price}</Box></Box> 
+            <Box sx={{display: "flex", flexDirection:"row"}}> 
+              <Box className="product-item">Product code:&nbsp;{props.data.refNo}</Box>
+              <Box className="product-price-text" style={{marginLeft:"auto"}} > From&nbsp;${props.data.price}</Box>
+            </Box> 
+            {/* <Box className="product-price"><Box className="product-price-text"> From&nbsp;${props.data.price}</Box></Box>  */}
           </Box>
             {/* <Box display="flex" alignItems={"center"} justifyContent={"left"} >
                <Box className="product-item price" sx={{color: APPEARANCE.LIGHT_GREEN1}} >&nbsp;${props.data.price}&nbsp;</Box>

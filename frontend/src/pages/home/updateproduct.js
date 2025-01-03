@@ -1315,7 +1315,7 @@ useEffect(() => {
 
             <Box sx={{mb: 3}}>
             <label htmlFor={"icon-button-file-prod"}>
-              <Input accept="image/*" id={"icon-button-file-prod"} type="file" onChange={(e) => {uploadProductColor(e,'PRODUCT')}} />
+              <Input accept="image/*" id={"icon-button-file-prod"} type="file" onChange={(e) => { saveProduct(); uploadProductColor(e,'PRODUCT');}} />
               <Button aria-label="upload global photo" style={smallButtonStyle} component="span">
                     <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
                     Add global photo
@@ -1323,7 +1323,7 @@ useEffect(() => {
             </label>
             
             <label htmlFor={"icon-button-file-video"}>
-              <Input accept="video/*" id={"icon-button-file-video"} type="file" onChange={(e) => {uploadProductColor(e,'VIDEO')}} />
+              <Input accept="video/*" id={"icon-button-file-video"} type="file" onChange={(e) => { saveProduct(); uploadProductColor(e,'VIDEO');}} />
               <Button aria-label="upload video" style={smallButtonStyle} component="span">
                     <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
                     Add video
@@ -1331,7 +1331,7 @@ useEffect(() => {
             </label>
 
             <label htmlFor={"icon-button-file-cv"} sx={{ ml: 2 }}>
-              <Input accept="image/*" id={"icon-button-file-cv"} type="file" onChange={uploadColorVariant} />
+              <Input accept="image/*" id={"icon-button-file-cv"} type="file" onChange={(e) => { saveProduct(); uploadColorVariant(e); }} />
               <Button aria-label="upload color photo" style={smallButtonStyle} component="span">
                     <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
                     Add&nbsp;
