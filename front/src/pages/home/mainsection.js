@@ -145,23 +145,23 @@ useEffect(() => {
   return (
     // #eeede8  efa29a
     <Box className="main-section">
-    <Box sx={{ backgroundColor: "#f78997", color: "#fff", alignContent: "center", height: "44px" }} >
+    <Box sx={{ backgroundColor: "#cdb9c4", color: "#fff", alignContent: "center", height: "44px" }} >
       <Grid container spacing={2} >
-      <Grid item xs={12} md={3} key={"mainsect-left"} sx={{ justifyItems : "center" }} >
-        <p>-</p>
+      <Grid item display={{ xs: "none", md: "block" }} xs={12} md={3} key={"mainsect-left"} sx={{ justifyItems : "center" }} >
+        <p>-&nbsp;</p>
       </Grid>
       <Grid item xs={12} md={6} key={"mainsect-center"} sx={{ justifyItems : "center" }}  >
         <p>Sign up for our newsletter for 15% off</p>
       </Grid>
-      <Grid item xs={12} md={3} key={"mainsect-right"} sx={{ justifyItems : "center" }} >
-        <p>-</p>
+      <Grid item display={{ xs: "none", md: "block" }} xs={12} md={3} key={"mainsect-right"} sx={{ justifyItems : "center" }} >
+        <p>-&nbsp;</p>
       </Grid>
       </Grid>
     </Box>
 
-    <Box sx={{ backgroundColor: "#fff", color: "#eee", alignContent: "center" }} style={{ height: "150px" }}  >
+    <Box sx={{ backgroundColor: "#abb39c", color: "#eee", alignContent: "center" }} style={{ height: "150px" }}  >
       <Grid container spacing={2} sx={{ alignContent: "center"  }} >
-      <Grid item xs={12} md={4} key={"mainsect-left"} sx={{ justifyItems : "right" , alignContent: "center" }} >
+      <Grid item xs={12} md={4} key={"mainsect-left"} justifyItems={{ xs: "center", md: "right" }} sx={{ alignContent: "center" }} >
         <Box sx={{display: "flex", flexDirection: "row", color: APPEARANCE.BLACK }}>
         <Tooltip title={props.user != undefined ? props.user.firstName: "Sign In"}>
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1 }}>
@@ -219,7 +219,7 @@ useEffect(() => {
 
         </Box>
       </Grid>
-      <Grid item xs={12} md={4} key={"mainsect-center"} sx={{ justifyItems : "center", alignContent: "center" }} >
+      <Grid display={{ xs: "none", md: "block" }} item xs={12} md={4} key={"mainsect-center"} sx={{ justifyItems : "center", alignContent: "center" }} >
         {/* <p className="site-logo">Angelica fabric market</p> */}
         {/* <Box
             component="img"
@@ -233,7 +233,7 @@ useEffect(() => {
           </picture>
 
       </Grid>
-      <Grid item xs={12} md={4} key={"mainsect-right"} sx={{ justifyItems : "left", alignContent: "center" }} >
+      <Grid item xs={12} md={4} key={"mainsect-right"} justifyItems={{ xs: "center", md: "left" }}  sx={{ alignContent: "center" }} >
       <Box>
           <TextField
                 margin="normal"
@@ -242,7 +242,7 @@ useEffect(() => {
                 placeholder="What are you looking for?"
                 name="search"
                 value={search}
-                style={{ width: "280px", border: "none", borderRadius: "4px", backgroundColor: "#f0f0f0", padding: "8px 12px" }}
+                style={{ width: "280px", border: "none", borderRadius: "4px", backgroundColor: "#fcfaf2", padding: "8px 12px" }}
                 onChange={ev => { setSearch(ev.target.value); props.searchProducts(ev.target.value)}}
                 variant="standard"
                 InputProps={{
@@ -261,8 +261,8 @@ useEffect(() => {
       </Grid>
     </Box>
 
-    <Box id="simple-menu" onMouseLeave={handleCloseMenu} >
-    <Box sx={{ backgroundColor: "#18515E", color: "#eee", alignContent: "center", zIndex: 100 }} >
+    <Box id="simple-menu" display={{ xs: "none", md: "block" }} onMouseLeave={handleCloseMenu} >
+    <Box sx={{ backgroundColor: "#849785", color: "#eee", alignContent: "center", zIndex: 100 }} >
     <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row", justifyContent: "center" }} className="center-content"  >
       <Box 
         sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
