@@ -7,6 +7,10 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
@@ -78,6 +82,12 @@ export default function ListOrders(props) {
     
     const headStyle = { maxWidth: "744px", width: "auto", margin: "0", padding: "0 10px" }
 
+    const [viewAs, setViewAs] = React.useState('client orders');
+
+    const handleChangeViewAs = (event) => {
+      setViewAs(event.target.value);
+    };    
+
     const handleShowHideFilter = (event) => {
       setFilter(!filter);
     };
@@ -122,47 +132,18 @@ export default function ListOrders(props) {
         
           <Box component="form" noValidate style={outboxStyle}>
 
-          <Box style={headStyle} sx={{ display: "flex", justifyContent:"left", margin: "0", alignItems: "center" }}  >
-            <Tooltip title="Rows interface">
-            <IconButton onClick={ (e) => { setView("rows")} } style={toolButtonStyle} sx={{mr: 0}} >
-              <TableRowsIcon sx={{color: view=="grid" ? APPEARANCE.BLACK : APPEARANCE.GREY }} />
-            </IconButton>
-            </Tooltip>
-            <Tooltip title="Grid interface">
-            <IconButton onClick={ (e) => { setView("grid")} } style={toolButtonStyle} sx={{mr: 1}} >
-              <GridViewIcon sx={{color: view=="grid" ? APPEARANCE.GREY : APPEARANCE.BLACK }} />
-            </IconButton>
-            </Tooltip>
-          <Box style={findBoxStyle}>
-          <TextField
-                margin="normal"
-                size="small" 
-                id="search-value"
-                label="Find orders"
-                name="search"
-                style = {findTextStyle}
-                sx={{borderRadius: "0"}}
-                value={search}
-                /*onChange={ev => searchOrders(ev.target.value)}*/
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton>
-                        <SearchIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-          </Box>
-
-            <Tooltip title="Filters">
-            <IconButton onClick={handleShowHideFilter} style={toolButtonStyle} sx={{mr: 1, ml: 1}} >
-              <TuneIcon  sx={{color: APPEARANCE.BLACK}} />
-            </IconButton>
-            </Tooltip>
-
-          </Box>
+          <FormControl>
+            <InputLabel id="demo-simple-select-label">View as</InputLabel>
+            <Select
+              labelId="view-as-select-label"
+              id="view-as-select"
+              value={viewAs}
+              label="View as"
+              onChange={handleChangeViewAs}>
+              <MenuItem value={'client orders'}>client orders</MenuItem>
+              <MenuItem value={'vendor orders'}>vendor orders</MenuItem>
+            </Select>
+          </FormControl>
 
           {/* <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" > */}
           <Grid container spacing={2} >

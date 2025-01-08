@@ -53,7 +53,7 @@ console.log(props.data)
 
   return (
     
-    <Card sx={{ maxWidth: 740 }}>
+    <Card sx={{ maxWidth: 740, mt: 2 }}>
 
     <CardContent sx={{ pb: 0}}>
       <Box sx={{ display: "flex", flexDirection: "row" }}>
