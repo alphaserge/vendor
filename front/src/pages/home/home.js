@@ -16,6 +16,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import InputAdornment from '@mui/material/InputAdornment';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
 
 import TextField from '@mui/material/TextField';
 import GridViewIcon from '@mui/icons-material/GridView';
@@ -61,7 +65,6 @@ import 'swiper/css/thumbs';
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
 const textStyle = { m: 0, mb: 2 }
-const roundButtonStyle = { height: 40, m: 1, pl: 4, pr: 4, backgroundColor: "#18515E", borderRadius: "20px" }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -90,7 +93,7 @@ export default function Home(props) {
     const [filter, setFilter] = useState(false)
     const [search, setSearch] = useState("")
     const [addProduct, setAddProduct] = useState(false)
-    
+
     const [colors, setColors] = useState([])
     const [seasons, setSeasons] = useState([])
     const [designTypes, setDesignTypes] = useState([])
@@ -136,7 +139,7 @@ export default function Home(props) {
     const [clientName, setClientName] = useState("")
     const [clientPhone, setClientPhone] = useState("")
     const [clientEmail, setClientEmail] = useState("")
-    
+
     const [orderError, setOrderError] = useState(false)
     const [savingError, setSavingError] = useState(false)
     const [showQuickView, setShowQuickView] = React.useState(false);
@@ -145,7 +148,7 @@ export default function Home(props) {
     const [showShoppingCart, setShowShoppingCart] = React.useState(false);
     const [showInfo, setShowInfo] = React.useState(false);
     const [info, setInfo] = React.useState("");
-    
+
     const headStyle = { maxWidth: "744px", width: "auto", margin: "0", padding: "0 10px" }
     // store thumbs swiper instance
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
@@ -162,10 +165,10 @@ export default function Home(props) {
       localStorage.setItem('shoppingCart', shoppingCart);
     }, [shoppingCart]);*/
 
-    const matches_sm = useMediaQuery(theme.breakpoints.up('md'));
+    const matches_md = useMediaQuery(theme.breakpoints.up('md'));
 
     const setOrderAmount = (productId, value) => {
-      
+
       let cart = [...getShoppingCart()]
       let i=0
       for(i=0; i<cart.length; i++) {
@@ -179,7 +182,7 @@ export default function Home(props) {
     }
 
     const deleteFromCart = (productId, amount) => {
-      
+
       let cart = [...getShoppingCart()]
       let i=0
       let ix=-1
@@ -196,7 +199,7 @@ export default function Home(props) {
       props.updateCart(cart)
     }
 
-    
+
 
     const dropFilters = (e) => {
       setSelectedTextileType([])
@@ -221,9 +224,9 @@ export default function Home(props) {
       setDesign("")
       setSearch("")
 
-      axios.get(config.api + '/Products/Products?id='+'0', //+props.user.id, 
-        { params: 
-            { 
+      axios.get(config.api + '/Products/Products?id='+'0', //+props.user.id,
+        { params:
+            {
               vendorId: null
             }})
       .then(function (res) {
@@ -256,9 +259,9 @@ export default function Home(props) {
       setOrderError(true)
       return
     }
-    
+
     let items = props.cart.map( (it) => { return {
-      productId: it.product.id,      
+      productId: it.product.id,
       quantity: it.amount,
       itemName: it.product.itemName,
       refNo: it.product.refNo,
@@ -322,9 +325,9 @@ export default function Home(props) {
     const searchProducts = async (e) => {
 
       setSearch(e)
-      axios.get(config.api + '/Products/Products?id='+props.user.id, 
-        { params: 
-            { 
+      axios.get(config.api + '/Products/Products?id='+props.user.id,
+        { params:
+            {
               search: e
             }})
       .then(function (res) {
@@ -340,11 +343,11 @@ export default function Home(props) {
       //const params = new URLSearchParams();
       //params.append(color, [1,2]);
 
-      //const params = new url.URLSearchParams({ foo: 'bar' });      
+      //const params = new url.URLSearchParams({ foo: 'bar' });
 
-      axios.get(config.api + '/Products/Products?id='+props.user.id, 
-        { params: 
-            { 
+      axios.get(config.api + '/Products/Products?id='+props.user.id,
+        { params:
+            {
               name: itemName,
               artno: artNo,
               refno: refNo,
@@ -367,7 +370,7 @@ export default function Home(props) {
         console.log(error)
       })
     }
-    
+
     const loadColors = () => {
       axios.get(config.api + '/Colors')
       .then(function (res) {
@@ -379,7 +382,7 @@ export default function Home(props) {
         console.log(error)
       })
     }
-    
+
     const loadSeasons = () => {
       axios.get(config.api + '/Seasons')
       .then(function (res) {
@@ -391,7 +394,7 @@ export default function Home(props) {
         console.log(error)
       })
     }
-    
+
     const loadDesignTypes = () => {
       axios.get(config.api + '/DesignTypes')
       .then(function (res) {
@@ -403,7 +406,7 @@ export default function Home(props) {
         console.log(error)
       })
     }
-    
+
     const loadTextileTypes = () => {
       axios.get(config.api + '/TextileTypes')
       .then(function (res) {
@@ -415,7 +418,7 @@ export default function Home(props) {
         console.log(error)
       })
     }
-    
+
     const loadOverworkTypes = () => {
       axios.get(config.api + '/OverworkTypes')
       .then(function (res) {
@@ -427,7 +430,7 @@ export default function Home(props) {
         console.log(error)
       })
     }
-    
+
     const loadProductTypes = () => {
       axios.get(config.api + '/ProductTypes')
       .then(function (res) {
@@ -439,7 +442,7 @@ export default function Home(props) {
         console.log(error)
       })
     }
-    
+
     const loadPrintTypes = () => {
       axios.get(config.api + '/PrintTypes')
       .then(function (res) {
@@ -451,7 +454,7 @@ export default function Home(props) {
         console.log(error)
       })
     }
-    
+
     const loadProductStyles = () => {
       axios.get(config.api + '/ProductStyles')
       .then(function (res) {
@@ -463,9 +466,9 @@ export default function Home(props) {
         console.log(error)
       })
     }
-        
+
     const saveProduct = async (e) => {
-    
+
       let vendorId = props.user ? props.user.vendorId : -1;
   /*
     const [addItemName, setAddItemName] = useState("")
@@ -481,9 +484,9 @@ export default function Home(props) {
         design: addDesign,
         refNo: addRefNo,
       }
-  
+
       let r = await postProduct(prod, "ProductAdd")
-  
+
       if (r && r.status == true) {
         props.setLastAction("Product has been added")
         setSavingError(false)
@@ -498,7 +501,7 @@ export default function Home(props) {
       setQuickViewProduct(data)
       setAddToCartFunction("Add to Cart")
     }
-  
+
     useEffect(() => {
       loadProducts()
       loadColors()
@@ -528,7 +531,7 @@ export default function Home(props) {
   //    setItems(items);
   //   }
   // }, []);
-  
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -540,32 +543,32 @@ export default function Home(props) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         sx={{ width: "auto", outline: "none" }} >
-      
-        <Box sx={{ 
-          position: 'absolute', 
-          top: '50%', 
-          left: '50%', 
+
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: (matches_sm ? "890px" : "330px"), 
-          //width: "330px", 
+          width: (matches_md ? "890px" : "330px"),
+          //width: "330px",
           boxShadow: 24,
           padding: "20px 20px 20px 20px",
           outline: "none",
           bgcolor: 'background.paper',
           display: "flex",
-          flexDirection: 'row', 
+          flexDirection: 'row',
           alignItems: 'center', justifyContent: "right" }}>
         {/* <Typography>Modal title</Typography> */}
         <IconButton
-           sx={{ position: "absolute", top: 6  }}
+           sx={{ position: "absolute", top: 6, mr: -2, zIndex: 100, backgroundColor: "#ddd" }}
            onClick={() => { setShowQuickView(false) }}>
             <CloseIcon />
         </IconButton>
 
         <Grid container spacing={0} >
           <Grid item xs={12} md={5} sx={{paddingLeft:"0px"}} >
-          <Swiper 
-                className="swiper" 
+          <Swiper
+                className="swiper"
                 modules={[Thumbs, Navigation, Pagination,]} // Navigation, Pagination, Scrollbar, A11y]}
                 /*slidesPerView={1}
                 //navigation */
@@ -575,39 +578,44 @@ export default function Home(props) {
                 //onSwiper={(swiper) => console.log(swiper)}
                 //pagination={{ clickable: true }}
                 //scrollbar={{ draggable: true }}
-                
+
                 onSlideChange={() => console.log('slide change')} >
                   {quickViewProduct.colors.map((cv, index) => {
                    return <Box key={"product-box-00"} >
                    <SwiperSlide key={"product-swiper-00"} sx={{ display: "flex", justifyContent: "center" }} >
-                    <Box className="product-img-holder" ><Box component={"img"} key={"product-swiper-00"} 
-                    src={config.api + "/" + cv.imagePath[0]} 
+                    <Box className="product-img-holder" ><Box component={"img"} key={"product-swiper-00"}
+                    src={config.api + "/" + cv.imagePath[0]}
                     alt={"photo_00"} className="product-img" /></Box>
                    </SwiperSlide></Box>
                 })}
                 </Swiper>
           </Grid>
-          <Grid item xs={12} md={7} sx={{paddingLeft: "10px"}} >
+          <Grid item xs={12} md={7} paddingLeft={{ xs: "0", md: "10px"}} paddingTop={{ xs: "10px", md: "0"}}>
           <Box sx = {{ display: "flex",flexDirection: 'column'}} >
-              <div class="product-item"><div class="label">Item name:</div><div class="text">{quickViewProduct.itemName}</div></div>
-              <div class="product-item"><div class="label">Art No:</div><div class="text">{quickViewProduct.artNo}</div></div>
-              <div class="product-item"><div class="label">Ref No:</div><div class="text">{quickViewProduct.refNo}</div></div>
-              <div class="product-item"><div class="label">Design:</div><div class="text">{quickViewProduct.design}</div></div>
-              <div class="product-item"><div class="label">Composition:</div><div class="text">{quickViewProduct.composition}</div></div>
-              <div class="product-item"><div class="label">Product type:</div><div class="text">{quickViewProduct.productType}</div></div>
-              <div class="product-item"><div class="label">Product style:</div><div class="text">{quickViewProduct.productStyle}</div></div>
-              <div class="product-item"><div class="label">Print style:</div><div class="text">{quickViewProduct.printType}</div></div>
-              <div class="product-item"><div class="label">Price per meter:</div><div class="text"><b>from&nbsp;{quickViewProduct.price}$</b></div></div>
-                  <Box sx={{ 
+          <table class="product-item">
+                <tr><td class="label">Item name:</td><td>{quickViewProduct.itemName}</td></tr>
+                <tr><td class="label">Art No:</td><td>{quickViewProduct.artNo}</td></tr>
+                <tr><td class="label">Ref No:</td><td>{quickViewProduct.refNo}</td></tr>
+                <tr><td class="label">Design:</td><td>{quickViewProduct.design}</td></tr>
+                <tr><td class="label">Composition:</td><td>{quickViewProduct.composition}</td></tr>
+                <tr><td class="label">Product type:</td><td>{quickViewProduct.productType}</td></tr>
+                <tr><td class="label">Product style:</td><td>{quickViewProduct.productStyle}</td></tr>
+                <tr><td class="label">Print style:</td><td>{quickViewProduct.printType}</td></tr>
+                <tr><td class="label">Price per meter:</td><td><b>from&nbsp;{quickViewProduct.price}$</b></td></tr>
+              </table>
+                  <Box sx={{
                     display: "flex",
-                    flexDirection: 'row', 
-                    justifyContent: 'center' }}>
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    mt: 3 }}>
                       <QuantityInput step={1} onChange={(e,v)=>{ setCartAmount(v)}} />
+                        <span display={{xs: "none", md: "block"}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 
-                      <Button 
+                      <Button
                           variant="contained"
                           startIcon={<ShoppingCartOutlinedIcon/>}
-                          sx={{...roundButtonStyle, ...{ml: 3}}}
+                          // sx={{...roundButtonStyle, ...{ml: 3}}}
+                          className="add-to-cart-button"
                           onClick={ (e) => { addToCartFunction=="Add to Cart" ? handleAddToCart(e) : handleOpenCart(e) } } >
                               {addToCartFunction}
                       </Button>
@@ -624,14 +632,14 @@ export default function Home(props) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         sx={{ width: "auto", outline: "none" }} >
-      
-        <Box sx={{ 
-          position: 'absolute', 
-          top: '50%', 
-          left: '50%', 
+
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: (matches_sm ? "800px" : "330px"), 
-          //width: "330px", 
+          width: (matches_md ? "800px" : "330px"),
+          //width: "330px",
           boxShadow: 24,
           padding: "20px 40px 40px 40px",
           outline: "none",
@@ -641,14 +649,57 @@ export default function Home(props) {
         <Box sx={{ width: "100%", textAlign:"right", pr: 3, pb: 2 }} >
         <IconButton
            sx={{ position: "absolute", top: 6, mr: 0 }}
-           onClick={() => { 
-              setShowShoppingCart(false); 
+           onClick={() => {
+              setShowShoppingCart(false);
               }}>
             <CloseIcon />
         </IconButton>
         </Box>
-        <Typography sx={{fontSize: "24px", fontWeight: 500, color: "#333", p:0, pb: 2}}>Your shopping basket:&nbsp;<span style={{fontSize: "18px"}} >{props.cart.length}&nbsp;items</span></Typography>
+        <Typography sx={{fontSize: "20px", fontWeight: 500, color: "#333", p:0, pb: 2}}>Your shopping cart:&nbsp;<span style={{fontSize: "16px"}} >{props.cart.length}&nbsp;items</span></Typography>
       <Box>
+      {(!matches_md &&
+        (props.cart.map((data, index) => (
+
+        <Card >
+      <CardMedia
+        component="img"
+        alt="green iguana"
+        sx={{  maxWidth:"125px", maxHeight:"125px" }}
+        image={data.product.colors[0].imagePath ? (config.api + "/" + data.product.colors[0].imagePath[0]) : ""}
+      />
+      <CardContent>
+        <Typography gutterBottom variant="h6" component="div">
+        {data.product.itemName}
+        </Typography>
+        <Typography variant="h7" sx={{ color: "#222" }}>
+        <table>
+          <tr><td>Art.No:</td><td>&nbsp;&nbsp;{data.product.artNo}</td></tr>
+          <tr><td>Design:</td><td>&nbsp;&nbsp;{data.product.design}</td></tr>
+          <tr><td>Price:</td><td>&nbsp;&nbsp;{ (data.amount > 500 ? data.product.price : ( data.amount > 300 ? data.product.price1 : data.product.price2 ))} $</td></tr>
+          <tr></tr>
+          </table>
+          <table style={{width: "100%"}}>
+            <tr>
+            <td><QuantityInput step={1} onChange={(e,v)=>{ setOrderAmount(data.product.id,v)}} defaultValue={data.amount} /> </td>
+          <td style={{ textAlign:"right" }}>
+            <IconButton aria-label="delete" size="large" >
+              <DeleteIcon onClick={(e)=>{deleteFromCart(data.product.id,data.amount)}} />
+            </IconButton>
+            </td>
+          </tr>
+          </table>
+        
+        </Typography>
+      </CardContent>
+      <CardActions>
+        <Button size="small">Share</Button>
+        <Button size="small">Learn More</Button>
+      </CardActions>
+    </Card>
+        ))
+      ))}
+
+        {(matches_md &&
         <table class="shopping-cart" cellPadding={0} cellSpacing={0}>
           <thead>
           <th>Photo</th>
@@ -672,50 +723,54 @@ export default function Home(props) {
             <IconButton aria-label="delete">
               <DeleteIcon onClick={(e)=>{deleteFromCart(data.product.id,data.amount)}} />
             </IconButton>
-                
-              </td>
+            </td>
             </tr>
             ))}
           </tbody>
-        </table>
+        </table>)}
         </Box>
-        <Box sx={{pt: 3, display: "flex", flexDirection: "column"}} >
-                <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2}}> Delivery information </Typography>
-                <Box sx={{p: 0, display: "flex", flexDirection: "row", width: "100%", m: 0, mb: 1}} >
+        <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2}}> Delivery information </Typography>
+        <Grid container spacing={1} >
+          <Grid item xs={12} md={4} >
                 <TextField
                   margin="normal"
-                  size="small" 
+                  size="small"
                   id="clientName"
                   name="clientName"
                   label="Client name"
-                  sx = {{...textStyle, ...{width: "42%", pr: 2}}}
+                  sx = {{...textStyle, ...{width: "100%"}}}
                   value={clientName}
                   onChange={ev => setClientName(ev.target.value) }
                 />
+          </Grid>
+          <Grid item xs={12} md={4} >
                 <TextField
                   margin="normal"
-                  size="small" 
+                  size="small"
                   id="clientPhone"
                   name="clientPhone"
                   label="Client phone"
-                  sx = {{...textStyle, ...{width: "42%", pr: 2}}}
+                  sx = {{...textStyle, ...{width: "100%"}}}
                   value={clientPhone}
                   onChange={ev => setClientPhone(ev.target.value) }
                 />
+          </Grid>
+          <Grid item xs={12} md={4} >
                 <TextField
                   margin="normal"
-                  size="small" 
+                  size="small"
                   id="clientEmail"
                   name="clientEmail"
                   label="Client email"
-                  sx = {{...textStyle, ...{width: "42%"}}}
+                  sx = {{...textStyle, ...{width: "100%"}}}
                   value={clientEmail}
                   onChange={ev => setClientEmail(ev.target.value) }
                 />
-                </Box>
+          </Grid>
+          <Grid item xs={12} md={12} >
                 <TextField
                   margin="normal"
-                  size="small" 
+                  size="small"
                   id="clientAddress"
                   name="clientAddress"
                   label="Client address"
@@ -723,23 +778,24 @@ export default function Home(props) {
                   value={clientAddress}
                   onChange={ev => setClientAddress(ev.target.value) }
                 />
-          
-        </Box>
+          </Grid>
+        </Grid>
 
-        { orderError && 
+        { orderError &&
             <Box sx={{ textAlign: "center", marginTop: 2, fontSize: "12pt", color: "red" }}>
             An error has occurred. Please check that all fields are filled in correctly and completely and try saving again.
             </Box> }
 
         <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "right"}}>
-        <Button 
+        <Button
             variant="contained"
-            sx={{...roundButtonStyle, ...{ml: 3}}}
+            //sx={{...roundButtonStyle, ...{ml: 3}}}
+            className="add-to-cart-button"
             onClick={handleMakeOrder} >
                 Make order
         </Button>
         </Box>
-        </Box>        
+        </Box>
       </Modal>
 
       <Modal
@@ -748,14 +804,14 @@ export default function Home(props) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         sx={{ width: "auto", outline: "none" }} >
-      
-        <Box sx={{ 
-          position: 'absolute', 
-          top: '50%', 
-          left: '50%', 
+
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: (matches_sm ? "330px" : "330px"), 
-          //width: "330px", 
+          width: (matches_md ? "330px" : "330px"),
+          //width: "330px",
           boxShadow: 24,
           padding: "45px 40px 40px 40px",
           outline: "none",
@@ -771,23 +827,23 @@ export default function Home(props) {
         </Box>
         <Typography sx={{fontSize: "16px", color: "#333" , textAlign: "center" }}>{info}</Typography>
         <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "center", pt: 3}}>
-        <Button 
+        <Button
             variant="contained"
             onClick={(e) => { setShowInfo(false) }} >
                 Close
         </Button>
         </Box>
 
-        </Box>        
+        </Box>
       </Modal>
 
       <Container sx={{padding: 0 }} className="header-container" >
       </Container>
 
-        <MainSection 
-          user={props.user} 
-          title={props.title} 
-          searchProducts={searchProducts} 
+        <MainSection
+          user={props.user}
+          title={props.title}
+          searchProducts={searchProducts}
           textileTypes={textileTypes}
           designTypes={designTypes}
           seasons={seasons}
@@ -796,51 +852,51 @@ export default function Home(props) {
           cart={props.cart}
           openShoppingCart={handleShowShoppingCart}
           setSeason       = {(v)=>{ dropFilters(); setSelectedSeason(v)}}
-          setTextileType  = {(v)=>{ dropFilters(); setSelectedTextileType(v)}}  
-          setDesignType   = {(v)=>{ dropFilters(); setSelectedDesignType(v)}} 
-          setColor        = {(v)=>{ dropFilters(); setSelectedColor(v)}} 
-          setPrintType    = {(v)=>{ dropFilters(); setSelectedPrintType(v)}} 
+          setTextileType  = {(v)=>{ dropFilters(); setSelectedTextileType(v)}}
+          setDesignType   = {(v)=>{ dropFilters(); setSelectedDesignType(v)}}
+          setColor        = {(v)=>{ dropFilters(); setSelectedColor(v)}}
+          setPrintType    = {(v)=>{ dropFilters(); setSelectedPrintType(v)}}
           setOverworkType = {(v)=>{ dropFilters(); setSelectedOverworkType(v)}}
           />
 
         <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" >
           <Box display={{ xs: 'none', md: 'flex' }} sx={{ flexDirection: "column", minWidth: "200px" }}  >
-            <CheckboxList 
+            <CheckboxList
               list={colors.map((it) => ({ key: it.id, name: it.value }))}
               title="Colours"
               height={310}
               expanded={true}
-              setValueFn={setSelectedColor} 
+              setValueFn={setSelectedColor}
               value={selectedColor}
             />
-            <CheckboxList 
-              list={seasons.map((it) => ({ key: it.id, name: it.value }))}  
-              title="Seasons" 
-              height={120} 
-              expanded={true} 
-              setValueFn={setSelectedSeason } 
+            <CheckboxList
+              list={seasons.map((it) => ({ key: it.id, name: it.value }))}
+              title="Seasons"
+              height={120}
+              expanded={true}
+              setValueFn={setSelectedSeason }
               value={selectedSeason}
             />
-            <CheckboxList 
-              list={designTypes.map((it) => ({ key: it.id, name: it.value }))}  
-              title="Design types" 
-              expanded={true} 
-              setValueFn={setSelectedDesignType} 
+            <CheckboxList
+              list={designTypes.map((it) => ({ key: it.id, name: it.value }))}
+              title="Design types"
+              expanded={true}
+              setValueFn={setSelectedDesignType}
               value={selectedDesignType}
             />
-            <CheckboxList 
+            <CheckboxList
               list={printTypes.map((it) => ({ key: it.id, name: it.value }))}
-              title="Print types" 
-              expanded={true} 
-              setValueFn={setSelectedPrintType} 
+              title="Print types"
+              expanded={true}
+              setValueFn={setSelectedPrintType}
               value={selectedPrintType}
             />
-            <CheckboxList 
-              list={productTypes.map((it) => ({ key: it.id, name: it.value }))}  
-              title="Product types" 
-              height={80} 
-              expanded={true} 
-              setValueFn={setSelectedProductType} 
+            <CheckboxList
+              list={productTypes.map((it) => ({ key: it.id, name: it.value }))}
+              title="Product types"
+              height={80}
+              expanded={true}
+              setValueFn={setSelectedProductType}
               value={selectedProductType}
             />
           </Box>
@@ -864,7 +920,7 @@ export default function Home(props) {
           </Box>
 
         <Footer sx={{ mt: 2, mb: 2 }} />
-              
+
     </ThemeProvider>
   );
 }
