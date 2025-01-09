@@ -12,8 +12,6 @@ export default function MyAutocomplete(props)
     if (event.code == 'Enter')
     {
       let ev = event;
-      //console.log('ddd:')
-      //console.log(props.valueVariable)
       const filteredSuggestions = props.data.filter(suggestion =>
         suggestion.toLowerCase().includes(lastValue.toLowerCase())
       );
@@ -89,24 +87,7 @@ export default function MyAutocomplete(props)
 
   useEffect(() => {
     setInputValue(props.valueVariable)
-    //setTimeout(function() { setInputValue(props.valueVariable); console.log('vvvvv:'); console.log(props.valueVariable); }, 2000)
-    /*console.log('------------------------')
-    console.log('MyAutocomplete useEffect')
-    console.log('props.getValueFn():')
-    console.log(props.getValueFn())
-    console.log('------------------------')*/
-
-    //setTimeout(function() { setInputValue(props.valueVariable); console.log('vv:'); console.log(props.valueVariable); },500)
-    
-
   }, [props.valueVariable]);
-
-  //setInputValue(props.getValueFn())
-  /*console.log('------------------------')
-  console.log('MyAutocomplete render')
-  console.log('props.getValueFn():')
-  console.log(props.getValueFn())
-  console.log('------------------------')*/
 
   return (
     <div className="autocomplete-wrapper"  >

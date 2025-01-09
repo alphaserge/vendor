@@ -313,6 +313,7 @@ a.no-link {
   font-weight: bold;
   color: #222;
   color: #77809f;
+  vertical-align: top;
 }
 
 .order-item-label {
@@ -325,10 +326,12 @@ a.no-link {
   font-weight: normal;
   /* width: 80px; */
   display: inline-block;
+  vertical-align: top;
   
 }
 
 .order-item-value {
   font-size: 14px;
   color: #222;
+  vertical-align: top;
 }

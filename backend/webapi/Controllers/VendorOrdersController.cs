@@ -126,6 +126,98 @@ namespace chiffon_back.Controllers
             return orders.AsEnumerable();
         }
 
+        //[HttpGet(Name = "VendorReady")]
+        [HttpGet("ready")]
+        public IEnumerable<Models.VendorOrder> GetReady()
+        {
+            List<Models.VendorOrder> orders = new List<Models.VendorOrder>();
+
+            var items = from oi in ctx.OrderItems.Where(x => x.VendorOrderId == null)
+                        join p in ctx.Products on oi.ProductId equals p.Id into jointable
+                        from jp in jointable.DefaultIfEmpty()
+                        join v in ctx.Vendors on jp.VendorId equals v.Id into joinvendors
+                        from jv in joinvendors.DefaultIfEmpty()
+                        orderby jv.VendorName
+                        select new { oi, jp, jv };
+
+            List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
+            //Models.VendorOrder order = new Models.VendorOrder();
+            bool first = true;
+            int vendorId = -1;
+            string? vendorName = "";
+            foreach (var item in items)
+            {
+                if (item.jv.Id != vendorId && !first)
+                {
+                    Models.VendorOrder order = new Models.VendorOrder();
+                    order.VendorId = vendorId;
+                    order.VendorName = vendorName;
+                    order.Items = orderItems.ToArray();
+                    orders.Add(order);
+                    orderItems.Clear();
+                }
+                first = false;
+                vendorId = item.jv.Id;
+                vendorName = item.jv.VendorName;
+
+                Models.OrderItem orderItem = new Models.OrderItem()
+                {
+                    ProductId = item.oi.ProductId,
+                    Id = item.oi.Id,
+                    ArtNo = item.jp.ArtNo,
+                    RefNo = item.jp.RefNo,
+                    ItemName = item.jp.ItemName,
+                    Composition = item.jp.Composition,
+                    Design = item.jp.Design,
+                    Price = item.oi.Price,
+                    Quantity = item.oi.Quantity,
+                    VendorId = item.jp.VendorId,
+                    VendorName = item.jv.VendorName
+                };
+
+                string imagePath = string.Empty;
+                if (!String.IsNullOrEmpty(item.jp.PhotoUuids))
+                {
+                    foreach (string uuid in PhotoHelper.GetPhotoUuids(item.jp.PhotoUuids))
+                    {
+                        var imageFiles = DirectoryHelper.GetImageFiles(uuid);
+                        if (imageFiles.Count > 0)
+                        {
+                            imagePath = imageFiles[0];
+                            break;
+                        }
+                    }
+                }
+
+                if (String.IsNullOrEmpty(imagePath))
+                {
+                    foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == item.jp.Id).ToList())
+                    {
+                        var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                        if (imageFiles.Count > 0)
+                        {
+                            imagePath = imageFiles[0];
+                            break;
+                        }
+                    }
+                }
+
+                orderItem.imagePath = imagePath;
+                orderItems.Add(orderItem);
+            }
+
+            if (orderItems.Count > 0)
+            {
+                Models.VendorOrder order = new Models.VendorOrder();
+                order.VendorId = vendorId;
+                order.VendorName = vendorName;
+                order.Items = orderItems.ToArray();
+                orders.Add(order);
+            }
+
+            return orders.AsEnumerable();
+        }
+
         [HttpGet("{id}")]
         //public Models.Product? Product([FromQuery] string id)
         public Models.VendorOrder? GetVendorOrder([FromQuery] string id)

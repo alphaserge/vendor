@@ -7,6 +7,7 @@
         public int VendorId { get; set; }
         public string? Uuid { get; set; }
         public int Number { get; set; }
+        public string? VendorName { get; set; }
         public OrderItem[]? Items { get; set; }
     }
 }

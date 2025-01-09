@@ -33,6 +33,7 @@ import Footer from './footer';
 
 import ItemOrder  from './itemorder';
 import ItemOrderRow from './itemorderrow';
+import VendorOrderRow from './vendororderrow';
 import MySelect from '../../components/myselect';
 import { getOrders } from '../../api/orders'
 
@@ -71,7 +72,7 @@ const getFromUrl = (name) => {
 }
 
 
-export default function ListOrders(props) {
+export default function ClientOrders(props) {
 
     const navigate = useNavigate();
 
@@ -96,7 +97,12 @@ export default function ListOrders(props) {
 
     const loadOrders = async (e) => {
 
-      axios.get(config.api + '/Orders', 
+      let api = config.api + '/Orders'
+      if (viewAs == 'group by vendor') {
+        api = config.api + '/VendorOrders/ready'
+      }
+
+      axios.get(api, 
         /*{ params: 
             { 
               name: itemName,
@@ -115,7 +121,7 @@ export default function ListOrders(props) {
         
     useEffect(() => {
       loadOrders()
-    }, []);
+    }, [viewAs]);
 
   if (!props.user || props.user.Id == 0) {
     navigate("/")
@@ -141,11 +147,11 @@ export default function ListOrders(props) {
               label="View as"
               onChange={handleChangeViewAs}>
               <MenuItem value={'client orders'}>client orders</MenuItem>
-              <MenuItem value={'vendor orders'}>vendor orders</MenuItem>
+              <MenuItem value={'group by vendor'}>group by vendor</MenuItem>
             </Select>
           </FormControl>
 
-          {/* <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" > */}
+          { viewAs == "client orders" &&
           <Grid container spacing={2} >
             { view === "grid" && orders.map((data, index) => (
             <Grid item xs={12} md={6} key={"itemprod-"+index} >
@@ -157,7 +163,21 @@ export default function ListOrders(props) {
               <ItemOrderRow data={data} index={index} />
               </Grid>
             ))}
-          </Grid>
+          </Grid> }
+
+          { viewAs == "group by vendor" &&
+          <Grid container spacing={2} >
+            { view === "grid" && orders.map((data, index) => (
+            <Grid item xs={12} md={6} key={"itemprod-"+index} >
+              <ItemOrder data={data} index={index} />
+              </Grid>
+            ))}
+            { view === "rows" && orders.map((data, index) => (
+            <Grid item xs={12} md={12} key={"itemprod-"+index} >
+              <VendorOrderRow data={data} index={index} />
+              </Grid>
+            ))}
+          </Grid> }
 
           </Box>
         </div>

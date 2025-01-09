@@ -21,10 +21,10 @@ import { APPEARANCE } from '../../appearance';
 
 import config from "../../config.json"
 
-const pages = ['Fabrics', 'Accessories', 'Orders', 'Help', 'Contacts' ];
+const pages = ['Fabrics', 'Accessories', 'Client Orders', 'Vendor Orders', 'Help', 'Contacts' ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Login', 'Logout', 'Register'];
 
-const menuPagesStyle = { fontSize: "14px", fontWeight: "normal", color: APPEARANCE.WHITE2 }
+const menuPagesStyle = { fontSize: "14px", fontWeight: "normal", color: APPEARANCE.WHITE2, textTransform: "none" }
 
 function FabricIcon(props) {
   return (
@@ -62,7 +62,8 @@ export default function Header(props) {
       return
     }
 
-    if (value == "Orders") { navigate("/listorders"); return; }
+    if (value == "Client Orders") { navigate("/clientorders"); return; }
+    if (value == "Vendor Orders") { navigate("/vendororders"); return; }
     if (value == "Contacts") { navigate("/contacts"); return; }
     if (value == "Profile") { navigate("/profile"); return; }
     if (value == "Account") { navigate("/account"); return; }
@@ -152,7 +153,7 @@ export default function Header(props) {
                 sx={{ ml: 1, mr: 1, display: 'block' }}
                 onClick={handleMenuClick}
               >
-                {page.toUpperCase()}
+                {page /*.toUpperCase()*/ }
               </Button>
             ))}
           </Box>

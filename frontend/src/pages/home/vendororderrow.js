@@ -41,7 +41,7 @@ const Input = styled('input')({
   display: 'none',
 });
 
-export default function ItemOrderRow(props) {
+export default function VendorOrderRow(props) {
 
     const navigate = useNavigate();
     const theme = useTheme();
@@ -58,10 +58,7 @@ console.log(props.data)
     <CardContent sx={{ pb: 0}}>
       <Box sx={{ display: "flex", flexDirection: "row" }}>
       <Typography gutterBottom variant="h7" component="div" mr={10} className="order-header">
-      <b>Order No. {props.data.number} from {formattedDate(props.data.created)}</b>
-      </Typography>
-      <Typography gutterBottom variant="h7" component="div" className="order-header">
-      Client name: <b>{props.data.clientName}</b>  {props.data.clientPhone}
+      Vendor: <b>{props.data.vendorName}</b>
       </Typography>
       </Box>
       {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
