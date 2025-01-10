@@ -17,12 +17,15 @@ import SearchIcon from '@mui/icons-material/Search';
 import TuneIcon from '@mui/icons-material/Tune';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import InputAdornment from '@mui/material/InputAdornment';
+import CloseIcon from '@mui/icons-material/Close';
 
 import TextField from '@mui/material/TextField';
 import GridViewIcon from '@mui/icons-material/GridView';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import Tooltip from '@mui/material/Tooltip';
 import Modal from '@mui/material/Modal';
+
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 import axios from 'axios'
 
@@ -74,6 +77,7 @@ const getFromUrl = (name) => {
 export default function ClientOrders(props) {
 
     const navigate = useNavigate();
+    const theme = useTheme();
 
     const [orders, setOrders] = useState([])
     const [filter, setFilter] = useState(false)
@@ -84,6 +88,11 @@ export default function ClientOrders(props) {
 
     const [viewAs, setViewAs] = React.useState('client orders');
 
+    const [showInfo, setShowInfo] = React.useState(false);
+    const [info, setInfo] = React.useState("");
+
+    const matches_md = useMediaQuery(theme.breakpoints.up('md'));
+
     const handleChangeViewAs = (event) => {
       setViewAs(event.target.value);
     };    
@@ -91,6 +100,12 @@ export default function ClientOrders(props) {
     const handleShowHideFilter = (event) => {
       setFilter(!filter);
     };
+
+  const handleInfo = (message) => {
+    setShowInfo(true)
+    setInfo(message)
+    setViewAs(viewAs)
+  }
 
     const url = require('url');
 
@@ -130,6 +145,45 @@ export default function ClientOrders(props) {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
 
+      <Modal
+        open={showInfo}
+        onClose={function() { setShowInfo(false) }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{ width: "auto", outline: "none" }} >
+
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: (matches_md ? "330px" : "330px"),
+          //width: "330px",
+          boxShadow: 24,
+          padding: "45px 40px 40px 40px",
+          outline: "none",
+          bgcolor: 'background.paper',
+           }}>
+        {/* <Typography>Modal title</Typography> */}
+        <Box sx={{ width: "100%", textAlign:"right", pr: 3, pb: 2 }} >
+        <IconButton
+           sx={{ position: "absolute", top: 6, mr: 0 }}
+           onClick={() => { setShowInfo(false) }}>
+            <CloseIcon />
+        </IconButton>
+        </Box>
+        <Typography sx={{fontSize: "16px", color: "#333" , textAlign: "center" }}>{info}</Typography>
+        <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "center", pt: 3}}>
+        <Button
+            variant="contained"
+            onClick={(e) => { setShowInfo(false) }} >
+                Close
+        </Button>
+        </Box>
+
+        </Box>
+      </Modal>
+
       <Container sx={{padding: 0 }} className="header-container" >
         <Header user={props.user} title={props.title} />
         {/* <MainBanner user={props.user} title={props.title} /> */}
@@ -137,18 +191,18 @@ export default function ClientOrders(props) {
         
           <Box component="form" noValidate style={outboxStyle}>
 
-          <FormControl>
-            <InputLabel id="demo-simple-select-label">View as</InputLabel>
+          <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+            <Typography gutterBottom variant="h6" component="div" mr={4} className="order-header" sx={{flexGrow: 1}} ><b>Client orders list</b></Typography>
+            <InputLabel id="demo-simple-select-label" sx={{pr:2}}>Show:</InputLabel>
             <Select
-              labelId="view-as-select-label"
               id="view-as-select"
+              size="small"
               value={viewAs}
-              label="View as"
               onChange={handleChangeViewAs}>
               <MenuItem value={'client orders'}>client orders</MenuItem>
               <MenuItem value={'group by vendor'}>group by vendor</MenuItem>
             </Select>
-          </FormControl>
+          </Box>
 
           { viewAs == "client orders" &&
           <Grid container spacing={2} >
@@ -173,7 +227,7 @@ export default function ClientOrders(props) {
             ))}
             { view === "rows" && orders.map((data, index) => (
             <Grid item xs={12} md={12} key={"itemprod-"+index} >
-              <VendorOrderRow data={data} index={index} />
+              <VendorOrderRow data={data} index={index} user={props.user} showInfo={handleInfo} />
               </Grid>
             ))}
           </Grid> }

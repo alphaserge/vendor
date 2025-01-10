@@ -48,7 +48,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpGet(Name = "VendorOrders/{vendorId}")]
-        public IEnumerable<Models.VendorOrder> Get(int? vendorId)
+        public IEnumerable<Models.VendorOrder> Get(int? vendorId, [FromQuery] string status)
         {
             if (vendorId == null)
             {
@@ -60,9 +60,23 @@ namespace chiffon_back.Controllers
             {
                 query = query.Where(x=>x.VendorId == vendorId);
             }
+            switch (status)
+            {
+                case "sent": query = query.Where(x => x.Sent.HasValue); break;
+                case "recieved": query = query.Where(x => x.Received.HasValue); break;
+            }
 
             List<Models.VendorOrder> orders = query
                 .Select(x => config.CreateMapper().Map<Models.VendorOrder>(x)).ToList();
+
+            foreach(Models.VendorOrder o in orders)
+            {
+                var order = ctx.Vendors.FirstOrDefault(x => x.Id == vendorId);
+                if (order != null)
+                {
+                    o.VendorName = order.VendorName;
+                }
+            }
 
             foreach (var o in orders) {
                 var items = from oi in ctx.OrderItems.Where(x => x.VendorOrderId == o.Id)

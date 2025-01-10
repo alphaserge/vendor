@@ -42,20 +42,28 @@ const Input = styled('input')({
   display: 'none',
 });
 
-const handleSendToVendor = (vendorId) => {
-  sendToVendor(vendorId)
-}
-
 
 export default function VendorOrderRow(props) {
 
     const navigate = useNavigate();
     const theme = useTheme();
 
+    const [showInfo, setShowInfo] = React.useState(false);
+    const [info, setInfo] = React.useState("");
+
+    const handleSendToVendor = (vendorId) => {
+      sendToVendor(vendorId)
+      if (props.showInfo) {
+        props.showInfo("Order successfully sent to vendor " + props.data.vendorName)
+      }
+    }
+    
+    const handleSendToGeneral = (vendorId) => {
+      sendToVendor(vendorId)
+    }
+    
     useEffect(() => {
     }, []);
-
-console.log(props.data)
 
   return (
     
@@ -63,9 +71,10 @@ console.log(props.data)
 
     <CardContent sx={{ pb: 0}}>
       <Box sx={{ display: "flex", flexDirection: "row" }}>
-      <Typography gutterBottom variant="h7" component="div" mr={10} className="order-header">
-      Vendor: <b>{props.data.vendorName}</b>
-      </Typography>
+      <Typography gutterBottom variant="h7" component="div" mr={4} className="order-header">Vendor: <b>{props.data.vendorName}</b></Typography>
+      { props.showForVendor && <Typography gutterBottom variant="h7" component="div" mr={4} className="order-header">Number: <b>{props.data.number}</b> from <b>{formattedDate(props.data.created)}</b></Typography> }
+      { props.showForVendor && <Typography gutterBottom variant="h7" component="div" mr={4} className="order-header">Sent: <b>{formattedDate(props.data.sent, 'none')}</b></Typography> }
+      { props.showForVendor && <Typography gutterBottom variant="h7" component="div" mr={4} className="order-header">Received: <b>{formattedDate(props.data.received, 'none')}</b></Typography> }
       </Box>
       {/* <Typography variant="body2" sx={{ color: 'text.secondary' }}>
       </Typography> */}
@@ -118,7 +127,9 @@ console.log(props.data)
         </CardContent>
 
     <CardActions sx={{ justifyContent: "right", mr: 3}} >
-      <Button size="medium" onClick={ (e) => { handleSendToVendor(props.data.vendorId) }}>Send to vendor</Button>
+      {props.user.vendorId==1 && <Button size="medium" onClick={ (e) => { handleSendToVendor(props.data.vendorId) }}>Send to vendor</Button>}
+      {props.user.vendorId!=1 && <Button size="medium" onClick={ (e) => { handleSendToGeneral(props.data.vendorId) }}>Send to general vendor</Button>}
+      
     </CardActions>
   </Card>
 

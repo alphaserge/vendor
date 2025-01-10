@@ -83,7 +83,7 @@ export default function VendorOrders(props) {
     
     const headStyle = { maxWidth: "744px", width: "auto", margin: "0", padding: "0 10px" }
 
-    const [viewAs, setViewAs] = React.useState('client orders');
+    const [viewAs, setViewAs] = React.useState('incoming orders');
 
     const handleChangeViewAs = (event) => {
       setViewAs(event.target.value);
@@ -98,6 +98,15 @@ export default function VendorOrders(props) {
     const loadOrders = async (e) => {
 
       let api = config.api + '/VendorOrders?vendorId=' + props.user.vendorId
+      if (viewAs == 'incoming orders') {
+        api += '&status=incoming'
+      }
+      if (viewAs == 'sent orders') {
+        api += '&status=sent'
+      }
+      if (viewAs == 'recieved orders') {
+        api += '&status=recieved'
+      }
 
       axios.get(api, 
         /*{ params: 
@@ -123,7 +132,8 @@ export default function VendorOrders(props) {
   if (!props.user || props.user.Id == 0) {
     navigate("/")
   }
-    
+    console.log('orders:')
+    console.log(orders)
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -135,20 +145,21 @@ export default function VendorOrders(props) {
         
           <Box component="form" noValidate style={outboxStyle}>
 
-          <FormControl>
-            <InputLabel id="demo-simple-select-label">View as</InputLabel>
+          <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+            <Typography gutterBottom variant="h6" component="div" mr={4} className="order-header" sx={{flexGrow: 1}} ><b>Vendor orders list</b></Typography>
+            <InputLabel id="demo-simple-select-label" sx={{pr:2}}>Show:</InputLabel>
             <Select
-              labelId="view-as-select-label"
               id="view-as-select"
+              size="small"
               value={viewAs}
-              label="View as"
               onChange={handleChangeViewAs}>
-              <MenuItem value={'client orders'}>client orders</MenuItem>
-              <MenuItem value={'group by vendor'}>group by vendor</MenuItem>
+              <MenuItem value={'incoming orders'}>incoming orders</MenuItem>
+              <MenuItem value={'sent orders'}>sent orders</MenuItem>
+              <MenuItem value={'recieved orders'}>recieved orders</MenuItem>
             </Select>
-          </FormControl>
+          </Box>
 
-          { viewAs == "client orders" &&
+          { viewAs == "dummy" &&
           <Grid container spacing={2} >
             { view === "grid" && orders.map((data, index) => (
             <Grid item xs={12} md={6} key={"itemprod-"+index} >
@@ -162,7 +173,7 @@ export default function VendorOrders(props) {
             ))}
           </Grid> }
 
-          { viewAs == "group by vendor" &&
+          { viewAs != "dummy" &&
           <Grid container spacing={2} >
             { view === "grid" && orders.map((data, index) => (
             <Grid item xs={12} md={6} key={"itemprod-"+index} >
@@ -171,12 +182,14 @@ export default function VendorOrders(props) {
             ))}
             { view === "rows" && orders.map((data, index) => (
             <Grid item xs={12} md={12} key={"itemprod-"+index} >
-              <VendorOrderRow data={data} index={index} />
+              <VendorOrderRow data={data} index={index} showForVendor={true} user={props.user} />
               </Grid>
             ))}
           </Grid> }
 
           </Box>
+          <br/>
+          <br/>
         </div>
         <Footer sx={{ mt: 2, mb: 2 }} />
          </Container>

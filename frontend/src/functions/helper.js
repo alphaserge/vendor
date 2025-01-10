@@ -3,7 +3,17 @@ export const non = (s) => {
     return s ? s : "";
 }
 
-export const formattedDate = (value) => {
+export const formattedDate = (value, empty) => {
+    
+    let nullWord = ''
+
+    if (empty) {
+        nullWord = empty
+    }
+
+    if (!value) {
+        return nullWord
+    }
     
     const today = new Date(value);
 

@@ -115,10 +115,10 @@ console.log(props.data)
         </CardContent>
 
     <CardActions sx={{ justifyContent: "right", mr: 3}} >
-      <Button size="medium">Share</Button>
       <Button size="medium">Print</Button>
-      <Button size="medium">Send to vendor</Button>
-      <Button size="medium">Make delivery</Button>
+      <Button size="medium">Send to client</Button>
+      {/* <Button size="medium">Send to vendor</Button>
+      <Button size="medium">Make delivery</Button> */}
     </CardActions>
   </Card>
 
