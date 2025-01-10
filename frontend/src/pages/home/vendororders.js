@@ -71,7 +71,8 @@ const getFromUrl = (name) => {
   return params.get(name)
 }
 
-export default function ClientOrders(props) {
+
+export default function VendorOrders(props) {
 
     const navigate = useNavigate();
 
@@ -96,10 +97,7 @@ export default function ClientOrders(props) {
 
     const loadOrders = async (e) => {
 
-      let api = config.api + '/Orders'
-      if (viewAs == 'group by vendor') {
-        api = config.api + '/VendorOrders/ready'
-      }
+      let api = config.api + '/VendorOrders?vendorId=' + props.user.vendorId
 
       axios.get(api, 
         /*{ params: 

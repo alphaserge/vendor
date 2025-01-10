@@ -20,6 +20,7 @@ import "swiper/css";
 import { APPEARANCE } from '../../appearance';
 import { Link } from "@mui/material";
 import { formattedDate, computePrice } from '../../functions/helper';
+import { sendToVendor } from '../../api/orders'
 
 import config from "../../config.json"
 
@@ -40,6 +41,11 @@ const MenuProps = {
 const Input = styled('input')({
   display: 'none',
 });
+
+const handleSendToVendor = (vendorId) => {
+  sendToVendor(vendorId)
+}
+
 
 export default function VendorOrderRow(props) {
 
@@ -112,10 +118,7 @@ console.log(props.data)
         </CardContent>
 
     <CardActions sx={{ justifyContent: "right", mr: 3}} >
-      <Button size="medium">Share</Button>
-      <Button size="medium">Print</Button>
-      <Button size="medium">Send to vendor</Button>
-      <Button size="medium">Make delivery</Button>
+      <Button size="medium" onClick={ (e) => { handleSendToVendor(props.data.vendorId) }}>Send to vendor</Button>
     </CardActions>
   </Card>
 

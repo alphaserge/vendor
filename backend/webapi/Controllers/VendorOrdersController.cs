@@ -47,15 +47,22 @@ namespace chiffon_back.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        [HttpGet(Name = "VendorOrders")]
-        public IEnumerable<Models.VendorOrder> Get()
+        [HttpGet(Name = "VendorOrders/{vendorId}")]
+        public IEnumerable<Models.VendorOrder> Get(int? vendorId)
         {
-            List<Models.VendorOrder> orders =
-                ctx.VendorOrders.OrderByDescending(x => x.Created)
-                .Select(x =>
-                    config.CreateMapper()
-                        .Map<Models.VendorOrder>(x))
-                .ToList();
+            if (vendorId == null)
+            {
+                return new List<Models.VendorOrder>().AsEnumerable();
+            }
+
+            var query = ctx.VendorOrders.AsQueryable();
+            if (vendorId != 1)
+            {
+                query = query.Where(x=>x.VendorId == vendorId);
+            }
+
+            List<Models.VendorOrder> orders = query
+                .Select(x => config.CreateMapper().Map<Models.VendorOrder>(x)).ToList();
 
             foreach (var o in orders) {
                 var items = from oi in ctx.OrderItems.Where(x => x.VendorOrderId == o.Id)
@@ -264,7 +271,7 @@ namespace chiffon_back.Controllers
             return order;
         }
 
-        [HttpPost(Name = "VendorOrders")]
+        [HttpPost("SendToVendor/{vendorId}")]
         public ActionResult<Models.VendorOrder> Post(int vendorId)
         {
             try
@@ -276,9 +283,9 @@ namespace chiffon_back.Controllers
                 }
 
                 var query = from oi in ctx.OrderItems.Where(x => x.VendorOrderId == null)
-                            join p in ctx.Products.Where(x => x.VendorId == vendorId) on oi.ProductId equals p.Id into jointable
-                            from j in jointable.DefaultIfEmpty()
-                            select new { oi, j };
+                            join p in ctx.Products.Where(x => x.VendorId == vendorId) on oi.ProductId equals p.Id //into jointable
+                            //from j in jointable.DefaultIfEmpty()
+                            select new { oi, p };
                 var items = query.ToList();
                 if (items.Count == 0)
                 {
@@ -321,8 +328,7 @@ namespace chiffon_back.Controllers
                 string itemsBody = $"<table style='background-color: #def; padding: 20px;'>" + 
                     $"<thead><th style={label}><b>Photo</b></th><th style={label}><b>Fabric name</b></th>" + 
                     $"<th style={label}><b>Ref No.</b></th><th style={label}><b>Art No.</b></th>" + 
-                    $"<th style={label}><b>Design</b></th><th style={label}><b>Quantity</b></th>" + 
-                    $"<th style={label}><b>Price (per 1 m.)</b></th></thead>";
+                    $"<th style={label}><b>Design</b></th><th style={label}><b>Quantity</b></th></thead>";
 
                 List<LinkedResource> linkedRes = new List<LinkedResource>();
                 foreach(var item in items)
@@ -368,8 +374,7 @@ namespace chiffon_back.Controllers
                             + product.RefNo + $"</td style={cell}><td>" 
                             + product.ArtNo + $"</td><td style={cell}>" 
                             + product.Design + $"</td><td style={rightAlign}>" 
-                            + item.oi.Quantity+ $" m </td><td style={rightAlign}>" 
-                            + String.Format("{0:0.0#}", item.oi.Price) + " $</td></tr>";
+                            + item.oi.Quantity+ $" m </td></tr>";
                         linkedRes.Add(LinkedImg);
 
                         if (item.oi.Price != null && item.oi.Quantity != null)

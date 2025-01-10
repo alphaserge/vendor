@@ -4,6 +4,7 @@ import UpdateProduct from './pages/home/updateproduct';
 import AddProduct from './pages/home/addproduct';
 import ListProduct from './pages/home/listproduct';
 import ClientOrders from './pages/home/clientorders';
+import VendorOrders from './pages/home/vendororders';
 import Menu from './pages/home/menu';
 import Login from './pages/auth/login';
 import Logout from './pages/auth/logout';
@@ -73,6 +74,8 @@ function App() {
         })*/
   }, [])
 
+  console.log (user)
+
   return (
     <div className="App">
       <BrowserRouter>
@@ -90,6 +93,7 @@ function App() {
           <Route path="/updateproduct" element={<UpdateProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/listproduct" element={<ListProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/clientorders" element={<ClientOrders user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
+          <Route path="/vendororders" element={<VendorOrders user={user} lastAction={lastAction} setLastAction={setLastAction} />} /> 
           <Route path="/menu" element={<Menu lastAction={lastAction} setLastAction={setLastAction} />} />
           {/* <Route path="/header" element={<PrimarySearchAppBar />} /> */}
         </Routes>
