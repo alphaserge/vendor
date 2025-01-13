@@ -536,7 +536,7 @@ export default function Home(props) {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
 
-
+      {/* Quick view modal */}
       <Modal
         open={showQuickView}
         onClose={function() { setAddProduct(false) }}
@@ -626,6 +626,7 @@ export default function Home(props) {
         </Box>
       </Modal>
 
+      {/* Shopping cart modal */}
       <Modal
         open={showShoppingCart}
         onClose={function() { setShowShoppingCart(false); }}
@@ -798,6 +799,7 @@ export default function Home(props) {
         </Box>
       </Modal>
 
+      {/* Show info modal */}
       <Modal
         open={showInfo}
         onClose={function() { setShowInfo(false) }}
