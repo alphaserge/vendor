@@ -632,7 +632,7 @@ export default function Home(props) {
         onClose={function() { setShowShoppingCart(false); }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{ width: "auto", outline: "none" }} >
+        sx={{ width: "auto", outline: "none", overflow: "scroll" }} >
 
         <Box sx={{
           position: 'absolute',
