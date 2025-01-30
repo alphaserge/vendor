@@ -167,6 +167,26 @@ export default function Home(props) {
 
     const matches_md = useMediaQuery(theme.breakpoints.up('md'));
 
+    const cartImageSize = matches_md ? "125px" : "90px";
+
+    const modalSx = matches_md ? {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: "800px",
+      boxShadow: 24,
+      padding: "20px 40px 40px 40px", 
+      outline: "none",
+      bgcolor: 'background.paper',
+    } : {
+      width: "330px",
+      boxShadow: 24,
+      padding: "10px 10px 10px 10px", 
+      outline: "none",
+      bgcolor: 'background.paper',
+    }; 
+
     const setOrderAmount = (productId, value) => {
 
       let cart = [...getShoppingCart()]
@@ -632,20 +652,10 @@ export default function Home(props) {
         onClose={function() { setShowShoppingCart(false); }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
-        sx={{ width: "auto", outline: "none", overflow: "scroll" }} >
+        id="shoppingCartModal"
+        sx={{ width: (matches_md ? "auto":"auto"), outline: "none", overflow: "scroll", p: 0 }} >
 
-        <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: (matches_md ? "800px" : "330px"),
-          //width: "330px",
-          boxShadow: 24,
-          padding: "20px 40px 40px 40px",
-          outline: "none",
-          bgcolor: 'background.paper',
-           }}>
+        <Box sx={modalSx}>
         {/* <Typography>Modal title</Typography> */}
         <Box sx={{ width: "100%", textAlign:"right", pr: 3, pb: 2 }} >
         <IconButton
@@ -656,26 +666,32 @@ export default function Home(props) {
             <CloseIcon />
         </IconButton>
         </Box>
-        <Typography sx={{fontSize: "20px", fontWeight: 500, color: "#333", p:0, pb: 2}}>Your shopping cart:&nbsp;<span style={{fontSize: "16px"}} >{props.cart.length}&nbsp;items</span></Typography>
+        { matches_md && <Typography sx={{fontSize: "20px", fontWeight: 500, color: "#333", p:0, pb: 2}}>Your shopping cart:&nbsp;<span style={{fontSize: "16px"}} >{props.cart.length}&nbsp;items</span></Typography>}
+        {!matches_md && <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2}}>Your shopping cart:&nbsp;<span style={{backgroundColor:"#ccc", color: "#000", borderRadius: "4px", padding: "2px 6px"}} >{props.cart.length}&nbsp;items</span></Typography>}
       <Box>
       {(!matches_md &&
         (props.cart.map((data, index) => (
-
-        <Card >
+      <Card >
       <CardMedia
         component="img"
         alt="green iguana"
-        sx={{  maxWidth:"125px", maxHeight:"125px" }}
+        sx={{  maxWidth: cartImageSize, maxHeight: cartImageSize, float: "left" }}
         image={data.product.colors[0].imagePath ? (config.api + "/" + data.product.colors[0].imagePath[0]) : ""}
       />
-      <CardContent>
-        <Typography gutterBottom variant="h6" component="div">
+      <CardContent sx={{ 
+                    width: (matches_md ? "" : "calc(100% - 100px)"), 
+                    float: (matches_md ? "none" : "left"), p: 0, pl: 2 }}>
+        <Typography 
+          gutterBottom 
+          variant={matches_md ? "h6" : "p"} 
+          sx={{ fontSize: (matches_md ? "18px":"14px") }}
+          component="div">
         {data.product.itemName}
         </Typography>
-        <Typography variant="h7" sx={{ color: "#222" }}>
+        <Box sx={{ color: "#222", padding: (matches_md ? "0px":"0px"), fontSize: (matches_md ? "18px":"14px") }}>
         <table>
           <tr><td>Art.No:</td><td>&nbsp;&nbsp;{data.product.artNo}</td></tr>
-          <tr><td>Design:</td><td>&nbsp;&nbsp;{data.product.design}</td></tr>
+          {matches_md && <tr><td>Design:</td><td>&nbsp;&nbsp;{data.product.design}</td></tr> }
           <tr><td>Price:</td><td>&nbsp;&nbsp;{ (data.amount > 500 ? data.product.price : ( data.amount > 300 ? data.product.price1 : data.product.price2 ))} $</td></tr>
           <tr></tr>
           </table>
@@ -690,12 +706,12 @@ export default function Home(props) {
           </tr>
           </table>
         
-        </Typography>
+        </Box>
       </CardContent>
-      <CardActions>
+      {/* <CardActions>
         <Button size="small">Share</Button>
         <Button size="small">Learn More</Button>
-      </CardActions>
+      </CardActions> */}
     </Card>
         ))
       ))}
