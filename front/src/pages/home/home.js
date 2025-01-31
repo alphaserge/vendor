@@ -180,9 +180,10 @@ export default function Home(props) {
       outline: "none",
       bgcolor: 'background.paper',
     } : {
-      width: "330px",
+      width: "calc(100vw - 60px)",
       boxShadow: 24,
       padding: "10px 10px 10px 10px", 
+      margin: "0 auto",
       outline: "none",
       bgcolor: 'background.paper',
     }; 
@@ -667,11 +668,11 @@ export default function Home(props) {
         </IconButton>
         </Box>
         { matches_md && <Typography sx={{fontSize: "20px", fontWeight: 500, color: "#333", p:0, pb: 2}}>Your shopping cart:&nbsp;<span style={{fontSize: "16px"}} >{props.cart.length}&nbsp;items</span></Typography>}
-        {!matches_md && <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2}}>Your shopping cart:&nbsp;<span style={{backgroundColor:"#ccc", color: "#000", borderRadius: "4px", padding: "2px 6px"}} >{props.cart.length}&nbsp;items</span></Typography>}
+        {!matches_md && <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2}}><span style={{color: "#008"}} >{props.cart.length}&nbsp;items</span>&nbsp;in your shopping cart</Typography>}
       <Box>
       {(!matches_md &&
         (props.cart.map((data, index) => (
-      <Card >
+      <Card sx={{margin: "10px 0", padding: "10px"}} >
       <CardMedia
         component="img"
         alt="green iguana"
@@ -680,7 +681,7 @@ export default function Home(props) {
       />
       <CardContent sx={{ 
                     width: (matches_md ? "" : "calc(100% - 100px)"), 
-                    float: (matches_md ? "none" : "left"), p: 0, pl: 2 }}>
+                    float: (matches_md ? "none" : "left"), p:0, pl: 2, '&:last-child': { pb: 0 } }} >
         <Typography 
           gutterBottom 
           variant={matches_md ? "h6" : "p"} 
