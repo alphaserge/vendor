@@ -116,6 +116,14 @@ div.product-img-holder {
   cursor: pointer;
 }
 
+div.product-img-holder-mobile {
+  width:260px;
+  height:260px;    
+  overflow:hidden;
+  padding: 0;
+  cursor: pointer;
+}
+
 div.product-img-holder-small {
   width:104px;
   height:100px;    

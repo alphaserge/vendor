@@ -546,6 +546,9 @@ export default function Home(props) {
   //console.log(products)// matches_sm)
   console.log(props.cart)
 
+
+  const productImgHolderClass = matches_md ? "product-img-holder" : "product-img-holder-mobile";
+
   // useEffect(() => {
   //   const items = JSON.parse(localStorage.getItem('items'));
   //   if (items) {
@@ -573,7 +576,7 @@ export default function Home(props) {
           width: (matches_md ? "890px" : "330px"),
           //width: "330px",
           boxShadow: 24,
-          padding: "20px 20px 20px 20px",
+          padding: matches_md ? "20px 20px 20px 20px" : "20px 20px 5px 5px",
           outline: "none",
           bgcolor: 'background.paper',
           display: "flex",
@@ -581,7 +584,7 @@ export default function Home(props) {
           alignItems: 'center', justifyContent: "right" }}>
         {/* <Typography>Modal title</Typography> */}
         <IconButton
-           sx={{ position: "absolute", top: 6, mr: -2, zIndex: 100, backgroundColor: "#ddd" }}
+           sx={{ position: "absolute", top: 6, mr: matches_md ? -2 : 1, zIndex: 100, backgroundColor: "#ddd" }}
            onClick={() => { setShowQuickView(false) }}>
             <CloseIcon />
         </IconButton>
@@ -604,10 +607,13 @@ export default function Home(props) {
                   {quickViewProduct.colors.map((cv, index) => {
                    return <Box key={"product-box-00"} >
                    <SwiperSlide key={"product-swiper-00"} sx={{ display: "flex", justifyContent: "center" }} >
-                    <Box className="product-img-holder" ><Box component={"img"} key={"product-swiper-00"}
-                    src={config.api + "/" + cv.imagePath[0]}
-                    alt={"photo_00"} className="product-img" /></Box>
-                   </SwiperSlide></Box>
+                    <Box className={productImgHolderClass} >
+                      <Box component={"img"} key={"product-swiper-00"}
+                        src={config.api + "/" + cv.imagePath[0]}
+                        alt={"photo_00"} className="product-img" />
+                      </Box>
+                   </SwiperSlide>
+                   </Box>
                 })}
                 </Swiper>
           </Grid>
