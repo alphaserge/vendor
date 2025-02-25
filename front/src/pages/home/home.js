@@ -618,9 +618,9 @@ export default function Home(props) {
                 </Swiper>
           </Grid>
           <Grid item xs={12} md={7} paddingLeft={{ xs: "0", md: "10px"}} paddingTop={{ xs: "10px", md: "0"}}>
-          <Box sx = {{ display: "flex",flexDirection: 'column'}} >
-          <table class="product-item">
-                <tr><td class="label">Item name:</td><td>{quickViewProduct.itemName}</td></tr>
+          <Box sx = {{ display: "flex",flexDirection: 'column', p: 1}} className="product-item" >
+          <table >
+                <tr><td class="label" style={ matches_md ? {width: "130px"} : {}} >Item name:</td><td>{quickViewProduct.itemName}</td></tr>
                 <tr><td class="label">Art No:</td><td>{quickViewProduct.artNo}</td></tr>
                 <tr><td class="label">Ref No:</td><td>{quickViewProduct.refNo}</td></tr>
                 <tr><td class="label">Design:</td><td>{quickViewProduct.design}</td></tr>
@@ -628,22 +628,25 @@ export default function Home(props) {
                 <tr><td class="label">Product type:</td><td>{quickViewProduct.productType}</td></tr>
                 <tr><td class="label">Product style:</td><td>{quickViewProduct.productStyle}</td></tr>
                 <tr><td class="label">Print style:</td><td>{quickViewProduct.printType}</td></tr>
-                <tr><td class="label">Price per meter:</td><td><b>from&nbsp;{quickViewProduct.price}$</b></td></tr>
+                <tr><td class="label"> { matches_md ? "Price per meter" : "Price PM" }:</td><td><b>from&nbsp;{quickViewProduct.price}$</b></td></tr>
               </table>
                   <Box sx={{
                     display: "flex",
                     flexDirection: 'row',
-                    justifyContent: 'center',
-                    mt: 3 }}>
-                      <QuantityInput step={1} onChange={(e,v)=>{ setCartAmount(v)}} />
-                        <span display={{xs: "none", md: "block"}}>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-
+                    justifyContent: 'flex-start',
+                    className:"quantity",
+                    mt: 2 }}>
+                      <QuantityInput 
+                        step={1} 
+                        onChange={(e,v)=>{ setCartAmount(v)}} 
+                        />
                       <Button
                           variant="contained"
                           startIcon={<ShoppingCartOutlinedIcon/>}
                           // sx={{...roundButtonStyle, ...{ml: 3}}}
                           className="add-to-cart-button"
-                          onClick={ (e) => { addToCartFunction=="Add to Cart" ? handleAddToCart(e) : handleOpenCart(e) } } >
+                          onClick={ (e) => { addToCartFunction=="Add to Cart" ? handleAddToCart(e) : handleOpenCart(e) } } 
+                          sx={ matches_md ? {ml: 4} : {ml: 1,p:1,pl:2,pr:2}} >
                               {addToCartFunction}
                       </Button>
                   </Box>
