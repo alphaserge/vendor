@@ -188,7 +188,7 @@ namespace chiffon_back.Models
 
                 List<int?> colorsIds = new List<int?>();
                 int[]? icolors = JsonConvert.DeserializeObject<int[]>(filter.Colors);
-                if (icolors!.Length>0)
+                if (icolors!=null && icolors!.Length>0)
                 {
                     colorsIds = (from cv in ctx.ColorVariants
                                     join cc in ctx.ColorVariantsInColors on cv.Id equals cc.ColorVariantId
@@ -199,7 +199,7 @@ namespace chiffon_back.Models
 
                 List<int?> seasonsIds = new List<int?>();
                 int[]? iseasons = JsonConvert.DeserializeObject<int[]>(filter.Seasons);
-                if (iseasons!.Length>0)
+                if (iseasons != null && iseasons!.Length>0)
                 {
                     seasonsIds = (from ps in ctx.ProductsInSeasons where iseasons.Contains(ps.SeasonId) select ps.ProductId as int?).Distinct().ToList();
                     query = query.Where(x => seasonsIds.Contains(x.Id));
@@ -207,7 +207,7 @@ namespace chiffon_back.Models
 
                 List<int?> overworkIds = new List<int?>();
                 int[]? ioverworks = JsonConvert.DeserializeObject<int[]>(filter.Overworks);
-                if (ioverworks!.Length>0)
+                if (ioverworks != null && ioverworks!.Length>0)
                 {
                     overworkIds = (from po in ctx.ProductsInOverWorkTypes where ioverworks.Contains(po.OverWorkTypeId) select po.ProductId as int?).Distinct().ToList();
                     query = query.Where(x => overworkIds.Contains(x.Id));
@@ -215,7 +215,7 @@ namespace chiffon_back.Models
 
                 List<int?> designTypesIds = new List<int?>();
                 int[]? idesignTypes = JsonConvert.DeserializeObject<int[]>(filter.DesignTypes);
-                if (idesignTypes!.Length > 0)
+                if (idesignTypes != null && idesignTypes!.Length > 0)
                 {
                     designTypesIds = (from ps in ctx.ProductsInDesignTypes where idesignTypes.Contains(ps.DesignTypeId) select ps.ProductId as int?).Distinct().ToList();
                     query = query.Where(x => designTypesIds.Contains(x.Id));
@@ -223,7 +223,7 @@ namespace chiffon_back.Models
 
                 List<int?> textileTypesIds = new List<int?>();
                 int[]? itextileTypes = JsonConvert.DeserializeObject<int[]>(filter.TextileTypes);
-                if (itextileTypes != null && itextileTypes!.Length > 0)
+                if (itextileTypes != null && itextileTypes != null && itextileTypes!.Length > 0)
                 {
                     //!!!??????
                     textileTypesIds = (from ps in ctx.ProductsInTextileTypes where itextileTypes!.Contains(ps.TextileTypeId) select ps.ProductId as int?).Distinct().ToList();
@@ -232,14 +232,14 @@ namespace chiffon_back.Models
 
                 List<int?> printTypesIds = new List<int?>();
                 int[]? iprintTypes = JsonConvert.DeserializeObject<int[]>(filter.PrintTypes);
-                if (iprintTypes != null && iprintTypes!.Length > 0)
+                if (iprintTypes != null && iprintTypes != null && iprintTypes!.Length > 0)
                 {
                     query = query.Where(x => x.PrintTypeId == iprintTypes[0]);
                 }
 
                 List<int?> productTypesIds = new List<int?>();
                 int[]? iproductTypes = JsonConvert.DeserializeObject<int[]>(filter.ProductTypes);
-                if (iproductTypes != null && iproductTypes!.Length > 0)
+                if (iproductTypes != null && iproductTypes != null && iproductTypes!.Length > 0)
                 {
                     query = query.Where(x => x.ProductTypeId == iproductTypes[0]);
                 }
