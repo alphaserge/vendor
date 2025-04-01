@@ -178,7 +178,7 @@ useEffect(() => {
                 InputProps={{
                   disableUnderline: true,
                   endAdornment: (
-                    <InputAdornment position="end" sx={{ backgroundColor: "#005bff" }}>
+                    <InputAdornment position="end" >
                       <IconButton sx={{ backgroundColor: "#005bff" }}>
                         <SearchIcon />
                       </IconButton>
