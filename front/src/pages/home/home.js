@@ -614,7 +614,7 @@ export default function Home(props) {
                         src={config.api + "/" + cv.imagePath[0]}
                         alt={"photo_00"} className="product-img"
                         sx={{
-                          borderRadius: (matches_md ? 0 : "20px")
+                          borderRadius: (matches_md ? 0 : "0")
                         }}
                         />
                       </Box>
