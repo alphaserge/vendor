@@ -145,22 +145,51 @@ useEffect(() => {
   return (
     // #eeede8  efa29a
     <Box className="main-section">
-    <Box sx={{ backgroundColor: "#cdb9c4", color: "#fff", alignContent: "center", height: "44px" }} >
-      <Grid container spacing={2} >
-      <Grid item display={{ xs: "none", md: "block" }} xs={12} md={3} key={"mainsect-left"} sx={{ justifyItems : "center" }} >
-        <p>-&nbsp;</p>
-      </Grid>
-      <Grid item xs={12} md={6} key={"mainsect-center"} sx={{ justifyItems : "center" }}  >
-        <p>Sign up for our newsletter for 15% off</p>
-      </Grid>
-      <Grid item display={{ xs: "none", md: "block" }} xs={12} md={3} key={"mainsect-right"} sx={{ justifyItems : "center" }} >
-        <p>-&nbsp;</p>
-      </Grid>
-      </Grid>
-    </Box>
 
     <Box sx={{ backgroundColor: "#abb39c", color: "#eee", alignContent: "center" }} style={{ height: "90px" }}  >
       <Grid container spacing={2} sx={{ alignContent: "center"  }} >
+
+      <Grid item display={{ xs: "none", md: "block" }} xs={12} md={4} key={"mainsect-center"} sx={{ justifyItems : "center", alignContent: "center" }} >
+        <p className="site-logo">ANGELIKA</p> 
+        {/* <Box
+            component="img"
+            sx={{ width: 360, height: 60, display: { xs: 'block', sm: 'block' } }}
+            image="/afm.png"
+            alt={""}
+          /> */}
+          {/* <picture class="header-logo-picture">
+          <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" style={{padding: 0, margin: 0}}>
+          </img>
+          </picture> */}
+      </Grid>
+
+      <Grid item xs={12} md={4} key={"mainsect-right"} justifyItems={{ xs: "center", md: "left" }}  sx={{ alignContent: "center" }} >
+      <Box>
+          <TextField
+                margin="normal"
+                size="small" 
+                id="search-value"
+                placeholder="What are you looking for?"
+                name="search"
+                value={search}
+                style={{ width: "280px", border: "2px solid #005bff", borderRadius: "4px", borderColor: "#005bff" , padding: "8px 12px" }}
+                onChange={ev => { setSearch(ev.target.value); props.searchProducts(ev.target.value)}}
+                variant="standard"
+                InputProps={{
+                  disableUnderline: true,
+                  endAdornment: (
+                    <InputAdornment position="end" >
+                      <IconButton sx={{ backgroundColor: "#005bff" }}>
+                        <SearchIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+      </Box>
+      </Grid>
+
+
       <Grid item xs={12} md={4} key={"mainsect-left"} justifyItems={{ xs: "center", md: "right" }} sx={{ alignContent: "center" }} >
         <Box sx={{display: "flex", flexDirection: "row", color: APPEARANCE.BLACK }}>
         <Tooltip title={props.user != undefined ? props.user.firstName: "Sign In"}>
@@ -219,6 +248,7 @@ useEffect(() => {
 
         </Box>
       </Grid>
+<<<<<<< HEAD
       <Grid display={{ xs: "none", md: "block" }} item xs={12} md={4} key={"mainsect-center"} sx={{ justifyItems : "center", alignContent: "center" }} >
         {/* <p className="site-logo">Angelica fabric market</p> */}
         {/* <Box
@@ -258,6 +288,8 @@ useEffect(() => {
               />
       </Box>
       </Grid>
+=======
+>>>>>>> 8c489812c662ea7e1806ebb4d9fb8a2a6c33fa97
       </Grid>
     </Box>
 

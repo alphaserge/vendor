@@ -573,6 +573,8 @@ export default function Home(props) {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
+          margin: (matches_md ? "" : "-50px -10px" ),
+          height: (matches_md ? "auto" : "calc(100% + 50px)"),
           width: (matches_md ? "890px" : "330px"),
           //width: "330px",
           boxShadow: 24,
@@ -610,7 +612,11 @@ export default function Home(props) {
                     <Box className={productImgHolderClass} >
                       <Box component={"img"} key={"product-swiper-00"}
                         src={config.api + "/" + cv.imagePath[0]}
-                        alt={"photo_00"} className="product-img" />
+                        alt={"photo_00"} className="product-img"
+                        sx={{
+                          borderRadius: (matches_md ? 0 : "0")
+                        }}
+                        />
                       </Box>
                    </SwiperSlide>
                    </Box>
