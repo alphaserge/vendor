@@ -665,19 +665,17 @@ export default function Home(props) {
         id="shoppingCartModal"
         sx={{ width: (matches_md ? "auto":"auto"), outline: "none", overflow: "scroll", p: 0 }} >
 
-        <Box sx={modalSx}>
-        {/* <Typography>Modal title</Typography> */}
-        <Box sx={{ width: "100%", textAlign:"right", pr: 3, pb: 2 }} >
-        <IconButton
-           sx={{ position: "absolute", top: 6, mr: 0 }}
-           onClick={() => {
-              setShowShoppingCart(false);
-              }}>
-            <CloseIcon />
-        </IconButton>
-        </Box>
-        { matches_md && <Typography sx={{fontSize: "20px", fontWeight: 500, color: "#333", p:0, pb: 2}}>Your shopping cart:&nbsp;<span style={{fontSize: "16px"}} >{props.cart.length}&nbsp;items</span></Typography>}
-        {!matches_md && <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2}}><span style={{color: "#008"}} >{props.cart.length}&nbsp;items</span>&nbsp;in your shopping cart</Typography>}
+        <Box sx={{...modalSx, ...{borderRadius: "10px"}}} >
+        { matches_md && 
+        <Box sx={{display: "flex", height: "60px", pt: 1}}>
+          <Typography sx={{fontSize: "18px", fontWeight: 600, color: "#333", p:0, pb: 2, flexGrow: 1}}>
+            Your shopping cart
+          </Typography>
+          <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2}}>
+            Total:&nbsp;{props.cart.length}&nbsp;items
+          </Typography>
+        </Box>}
+        {!matches_md && <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#18515E", p:0, pb: 2}}><span style={{color: "#008"}} >{props.cart.length}&nbsp;items</span>&nbsp;in your shopping cart</Typography>}
       <Box>
       {(!matches_md &&
         (props.cart.map((data, index) => (
@@ -726,35 +724,39 @@ export default function Home(props) {
         ))
       ))}
 
-        {(matches_md &&
+      {(matches_md &&
         <table class="shopping-cart" cellPadding={0} cellSpacing={0}>
-          <thead>
-          <th>Photo</th>
-            <th>Art.No</th>
-            <th>Item name</th>
-            <th>Design</th>
-            <th>Price</th>
-            <th>Amount</th>
-            <th>&nbsp;</th>
-            </thead>
-          <tbody>
+        <tbody>
         {props.cart.map((data, index) => (
-          <tr>
-            <td><img src={data.product.colors[0].imagePath ? (config.api + "/" + data.product.colors[0].imagePath[0]) : ""}  alt={"photo_00"} className="product-img" /></td>
-            <td>{data.product.artNo}</td>
-            <td style={{wordBreak: "break-all"}}>{data.product.itemName}</td>
-            <td>{data.product.design}</td>
+          <tr >
+            <td style={{ paddingBottom : "10px"}}>
+              <img 
+                src={data.product.colors[0].imagePath ? (config.api + "/" + data.product.colors[0].imagePath[0]) : ""}
+                alt={"photo_00"}
+                style={{ borderRadius: "6px" }} />
+            </td>
+            <td style={{wordBreak: "break-all"}}>
+            <Tooltip title={"art." + data.product.artNo + " ref." + data.product.refNo}>
+              {data.product.itemName}&nbsp;-&nbsp;
+              {data.product.design}
+            </Tooltip>
+            </td>
             <td>{ (data.amount > 500 ? data.product.price : ( data.amount > 300 ? data.product.price1 : data.product.price2 ))} $</td>
             <td><QuantityInput step={1} onChange={(e,v)=>{ setOrderAmount(data.product.id,v)}} defaultValue={data.amount} /> </td>
             <td>
             <IconButton aria-label="delete">
-              <DeleteIcon onClick={(e)=>{deleteFromCart(data.product.id,data.amount)}} />
+              <DeleteIcon 
+                sx={{ color: "#18515E", fontSize: 26 }}
+                onClick={(e)=>{deleteFromCart(data.product.id,data.amount)}} >
+
+              </DeleteIcon>
             </IconButton>
             </td>
             </tr>
             ))}
           </tbody>
         </table>)}
+        
         </Box>
         <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2}}> Delivery information </Typography>
         <Grid container spacing={1} >
@@ -820,6 +822,16 @@ export default function Home(props) {
             className="add-to-cart-button"
             onClick={handleMakeOrder} >
                 Make order
+        </Button>
+        <Button
+            variant="contained"
+            //sx={{...roundButtonStyle, ...{ml: 3}}}
+            className="add-to-cart-button"
+            sx={{ml: 1}}
+            onClick={() => {
+              setShowShoppingCart(false);
+              }}>
+                Close
         </Button>
         </Box>
         </Box>

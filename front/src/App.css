@@ -295,8 +295,8 @@ table.shopping-cart {
 
 table.shopping-cart td {
   padding: 6px 6px 0 6px; 
-  text-align: center; 
-  height: 55px;
+  text-align: left; 
+  height: 125px;
 }
 
 table.shopping-cart thead {
@@ -308,7 +308,7 @@ table.shopping-cart th {
 }
 
 table.shopping-cart  td img {
-  max-width: 70px;
+  max-width: 120px;
   
 }
 

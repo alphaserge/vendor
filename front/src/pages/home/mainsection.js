@@ -159,7 +159,7 @@ useEffect(() => {
       </Grid>
     </Box>
 
-    <Box sx={{ backgroundColor: "#abb39c", color: "#eee", alignContent: "center" }} style={{ height: "150px" }}  >
+    <Box sx={{ backgroundColor: "#abb39c", color: "#eee", alignContent: "center" }} style={{ height: "90px" }}  >
       <Grid container spacing={2} sx={{ alignContent: "center"  }} >
       <Grid item xs={12} md={4} key={"mainsect-left"} justifyItems={{ xs: "center", md: "right" }} sx={{ alignContent: "center" }} >
         <Box sx={{display: "flex", flexDirection: "row", color: APPEARANCE.BLACK }}>
@@ -228,7 +228,7 @@ useEffect(() => {
             alt={""}
           /> */}
           <picture class="header-logo-picture">
-          <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" style={{padding: 0, margin: 0}}>
+          <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" style={{padding: 0, margin: 0, paddingTop: "10px"}}>
           </img>
           </picture>
 
@@ -310,7 +310,7 @@ useEffect(() => {
     </Box>
     </Box> 
 
-    <Box  sx={{ backgroundColor: "#fff", color: "#222", zIndex: 10, position: "absolute", left: 0, width: "100%", paddingBottom: "12px"  }} display={openMenu?"block":"none"} >
+    <Box  sx={{ backgroundColor: "#d8d8d8", color: "#222", zIndex: 10, position: "absolute", left: 0, width: "100%", paddingBottom: "12px"  }} display={openMenu?"block":"none"} >
 
     <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==0?"block":"none"}>
     <ul sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="four-column-list center-content-menu" >
