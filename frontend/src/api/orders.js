@@ -52,3 +52,31 @@ export const getOrders = (setFn) => {
     }
   }
   
+  export const vendorQuantity = async (o) => {
+
+    let items  = []
+
+    o.items.forEach(el => {
+      items.push({Id: el.id, VendorQuantity: el.vendorQuantity })
+    })
+
+    let order = {
+      Id: o.id,
+      Items: items
+    }
+    const responce = await fetch(config.api + '/VendorOrders/VendorQuantity/', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(
+        order,
+      )
+    })
+
+    console.log(responce);
+
+    return {
+      ok: true,
+      message: "The vendor quantity has been sended"
+    }
+  }
+  

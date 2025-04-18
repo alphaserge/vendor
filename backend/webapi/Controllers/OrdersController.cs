@@ -46,6 +46,90 @@ namespace chiffon_back.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
+        [HttpGet("Order")]
+        public Models.Order Order([FromQuery] string id)
+        {
+            try
+            {
+                //var user = ctx.Users.FirstOrDefault(x => x.Id.ToString() == id);
+                //int? vendorId = user != null ? user.VendorId : 0;
+                //if (vendorId <= 0) vendorId = 1;
+                //if (vendorId < 0) vendorId = 0;
+
+                Models.Order o = config.CreateMapper().Map<Models.Order>(ctx.Orders.FirstOrDefault(x => x.Id.ToString() == id));
+
+                var items = from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
+                            join p in ctx.Products on oi.ProductId equals p.Id into jointable
+                            from j in jointable.DefaultIfEmpty()
+                            join v in ctx.Vendors on j.VendorId equals v.Id into joinvendors
+                            from jv in joinvendors.DefaultIfEmpty()
+                            select new { oi, j, jv };
+
+                List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
+                foreach (var item in items)
+                {
+                    Models.OrderItem orderItem = new Models.OrderItem()
+                    {
+                        OrderId = o.Id,
+                        ProductId = item.oi.ProductId,
+                        Id = item.oi.Id,
+                        ArtNo = item.j.ArtNo,
+                        RefNo = item.j.RefNo,
+                        ItemName = item.j.ItemName,
+                        Composition = item.j.Composition,
+                        Design = item.j.Design,
+                        Price = item.oi.Price,
+                        Quantity = item.oi.Quantity,
+                        VendorQuantity = item.oi.VendorQuantity,
+                        VendorId = item.j.VendorId,
+                        VendorName = item.jv.VendorName
+                    };
+
+                    string imagePath = string.Empty;
+                    if (!String.IsNullOrEmpty(item.j.PhotoUuids))
+                    {
+                        foreach (string uuid in PhotoHelper.GetPhotoUuids(item.j.PhotoUuids))
+                        {
+                            var imageFiles = DirectoryHelper.GetImageFiles(uuid);
+                            if (imageFiles.Count > 0)
+                            {
+                                imagePath = imageFiles[0];
+                                break;
+                            }
+                        }
+                    }
+
+                    if (String.IsNullOrEmpty(imagePath))
+                    {
+                        foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == item.j.Id).ToList())
+                        {
+                            var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                            if (imageFiles.Count > 0)
+                            {
+                                imagePath = imageFiles[0];
+                                break;
+                            }
+                        }
+                    }
+
+                    orderItem.imagePath = imagePath;
+                    orderItems.Add(orderItem);
+                }
+                o.Items = orderItems.ToArray();
+
+                return o;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/Order: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/Order: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+            }
+            return new Models.Order();
+        }
+
         [HttpGet(Name = "Orders")]
         public IEnumerable<Models.Order> Get()
         {
@@ -78,6 +162,7 @@ namespace chiffon_back.Controllers
                         Design = item.j.Design,
                         Price = item.oi.Price,
                         Quantity = item.oi.Quantity,
+                        VendorQuantity = item.oi.VendorQuantity,
                         VendorId = item.j.VendorId,
                         VendorName = item.jv.VendorName
                     };
@@ -154,7 +239,8 @@ namespace chiffon_back.Controllers
                     Composition = item.j.Composition,
                     Design = item.j.Design,
                     Price = item.oi.Price,
-                    Quantity = item.oi.Quantity
+                    Quantity = item.oi.Quantity,
+                    VendorQuantity = item.oi.VendorQuantity,
                 };
 
                 orderItems.Add(orderItem);

@@ -8,6 +8,7 @@
         public int ProductId { get; set; }
         public int? VendorId { get; set; }
         public decimal? Quantity { get; set; }
+        public decimal? VendorQuantity { get; set; }
         public string? ItemName { get; set; }
         public string? RefNo{ get; set; }
         public string? ArtNo { get; set; }

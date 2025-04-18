@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -23,9 +24,12 @@ import { formattedDate, computePrice } from '../../functions/helper';
 import { sendToVendor } from '../../api/orders'
 
 import config from "../../config.json"
+import { getFromUrl } from '../../functions/helper';
 
 const defaultTheme = createTheme()
 const itemStyle = { width: 265 }
+const itemStyle1 = { width: 80, mt: '-3px', ml: 0, mr: 0, mb: '-3px', height: 1 }
+
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -50,6 +54,7 @@ export default function VendorOrderRow(props) {
 
     const [showInfo, setShowInfo] = React.useState(false);
     const [info, setInfo] = React.useState("");
+    const [vendorQty, setVendorQty] = React.useState(null);
 
     const handleSendToVendor = (vendorId) => {
       sendToVendor(vendorId)
@@ -60,6 +65,13 @@ export default function VendorOrderRow(props) {
     
     const handleSendToGeneral = (vendorId) => {
       sendToVendor(vendorId)
+    }
+
+    const handleSendToClient = (vendorId) => {
+      sendToVendor(vendorId)
+      if (props.showInfo) {
+        props.showInfo("Order successfully sent to vendor " + props.data.vendorName)
+      }
     }
     
     useEffect(() => {
@@ -107,8 +119,24 @@ export default function VendorOrderRow(props) {
                 <td className="order-item-label">Ref No:</td>
                 <td>{item.refNo}</td>
                 <td className="order-item-value" colspan={3}><div style={{width: "240px"}}>{item.composition}</div></td>
-                <td className="order-item-label">Price:</td>
-                <td className="order-item-value">{item.price}&nbsp;$</td>
+                { getFromUrl('vendor')!=1 && <td className="order-item-label">Price:</td> }
+                { getFromUrl('vendor')!=1 && <td className="order-item-value">{item.price}&nbsp;$</td> }
+                { getFromUrl('vendor')==1 && <td className="order-item-label">Available:</td> }
+                { getFromUrl('vendor')==1 && item.vendorQuantity && <td className="order-item-value">{item.vendorQuantity}&nbsp;$</td> }
+                { getFromUrl('vendor')==1 && !item.vendorQuantity && 
+                <td className="order-item-value">
+              <TextField
+                margin="normal"
+                size="small" 
+                id="itemName"
+                //label="Item name"
+                name="itemName"
+                sx = {itemStyle1}
+                value={item.vendorQuantity}
+                onChange={ev => props.setVendorQuantity(item.id, ev.target.value)}
+              />
+
+                </td> }
               </tr>
               <tr>
                 <td className="order-item-label">Design:</td>
@@ -127,8 +155,9 @@ export default function VendorOrderRow(props) {
         </CardContent>
 
     <CardActions sx={{ justifyContent: "right", mr: 3}} >
-      {props.user.vendorId==1 && <Button size="medium" onClick={ (e) => { handleSendToVendor(props.data.vendorId) }}>Send to vendor</Button>}
-      {props.user.vendorId!=1 && <Button size="medium" onClick={ (e) => { handleSendToGeneral(props.data.vendorId) }}>Send to general vendor</Button>}
+      {getFromUrl('vendor')!=1 && <Button size="medium" onClick={ (e) => { handleSendToVendor(props.data.vendorId) }}>Send to vendor</Button>}
+      {props.user.vendorId!=1 && getFromUrl('vendor')!=1 && <Button size="medium" onClick={ (e) => { handleSendToGeneral(props.data.vendorId) }}>Send to general vendor</Button>}
+      {getFromUrl('vendor')==1 && <Button size="medium" onClick={ (e) => { props.sendVendorQuantity(props.index) }}>Send to client</Button>}
       
     </CardActions>
   </Card>

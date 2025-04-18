@@ -3,6 +3,7 @@ using chiffon_back.Code;
 using chiffon_back.Context;
 using chiffon_back.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 
 //using Microsoft.AspNetCore.Cors;
@@ -58,7 +59,7 @@ namespace chiffon_back.Controllers
             var query = ctx.VendorOrders.AsQueryable();
             if (vendorId != 1)
             {
-                query = query.Where(x=>x.VendorId == vendorId);
+                query = query.Where(x => x.VendorId == vendorId);
             }
             switch (status)
             {
@@ -69,7 +70,7 @@ namespace chiffon_back.Controllers
             List<Models.VendorOrder> orders = query
                 .Select(x => config.CreateMapper().Map<Models.VendorOrder>(x)).ToList();
 
-            foreach(Models.VendorOrder o in orders)
+            foreach (Models.VendorOrder o in orders)
             {
                 var order = ctx.Vendors.FirstOrDefault(x => x.Id == vendorId);
                 if (order != null)
@@ -78,16 +79,18 @@ namespace chiffon_back.Controllers
                 }
             }
 
-            foreach (var o in orders) {
+            foreach (var o in orders)
+            {
                 var items = from oi in ctx.OrderItems.Where(x => x.VendorOrderId == o.Id)
                             join p in ctx.Products on oi.ProductId equals p.Id into jointable
                             from j in jointable.DefaultIfEmpty()
                             join v in ctx.Vendors on j.VendorId equals v.Id into joinvendors
                             from jv in joinvendors.DefaultIfEmpty()
                             select new { oi, j, jv };
-                
+
                 List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
-                foreach (var item in items) {
+                foreach (var item in items)
+                {
                     Models.OrderItem orderItem = new Models.OrderItem()
                     {
                         VendorOrderId = o.Id,
@@ -100,6 +103,7 @@ namespace chiffon_back.Controllers
                         Design = item.j.Design,
                         Price = item.oi.Price,
                         Quantity = item.oi.Quantity,
+                        VendorQuantity = item.oi.VendorQuantity,
                         VendorId = item.j.VendorId,
                         VendorName = item.jv.VendorName
                     };
@@ -131,7 +135,7 @@ namespace chiffon_back.Controllers
                         }
                     }
 
-                    orderItem.imagePath = imagePath;    
+                    orderItem.imagePath = imagePath;
                     orderItems.Add(orderItem);
                 }
                 o.Items = orderItems.ToArray();
@@ -192,6 +196,7 @@ namespace chiffon_back.Controllers
                     Design = item.jp.Design,
                     Price = item.oi.Price,
                     Quantity = item.oi.Quantity,
+                    VendorQuantity = item.oi.VendorQuantity,
                     VendorId = item.jp.VendorId,
                     VendorName = item.jv.VendorName
                 };
@@ -268,7 +273,8 @@ namespace chiffon_back.Controllers
                     Composition = item.j.Composition,
                     Design = item.j.Design,
                     Price = item.oi.Price,
-                    Quantity = item.oi.Quantity
+                    Quantity = item.oi.Quantity,
+                    VendorQuantity = item.oi.VendorQuantity
                 };
 
                 orderItems.Add(orderItem);
@@ -311,11 +317,13 @@ namespace chiffon_back.Controllers
                 newVendorOrder.VendorId = vendorId;
 
                 int? max = 0;
-                try { 
+                try
+                {
                     max = ctx.VendorOrders.Max(x => x.Number);
                     if (!max.HasValue)
-                    max = 0;
-                } catch (Exception ex)
+                        max = 0;
+                }
+                catch (Exception ex)
                 {
                     max = 0;
                 }
@@ -339,13 +347,13 @@ namespace chiffon_back.Controllers
 
                 int numItem = 0;
                 decimal total = 0m;
-                string itemsBody = $"<table style='background-color: #def; padding: 20px;'>" + 
-                    $"<thead><th style={label}><b>Photo</b></th><th style={label}><b>Fabric name</b></th>" + 
-                    $"<th style={label}><b>Ref No.</b></th><th style={label}><b>Art No.</b></th>" + 
+                string itemsBody = $"<table style='background-color: #def; padding: 20px;'>" +
+                    $"<thead><th style={label}><b>Photo</b></th><th style={label}><b>Fabric name</b></th>" +
+                    $"<th style={label}><b>Ref No.</b></th><th style={label}><b>Art No.</b></th>" +
                     $"<th style={label}><b>Design</b></th><th style={label}><b>Quantity</b></th></thead>";
 
                 List<LinkedResource> linkedRes = new List<LinkedResource>();
-                foreach(var item in items)
+                foreach (var item in items)
                 {
                     numItem++;
                     Context.Product? product = ctx.Products.FirstOrDefault(x => x.Id == item.oi.ProductId);
@@ -380,19 +388,19 @@ namespace chiffon_back.Controllers
                             case ".gif": mediaType = MediaTypeNames.Image.Gif; break;
                             case ".tiff": mediaType = MediaTypeNames.Image.Tiff; break;
                         }
-                        
+
                         LinkedResource LinkedImg = new LinkedResource(path, mediaType);
                         LinkedImg.ContentId = $"img{numItem}";
-                        itemsBody += $"<tr><td style={cell}><img src=cid:{LinkedImg.ContentId} id='img' alt='' width='80px' height='80px'/></td><td style={cell}>" 
-                            + product.ItemName + $"</td><td style={cell}>" 
-                            + product.RefNo + $"</td style={cell}><td>" 
-                            + product.ArtNo + $"</td><td style={cell}>" 
-                            + product.Design + $"</td><td style={rightAlign}>" 
-                            + item.oi.Quantity+ $" m </td></tr>";
+                        itemsBody += $"<tr><td style={cell}><img src=cid:{LinkedImg.ContentId} id='img' alt='' width='80px' height='80px'/></td><td style={cell}>"
+                            + product.ItemName + $"</td><td style={cell}>"
+                            + product.RefNo + $"</td style={cell}><td>"
+                            + product.ArtNo + $"</td><td style={cell}>"
+                            + product.Design + $"</td><td style={rightAlign}>"
+                            + item.oi.Quantity + $" m </td></tr>";
                         linkedRes.Add(LinkedImg);
 
                         if (item.oi.Price != null && item.oi.Quantity != null)
-                            total += item.oi.Price.Value  * item.oi.Quantity.Value;
+                            total += item.oi.Price.Value * item.oi.Quantity.Value;
                     }
                 }
                 itemsBody += "</table>";
@@ -416,7 +424,7 @@ namespace chiffon_back.Controllers
                     body += "<p>Headquarters:<br/>Bolshaya Gruzinskaya, 20, 3A/P Moscow, Russia.<br/>Postal code: 123242</p>";
 
                     AlternateView AV = AlternateView.CreateAlternateViewFromString(body, null, MediaTypeNames.Text.Html);
-                    foreach(LinkedResource res in linkedRes)
+                    foreach (LinkedResource res in linkedRes)
                         AV.LinkedResources.Add(res);
 
                     SmtpClient client = new SmtpClient("smtp.mail.ru", Convert.ToInt32(587))
@@ -426,7 +434,7 @@ namespace chiffon_back.Controllers
                         DeliveryMethod = SmtpDeliveryMethod.Network,
                         Timeout = 5000
                     };
-                    
+
                     mess.From = new MailAddress("elizarov.sa@mail.ru");
                     mess.To.Add(new MailAddress(vendor.Email));
                     mess.Subject = "A new order has been created in the company Angelika";
@@ -457,5 +465,35 @@ namespace chiffon_back.Controllers
                 return CreatedAtAction(nameof(Get), new { id = -1 }, null);
             }
         }
+
+
+        //[HttpPost("SendToVendor/{vendorId}")]
+        [HttpPost("VendorQuantity")]
+        public ActionResult<Models.VendorOrder> VendorQuantity(Models.VendorOrder order)
+        {
+            int rc = 0;
+            try
+            {
+                //var items = ctx.OrderItems.Where(x => x.VendorOrderId == order.Id);
+
+                foreach(var it in ctx.OrderItems.Where(x => x.VendorOrderId == order.Id))
+                {
+                    var item = order.Items.FirstOrDefault(x => x.Id==it.Id);
+                    if (item != null)
+                    {
+                        it.VendorQuantity = item.VendorQuantity;
+                        rc++;
+                    }
+                }
+                ctx.SaveChanges();
+
+                return CreatedAtAction(nameof(Get), new { id = order.Id }, rc);
+            }
+            catch (Exception ex)
+            {
+                return CreatedAtAction(nameof(Get), new { id = -1 }, null);
+            }
+        }
     }
+
 }

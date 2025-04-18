@@ -49,3 +49,10 @@ export const computePrice = (price, amount) => {
 
     return price*1.1
 }
+
+export const getFromUrl = (name) => {
+    const search = window.location.search
+    const params = new URLSearchParams(search)
+    return params.get(name)
+  }
+  

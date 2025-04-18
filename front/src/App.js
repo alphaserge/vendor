@@ -3,6 +3,8 @@ import Home from './pages/home/home';
 import UpdateProduct from './pages/home/updateproduct';
 import AddProduct from './pages/home/addproduct';
 import ListProduct from './pages/home/listproduct';
+import ClientOrders from './pages/home/clientorders';
+import ClientOrder from './pages/home/clientorder';
 import Menu from './pages/home/menu';
 import Login from './pages/auth/login';
 import Logout from './pages/auth/logout';
@@ -178,10 +180,6 @@ function App() {
         })*/
   }, [])
 
-
-  console.log("cart::")
-  console.log(cart.length)
-
   return (
     <div className="App">
       <BrowserRouter>
@@ -197,6 +195,8 @@ function App() {
           <Route path="/addproduct" element={<AddProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/updateproduct" element={<UpdateProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/listproduct" element={<ListProduct user={user} lastAction={lastAction} setLastAction={setLastAction} seasons={seasons} />} />
+          <Route path="/clientorders" element={<ClientOrders user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
+          <Route path="/clientorder" element={<ClientOrder user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/menu" element={<Menu lastAction={lastAction} setLastAction={setLastAction} />} />
           {/* <Route path="/header" element={<PrimarySearchAppBar />} /> */}
         </Routes>

@@ -366,7 +366,7 @@ export default function Home(props) {
 
       //const params = new url.URLSearchParams({ foo: 'bar' });
 
-      axios.get(config.api + '/Products/Products?id='+props.user.id,
+      axios.get(config.api + '/Products/Products?id=0',//+props.user.id,
         { params:
             {
               name: itemName,

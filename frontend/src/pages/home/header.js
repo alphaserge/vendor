@@ -18,10 +18,11 @@ import PersonIcon from '@mui/icons-material/Person';
 import { Icon } from '@mui/material';
 
 import { APPEARANCE } from '../../appearance';
+import { getFromUrl } from '../../functions/helper';
 
 import config from "../../config.json"
 
-const pages = ['Fabrics', 'Accessories', 'Client Orders', 'Vendor Orders', 'Help', 'Contacts' ];
+const pages = ['Fabrics', 'Accessories', 'Client Orders', 'Vendor Orders', 'Help', 'Orders', 'Contacts' ]; 
 const settings = ['Profile', 'Account', 'Dashboard', 'Login', 'Logout', 'Register'];
 
 const menuPagesStyle = { fontSize: "14px", fontWeight: "normal", color: APPEARANCE.WHITE2, textTransform: "none" }
@@ -37,6 +38,8 @@ export default function Header(props) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
+
+  const [menu, setMenu] = React.useState(pages);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -64,6 +67,7 @@ export default function Header(props) {
 
     if (value == "Client Orders") { navigate("/clientorders"); return; }
     if (value == "Vendor Orders") { navigate("/vendororders"); return; }
+    if (value == "Orders") { navigate("/orders?vendor=1"); return; }
     if (value == "Contacts") { navigate("/contacts"); return; }
     if (value == "Profile") { navigate("/profile"); return; }
     if (value == "Account") { navigate("/account"); return; }
@@ -76,7 +80,26 @@ export default function Header(props) {
     setAnchorElNav(null);
   };
 
+
   useEffect(() => {
+
+    if (getFromUrl('vendor')+'' == '1') {
+      var index = pages.indexOf('Vendor Orders');
+      if (index !== -1) {
+        pages.splice(index, 1);
+      }
+      index = pages.indexOf('Client Orders');
+      if (index !== -1) {
+        pages.splice(index, 1);
+      }
+      setMenu(pages)
+    } else {
+      var index = pages.indexOf('Orders');
+      if (index !== -1) {
+        pages.splice(index, 1);
+      }
+    }
+  
     //console.log('props.title')
     //console.log(props.title)
   }, []);
@@ -132,7 +155,7 @@ export default function Header(props) {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page,index) => (
+              {menu.map((page,index) => (
                 <MenuItem 
                   key={"key-"+index} 
                   data-menu-value={page}

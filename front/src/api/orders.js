@@ -34,5 +34,23 @@ export const getOrders = (setFn) => {
       ok: true,
       message: "The new order has been added"
     }
-
 };
+
+export const sendToVendor = async (vendorId) => {
+
+  const responce = await fetch(config.api + '/VendorOrders/SendToVendor/' + vendorId, {
+    method: "POST",
+    headers: { 'Content-Type': 'application/json' },
+    /*body: JSON.stringify({
+      vendorId: vendorId,
+    })*/
+  })
+
+  console.log(responce);
+
+  return {
+    ok: true,
+    message: "The new order has been sended"
+  }
+}
+
