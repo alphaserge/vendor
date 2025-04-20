@@ -152,6 +152,9 @@ export default function Orders(props) {
     navigate("/")
   }
 
+  console.log('viewAs:')
+  console.log(viewAs)
+  
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -177,7 +180,7 @@ export default function Orders(props) {
             </Select>
           </Box>
 
-          { viewAs == "dummy" &&
+          {/* { viewAs == "dummy" &&
           <Grid container spacing={2} >
             { view === "grid" && orders.map((data, index) => (
             <Grid item xs={12} md={6} key={"itemprod-"+index} >
@@ -189,7 +192,7 @@ export default function Orders(props) {
               <ItemOrderRow data={data} index={index} />
               </Grid>
             ))}
-          </Grid> }
+          </Grid> } */}
 
           { viewAs != "dummy" &&
           <Grid container spacing={2} >
