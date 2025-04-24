@@ -30,7 +30,6 @@ const defaultTheme = createTheme()
 const itemStyle = { width: 265 }
 const itemStyle1 = { width: 80, mt: '-3px', ml: 0, mr: 0, mb: '-3px', height: 1 }
 
-
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -47,7 +46,7 @@ const Input = styled('input')({
 });
 
 
-export default function VendorOrderRow(props) {
+export default function MyGridRow(props) {
 
     const navigate = useNavigate();
     const theme = useTheme();
@@ -80,86 +79,61 @@ export default function VendorOrderRow(props) {
   return (
     
     <Card sx={{ maxWidth: 740, mt: 2 }}>
-
-    <CardContent sx={{ pb: 0}}>
+    <CardContent sx={{ pb: 0 }}>
 
       { props.data.items.map((item, index) => (
           <Card style={{ border: "none", boxShadow: "none" }}>
-          <CardContent sx={{display: "flex", flexDirection: "row"}}>
-          <Box component={"img"} key={"product-swiper-"+index} 
+          <CardContent sx={{ display: "flex", flexDirection: "row" }}>
+          { props.showImage && <Box component={"img"} key={"grid-image-"+index} 
                 src={config.api + "/" + item.imagePath} 
-                sx={{width: "100px", height: "100px"}}
-                alt={"photo"+(index+1)}  />
-            
-            <table style={{width: "100%", marginLeft: "10px"}}>
-              <tr>
-                <td className="order-item-label">Art No:</td>
-                <td className="order-item-value">{item.artNo}</td>
-                <td className="order-caption" colspan={3}><div style={{width: "240px"}}>{item.itemName}</div></td>
-                <td className="order-item-label">Quantity:</td>
-                <td className="order-item-value">{item.quantity}&nbsp;m</td>
-                </tr>
-              <tr>
-                <td className="order-item-label">Ref No:</td>
-                <td>{item.refNo}</td>
-                <td className="order-item-value" colspan={3}><div style={{width: "240px"}}>{item.composition}</div></td>
-                { getFromUrl('vendor')!=1 && <td className="order-item-label">Price:</td> }
-                { getFromUrl('vendor')!=1 && <td className="order-item-value">{item.price}&nbsp;$</td> }
-                { getFromUrl('vendor')==1 && <td className="order-item-label">Available:</td> }
-                { getFromUrl('vendor')==1 && item.vendorQuantity && <td className="order-item-value">{item.vendorQuantity}&nbsp;$</td> }
-                { getFromUrl('vendor')==1 && !item.vendorQuantity && 
-                <td className="order-item-value">
-              <TextField
-                margin="normal"
-                size="small" 
-                id="itemName"
-                //label="Item name"
-                name="itemName"
-                sx = {itemStyle1}
-                value={item.vendorQuantity}
-                onChange={ev => props.setVendorQuantity(item.id, ev.target.value)}
-              />
+                sx={{width: "65px", height: "65px"}}
+                alt={"photo"+(index+1)}  /> }
 
-                </td> }
-              </tr>
-              <tr>
-                <td className="order-item-label">Design:</td>
-                <td className="order-item-value">{item.design}</td>
-                <td className="order-item-label" colspan={2}>Vendor:&nbsp;<span className="order-caption">{item.vendorName}</span></td>
-                <td></td>
-                <td></td>
-                <td className="order-item-label">Total:</td>
-                <td className="order-item-value">{computePrice(item.price,item.quantity).toFixed(2)}&nbsp;$</td>
-              </tr>
-            </table>
+            { props.showName && <Box component={"div"} key={"grid-valuename-"+index} >
+                {item.valueName}
+            </Box> }
+
+            { props.showSpec && <Box component={"div"} key={"grid-valuespec-"+index} >
+                {item.valueSpec}
+            </Box> }
+
+            { props.showOwner && <Box component={"div"} key={"grid-valueowner-"+index} >
+                {item.valueOwner}
+            </Box> }
+
+            { props.showPrice && <Box component={"div"} key={"grid-valueprice-"+index} >
+                {item.valuePrice}
+            </Box> }
+
+            { props.showQuantity && <Box component={"div"} key={"grid-valuequantity-"+index} >
+                {item.valueQuantity}
+            </Box> }
+
+            { props.showQuantity2 && <Box component={"div"} key={"grid-valuequantity2-"+index} >
+                {item.valueQuantity2}
+            </Box> }
+
+            { props.editQuantity2 && <TextField
+                  margin="normal"
+                  size="small" 
+                  id={"grid-valuequantity2-" + index}
+                  name={"grid-valuequantity2-" + index}
+                  sx = {itemStyle1}
+                  value={item.valueQuantity2}
+                  onChange={ev => props.setQuantity2(props.id, ev.target.value)}
+                /> }
+
           </CardContent>
           </Card>
           )) }
 
         </CardContent>
 
-    <CardActions sx={{ justifyContent: "right", mr: 3}} >
+    {/* <CardActions sx={{ justifyContent: "right", mr: 3}} >
       {getFromUrl('vendor')!=1 && <Button size="medium" onClick={ (e) => { handleSendToVendor(props.data.vendorId) }}>Send to vendor</Button>}
       {props.user.vendorId!=1 && getFromUrl('vendor')!=1 && <Button size="medium" onClick={ (e) => { handleSendToGeneral(props.data.vendorId) }}>Send to general vendor</Button>}
       {getFromUrl('vendor')==1 && <Button size="medium" onClick={ (e) => { props.sendVendorQuantity(props.index) }}>Send to client</Button>}
-      
-    </CardActions>
+    </CardActions> */}
   </Card>
-
-  /*
-              {props.data.colors.map((cv, index) => {
-              return <>
-              <SwiperSlide key={"product-swiper"+index} sx={{ display: "flex", justifyContent: "center"}} >
-                <Box className="product-img-holder-small" >
-                  <Box component={"img"} 
-                    key={index} 
-                    src={config.api + "/" + cv.imagePath[0]} 
-                    alt={"photo"+(index+1)} 
-                    className="product-img" />
-                  </Box>
-              </SwiperSlide></>
-
-  */
-
 );
 }

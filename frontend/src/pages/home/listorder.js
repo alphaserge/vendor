@@ -35,6 +35,7 @@ import ItemOrder  from './itemorder';
 import ItemOrderRow from './itemorderrow';
 import VendorOrderRow from './vendororderrow';
 import MySelect from '../../components/myselect';
+import MyGrid from '../../components/mygrid';
 import { getOrders, vendorQuantity } from '../../api/orders'
 
 import { APPEARANCE } from '../../appearance';
@@ -72,7 +73,7 @@ const getFromUrl = (name) => {
 }
 
 
-export default function Orders(props) {
+export default function ListOrder(props) {
 
     const navigate = useNavigate();
 
@@ -135,7 +136,20 @@ export default function Orders(props) {
               search: search
             }}*/)
       .then(function (res) {
-          var result = res.data;
+
+          var result = res.data.map((d) => 
+          {
+              return {
+                imagePath = d.imagePath,
+                valueName = d.itemName,
+                valueSpec = d.composition,
+                valuePrice = d.price,
+                valueOwner = d.vendorName,
+                valueQuantity = d.quantity,
+                valueQuantity2 = d.vendorQuantity,
+              }
+          });
+
           setOrders(result)
           setFilter(false)
       })
@@ -178,6 +192,7 @@ export default function Orders(props) {
           </Box>
 
           { viewAs != "dummy" &&
+          <MyGrid 
           <Grid container spacing={2} >
             { view === "grid" && orders.map((data, index) => (
             <Grid item xs={12} md={6} key={"itemprod-"+index} >
