@@ -2,29 +2,17 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Collapse from '@mui/material/Collapse';
-import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
-import { Swiper, SwiperSlide } from "swiper/react";
-
 import "swiper/css";
-import { APPEARANCE } from '../../appearance';
-import { Link } from "@mui/material";
-import { formattedDate, computePrice } from '../../functions/helper';
-import { sendToVendor } from '../../api/orders'
+import { sendToVendor } from '../api/orders'
 
 import config from "../../config.json"
-import { getFromUrl } from '../../functions/helper';
 
 const defaultTheme = createTheme()
 const itemStyle = { width: 265 }
@@ -89,31 +77,31 @@ export default function MyGridRow(props) {
                 sx={{width: "65px", height: "65px"}}
                 alt={"photo"+(index+1)}  /> }
 
-            { props.showName && <Box component={"div"} key={"grid-valuename-"+index} >
+            { props.show.name && <Box component={"div"} key={"grid-valuename-"+index} >
                 {item.valueName}
             </Box> }
 
-            { props.showSpec && <Box component={"div"} key={"grid-valuespec-"+index} >
+            { props.show.spec && <Box component={"div"} key={"grid-valuespec-"+index} >
                 {item.valueSpec}
             </Box> }
 
-            { props.showOwner && <Box component={"div"} key={"grid-valueowner-"+index} >
+            { props.show.owner && <Box component={"div"} key={"grid-valueowner-"+index} >
                 {item.valueOwner}
             </Box> }
 
-            { props.showPrice && <Box component={"div"} key={"grid-valueprice-"+index} >
+            { props.show.price && <Box component={"div"} key={"grid-valueprice-"+index} >
                 {item.valuePrice}
             </Box> }
 
-            { props.showQuantity && <Box component={"div"} key={"grid-valuequantity-"+index} >
+            { props.show.quantity && <Box component={"div"} key={"grid-valuequantity-"+index} >
                 {item.valueQuantity}
             </Box> }
 
-            { props.showQuantity2 && <Box component={"div"} key={"grid-valuequantity2-"+index} >
+            { props.show.quantity2 && <Box component={"div"} key={"grid-valuequantity2-"+index} >
                 {item.valueQuantity2}
             </Box> }
 
-            { props.editQuantity2 && <TextField
+            { props.edit.quantity2 && <TextField
                   margin="normal"
                   size="small" 
                   id={"grid-valuequantity2-" + index}

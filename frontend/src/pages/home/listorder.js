@@ -140,13 +140,13 @@ export default function ListOrder(props) {
           var result = res.data.map((d) => 
           {
               return {
-                imagePath = d.imagePath,
-                valueName = d.itemName,
-                valueSpec = d.composition,
-                valuePrice = d.price,
-                valueOwner = d.vendorName,
-                valueQuantity = d.quantity,
-                valueQuantity2 = d.vendorQuantity,
+                imagePath : d.imagePath,
+                valueName : d.itemName,
+                valueSpec : d.composition,
+                valuePrice : d.price,
+                valueOwner : d.vendorName,
+                valueQuantity : d.quantity,
+                valueQuantity2 : d.vendorQuantity,
               }
           });
 
@@ -192,19 +192,28 @@ export default function ListOrder(props) {
           </Box>
 
           { viewAs != "dummy" &&
-          <MyGrid 
-          <Grid container spacing={2} >
-            { view === "grid" && orders.map((data, index) => (
-            <Grid item xs={12} md={6} key={"itemprod-"+index} >
-              <ItemOrder data={data} index={index} />
-              </Grid>
-            ))}
-            { view === "rows" && orders.map((data, index) => (
-            <Grid item xs={12} md={12} key={"itemprod-"+index} >
-              <VendorOrderRow data={data} index={index} showForVendor={true} user={props.user} setVendorQuantity={setVendorQuantity} sendVendorQuantity={sendVendorQuantity} />
-              </Grid>
-            ))}
-          </Grid> }
+          <MyGrid data={orders} 
+            show = {{
+              name: true, 
+              spec: true, 
+              owner: true, 
+              price: true, 
+              quantity: true, 
+              quantity2: false, 
+            }}
+            edit = {{ quantity2: true }} /> }
+           {/* { viewAs != "dummy" && <Grid container spacing={2} >
+             { view === "grid" && orders.map((data, index) => (
+             <Grid item xs={12} md={6} key={"itemprod-"+index} >
+               <ItemOrder data={data} index={index} />
+               </Grid>
+             ))}
+             { view === "rows" && orders.map((data, index) => (
+             <Grid item xs={12} md={12} key={"itemprod-"+index} >
+               <VendorOrderRow data={data} index={index} showForVendor={true} user={props.user} setVendorQuantity={setVendorQuantity} sendVendorQuantity={sendVendorQuantity} />
+               </Grid>
+             ))}
+           </Grid> } */}
 
           </Box>
           <br/>
