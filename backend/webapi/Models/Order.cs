@@ -7,6 +7,7 @@
         public int VendorId { get; set; }
         public string? Uuid { get; set; }
         public int Number { get; set; }
+        public string? VendorName { get; set; }
         public string? ClientName { get; set; }
         public string? ClientPhone { get; set; }
         public string? ClientEmail { get; set; }

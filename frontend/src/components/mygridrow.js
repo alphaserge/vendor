@@ -1,47 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import { useTheme } from '@mui/material/styles';
-import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
 import "swiper/css";
 import { sendToVendor } from '../api/orders'
 
-import config from "../../config.json"
-
-const defaultTheme = createTheme()
-const itemStyle = { width: 265 }
-const itemStyle1 = { width: 80, mt: '-3px', ml: 0, mr: 0, mb: '-3px', height: 1 }
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-const Input = styled('input')({
-  display: 'none',
-});
-
+import config from "../config.json"
 
 export default function MyGridRow(props) {
-
-    const navigate = useNavigate();
-    const theme = useTheme();
-
-    const [showInfo, setShowInfo] = React.useState(false);
-    const [info, setInfo] = React.useState("");
-    const [vendorQty, setVendorQty] = React.useState(null);
 
     const handleSendToVendor = (vendorId) => {
       sendToVendor(vendorId)
@@ -66,62 +37,54 @@ export default function MyGridRow(props) {
 
   return (
     
-    <Card sx={{ maxWidth: 740, mt: 2 }}>
-    <CardContent sx={{ pb: 0 }}>
+      <Box>
+      
+          <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", padding: 0 }}>
+          { props.show.image && <Box component={"img"} key={"grid-image-" + props.index} 
+                src={config.api + "/" + props.item.imagePath} 
+                sx={{width: "40px", height: "30px", mr: 2}}
+                alt={"photo"+(props.index + 1)}  /> }
 
-      { props.data.items.map((item, index) => (
-          <Card style={{ border: "none", boxShadow: "none" }}>
-          <CardContent sx={{ display: "flex", flexDirection: "row" }}>
-          { props.showImage && <Box component={"img"} key={"grid-image-"+index} 
-                src={config.api + "/" + item.imagePath} 
-                sx={{width: "65px", height: "65px"}}
-                alt={"photo"+(index+1)}  /> }
-
-            { props.show.name && <Box component={"div"} key={"grid-valuename-"+index} >
-                {item.valueName}
+            { props.show.product && <Box component={"div"} key={"grid-valuename-" + props.index} sx={{ flexGrow: 1 }} >
+                {props.item.product}
             </Box> }
 
-            { props.show.spec && <Box component={"div"} key={"grid-valuespec-"+index} >
-                {item.valueSpec}
+            { props.show.spec && <Box component={"div"} key={"grid-valuespec-" + props.index} >
+                {props.item.spec}
             </Box> }
 
-            { props.show.owner && <Box component={"div"} key={"grid-valueowner-"+index} >
-                {item.valueOwner}
+            { props.show.vendor && <Box component={"div"} key={"grid-valueowner-" + props.index} sx={{ width: "120px" }} >
+                {props.item.vendor}
             </Box> }
 
-            { props.show.price && <Box component={"div"} key={"grid-valueprice-"+index} >
-                {item.valuePrice}
+            { props.show.price && <Box component={"div"} key={"grid-valueprice-" + props.index} sx={{ width: "60px", pl:1 }} >
+                {props.item.price}
             </Box> }
 
-            { props.show.quantity && <Box component={"div"} key={"grid-valuequantity-"+index} >
-                {item.valueQuantity}
+            { props.show.quantity && <Box component={"div"} key={"grid-valuequantity-" + props.index} sx={{ width: "60px", pl:1 }} >
+                {props.item.quantity}
             </Box> }
 
-            { props.show.quantity2 && <Box component={"div"} key={"grid-valuequantity2-"+index} >
-                {item.valueQuantity2}
+            { props.show.quantity2 && <Box component={"div"} key={"grid-valuequantity2-" + props.index} sx={{ width: "60px", pl:1 }} >
+                {props.item.quantity2}
             </Box> }
 
             { props.edit.quantity2 && <TextField
                   margin="normal"
                   size="small" 
-                  id={"grid-valuequantity2-" + index}
-                  name={"grid-valuequantity2-" + index}
-                  sx = {itemStyle1}
-                  value={item.valueQuantity2}
+                  id={"grid-valuequantity2-" + props.index}
+                  name={"grid-valuequantity2-" + props.index}
+                  sx = {{ width: 80, mt: '-3px', ml: 0, mr: 0, mb: '-3px' }}
+                  value={props.item.quantity2}
                   onChange={ev => props.setQuantity2(props.id, ev.target.value)}
+                  inputProps={{
+                    style: {
+                      height: "10px",
+                    },
+                  }}
                 /> }
 
-          </CardContent>
-          </Card>
-          )) }
-
-        </CardContent>
-
-    {/* <CardActions sx={{ justifyContent: "right", mr: 3}} >
-      {getFromUrl('vendor')!=1 && <Button size="medium" onClick={ (e) => { handleSendToVendor(props.data.vendorId) }}>Send to vendor</Button>}
-      {props.user.vendorId!=1 && getFromUrl('vendor')!=1 && <Button size="medium" onClick={ (e) => { handleSendToGeneral(props.data.vendorId) }}>Send to general vendor</Button>}
-      {getFromUrl('vendor')==1 && <Button size="medium" onClick={ (e) => { props.sendVendorQuantity(props.index) }}>Send to client</Button>}
-    </CardActions> */}
-  </Card>
+          </Box>
+  </Box>
 );
 }

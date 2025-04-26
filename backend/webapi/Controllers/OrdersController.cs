@@ -141,6 +141,7 @@ namespace chiffon_back.Controllers
                 .ToList();
 
             foreach (var o in orders) {
+                o.VendorName = ctx.Vendors.FirstOrDefault(x => x.Id == o.VendorId)?.VendorName;
                 var items = from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
                             join p in ctx.Products on oi.ProductId equals p.Id into jointable
                             from j in jointable.DefaultIfEmpty()
