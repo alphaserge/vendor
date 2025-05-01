@@ -167,7 +167,7 @@ export default function Home(props) {
 
     const matches_md = useMediaQuery(theme.breakpoints.up('md'));
 
-    const cartImageSize = matches_md ? "125px" : "90px";
+    const cartImageSize = matches_md ? "60px" : "90px";
 
     const modalSx = matches_md ? {
       position: 'absolute',
@@ -688,7 +688,7 @@ export default function Home(props) {
       <Card sx={{margin: "10px 0", padding: "10px"}} >
       <CardMedia
         component="img"
-        alt="green iguana"
+        alt="Fabric photo"
         sx={{  maxWidth: cartImageSize, maxHeight: cartImageSize, float: "left" }}
         image={data.product.colors[0].imagePath ? (config.api + "/" + data.product.colors[0].imagePath[0]) : ""}
       />
@@ -734,18 +734,23 @@ export default function Home(props) {
         <table class="shopping-cart" cellPadding={0} cellSpacing={0}>
         <tbody>
         {props.cart.map((data, index) => (
-          <tr >
-            <td style={{ paddingBottom : "10px"}}>
+          <tr style={{ height : "100px"}}>
+            <td >
               <img 
                 src={data.product.colors[0].imagePath ? (config.api + "/" + data.product.colors[0].imagePath[0]) : ""}
                 alt={"photo_00"}
                 style={{ borderRadius: "6px" }} />
             </td>
             <td style={{wordBreak: "break-all"}}>
-            <Tooltip title={"art." + data.product.artNo + " ref." + data.product.refNo}>
+              <table>
+                <tr><td>Item name:</td><td>{data.product.itemName}</td></tr>
+                <tr><td><span class="item-label"><span>Design:</span></span></td><td>{data.product.design}</td></tr>
+                <tr><td>Composition:</td><td>{data.product.composition}</td></tr>
+              </table>
+            {/* <Tooltip title={"art." + data.product.artNo + " ref." + data.product.refNo}>
               {data.product.itemName}&nbsp;-&nbsp;
               {data.product.design}
-            </Tooltip>
+            </Tooltip> */}
             </td>
             <td>{ (data.amount > 500 ? data.product.price : ( data.amount > 300 ? data.product.price1 : data.product.price2 ))} $</td>
             <td><QuantityInput step={1} onChange={(e,v)=>{ setOrderAmount(data.product.id,v)}} defaultValue={data.amount} /> </td>

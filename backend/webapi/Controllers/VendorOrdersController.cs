@@ -104,6 +104,8 @@ namespace chiffon_back.Controllers
                         Price = item.oi.Price,
                         Quantity = item.oi.Quantity,
                         VendorQuantity = item.oi.VendorQuantity,
+                        OrderRolls = item.oi.OrderRolls,
+                        Details = item.oi.Details,
                         VendorId = item.j.VendorId,
                         VendorName = item.jv.VendorName
                     };
@@ -197,6 +199,8 @@ namespace chiffon_back.Controllers
                     Price = item.oi.Price,
                     Quantity = item.oi.Quantity,
                     VendorQuantity = item.oi.VendorQuantity,
+                    OrderRolls = item.oi.OrderRolls,
+                    Details = item.oi.Details,
                     VendorId = item.jp.VendorId,
                     VendorName = item.jv.VendorName
                 };
@@ -274,7 +278,9 @@ namespace chiffon_back.Controllers
                     Design = item.j.Design,
                     Price = item.oi.Price,
                     Quantity = item.oi.Quantity,
-                    VendorQuantity = item.oi.VendorQuantity
+                    VendorQuantity = item.oi.VendorQuantity,
+                    OrderRolls = item.oi.OrderRolls,
+                    Details = item.oi.Details,
                 };
 
                 orderItems.Add(orderItem);
@@ -494,6 +500,35 @@ namespace chiffon_back.Controllers
                 return CreatedAtAction(nameof(Get), new { id = -1 }, null);
             }
         }
+
+
+        [HttpPost("Details")]
+        public ActionResult<Models.VendorOrder> Details(Models.VendorOrder order)
+        {
+            int rc = 0;
+            try
+            {
+                //var items = ctx.OrderItems.Where(x => x.VendorOrderId == order.Id);
+
+                foreach (var it in ctx.OrderItems.Where(x => x.VendorOrderId == order.Id))
+                {
+                    var item = order.Items.FirstOrDefault(x => x.Id == it.Id);
+                    if (item != null)
+                    {
+                        it.Details = item.Details;
+                        rc++;
+                    }
+                }
+                ctx.SaveChanges();
+
+                return CreatedAtAction(nameof(Get), new { id = order.Id }, rc);
+            }
+            catch (Exception ex)
+            {
+                return CreatedAtAction(nameof(Get), new { id = -1 }, null);
+            }
+        }
+
     }
 
 }

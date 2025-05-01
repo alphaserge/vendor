@@ -22,6 +22,7 @@
         public decimal? MetersInKG { get; set; }
         public decimal? Price { get; set; }
         public decimal? Stock { get; set; }
+        public decimal? RollLength { get; set; }
 
         public string? PhotoDir { get; set; }
         public string? Uuid { get; set; }

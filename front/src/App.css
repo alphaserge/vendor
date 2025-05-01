@@ -293,7 +293,7 @@ table.shopping-cart {
   width: 100%;
 }
 
-table.shopping-cart td {
+table.shopping-cart > td {
   padding: 6px 6px 0 6px; 
   text-align: left; 
   height: 125px;
@@ -308,10 +308,50 @@ table.shopping-cart th {
 }
 
 table.shopping-cart  td img {
-  max-width: 120px;
-  
+  max-width: 80px;
 }
 
+span.item-label  span:after {
+
+  content: "";
+  width: 100%;
+  width: 10px;
+  height: 20px;
+  display: block;
+  position: absolute;
+  position: relative; 
+  bottom: 5px;
+  left: 0;  
+
+  background-image: linear-gradient(90deg, #d3d4dd 50%, rgba(255, 255, 255, 0) 0%);
+  background-image: linear-gradient(90deg, #000 50%, rgba(255, 255, 255, 0) 0%);
+  background-position: bottom;
+  background-repeat: repeat-x;
+  background-size: 2px 1px; 
+
+  margin-right: -100%;
+ 
+}
+
+span.item-label {
+  overflow: hidden;
+}
+
+span.item-label span {
+  color: #868695;
+  width: 100%;
+  z-index: 1;
+  background-color: #fff;
+  padding-right: 12px;
+  position: relative;
+  box-sizing: border-box;
+  outline: none;
+}
+
+/* * {
+    box-sizing: border-box;
+    outline: none;
+} */
 
 /*
 @media (min-width:320px)  { smartphones, portrait iPhone, portrait 480x320 phones (Android)  }

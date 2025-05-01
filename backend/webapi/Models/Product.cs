@@ -30,6 +30,7 @@ namespace chiffon_back.Models
         public decimal? Price1 { get; set; } // 301-500
         public decimal? Price2 { get; set; }  // 300 and less
         public decimal? Stock { get; set; }
+        public decimal? RollLength { get; set; }
 
 
         public string? PhotoDir { get; set; }
@@ -116,6 +117,7 @@ namespace chiffon_back.Models
         public decimal? MetersInKG { get; set; }
         public decimal? Price { get; set; }
         public decimal? Stock { get; set; }
+        public decimal? RollLength { get; set; }
 
         public int? DyeStaffId { get; set; }
         public int? FinishingId { get; set; }

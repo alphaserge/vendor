@@ -8,6 +8,8 @@
         public int ProductId { get; set; }
         public decimal? Quantity { get; set; }
         public decimal? VendorQuantity { get; set; }
+        public bool? OrderRolls { get; set; }
+        public string? Details { get; set; }
         public decimal? Price { get; set; }
     }
 }

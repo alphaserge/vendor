@@ -29,6 +29,21 @@ export const formattedDate = (value, empty) => {
     return formattedToday
 }
 
+export const formattedPrice = (value, empty) => {
+    
+    let nullWord = '-'
+
+    if (empty) {
+        nullWord = empty
+    }
+
+    if (!value) {
+        return nullWord
+    }
+    
+    return value.toFixed(2);// + ' $'
+}
+
 export const computePrice = (price, amount) => {
 
     if (!price) {

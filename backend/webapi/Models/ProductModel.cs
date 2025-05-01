@@ -126,6 +126,7 @@ namespace chiffon_back.Models
                             Price1 = Helper.Round(p.Price * 1.05m, 2),
                             Price2 = Helper.Round(p.Price * 1.10m, 2),
                             Stock = p.Stock,
+                            RollLength = p.RollLength,
                             Weight = p.Weight,
                             Width = p.Width,
                             ProductStyleId = p.ProductStyleId,
@@ -343,6 +344,7 @@ namespace chiffon_back.Models
                             Composition = p.Composition,
                             Price = p.Price,
                             Stock = p.Stock,
+                            RollLength = p.RollLength,
                             Weight = p.Weight,
                             Width = p.Width,
                             Uuid = p.Uuid,
@@ -546,6 +548,7 @@ namespace chiffon_back.Models
                     prod.ItemName = product.ItemName;
                     prod.Price = product.Price;
                     prod.Stock = product.Stock;
+                    prod.RollLength = product.RollLength;
                     prod.ProductStyleId = product.ProductStyleId;
                     prod.ProductTypeId = product.ProductTypeId;
                     prod.VendorId = product.VendorId;

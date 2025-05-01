@@ -9,6 +9,8 @@
         public int? VendorId { get; set; }
         public decimal? Quantity { get; set; }
         public decimal? VendorQuantity { get; set; }
+        public bool? OrderRolls { get; set; }
+        public string? Details { get; set; }
         public string? ItemName { get; set; }
         public string? RefNo{ get; set; }
         public string? ArtNo { get; set; }

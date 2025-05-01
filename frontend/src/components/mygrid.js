@@ -17,15 +17,13 @@ export default function MyGrid(props) {
 
   useEffect(() => {  }, []);
 
-  console.log(props)
-  
   return (
   <FormControl error={ false } required sx={{ ...props.itemStyle,  ...{width: "100%",  display: "flex" } }} > 
 
-  <Card sx={{ maxWidth: 740, mt: 2 }}>
+  <Card sx={{ maxWidth: 740, mt: 2, boxShadow: "none", backgroundColor: "#eee", borderRadius: "8px" }}>
   <CardContent sx={{ pb: 0 }}>
 
-    <Box sx={{ display: "flex", flexDirection: "row" }}>
+    <Box sx={{ display: "inline", padding: "3px 5px", flexDirection: "row", backgroundColor: "none", color: "#4f4fc2", fontSize: "normal" }}>
       {/* <Typography gutterBottom variant="h7" component="div" mr={10} className="order-header"> */}
       Order No. {props.data.number} from {formattedDate(props.data.created)}
       &nbsp;&nbsp;&nbsp;&nbsp;
@@ -41,7 +39,7 @@ export default function MyGrid(props) {
           xs={12} 
           md={12} 
           key={"itemprod-"+index} 
-          sx={{ padding: "8px 6px", backgroundColor: (index %2 ? "transparent" : "#ddd"), alignItems: "center" }} >
+          sx={{ padding: "8px 6px", backgroundColor: (index %2 ? "transparent" : "#f8f8f8"), alignItems: "center" }} >
           <MyGridRow 
             show={props.show}
             edit={props.edit}
