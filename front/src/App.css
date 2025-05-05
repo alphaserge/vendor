@@ -311,38 +311,18 @@ table.shopping-cart  td img {
   max-width: 80px;
 }
 
-span.item-label  span:after {
-
-  content: "";
-  width: 100%;
-  width: 10px;
-  height: 20px;
-  display: block;
-  position: absolute;
-  position: relative; 
-  bottom: 5px;
-  left: 0;  
-
-  background-image: linear-gradient(90deg, #d3d4dd 50%, rgba(255, 255, 255, 0) 0%);
-  background-image: linear-gradient(90deg, #000 50%, rgba(255, 255, 255, 0) 0%);
-  background-position: bottom;
-  background-repeat: repeat-x;
-  background-size: 2px 1px; 
-
-  margin-right: -100%;
- 
-}
-
-span.item-label {
+/* span.item-label {
   overflow: hidden;
-}
+  display: flex;
+  flex-direction: row
+} */
 
-span.item-label span {
+span.item-label  {
   color: #868695;
   width: 100%;
   z-index: 1;
   background-color: #fff;
-  padding-right: 12px;
+  padding-right: 6px;
   position: relative;
   box-sizing: border-box;
   outline: none;

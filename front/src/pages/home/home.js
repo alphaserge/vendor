@@ -14,18 +14,15 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import InputAdornment from '@mui/material/InputAdornment';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 
 import TextField from '@mui/material/TextField';
-import GridViewIcon from '@mui/icons-material/GridView';
-import TableRowsIcon from '@mui/icons-material/TableRows';
-import Tooltip from '@mui/material/Tooltip';
+import Select from '@mui/material/Select';
 import Modal from '@mui/material/Modal';
+import MenuItem from '@mui/material/MenuItem';
 
 import useMediaQuery from '@mui/material/useMediaQuery';
 
@@ -47,7 +44,6 @@ import { postProduct } from '../../api/products'
 import { postOrder } from '../../api/orders'
 import { v4 as uuid } from 'uuid'
 
-import { APPEARANCE } from '../../appearance';
 import { Button } from "@mui/material";
 
 // import Swiper core and required modules
@@ -675,11 +671,11 @@ export default function Home(props) {
         { matches_md && 
         <Box sx={{display: "flex", height: "60px", pt: 1}}>
           <Typography sx={{fontSize: "18px", fontWeight: 600, color: "#333", p:0, pb: 2, flexGrow: 1}}>
-            Your shopping cart
+            Your shopping cart:&nbsp;{props.cart.length}&nbsp;items
           </Typography>
-          <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2}}>
+          {/* <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2}}>
             Total:&nbsp;{props.cart.length}&nbsp;items
-          </Typography>
+          </Typography> */}
         </Box>}
         {!matches_md && <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#18515E", p:0, pb: 2}}><span style={{color: "#008"}} >{props.cart.length}&nbsp;items</span>&nbsp;in your shopping cart</Typography>}
       <Box>
@@ -741,27 +737,72 @@ export default function Home(props) {
                 alt={"photo_00"}
                 style={{ borderRadius: "6px" }} />
             </td>
-            <td style={{wordBreak: "break-all"}}>
+            <td style={{wordBreak: "break-all", paddingLeft: "10px"}}>
               <table>
-                <tr><td>Item name:</td><td>{data.product.itemName}</td></tr>
-                <tr><td><span class="item-label"><span>Design:</span></span></td><td>{data.product.design}</td></tr>
-                <tr><td>Composition:</td><td>{data.product.composition}</td></tr>
+                <tbody>
+                  <tr><td><span class="item-label">Item name:</span></td><td>{data.product.itemName}</td></tr>
+                  <tr><td><span class="item-label">Design:</span></td><td>{data.product.design}</td></tr>
+                  <tr><td><span class="item-label">Composition:</span></td><td>{data.product.composition}</td></tr>
+                </tbody>
               </table>
             {/* <Tooltip title={"art." + data.product.artNo + " ref." + data.product.refNo}>
               {data.product.itemName}&nbsp;-&nbsp;
               {data.product.design}
             </Tooltip> */}
             </td>
-            <td>{ (data.amount > 500 ? data.product.price : ( data.amount > 300 ? data.product.price1 : data.product.price2 ))} $</td>
-            <td><QuantityInput step={1} onChange={(e,v)=>{ setOrderAmount(data.product.id,v)}} defaultValue={data.amount} /> </td>
+            <td>
+            <table>
+                <tbody>
+                  <tr><td><span class="item-label">Price:</span></td><td style={{textAlign: "left", paddingLeft: "14px"}}>{computePrice(data.product)} $</td></tr>
+                  <tr><td><span class="item-label">Amount:</span></td>
+                      <td>
+                      <TextField
+                        margin="normal"
+                        size="small" 
+                        id={"valuequantity2-" + props.index}
+                        name={"valuequantity2-" + props.index}
+                        sx = {{ width: 60, mt: '-3px', ml: 0, mr: 0, mb: '-3px' }}
+                        value={data.amount}
+                        onChange={ev => setOrderAmount(data.product.id, ev.target.value)}
+                        inputProps={{
+                          style: {
+                            height: "10px",
+                          },
+                        }}
+                      />
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={data.product.orderRolls===true? "rolls":"meters" }
+                        label="Age"
+                        // onChange={handleChange}
+                        sx={{ height: "27px", ml: 1, mt: '-3px', mb: '-3px' }} >
+                        <MenuItem value={'meters'}>meters</MenuItem>
+                        <MenuItem value={'rolls'}>rolls</MenuItem>
+                      </Select>
+                      </td>
+                  </tr>
+                  <tr><td><span class="item-label">&nbsp;</span></td><td>&nbsp;</td></tr>
+                </tbody>
+              </table>
+              </td>
+              <td>
+            <table>
+                <tbody>
+                  <tr><td><span class="item-label">&nbsp;</span></td><td>&nbsp;</td></tr>
+                  <tr><td><span class="item-label">&nbsp;</span></td><td>&nbsp;</td></tr>
+                  <tr><td><span class="item-label">&nbsp;</span></td><td>&nbsp;</td></tr>
+                </tbody>
+              </table>
+              </td>
+            {/* <td><QuantityInput step={1} onChange={(e,v)=>{ setOrderAmount(data.product.id,v)}} defaultValue={data.amount} /> </td> */}
             <td>
             <IconButton aria-label="delete">
               <DeleteIcon 
                 sx={{ color: "#18515E", fontSize: 26 }}
                 onClick={(e)=>{deleteFromCart(data.product.id,data.amount)}} >
-
               </DeleteIcon>
-            </IconButton>
+            </IconButton> 
             </td>
             </tr>
             ))}
@@ -769,7 +810,7 @@ export default function Home(props) {
         </table>)}
         
         </Box>
-        <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2}}> Delivery information </Typography>
+        <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2, pt: 2}}> Delivery information </Typography>
         <Grid container spacing={1} >
           <Grid item xs={12} md={4} >
                 <TextField

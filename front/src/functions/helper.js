@@ -29,25 +29,29 @@ export const formattedDate = (value, empty) => {
     return formattedToday
 }
 
-export const computePrice = (price, amount) => {
+export const computePrice = (product) => {
 
-    if (!price) {
+    if (!product.price) {
         return null
     }
 
-    if (!amount) {
-        return price*1.1
+    if (!product.amount) {
+        return product.price*1.1
     }
 
-    if (amount > 500) {
-        return price
+    if (product.orderRolls == true) {
+        product.amount *= product.rollLength
     }
 
-    if (amount > 300) {
-        return price*1.05
+    if (product.amount > 500) {
+        return product.price
     }
 
-    return price*1.1
+    if (product.amount > 300) {
+        return product.price*1.05
+    }
+
+    return product.price*1.1
 }
 
 export const idFromUrl = () => {

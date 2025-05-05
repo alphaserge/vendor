@@ -88,7 +88,6 @@ export default function MyGridRow(props) {
                     },
                   }}
                 /> }
-
           </Box> 
     }
 
