@@ -29,6 +29,21 @@ export const formattedDate = (value, empty) => {
     return formattedToday
 }
 
+
+export const isInteger = (x) => { return typeof x === "number" && isFinite(x) && Math.floor(x) === x; }
+export const isFloat = (x) => { return !!(x % 1); }
+
+function toFixed2(value) {
+    
+    if (value === undefined || value === null) { return "-"}
+
+    return value.toFixed(2)
+}
+
+export const validDecimal = (value) => {
+    return isFloat(value)
+}
+
 export const computePrice = (product) => {
 
     if (!product.price) {
@@ -36,7 +51,7 @@ export const computePrice = (product) => {
     }
 
     if (!product.amount) {
-        return product.price*1.1
+        return toFixed2(product.price*1.1)
     }
 
     if (product.orderRolls == true) {
@@ -44,14 +59,14 @@ export const computePrice = (product) => {
     }
 
     if (product.amount > 500) {
-        return product.price
+        return toFixed2(product.price)
     }
 
     if (product.amount > 300) {
-        return product.price*1.05
+        return toFixed2(product.price*1.05)
     }
 
-    return product.price*1.1
+    return toFixed2(product.price*1.1)
 }
 
 export const idFromUrl = () => {

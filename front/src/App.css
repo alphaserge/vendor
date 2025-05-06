@@ -319,13 +319,15 @@ table.shopping-cart  td img {
 
 span.item-label  {
   color: #868695;
-  width: 100%;
+  /* width: 100%;
   z-index: 1;
-  background-color: #fff;
+  background-color: #fff; */
   padding-right: 6px;
-  position: relative;
+  display: inline-block;
+
+  /* position: relative;
   box-sizing: border-box;
-  outline: none;
+  outline: none; */
 }
 
 /* * {
@@ -340,6 +342,16 @@ span.item-label  {
 @media (min-width:801px)  {  tablet, landscape iPad, lo-res laptops ands desktops }
 @media (min-width:1025px) { big landscape tablets, laptops, and desktops }
 @media (min-width:1281px) {  hi-res laptops and desktops } */
+
+
+span.text-overflow-ellipsis {
+  display: block;
+  /* height: 23px;  */
+  /* max-width: 200px; */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .width80 {
   width: 80px;

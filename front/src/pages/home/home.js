@@ -20,9 +20,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 
 import TextField from '@mui/material/TextField';
-import Select from '@mui/material/Select';
 import Modal from '@mui/material/Modal';
-import MenuItem from '@mui/material/MenuItem';
 
 import useMediaQuery from '@mui/material/useMediaQuery';
 
@@ -37,6 +35,8 @@ import MainSection from './mainsection';
 import ItemProduct from './itemproduct';
 import ItemProductRow from './itemproductrow';
 import CheckboxList from '../../components/checkboxlist';
+import PropertyItem from '../../components/propertyitem';
+import PropertyAmount from '../../components/propertyamount';
 import { addShoppingCart, getShoppingCart, setShoppingCart } from '../../functions/shoppingcart';
 import { computePrice } from '../../functions/helper';
 import QuantityInput from '../../components/quantityinput';
@@ -738,11 +738,14 @@ export default function Home(props) {
                 style={{ borderRadius: "6px" }} />
             </td>
             <td style={{wordBreak: "break-all", paddingLeft: "10px"}}>
-              <table>
+              <table cellPadding={0} cellSpacing={0}>
                 <tbody>
-                  <tr><td><span class="item-label">Item name:</span></td><td>{data.product.itemName}</td></tr>
-                  <tr><td><span class="item-label">Design:</span></td><td>{data.product.design}</td></tr>
-                  <tr><td><span class="item-label">Composition:</span></td><td>{data.product.composition}</td></tr>
+                  {/* <tr><td><span class="item-label">Item name:</span></td><td>{data.product.itemName}</td></tr>
+                  <tr><td><span class="item-label">Design:</span></td><td>{data.product.design}</td></tr> */}
+                  <PropertyItem maxWidth={200} label="Item name" value={data.product.itemName} />
+                  <PropertyItem maxWidth={200} label="Design" value={data.product.design} />
+                  <PropertyItem maxWidth={200} label="Composition" value={data.product.composition} />
+                  {/* <tr><td><span class="item-label">Composition:</span></td><td><span className="text-overflow-ellipsis" style={{maxWidth: "200px"}} title={data.product.composition}>{data.product.composition}</span></td></tr>  */}
                 </tbody>
               </table>
             {/* <Tooltip title={"art." + data.product.artNo + " ref." + data.product.refNo}>
@@ -753,8 +756,10 @@ export default function Home(props) {
             <td>
             <table>
                 <tbody>
-                  <tr><td><span class="item-label">Price:</span></td><td style={{textAlign: "left", paddingLeft: "14px"}}>{computePrice(data.product)} $</td></tr>
-                  <tr><td><span class="item-label">Amount:</span></td>
+                  {/* <tr><td><span class="item-label">Price:</span></td><td style={{textAlign: "left", paddingLeft: "14px"}}>{computePrice(data.product)} $</td></tr> */}
+                  <PropertyItem maxWidth={200} label="Price" value={computePrice(data.product) + " $"} />
+                  <PropertyAmount maxWidth={200} label="Amount" id={data.product.id} amount={data.amount} rolls={data.product.orderRolls} rollLength={data.product.rollLength} />
+                  {/* <tr><td><span class="item-label">Amount:</span></td>
                       <td>
                       <TextField
                         margin="normal"
@@ -773,15 +778,15 @@ export default function Home(props) {
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={data.product.orderRolls===true? "rolls":"meters" }
-                        label="Age"
+                        value={data.product.orderRolls===true? "roll":"m" }
+                        label="Unit"
                         // onChange={handleChange}
                         sx={{ height: "27px", ml: 1, mt: '-3px', mb: '-3px' }} >
-                        <MenuItem value={'meters'}>meters</MenuItem>
-                        <MenuItem value={'rolls'}>rolls</MenuItem>
+                        <MenuItem value={'meters'}>m</MenuItem>
+                        <MenuItem value={'rolls'}>roll</MenuItem>
                       </Select>
                       </td>
-                  </tr>
+                  </tr> */}
                   <tr><td><span class="item-label">&nbsp;</span></td><td>&nbsp;</td></tr>
                 </tbody>
               </table>
