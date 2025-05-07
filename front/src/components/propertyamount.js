@@ -11,19 +11,43 @@ export default function PropertyAmount(props) {
   const [amount, setAmount] = React.useState(props.amount)
   const [isRolls, setIsRolls] = React.useState(props.isRolls)
 
+  const makeHelp = (is_rolls) => {
+
+    let help = ""
+    if (!isNumber(amount) || !isNumber(props.product.rollLength) ) {
+      if (is_rolls === true ) {
+        help = "? m"
+      } else {
+        help = "? roll"
+      }
+    } else {
+      if (is_rolls === true ) {
+        help = (amount * props.product.rollLength).toFixed(2) + " m"
+      } else {
+        help = (amount / props.product.rollLength).toFixed(2) + " rolls"
+      }
+    } 
+  
+    if (props.setHelp) {
+      props.setHelp(props.product.id, help)
+    }
+  }
+
   const handleChange = (event) => {
     let amn = parseInt(event.target.value)
     setAmount(amn)
     props.setAmount(props.product.id, amn)
+    makeHelp(isRolls)
   }
 
   const selectChange = (event, i) => {
     let r = event.target.value == "roll"
     setIsRolls(r)
     props.setRolls(props.product.id, r)
+    makeHelp(r)
   }
 
-  let help = ""
+  /* let help = ""
   if (!isNumber(amount) || !isNumber(props.product.rollLength) ) {
     if (isRolls === true ) {
       help = "? m"
@@ -36,7 +60,7 @@ export default function PropertyAmount(props) {
     } else {
       help = (amount / props.product.rollLength).toFixed(2) + " rolls"
     }
-  } 
+  } */
 
   //console.log('PropertyAmount props.isRolls:' + props.product.id)
   //console.log(props.isRolls)
@@ -64,7 +88,7 @@ export default function PropertyAmount(props) {
                   <MenuItem value={'m'}>m</MenuItem>
                   <MenuItem value={'roll'}>roll</MenuItem>
                 </Select>
-                &nbsp;-&nbsp;{help}
+                {/* &nbsp;-&nbsp;{help} */}
             </td>
          </tr>
 }

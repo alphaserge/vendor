@@ -529,8 +529,6 @@ export default function Home(props) {
         }
       }
       if (changed === true) {
-        //console.log('update amount:')
-        //console.log(props.cart)
         props.updateCart(props.cart)
       }
     }
@@ -545,8 +543,20 @@ export default function Home(props) {
         }
       }
       if (changed === true) {
-        console.log('setRolls:')
-        console.log(props.cart)
+        props.updateCart(props.cart)
+      }
+    }
+
+    const setHelp = (productId, help) => {
+      let changed = false
+      for(let i=0; i<props.cart.length; i++) {
+        if (props.cart[i].product.id == productId) {
+          props.cart[i].help = help
+          changed = true
+          break
+        }
+      }
+      if (changed === true) {
         props.updateCart(props.cart)
       }
     }
@@ -791,7 +801,7 @@ export default function Home(props) {
                 <tbody>
                   {/* <tr><td><span class="item-label">Price:</span></td><td style={{textAlign: "left", paddingLeft: "14px"}}>{computePrice(data.product)} $</td></tr> */}
                   <PropertyItem maxWidth={200} label="Price" value={computePrice(data.product, data.amount) + " $"} />
-                  <PropertyAmount maxWidth={200} label="Amount" product={data.product} amount={data.amount} isRolls={data.isRolls} setAmount={setAmount} setRolls={setRolls} />
+                  <PropertyAmount maxWidth={200} label="Amount" product={data.product} amount={data.amount} isRolls={data.isRolls} setAmount={setAmount} setRolls={setRolls} setHelp={setHelp} />
                   {/* <tr><td><span class="item-label">Amount:</span></td>
                       <td>
                       <TextField
@@ -820,7 +830,7 @@ export default function Home(props) {
                       </Select>
                       </td>
                   </tr> */}
-                  <tr><td><span class="item-label">&nbsp;</span></td><td>&nbsp;</td></tr>
+                  <tr><td><span class="item-label">&nbsp;</span></td><td>{data.help}</td></tr>
                 </tbody>
               </table>
               </td>
