@@ -519,6 +519,27 @@ export default function Home(props) {
       setAddToCartFunction("Add to Cart")
     }
 
+    const setAmount = (productId, amount) => {
+      for(let i=0; i<props.cart.length; i++) {
+        if (props.cart[i].product.id == productId) {
+          props.cart[i].amount = parseInt(amount)
+          break
+        }
+      }
+      console.log('update amount:')
+      console.log(props.cart)
+      props.updateCart(props.cart)
+    }
+
+    const setRolls = (productId, isRolls) => {
+      for(let i=0; i<props.cart.length; i++) {
+        if (props.cart[i].product.id == productId) {
+          props.cart[i].isRolls = isRolls
+          break
+        }
+      }
+    }
+
     useEffect(() => {
       loadProducts()
       loadColors()
@@ -540,6 +561,7 @@ export default function Home(props) {
     navigate("/")
   }
   //console.log(products)// matches_sm)
+  console.log('props.cart:')
   console.log(props.cart)
 
 
@@ -757,8 +779,8 @@ export default function Home(props) {
             <table>
                 <tbody>
                   {/* <tr><td><span class="item-label">Price:</span></td><td style={{textAlign: "left", paddingLeft: "14px"}}>{computePrice(data.product)} $</td></tr> */}
-                  <PropertyItem maxWidth={200} label="Price" value={computePrice(data.product) + " $"} />
-                  <PropertyAmount maxWidth={200} label="Amount" id={data.product.id} amount={data.amount} rolls={data.product.orderRolls} rollLength={data.product.rollLength} />
+                  <PropertyItem maxWidth={200} label="Price" value={computePrice(data.product, data.amount) + " $"} />
+                  <PropertyAmount maxWidth={200} label="Amount" product={data.product} amount={data.amount} isRolls={data.isRolls} setAmount={setAmount} setRolls={setRolls} />
                   {/* <tr><td><span class="item-label">Amount:</span></td>
                       <td>
                       <TextField

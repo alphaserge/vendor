@@ -8,17 +8,20 @@ import { isFloat } from '../functions/helper';
 export default function PropertyAmount(props) {
 
   //const [help, setHelp] = React.useState("")
+  const [amount, setAmount] = React.useState(props.amount)
 
   const handleChange = (event) => {
-    props.setAmount(props.id, event.target.value)
+    let amn = parseInt(event.target.value)
+    setAmount(amn)
+    props.setAmount(props.product.id, amn)
   }
 
   const selectChange = (event, i) => {
-    props.setRolls(props.id, event.target.value == "roll")
+    props.setRolls(props.product.id, event.target.value == "roll")
   }
 
   let help = ""
-  if (!isFloat(props.amount) || !isFloat(props.rollLength) ) {
+  if (!isFloat(props.amount) || !isFloat(props.product.rollLength) ) {
     if (props.rolls === true ) {
       help = "? m"
     } else {
@@ -26,9 +29,9 @@ export default function PropertyAmount(props) {
     }
   } else {
     if (props.rolls === true ) {
-      help = props.amount * props.rollLength + " m"
+      help = props.amount * props.product.rollLength + " m"
     } else {
-      help = props.amount / props.rollLength + " roll"
+      help = props.amount / props.product.rollLength + " roll"
     }
   } 
 
@@ -39,7 +42,7 @@ export default function PropertyAmount(props) {
                   margin="normal"
                   size="small" 
                   sx = {{ width: 60, mt: '0px', ml: 0, mr: 0, mb: '-3px' }}
-                  value={props.amount}
+                  value={amount}
                   onChange={handleChange}
                   inputProps={{
                     style: {
@@ -48,7 +51,7 @@ export default function PropertyAmount(props) {
                   }}
                 />
                 <Select
-                  value={props.rolls===true? "roll":"m" }
+                  value={props.isRolls===true? "roll":"m" }
                   label="Unit"
                   onChange={selectChange}
                   sx={{ height: "23px", ml: 1, mt: '0px'  }} >

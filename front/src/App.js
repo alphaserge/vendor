@@ -70,6 +70,10 @@ function App() {
   const updateCart = (cart) => {
     setCart(cart)
     setShoppingCart(cart)
+
+    console.log('updateCart')
+    console.log(cart)
+
   }
 
   const loadSeasons = () => {

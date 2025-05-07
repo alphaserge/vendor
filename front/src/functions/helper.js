@@ -44,25 +44,25 @@ export const validDecimal = (value) => {
     return isFloat(value)
 }
 
-export const computePrice = (product) => {
+export const computePrice = (product, amount, isRolls) => {
 
     if (!product.price) {
         return null
     }
 
-    if (!product.amount) {
+    if (!amount) {
         return toFixed2(product.price*1.1)
     }
 
-    if (product.orderRolls == true) {
-        product.amount *= product.rollLength
+    if (isRolls == true) {
+        amount *= product.rollLength
     }
 
-    if (product.amount > 500) {
+    if (amount > 500) {
         return toFixed2(product.price)
     }
 
-    if (product.amount > 300) {
+    if (amount > 300) {
         return toFixed2(product.price*1.05)
     }
 
