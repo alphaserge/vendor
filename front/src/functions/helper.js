@@ -33,6 +33,10 @@ export const formattedDate = (value, empty) => {
 export const isInteger = (x) => { return typeof x === "number" && isFinite(x) && Math.floor(x) === x; }
 export const isFloat = (x) => { return !!(x % 1); }
 
+export const isNumber = (value) => {
+    return typeof value === 'number' && isFinite(value);
+}
+
 function toFixed2(value) {
     
     if (value === undefined || value === null) { return "-"}
@@ -41,7 +45,7 @@ function toFixed2(value) {
 }
 
 export const validDecimal = (value) => {
-    return isFloat(value)
+    return isNumber(value)
 }
 
 export const computePrice = (product, amount, isRolls) => {

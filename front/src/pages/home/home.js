@@ -520,23 +520,34 @@ export default function Home(props) {
     }
 
     const setAmount = (productId, amount) => {
+      let changed = false
       for(let i=0; i<props.cart.length; i++) {
         if (props.cart[i].product.id == productId) {
           props.cart[i].amount = parseInt(amount)
+          changed = true
           break
         }
       }
-      console.log('update amount:')
-      console.log(props.cart)
-      props.updateCart(props.cart)
+      if (changed === true) {
+        //console.log('update amount:')
+        //console.log(props.cart)
+        props.updateCart(props.cart)
+      }
     }
 
     const setRolls = (productId, isRolls) => {
+      let changed = false
       for(let i=0; i<props.cart.length; i++) {
         if (props.cart[i].product.id == productId) {
           props.cart[i].isRolls = isRolls
+          changed = true
           break
         }
+      }
+      if (changed === true) {
+        console.log('setRolls:')
+        console.log(props.cart)
+        props.updateCart(props.cart)
       }
     }
 

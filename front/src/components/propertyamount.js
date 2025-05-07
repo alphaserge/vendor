@@ -3,12 +3,13 @@ import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-import { isFloat } from '../functions/helper';
+import { isNumber } from '../functions/helper';
 
 export default function PropertyAmount(props) {
 
   //const [help, setHelp] = React.useState("")
   const [amount, setAmount] = React.useState(props.amount)
+  const [isRolls, setIsRolls] = React.useState(props.isRolls)
 
   const handleChange = (event) => {
     let amn = parseInt(event.target.value)
@@ -17,23 +18,28 @@ export default function PropertyAmount(props) {
   }
 
   const selectChange = (event, i) => {
-    props.setRolls(props.product.id, event.target.value == "roll")
+    let r = event.target.value == "roll"
+    setIsRolls(r)
+    props.setRolls(props.product.id, r)
   }
 
   let help = ""
-  if (!isFloat(props.amount) || !isFloat(props.product.rollLength) ) {
-    if (props.rolls === true ) {
+  if (!isNumber(amount) || !isNumber(props.product.rollLength) ) {
+    if (isRolls === true ) {
       help = "? m"
     } else {
       help = "? roll"
     }
   } else {
-    if (props.rolls === true ) {
-      help = props.amount * props.product.rollLength + " m"
+    if (isRolls === true ) {
+      help = (amount * props.product.rollLength).toFixed(2) + " m"
     } else {
-      help = props.amount / props.product.rollLength + " roll"
+      help = (amount / props.product.rollLength).toFixed(2) + " rolls"
     }
   } 
+
+  //console.log('PropertyAmount props.isRolls:' + props.product.id)
+  //console.log(props.isRolls)
 
   return <tr>
             <td><span class="item-label">{props.label}:</span></td>
@@ -51,14 +57,14 @@ export default function PropertyAmount(props) {
                   }}
                 />
                 <Select
-                  value={props.isRolls===true? "roll":"m" }
+                  value={isRolls===true? "roll":"m" }
                   label="Unit"
                   onChange={selectChange}
                   sx={{ height: "23px", ml: 1, mt: '0px'  }} >
                   <MenuItem value={'m'}>m</MenuItem>
                   <MenuItem value={'roll'}>roll</MenuItem>
                 </Select>
-                {help}
+                &nbsp;-&nbsp;{help}
             </td>
          </tr>
 }
