@@ -1,4 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { create } from 'zustand'
+
 import Home from './pages/home/home';
 import UpdateProduct from './pages/home/updateproduct';
 import AddProduct from './pages/home/addproduct';
@@ -18,6 +20,7 @@ import { addShoppingCart, getShoppingCart, setShoppingCart } from './functions/s
 import axios from 'axios'
 
 import config from "./config.json"
+import useShoppingCartStore from "./store/shoppingCartStore";
 
 import './App.css';
 import { useEffect, useState } from 'react';
@@ -36,7 +39,12 @@ const userInitialValue = () => {
   };
 };
 
+
 function App() {
+  
+  //const loadShoppingCart = useShoppingCartStore((state) => state.load);
+
+
   const [loggedIn, setLoggedIn] = useState(false)
   const [user, setUser] = useState(userInitialValue)
   const [seasons, setSeasons] = useState([])
@@ -46,6 +54,8 @@ function App() {
   const [productTypes, setProductTypes] = useState([])
   const [productStyles, setProductStyles] = useState([])
   const [cart, setCart] = useState(getShoppingCart())
+
+  console.log("APP()")
 
   /*useState({
     id: 0,
@@ -73,7 +83,6 @@ function App() {
 
     console.log('updateCart')
     console.log(cart)
-
   }
 
   const loadSeasons = () => {

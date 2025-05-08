@@ -9,42 +9,14 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
-//import CloseIcon from '@material-ui/icons/Close'
-//import  from '@mui/icons-material/Close';
 import CloseIcon from '@mui/icons-material/Close';
-import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-
+import { Button } from "@mui/material";
 import TextField from '@mui/material/TextField';
 import Modal from '@mui/material/Modal';
-
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import axios from 'axios'
-
-import config from "../../config.json"
-
-import Header from './header';
-import Footer from './footer';
-
-import MainSection from './mainsection';
-import ItemProduct from './itemproduct';
-import ItemProductRow from './itemproductrow';
-import CheckboxList from '../../components/checkboxlist';
-import PropertyItem from '../../components/propertyitem';
-import PropertyAmount from '../../components/propertyamount';
-import { addShoppingCart, getShoppingCart, setShoppingCart } from '../../functions/shoppingcart';
-import { computePrice } from '../../functions/helper';
-import QuantityInput from '../../components/quantityinput';
-import { postProduct } from '../../api/products'
-import { postOrder } from '../../api/orders'
-import { v4 as uuid } from 'uuid'
-
-import { Button } from "@mui/material";
 
 // import Swiper core and required modules
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
@@ -57,6 +29,25 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import 'swiper/css/thumbs';
+
+import config from "../../config.json"
+
+import Header from './header';
+import Footer from './footer';
+
+import MainSection from './mainsection';
+import ItemProduct from './itemproduct';
+import ItemProductRow from './itemproductrow';
+import ShoppingCart from '../../components/shoppingcart';
+import CheckboxList from '../../components/checkboxlist';
+import { addShoppingCart, getShoppingCart, setShoppingCart } from '../../functions/shoppingcart';
+import { computePrice } from '../../functions/helper';
+import QuantityInput from '../../components/quantityinput';
+import { postProduct } from '../../api/products'
+import { postOrder } from '../../api/orders'
+import { v4 as uuid } from 'uuid'
+
+import useShoppingCartStore from "./../../store/shoppingCartStore";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -119,13 +110,7 @@ export default function Home(props) {
     const [selectedProductType, setSelectedProductType] = useState([])
     const [selectedOverworkType, setSelectedOverworkType] = useState([])
 
-    const [filterTextileType, setFilterTextileType] = useState([])
-    const [filterDesignType, setFilterDesignType] = useState([])
-    const [filterSeason, setFilterSeason] = useState([])
-    const [filterColor, setFilterColor] = useState([])
-    const [filterPrintType, setFilterPrintType] = useState([])
-    const [filterProductType, setFilterProductType] = useState([])
-
+    
     const [addItemName, setAddItemName] = useState("")
     const [addRefNo, setAddRefNo] = useState("")
     const [addArtNo, setAddArtNo] = useState("")
@@ -145,27 +130,19 @@ export default function Home(props) {
     const [showInfo, setShowInfo] = React.useState(false);
     const [info, setInfo] = React.useState("");
 
-    const headStyle = { maxWidth: "744px", width: "auto", margin: "0", padding: "0 10px" }
     // store thumbs swiper instance
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
     const [cartAmount, setCartAmount] = useState(1)
     const [addToCartFunction, setAddToCartFunction] = useState("Add to Cart")
-    //const [cart, setCart] = useState(props.cart);
 
-    const handleShowHideFilter = (event) => {
-      setFilter(!filter);
-    };
+   // const { cartItems } = useShoppingCartStore((state) => ({ items: state.items }));
 
     /*useEffect(() => {
       localStorage.setItem('shoppingCart', shoppingCart);
     }, [shoppingCart]);*/
 
-    const matches_md = useMediaQuery(theme.breakpoints.up('md'));
-
-    const cartImageSize = matches_md ? "60px" : "90px";
-
-    const modalSx = matches_md ? {
+    const modalSx = {
       position: 'absolute',
       top: '50%',
       left: '50%',
@@ -175,48 +152,7 @@ export default function Home(props) {
       padding: "20px 40px 40px 40px", 
       outline: "none",
       bgcolor: 'background.paper',
-    } : {
-      width: "calc(100vw - 60px)",
-      boxShadow: 24,
-      padding: "10px 10px 10px 10px", 
-      margin: "0 auto",
-      outline: "none",
-      bgcolor: 'background.paper',
-    }; 
-
-    const setOrderAmount = (productId, value) => {
-
-      let cart = [...getShoppingCart()]
-      let i=0
-      for(i=0; i<cart.length; i++) {
-        if (cart[i].product.id == productId) {
-          cart[i].amount = value
-          break
-        }
-      }
-      //setShoppingCart(cart)
-      props.updateCart(cart)
-    }
-
-    const deleteFromCart = (productId, amount) => {
-
-      let cart = [...getShoppingCart()]
-      let i=0
-      let ix=-1
-      for(i=0; i<cart.length; i++) {
-        if (cart[i].product.id == productId && cart[i].amount == amount) {
-          ix=i
-          break
-        }
-      }
-      if (i!=-1) {
-        cart.splice(ix, 1);
-      }
-      //setShoppingCart(cart)
-      props.updateCart(cart)
-    }
-
-
+    }  
 
     const dropFilters = (e) => {
       setSelectedTextileType([])
@@ -260,15 +196,6 @@ export default function Home(props) {
     setShowShoppingCart(event)
     setAddToCartFunction("Add to Cart");
    }
-
-   const handleAddProductShow = (event) => {
-    setAddProduct(true)
-  };
-
-  const handleAddProductSave = (event) => {
-    saveProduct()
-    setAddProduct(false)
-  };
 
   const handleMakeOrder = async (event) => {
 
@@ -333,12 +260,6 @@ export default function Home(props) {
     setAddToCartFunction("Add to Cart")
   }
 
-  const handleRemoveFromCart = (id) => {
-    props.removeFromCart(id)
-  };
-
-    const url = require('url');
-
     const searchProducts = async (e) => {
 
       setSearch(e)
@@ -357,10 +278,6 @@ export default function Home(props) {
     }
 
     const loadProducts = async (e) => {
-      //const params = new URLSearchParams();
-      //params.append(color, [1,2]);
-
-      //const params = new url.URLSearchParams({ foo: 'bar' });
 
       axios.get(config.api + '/Products/Products?id=0',//+props.user.id,
         { params:
@@ -381,7 +298,6 @@ export default function Home(props) {
       .then(function (result) {
           setProducts(result.data)
           setFilter(false)
-          //console.log(result.data)
       })
       .catch (error => {
         console.log(error)
@@ -484,81 +400,10 @@ export default function Home(props) {
       })
     }
 
-    const saveProduct = async (e) => {
-
-      let vendorId = props.user ? props.user.vendorId : -1;
-  /*
-    const [addItemName, setAddItemName] = useState("")
-    const [addRefNo, setAddRefNo] = useState("")
-    const [addArtNo, setAddArtNo] = useState("")
-    const [addDesign, setAddDesign] = useState("")
-
-  */
-      let prod = {
-        vendorId: vendorId,
-        artNo: addArtNo,
-        itemName: addItemName,
-        design: addDesign,
-        refNo: addRefNo,
-      }
-
-      let r = await postProduct(prod, "ProductAdd")
-
-      if (r && r.status == true) {
-        props.setLastAction("Product has been added")
-        setSavingError(false)
-        navigate("/updateproduct?id=" + r.id)
-      } else {
-        setSavingError(true)
-      }
-    }
-
     const quickView = (e, data) => {
       setShowQuickView(true)
       setQuickViewProduct(data)
       setAddToCartFunction("Add to Cart")
-    }
-
-    const setAmount = (productId, amount) => {
-      let changed = false
-      for(let i=0; i<props.cart.length; i++) {
-        if (props.cart[i].product.id == productId) {
-          props.cart[i].amount = parseInt(amount)
-          changed = true
-          break
-        }
-      }
-      if (changed === true) {
-        props.updateCart(props.cart)
-      }
-    }
-
-    const setRolls = (productId, isRolls) => {
-      let changed = false
-      for(let i=0; i<props.cart.length; i++) {
-        if (props.cart[i].product.id == productId) {
-          props.cart[i].isRolls = isRolls
-          changed = true
-          break
-        }
-      }
-      if (changed === true) {
-        props.updateCart(props.cart)
-      }
-    }
-
-    const setHelp = (productId, help) => {
-      let changed = false
-      for(let i=0; i<props.cart.length; i++) {
-        if (props.cart[i].product.id == productId) {
-          props.cart[i].help = help
-          changed = true
-          break
-        }
-      }
-      if (changed === true) {
-        props.updateCart(props.cart)
-      }
     }
 
     useEffect(() => {
@@ -581,19 +426,8 @@ export default function Home(props) {
   if (!props.user || props.user.Id == 0) {
     navigate("/")
   }
-  //console.log(products)// matches_sm)
-  console.log('props.cart:')
-  console.log(props.cart)
-
-
-  const productImgHolderClass = matches_md ? "product-img-holder" : "product-img-holder-mobile";
-
-  // useEffect(() => {
-  //   const items = JSON.parse(localStorage.getItem('items'));
-  //   if (items) {
-  //    setItems(items);
-  //   }
-  // }, []);
+  
+  const productImgHolderClass = "product-img-holder"
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -612,20 +446,18 @@ export default function Home(props) {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          margin: (matches_md ? "" : "-50px -10px" ),
-          height: (matches_md ? "auto" : "calc(100% + 50px)"),
-          width: (matches_md ? "890px" : "330px"),
-          //width: "330px",
+          margin: "",
+          height: "auto",
+          width: "890px",
           boxShadow: 24,
-          padding: matches_md ? "20px 20px 20px 20px" : "20px 20px 5px 5px",
+          padding: "20px 20px 20px 20px",
           outline: "none",
           bgcolor: 'background.paper',
           display: "flex",
           flexDirection: 'row',
           alignItems: 'center', justifyContent: "right" }}>
-        {/* <Typography>Modal title</Typography> */}
         <IconButton
-           sx={{ position: "absolute", top: 6, mr: matches_md ? -2 : 1, zIndex: 100, backgroundColor: "#ddd" }}
+           sx={{ position: "absolute", top: 6, mr: -2, zIndex: 100, backgroundColor: "#ddd" }}
            onClick={() => { setShowQuickView(false) }}>
             <CloseIcon />
         </IconButton>
@@ -652,9 +484,7 @@ export default function Home(props) {
                       <Box component={"img"} key={"product-swiper-00"}
                         src={config.api + "/" + cv.imagePath[0]}
                         alt={"photo_00"} className="product-img"
-                        sx={{
-                          borderRadius: (matches_md ? 0 : "0")
-                        }}
+                        sx={{ borderRadius: 0 }}
                         />
                       </Box>
                    </SwiperSlide>
@@ -665,7 +495,7 @@ export default function Home(props) {
           <Grid item xs={12} md={7} paddingLeft={{ xs: "0", md: "10px"}} paddingTop={{ xs: "10px", md: "0"}}>
           <Box sx = {{ display: "flex",flexDirection: 'column', p: 1}} className="product-item" >
           <table >
-                <tr><td class="label" style={ matches_md ? {width: "130px"} : {}} >Item name:</td><td>{quickViewProduct.itemName}</td></tr>
+                <tr><td class="label" style={{width: "130px"}} >Item name:</td><td>{quickViewProduct.itemName}</td></tr>
                 <tr><td class="label">Art No:</td><td>{quickViewProduct.artNo}</td></tr>
                 <tr><td class="label">Ref No:</td><td>{quickViewProduct.refNo}</td></tr>
                 <tr><td class="label">Design:</td><td>{quickViewProduct.design}</td></tr>
@@ -673,7 +503,7 @@ export default function Home(props) {
                 <tr><td class="label">Product type:</td><td>{quickViewProduct.productType}</td></tr>
                 <tr><td class="label">Product style:</td><td>{quickViewProduct.productStyle}</td></tr>
                 <tr><td class="label">Print style:</td><td>{quickViewProduct.printType}</td></tr>
-                <tr><td class="label"> { matches_md ? "Price per meter" : "Price PM" }:</td><td><b>from&nbsp;{quickViewProduct.price}$</b></td></tr>
+                <tr><td class="label">Price per meter:</td><td><b>from&nbsp;{quickViewProduct.price}$</b></td></tr>
               </table>
                   <Box sx={{
                     display: "flex",
@@ -688,10 +518,9 @@ export default function Home(props) {
                       <Button
                           variant="contained"
                           startIcon={<ShoppingCartOutlinedIcon/>}
-                          // sx={{...roundButtonStyle, ...{ml: 3}}}
                           className="add-to-cart-button"
                           onClick={ (e) => { addToCartFunction=="Add to Cart" ? handleAddToCart(e) : handleOpenCart(e) } } 
-                          sx={ matches_md ? {ml: 4} : {ml: 1,p:1,pl:2,pr:2}} >
+                          sx={{ml: 4}} >
                               {addToCartFunction}
                       </Button>
                   </Box>
@@ -708,156 +537,12 @@ export default function Home(props) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         id="shoppingCartModal"
-        sx={{ width: (matches_md ? "auto":"auto"), outline: "none", overflow: "scroll", p: 0 }} >
+        sx={{ width: "auto", outline: "none", overflow: "scroll", p: 0 }} >
 
         <Box sx={{...modalSx, ...{borderRadius: "10px"}}} >
-        { matches_md && 
-        <Box sx={{display: "flex", height: "60px", pt: 1}}>
-          <Typography sx={{fontSize: "18px", fontWeight: 600, color: "#333", p:0, pb: 2, flexGrow: 1}}>
-            Your shopping cart:&nbsp;{props.cart.length}&nbsp;items
-          </Typography>
-          {/* <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2}}>
-            Total:&nbsp;{props.cart.length}&nbsp;items
-          </Typography> */}
-        </Box>}
-        {!matches_md && <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#18515E", p:0, pb: 2}}><span style={{color: "#008"}} >{props.cart.length}&nbsp;items</span>&nbsp;in your shopping cart</Typography>}
-      <Box>
-      {(!matches_md &&
-        (props.cart.map((data, index) => (
-      <Card sx={{margin: "10px 0", padding: "10px"}} >
-      <CardMedia
-        component="img"
-        alt="Fabric photo"
-        sx={{  maxWidth: cartImageSize, maxHeight: cartImageSize, float: "left" }}
-        image={data.product.colors[0].imagePath ? (config.api + "/" + data.product.colors[0].imagePath[0]) : ""}
-      />
-      <CardContent sx={{ 
-                    width: (matches_md ? "" : "calc(100% - 100px)"), 
-                    float: (matches_md ? "none" : "left"), p:0, pl: 2, '&:last-child': { pb: 0 } }} >
-        <Typography 
-          gutterBottom 
-          variant={matches_md ? "h6" : "p"} 
-          sx={{ fontSize: (matches_md ? "18px":"14px") }}
-          component="div">
-        {data.product.itemName}
-        </Typography>
-        <Box sx={{ color: "#222", padding: (matches_md ? "0px":"0px"), fontSize: (matches_md ? "18px":"14px") }}>
-        <table>
-          <tr><td>Art.No:</td><td>&nbsp;&nbsp;{data.product.artNo}</td></tr>
-          {matches_md && <tr><td>Design:</td><td>&nbsp;&nbsp;{data.product.design}</td></tr> }
-          <tr><td>Price:</td><td>&nbsp;&nbsp;{ (data.amount > 500 ? data.product.price : ( data.amount > 300 ? data.product.price1 : data.product.price2 ))} $</td></tr>
-          <tr></tr>
-          </table>
-          <table style={{width: "100%"}}>
-            <tr>
-            <td><QuantityInput step={1} onChange={(e,v)=>{ setOrderAmount(data.product.id,v)}} defaultValue={data.amount} /> </td>
-          <td style={{ textAlign:"right" }}>
-            <IconButton aria-label="delete" size="large" >
-              <DeleteIcon onClick={(e)=>{deleteFromCart(data.product.id,data.amount)}} />
-            </IconButton>
-            </td>
-          </tr>
-          </table>
-        
-        </Box>
-      </CardContent>
-      {/* <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
-      </CardActions> */}
-    </Card>
-        ))
-      ))}
 
-      {(matches_md &&
-        <table class="shopping-cart" cellPadding={0} cellSpacing={0}>
-        <tbody>
-        {props.cart.map((data, index) => (
-          <tr style={{ height : "100px"}}>
-            <td >
-              <img 
-                src={data.product.colors[0].imagePath ? (config.api + "/" + data.product.colors[0].imagePath[0]) : ""}
-                alt={"photo_00"}
-                style={{ borderRadius: "6px" }} />
-            </td>
-            <td style={{wordBreak: "break-all", paddingLeft: "10px"}}>
-              <table cellPadding={0} cellSpacing={0}>
-                <tbody>
-                  {/* <tr><td><span class="item-label">Item name:</span></td><td>{data.product.itemName}</td></tr>
-                  <tr><td><span class="item-label">Design:</span></td><td>{data.product.design}</td></tr> */}
-                  <PropertyItem maxWidth={200} label="Item name" value={data.product.itemName} />
-                  <PropertyItem maxWidth={200} label="Design" value={data.product.design} />
-                  <PropertyItem maxWidth={200} label="Composition" value={data.product.composition} />
-                  {/* <tr><td><span class="item-label">Composition:</span></td><td><span className="text-overflow-ellipsis" style={{maxWidth: "200px"}} title={data.product.composition}>{data.product.composition}</span></td></tr>  */}
-                </tbody>
-              </table>
-            {/* <Tooltip title={"art." + data.product.artNo + " ref." + data.product.refNo}>
-              {data.product.itemName}&nbsp;-&nbsp;
-              {data.product.design}
-            </Tooltip> */}
-            </td>
-            <td>
-            <table>
-                <tbody>
-                  {/* <tr><td><span class="item-label">Price:</span></td><td style={{textAlign: "left", paddingLeft: "14px"}}>{computePrice(data.product)} $</td></tr> */}
-                  <PropertyItem maxWidth={200} label="Price" value={computePrice(data.product, data.amount) + " $"} />
-                  <PropertyAmount maxWidth={200} label="Amount" product={data.product} amount={data.amount} isRolls={data.isRolls} setAmount={setAmount} setRolls={setRolls} setHelp={setHelp} />
-                  {/* <tr><td><span class="item-label">Amount:</span></td>
-                      <td>
-                      <TextField
-                        margin="normal"
-                        size="small" 
-                        id={"valuequantity2-" + props.index}
-                        name={"valuequantity2-" + props.index}
-                        sx = {{ width: 60, mt: '-3px', ml: 0, mr: 0, mb: '-3px' }}
-                        value={data.amount}
-                        onChange={ev => setOrderAmount(data.product.id, ev.target.value)}
-                        inputProps={{
-                          style: {
-                            height: "10px",
-                          },
-                        }}
-                      />
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={data.product.orderRolls===true? "roll":"m" }
-                        label="Unit"
-                        // onChange={handleChange}
-                        sx={{ height: "27px", ml: 1, mt: '-3px', mb: '-3px' }} >
-                        <MenuItem value={'meters'}>m</MenuItem>
-                        <MenuItem value={'rolls'}>roll</MenuItem>
-                      </Select>
-                      </td>
-                  </tr> */}
-                  <tr><td><span class="item-label">&nbsp;</span></td><td>{data.help}</td></tr>
-                </tbody>
-              </table>
-              </td>
-              <td>
-            <table>
-                <tbody>
-                  <tr><td><span class="item-label">&nbsp;</span></td><td>&nbsp;</td></tr>
-                  <tr><td><span class="item-label">&nbsp;</span></td><td>&nbsp;</td></tr>
-                  <tr><td><span class="item-label">&nbsp;</span></td><td>&nbsp;</td></tr>
-                </tbody>
-              </table>
-              </td>
-            {/* <td><QuantityInput step={1} onChange={(e,v)=>{ setOrderAmount(data.product.id,v)}} defaultValue={data.amount} /> </td> */}
-            <td>
-            <IconButton aria-label="delete">
-              <DeleteIcon 
-                sx={{ color: "#18515E", fontSize: 26 }}
-                onClick={(e)=>{deleteFromCart(data.product.id,data.amount)}} >
-              </DeleteIcon>
-            </IconButton> 
-            </td>
-            </tr>
-            ))}
-          </tbody>
-        </table>)}
+          <ShoppingCart/>
         
-        </Box>
         <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2, pt: 2}}> Delivery information </Typography>
         <Grid container spacing={1} >
           <Grid item xs={12} md={4} >
@@ -950,13 +635,13 @@ export default function Home(props) {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: (matches_md ? "330px" : "330px"),
-          //width: "330px",
+          width: "330px",
           boxShadow: 24,
           padding: "45px 40px 40px 40px",
           outline: "none",
           bgcolor: 'background.paper',
            }}>
+          
         {/* <Typography>Modal title</Typography> */}
         <Box sx={{ width: "100%", textAlign:"right", pr: 3, pb: 2 }} >
         <IconButton

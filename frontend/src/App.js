@@ -52,7 +52,11 @@ function App() {
 
   const [lastAction, setLastAction] = useState("")
 
+   
   useEffect(() => {
+    
+    //console.log("APP() " + Date.now())
+
     // Fetch the user email and token from local storage
     const user = JSON.parse(localStorage.getItem("user"))
 

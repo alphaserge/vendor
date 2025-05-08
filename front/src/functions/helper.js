@@ -34,10 +34,14 @@ export const isInteger = (x) => { return typeof x === "number" && isFinite(x) &&
 export const isFloat = (x) => { return !!(x % 1); }
 
 export const isNumber = (value) => {
+    if (typeof value === 'string') {
+        value = parseFloat(value)
+    }
+    
     return typeof value === 'number' && isFinite(value);
 }
 
-function toFixed2(value) {
+export function toFixed2(value) {
     
     if (value === undefined || value === null) { return "-"}
 
