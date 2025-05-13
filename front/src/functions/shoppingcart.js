@@ -13,8 +13,9 @@ export const addShoppingCart = (item) => {
 
 export const getShoppingCart = ()  => { 
 const cart = localStorage.getItem('shoppingCart')
+console.log("GET SHOPPING CART")
 if (cart) {
-  return JSON.parse(cart)
+  return { cart: JSON.parse(cart) }
 } else {
-  return [];
+  return { cart: [] };
 }}

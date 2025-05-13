@@ -5,93 +5,124 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+import { useSelector, useDispatch } from 'react-redux'
+
 import PropertyItem from './propertyitem';
 import PropertyAmount from './propertyamount';
 import { computePrice } from './../functions/helper';
 import config from "./../config.json"
-import useShoppingCartStore from "./../store/shoppingCartStore";
+import { useCartStore, useMessageStore } from "./../store/shoppingCartStore";
+import { addShoppingCart, getShoppingCart, setShoppingCart } from './../functions/shoppingcart';
+import { shallow, useShallow } from "zustand/shallow";
 
 export default function ShoppingCart(props) {
 
-const { cartItems } = useShoppingCartStore((state) => ({ items: state.items }));
+  const shopCart = useSelector((state) => state.cart.items)
 
-const deleteFromCart = (productId, amount) => {
+/* const { message, addMessage } = useCartStore(
+    useShallow(
+    (state) => ({
+      message: state.message,
+      addMessage: state.addMessage,
+    }),
+    //shallow
+  ));
 
-      /*let cart = [...getShoppingCart()]
+  let m = message;
+  
+const { items, loaded, addItem } = useCartStore(
+    useShallow(
+    (state) => ({
+      items: state.items,
+      loaded: state.loaded,
+      addItem: state.addItem,
+    }),
+    //shallow
+  ));
+*/
+  const deleteFromCart = (productId, quantity) => {
+
+      /*let items = [...getShoppingCart()]
       let i=0
       let ix=-1
-      for(i=0; i<cart.length; i++) {
-        if (cart[i].product.id == productId && cart[i].amount == amount) {
+      for(i=0; i<items.length; i++) {
+        if (items[i].product.id == productId && items[i].quantity == quantity) {
           ix=i
           break
         }
       }
       if (i!=-1) {
-        cart.splice(ix, 1);
+        items.splice(ix, 1);
       }
-      //setShoppingCart(cart)
-      props.updateCart(cart)*/
+      //setShoppingCart(items)
+      props.updateCart(items)*/
     }
-
-    const setAmount = (productId, amount) => {
+    const setAmount = (productId, quantity) => {
       let changed = false
-      for(let i=0; i<props.cart.length; i++) {
-        if (props.cart[i].product.id == productId) {
-          props.cart[i].amount = parseFloat(amount)
+      for(let i=0; i<shopCart.length; i++) {
+        if (shopCart[i].product.id == productId) {
+          shopCart[i].quantity = parseFloat(quantity)
           changed = true
           break
         }
       }
       if (changed === true) {
-        props.updateCart(props.cart)
+        //props.updateCart(items)
       }
     }
 
     const setRolls = (productId, isRolls) => {
       let changed = false
-      for(let i=0; i<props.cart.length; i++) {
-        if (props.cart[i].product.id == productId) {
-          props.cart[i].isRolls = isRolls
+      for(let i=0; i<shopCart.length; i++) {
+        if (shopCart[i].product.id == productId) {
+          shopCart[i].isRolls = isRolls
           changed = true
           break
         }
       }
       if (changed === true) {
-        props.updateCart(props.cart)
+        //props.updateCart(items)
       }
     }
 
     const setHelp = (productId, help) => {
       let changed = false
-      for(let i=0; i<props.cart.length; i++) {
-        if (props.cart[i].product.id == productId) {
-          props.cart[i].help = help
+      for(let i=0; i<shopCart.length; i++) {
+        if (shopCart[i].product.id == productId) {
+          shopCart[i].help = help
           changed = true
           break
         }
       }
       if (changed === true) {
-        props.updateCart(props.cart)
+        //props.updateCart(items)
       }
     }
 
+    //  React.useEffect(() => {
+    //     }, []);
+
+    //addItem({quantity: 2, product: { id: 3, itemName: "item 4"}})
+
+    console.log("shopCart:")
+    console.log(shopCart)
 return <>
     <Box sx={{display: "flex", height: "60px", pt: 1}}>
       <Typography sx={{fontSize: "18px", fontWeight: 600, color: "#333", p:0, pb: 2, flexGrow: 1}}>
-        Your shopping cart:&nbsp;{props.cart.length}&nbsp;items
+        {/* Your shopping items:&nbsp;{items.length}&nbsp;items */}
       </Typography>
     </Box>
 
     <Box>
-    <table class="shopping-cart" cellPadding={0} cellSpacing={0}>
+    <table class="shopping-items" cellPadding={0} cellSpacing={0}>
     <tbody>
-    {cartItems.map((data, index) => (
+    {shopCart.map((data, index) => (
       <tr style={{ height : "100px"}}>
         <td >
           <img 
             src={data.product.colors[0].imagePath ? (config.api + "/" + data.product.colors[0].imagePath[0]) : ""}
-            alt={"photo_00"}
-            style={{ borderRadius: "6px" }} />
+            alt={"photo_"+data.product.id}
+            style={{ borderRadius: "6px", maxWidth: "90px" }} />
         </td>
         <td style={{wordBreak: "break-all", paddingLeft: "10px"}}>
           <table cellPadding={0} cellSpacing={0}>
@@ -105,9 +136,9 @@ return <>
         <td>
         <table>
             <tbody>
-              <PropertyItem maxWidth={200} label="Price" value={computePrice(data.product, data.amount) + " $"} />
-              <PropertyAmount maxWidth={200} label="Amount" product={data.product} amount={data.amount} isRolls={data.isRolls} setAmount={setAmount} setRolls={setRolls} setHelp={setHelp} />
-              {/* <tr><td><span class="item-label">&nbsp;</span></td><td>{data.help}</td></tr> */}
+              <PropertyItem maxWidth={200} label="Price" value={computePrice(data.product, data.quantity) + " $"} />
+              <PropertyAmount maxWidth={200} label="Amount" product={data.product} quantity={data.quantity} isRolls={data.isRolls} setAmount={setAmount} setRolls={setRolls} setHelp={setHelp} />
+              
             </tbody>
           </table>
           </td>
@@ -115,7 +146,7 @@ return <>
         <IconButton aria-label="delete">
           <DeleteIcon 
             sx={{ color: "#18515E", fontSize: 26 }}
-            onClick={(e)=>{deleteFromCart(data.product.id,data.amount)}} >
+            onClick={(e)=>{deleteFromCart(data.product.id,data.quantity)}} >
           </DeleteIcon>
         </IconButton> 
         </td>

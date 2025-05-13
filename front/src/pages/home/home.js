@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useSelector, useDispatch } from 'react-redux'
+
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
@@ -47,6 +49,8 @@ import { postProduct } from '../../api/products'
 import { postOrder } from '../../api/orders'
 import { v4 as uuid } from 'uuid'
 
+import { addToCart, removeFromCart, updateQuantity, flushCart } from './../../store/cartSlice'
+
 import useShoppingCartStore from "./../../store/shoppingCartStore";
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -72,6 +76,11 @@ const getFromUrl = (name) => {
 }
 
 export default function Home(props) {
+
+    const cartCount = useSelector((state) => state.cart.items.length)
+    const shopCart = useSelector((state) => state.cart.items)
+    //const shopCart = useSelector((state) => state.cart.items)
+    //console.log(cart1)
 
     const navigate = useNavigate();
     const theme = useTheme();
@@ -154,6 +163,12 @@ export default function Home(props) {
       bgcolor: 'background.paper',
     }  
 
+    const dispatch = useDispatch();
+    const increment = () => { 
+      dispatch(addToCart({ quickViewProduct, cartAmount })); 
+    };
+
+
     const dropFilters = (e) => {
       setSelectedTextileType([])
       setSelectedDesignType([])
@@ -204,7 +219,7 @@ export default function Home(props) {
       return
     }
 
-    let items = props.cart.map( (it) => { return {
+    let items = shopCart.map( (it) => { return {
       productId: it.product.id,
       quantity: it.amount,
       itemName: it.product.itemName,
@@ -239,10 +254,12 @@ export default function Home(props) {
   }
 
   const handleAddToCart = (event) => {
-    props.addToCart({
+    //props.addToCart({
+    /*dispatch(addToCart({
       product: quickViewProduct,
       amount: cartAmount
-    })
+    }))*/
+    increment();
 
     setAddToCartFunction("Open cart")
     /*addShoppingCart({
@@ -541,7 +558,7 @@ export default function Home(props) {
 
         <Box sx={{...modalSx, ...{borderRadius: "10px"}}} >
 
-          <ShoppingCart/>
+          <ShoppingCart/> 
         
         <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2, pt: 2}}> Delivery information </Typography>
         <Grid container spacing={1} >
@@ -674,7 +691,7 @@ export default function Home(props) {
           seasons={seasons}
           colors={colors}
           printTypes={printTypes}
-          cart={props.cart}
+          cart={shopCart}
           openShoppingCart={handleShowShoppingCart}
           setSeason       = {(v)=>{ dropFilters(); setSelectedSeason(v)}}
           setTextileType  = {(v)=>{ dropFilters(); setSelectedTextileType(v)}}
@@ -725,7 +742,7 @@ export default function Home(props) {
               value={selectedProductType}
             />
           </Box>
-
+cartCount: {cartCount}
           <Box sx={{ padding: "10px" }} >
           {/* <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" > */}
           <Grid container spacing={1} sx={{marginX: "auto"}} >

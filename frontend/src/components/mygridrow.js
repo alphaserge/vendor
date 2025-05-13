@@ -109,7 +109,6 @@ export default function MyGridRow(props) {
 
   </Box>
 
-
   <Box sx={{ display: "flex", flexDirection: "column", pr: 3 }}>
 
     <Box sx={{ display: "flex", flexDirection: "row", pl: 2 }}>
