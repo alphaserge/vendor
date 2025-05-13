@@ -8,104 +8,43 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useSelector, useDispatch } from 'react-redux'
 
 import PropertyItem from './propertyitem';
-import PropertyAmount from './propertyamount';
+import PropertyQuantity from './propertyquantity';
 import { computePrice } from './../functions/helper';
 import config from "./../config.json"
-import { useCartStore, useMessageStore } from "./../store/shoppingCartStore";
-import { addShoppingCart, getShoppingCart, setShoppingCart } from './../functions/shoppingcart';
-import { shallow, useShallow } from "zustand/shallow";
+
+import { addToCart, removeFromCart, updateQuantity, flushCart } from './../store/cartSlice'
 
 export default function ShoppingCart(props) {
 
   const shopCart = useSelector((state) => state.cart.items)
-
-/* const { message, addMessage } = useCartStore(
-    useShallow(
-    (state) => ({
-      message: state.message,
-      addMessage: state.addMessage,
-    }),
-    //shallow
-  ));
-
-  let m = message;
   
-const { items, loaded, addItem } = useCartStore(
-    useShallow(
-    (state) => ({
-      items: state.items,
-      loaded: state.loaded,
-      addItem: state.addItem,
-    }),
-    //shallow
-  ));
-*/
-  const deleteFromCart = (productId, quantity) => {
+  const dispatch = useDispatch();
 
-      /*let items = [...getShoppingCart()]
-      let i=0
-      let ix=-1
-      for(i=0; i<items.length; i++) {
-        if (items[i].product.id == productId && items[i].quantity == quantity) {
-          ix=i
-          break
-        }
-      }
-      if (i!=-1) {
-        items.splice(ix, 1);
-      }
-      //setShoppingCart(items)
-      props.updateCart(items)*/
-    }
-    const setAmount = (productId, quantity) => {
-      let changed = false
-      for(let i=0; i<shopCart.length; i++) {
-        if (shopCart[i].product.id == productId) {
-          shopCart[i].quantity = parseFloat(quantity)
-          changed = true
-          break
-        }
-      }
-      if (changed === true) {
-        //props.updateCart(items)
-      }
-    }
+  const changeQuantity = (index, quantity) => { 
+    dispatch(updateQuantity({ index, quantity }));
+  };
 
-    const setRolls = (productId, isRolls) => {
-      let changed = false
-      for(let i=0; i<shopCart.length; i++) {
-        if (shopCart[i].product.id == productId) {
-          shopCart[i].isRolls = isRolls
-          changed = true
-          break
-        }
-      }
-      if (changed === true) {
-        //props.updateCart(items)
-      }
-    }
+  const deleteFromCart = (index) => {
+    dispatch(removeFromCart({index}));
+  }
 
-    const setHelp = (productId, help) => {
-      let changed = false
-      for(let i=0; i<shopCart.length; i++) {
-        if (shopCart[i].product.id == productId) {
-          shopCart[i].help = help
-          changed = true
-          break
-        }
-      }
-      if (changed === true) {
-        //props.updateCart(items)
-      }
-    }
+  const setQuantity = (index, quantity) => {
+    changeQuantity(index, quantity);
+  }
 
-    //  React.useEffect(() => {
-    //     }, []);
+  const setRolls = (index, isRolls) => {
+    shopCart[index].isRolls = isRolls
+  }
 
-    //addItem({quantity: 2, product: { id: 3, itemName: "item 4"}})
+  const setHelp = (index, help) => {
+    shopCart[index].help = help
+  }
 
-    console.log("shopCart:")
-    console.log(shopCart)
+  //  React.useEffect(() => {
+  //     }, []);
+  //console.log("shopCart:")
+  //console.log(shopCart)
+
 return <>
     <Box sx={{display: "flex", height: "60px", pt: 1}}>
       <Typography sx={{fontSize: "18px", fontWeight: 600, color: "#333", p:0, pb: 2, flexGrow: 1}}>
@@ -137,7 +76,16 @@ return <>
         <table>
             <tbody>
               <PropertyItem maxWidth={200} label="Price" value={computePrice(data.product, data.quantity) + " $"} />
-              <PropertyAmount maxWidth={200} label="Amount" product={data.product} quantity={data.quantity} isRolls={data.isRolls} setAmount={setAmount} setRolls={setRolls} setHelp={setHelp} />
+              <PropertyQuantity 
+                maxWidth={200} 
+                label="Quantity" 
+                index={index} 
+                product={data.product} 
+                quantity={data.quantity} 
+                isRolls={data.isRolls} 
+                setQuantity={setQuantity} 
+                setRolls={setRolls} 
+                setHelp={setHelp} />
               
             </tbody>
           </table>
@@ -146,7 +94,7 @@ return <>
         <IconButton aria-label="delete">
           <DeleteIcon 
             sx={{ color: "#18515E", fontSize: 26 }}
-            onClick={(e)=>{deleteFromCart(data.product.id,data.quantity)}} >
+            onClick={(e)=>{deleteFromCart(index)}} >
           </DeleteIcon>
         </IconButton> 
         </td>

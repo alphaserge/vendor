@@ -20,7 +20,6 @@ import { addShoppingCart, getShoppingCart, setShoppingCart } from './functions/s
 import axios from 'axios'
 
 import config from "./config.json"
-import useShoppingCartStore from "./store/shoppingCartStore";
 
 import './App.css';
 import { useEffect, useState } from 'react';

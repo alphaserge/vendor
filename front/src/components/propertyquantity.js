@@ -5,16 +5,16 @@ import MenuItem from '@mui/material/MenuItem';
 
 import { isNumber } from '../functions/helper';
 
-export default function PropertyAmount(props) {
+export default function PropertyQuantity(props) {
 
   //const [help, setHelp] = React.useState("")
-  const [amount, setAmount] = React.useState(props.amount)
+  const [quantity, setQuantity] = React.useState(props.quantity)
   const [isRolls, setIsRolls] = React.useState(props.isRolls)
 
   /*const makeHelp = () => {
 
     setHelp("")
-    if (!isNumber(amount) || !isNumber(props.product.rollLength) ) {
+    if (!isNumber(quantity) || !isNumber(props.product.rollLength) ) {
       if (isRolls === true ) {
         setHelp("? m")
       } else {
@@ -22,9 +22,9 @@ export default function PropertyAmount(props) {
       }
     } else {
       if (isRolls === true ) {
-        setHelp((amount * props.product.rollLength).toFixed(2) + " m")
+        setHelp((quantity * props.product.rollLength).toFixed(2) + " m")
       } else {
-        setHelp((amount / props.product.rollLength).toFixed(2) + " rolls")
+        setHelp((quantity / props.product.rollLength).toFixed(2) + " rolls")
       }
     } 
   
@@ -35,21 +35,12 @@ export default function PropertyAmount(props) {
 
   
   const handleChange = (event) => {
-    let value = event.target.value
-    // if (value.length > 0 && value[value.length-1] == '.' ) {
-    //   value = value.slice(0,-1) + ','
-    // }
-    //var xStr = str.substring(0, str.length - 1);
-
-    if (isNaN(value)) { 
+    let qty = event.target.value
+    if (isNaN(qty)) { 
       return 
     }
-
-    let amn = value // parseFloat(value)
-    setAmount(amn)
-    props.setAmount(props.product.id, amn)
-    //props.setAmount(props.product.id, value)
-    //makeHelp(isRolls)
+    setQuantity(qty)
+    props.setQuantity(props.index, qty)
   }
 
   const selectChange = (event, i) => {
@@ -60,7 +51,7 @@ export default function PropertyAmount(props) {
   }
 
   /* let help = ""
-  if (!isNumber(amount) || !isNumber(props.product.rollLength) ) {
+  if (!isNumber(quantity) || !isNumber(props.product.rollLength) ) {
     if (isRolls === true ) {
       help = "? m"
     } else {
@@ -68,16 +59,16 @@ export default function PropertyAmount(props) {
     }
   } else {
     if (isRolls === true ) {
-      help = (amount * props.product.rollLength).toFixed(2) + " m"
+      help = (quantity * props.product.rollLength).toFixed(2) + " m"
     } else {
-      help = (amount / props.product.rollLength).toFixed(2) + " rolls"
+      help = (quantity / props.product.rollLength).toFixed(2) + " rolls"
     }
   } */
 
     //makeHelp()
 
     let help = ""
-    if (!isNumber(amount) || !isNumber(props.product.rollLength) ) {
+    if (!isNumber(quantity) || !isNumber(props.product.rollLength) ) {
       if (isRolls === true ) {
         help ="= ? m"
       } else {
@@ -85,13 +76,13 @@ export default function PropertyAmount(props) {
       }
     } else {
       if (isRolls === true ) {
-        help = "= " + (amount * props.product.rollLength).toFixed(2) + " m"
+        help = "= " + (quantity * props.product.rollLength).toFixed(2) + " m"
       } else {
-        help = "= " + (amount / props.product.rollLength).toFixed(2) + " rolls"
+        help = "= " + (quantity / props.product.rollLength).toFixed(2) + " rolls"
       }
     } 
 
-  //console.log('PropertyAmount props.isRolls:' + props.product.id)
+  //console.log('PropertyQuantity props.isRolls:' + props.product.id)
   //console.log(props.isRolls)
 
   return <>
@@ -111,7 +102,7 @@ export default function PropertyAmount(props) {
                     // "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": { display: "none" },
                     // "& input[type=number]": { MozAppearance: "textfield" },
                   }}
-                  value={amount}
+                  value={quantity}
                   onChange={handleChange}
                   inputProps={{
                     style: {

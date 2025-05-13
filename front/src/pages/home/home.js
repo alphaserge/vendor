@@ -50,8 +50,7 @@ import { postOrder } from '../../api/orders'
 import { v4 as uuid } from 'uuid'
 
 import { addToCart, removeFromCart, updateQuantity, flushCart } from './../../store/cartSlice'
-
-import useShoppingCartStore from "./../../store/shoppingCartStore";
+import PropertyQuantity from "../../components/propertyquantity";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -142,7 +141,9 @@ export default function Home(props) {
     // store thumbs swiper instance
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
-    const [cartAmount, setCartAmount] = useState(1)
+    const [cartQuantity, setCartQuantity] = useState(1)
+    const [cartIsRolls, setCartIsRolls] = useState(false)
+    const [cartHelp, setCartHelp] = useState(false)
     const [addToCartFunction, setAddToCartFunction] = useState("Add to Cart")
 
    // const { cartItems } = useShoppingCartStore((state) => ({ items: state.items }));
@@ -164,10 +165,22 @@ export default function Home(props) {
     }  
 
     const dispatch = useDispatch();
-    const increment = () => { 
-      dispatch(addToCart({ quickViewProduct, cartAmount })); 
+    const _addToCart = () => { 
+      dispatch(addToCart({ quickViewProduct, cartQuantity, cartIsRolls })); 
     };
 
+
+  const setQuantity = (index, quantity) => {
+    setCartQuantity(quantity)
+  }
+
+  const setIsRolls = (index, isRolls) => {
+    setCartIsRolls(isRolls)
+  }
+
+  const setHelp = (index, help) => {
+    setCartHelp(help)
+  }    
 
     const dropFilters = (e) => {
       setSelectedTextileType([])
@@ -221,12 +234,12 @@ export default function Home(props) {
 
     let items = shopCart.map( (it) => { return {
       productId: it.product.id,
-      quantity: it.amount,
+      quantity: it.quantity,
       itemName: it.product.itemName,
       refNo: it.product.refNo,
       artNo: it.product.artNo,
       design: it.product.design,
-      price: (it.amount > 500 ? it.product.price : ( it.amount > 300 ? it.product.price1 : it.product.price2 ))
+      price: (it.quantity > 500 ? it.product.price : ( it.quantity > 300 ? it.product.price1 : it.product.price2 ))
     }} )
 
     let order = {
@@ -254,21 +267,8 @@ export default function Home(props) {
   }
 
   const handleAddToCart = (event) => {
-    //props.addToCart({
-    /*dispatch(addToCart({
-      product: quickViewProduct,
-      amount: cartAmount
-    }))*/
-    increment();
-
+    _addToCart();
     setAddToCartFunction("Open cart")
-    /*addShoppingCart({
-      product: quickViewProduct,
-      amount: cartAmount
-    })*/
-    /*let cart = getShoppingCart()
-    cart.push(item)
-    setShoppingCart(cart)*/
   };
 
   const handleOpenCart = (event) => {
@@ -528,10 +528,20 @@ export default function Home(props) {
                     justifyContent: 'flex-start',
                     className:"quantity",
                     mt: 2 }}>
-                      <QuantityInput 
+                      {/* <QuantityInput 
                         step={1} 
-                        onChange={(e,v)=>{ setCartAmount(v)}} 
-                        />
+                        onChange={(e,v)=>{ setCartQuantity(v)}} 
+                        /> */}
+                        <PropertyQuantity 
+                          maxWidth={200} 
+                          label="Quantity" 
+                          index={-1} 
+                          product={quickViewProduct} 
+                          quantity={cartQuantity} 
+                          isRolls={cartIsRolls} 
+                          setQuantity={setQuantity} 
+                          setRolls={setIsRolls} 
+                          setHelp={setHelp} />
                       <Button
                           variant="contained"
                           startIcon={<ShoppingCartOutlinedIcon/>}
