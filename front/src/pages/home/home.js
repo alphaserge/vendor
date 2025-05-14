@@ -132,7 +132,7 @@ export default function Home(props) {
     const [orderError, setOrderError] = useState(false)
     const [savingError, setSavingError] = useState(false)
     const [showQuickView, setShowQuickView] = React.useState(false);
-    const [quickViewProduct, setQuickViewProduct] = React.useState({ colors: [{ imagePath: [''] }]});
+    const [quickViewProduct, setQuickViewProduct] = React.useState(null);//{ notValid: true, colors: [{ imagePath: [''] }]});
 
     const [showShoppingCart, setShowShoppingCart] = React.useState(false);
     const [showInfo, setShowInfo] = React.useState(false);
@@ -142,9 +142,10 @@ export default function Home(props) {
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
     const [cartQuantity, setCartQuantity] = useState(1)
+    //const [displayCartQuantity, setDisplayCartQuantity] = useState(true)
     const [cartIsRolls, setCartIsRolls] = useState(false)
     const [cartHelp, setCartHelp] = useState(false)
-    const [addToCartFunction, setAddToCartFunction] = useState("Add to Cart")
+    //const [addToCartFunction, setAddToCartFunction] = useState("Add to Cart")
 
    // const { cartItems } = useShoppingCartStore((state) => ({ items: state.items }));
 
@@ -168,7 +169,6 @@ export default function Home(props) {
     const _addToCart = () => { 
       dispatch(addToCart({ quickViewProduct, cartQuantity, cartIsRolls })); 
     };
-
 
   const setQuantity = (index, quantity) => {
     setCartQuantity(quantity)
@@ -222,7 +222,7 @@ export default function Home(props) {
 
    const handleShowShoppingCart = (event) => {
     setShowShoppingCart(event)
-    setAddToCartFunction("Add to Cart");
+    //setAddToCartFunction("Add to Cart");
    }
 
   const handleMakeOrder = async (event) => {
@@ -268,13 +268,18 @@ export default function Home(props) {
 
   const handleAddToCart = (event) => {
     _addToCart();
-    setAddToCartFunction("Open cart")
+    //setAddToCartFunction("Open cart")
+    setCartQuantity(1)
+    setCartIsRolls(false)
+    //setDisplayCartQuantity(false)
   };
 
   const handleOpenCart = (event) => {
     setShowQuickView(false)
     setShowShoppingCart(true)
-    setAddToCartFunction("Add to Cart")
+    //setAddToCartFunction("Add to Cart")
+    setCartQuantity(1) //todo - "in cart"
+    setCartIsRolls(false)
   }
 
     const searchProducts = async (e) => {
@@ -420,7 +425,7 @@ export default function Home(props) {
     const quickView = (e, data) => {
       setShowQuickView(true)
       setQuickViewProduct(data)
-      setAddToCartFunction("Add to Cart")
+      //setAddToCartFunction("Add to Cart")
     }
 
     useEffect(() => {
@@ -445,12 +450,19 @@ export default function Home(props) {
   }
   
   const productImgHolderClass = "product-img-holder"
+  //const productInCart = quickViewProduct.notValid!==true ? shopCart.map((x) => { return x.product.id }).indexOf(quickViewProduct.id) > 0 : false;
+  const productInCart = quickViewProduct ? shopCart.map((x) => { return x.product.id }).indexOf(quickViewProduct.id) >= 0 : false;
+  if (quickViewProduct) {
+    const ccc = shopCart.map((x) => { return x.product.id }).indexOf(quickViewProduct.id);
+    const ddd = ccc;
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
 
-      {/* Quick view modal */}
+      {/* Quick view modal - start */}
+      {(quickViewProduct &&
       <Modal
         open={showQuickView}
         onClose={function() { setAddProduct(false) }}
@@ -528,11 +540,7 @@ export default function Home(props) {
                     justifyContent: 'flex-start',
                     className:"quantity",
                     mt: 2 }}>
-                      {/* <QuantityInput 
-                        step={1} 
-                        onChange={(e,v)=>{ setCartQuantity(v)}} 
-                        /> */}
-                        <PropertyQuantity 
+                      {(productInCart!==true && <> <PropertyQuantity 
                           maxWidth={200} 
                           label="Quantity" 
                           index={-1} 
@@ -542,20 +550,25 @@ export default function Home(props) {
                           setQuantity={setQuantity} 
                           setRolls={setIsRolls} 
                           setHelp={setHelp} />
-                      <Button
+                        <Button
                           variant="contained"
                           startIcon={<ShoppingCartOutlinedIcon/>}
                           className="add-to-cart-button"
-                          onClick={ (e) => { addToCartFunction=="Add to Cart" ? handleAddToCart(e) : handleOpenCart(e) } } 
-                          sx={{ml: 4}} >
-                              {addToCartFunction}
-                      </Button>
+                          onClick={handleAddToCart} 
+                          sx={{ml: 4}}>Add to cart</Button></>)}
+                      {(productInCart===true && <Button
+                          variant="contained"
+                          startIcon={<ShoppingCartOutlinedIcon/>}
+                          className="add-to-cart-button"
+                          onClick={handleOpenCart}
+                          sx={{ml: 4}}>In cart</Button> )}
                   </Box>
-          </Box>
+            </Box>
           </Grid>
         </Grid>
         </Box>
-      </Modal>
+      </Modal> )} 
+      {/* Quick view modal - end */}
 
       {/* Shopping cart modal */}
       <Modal
@@ -752,7 +765,7 @@ export default function Home(props) {
               value={selectedProductType}
             />
           </Box>
-cartCount: {cartCount}
+
           <Box sx={{ padding: "10px" }} >
           {/* <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" > */}
           <Grid container spacing={1} sx={{marginX: "auto"}} >
