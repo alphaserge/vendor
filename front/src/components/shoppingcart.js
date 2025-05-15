@@ -63,8 +63,8 @@ return <>
             alt={"photo_"+data.product.id}
             style={{ borderRadius: "6px", maxWidth: "90px" }} />
         </td>
-        <td style={{wordBreak: "break-all", paddingLeft: "10px"}}>
-          <table cellPadding={0} cellSpacing={0}>
+        <td style={{wordBreak: "break-all", paddingLeft: "15px"}}>
+          <table cellPadding={0} cellSpacing={4}>
             <tbody>
               <PropertyItem maxWidth={200} label="Item name" value={data.product.itemName} />
               <PropertyItem maxWidth={200} label="Design" value={data.product.design} />
@@ -73,7 +73,7 @@ return <>
           </table>
         </td>
         <td>
-        <table>
+        <table style={{paddingLeft: "10px"}}>
             <tbody>
               <PropertyItem maxWidth={200} label="Price" value={computePrice(data.product, data.quantity) + " $"} />
               <PropertyQuantity 
@@ -90,8 +90,8 @@ return <>
             </tbody>
           </table>
           </td>
-        <td>
-        <IconButton aria-label="delete">
+        <td style={{paddingLeft: "10px"}}>
+        <IconButton aria-label="delete" sx={{backgroundColor: "#ddd", borderRadius: "8px", margin: "6px" }}>
           <DeleteIcon 
             sx={{ color: "#18515E", fontSize: 26 }}
             onClick={(e)=>{deleteFromCart(index)}} >

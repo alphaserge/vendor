@@ -51,6 +51,7 @@ import { v4 as uuid } from 'uuid'
 
 import { addToCart, removeFromCart, updateQuantity, flushCart } from './../../store/cartSlice'
 import PropertyQuantity from "../../components/propertyquantity";
+import PropertyItem from '../../components/propertyitem';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -523,17 +524,17 @@ export default function Home(props) {
           </Grid>
           <Grid item xs={12} md={7} paddingLeft={{ xs: "0", md: "10px"}} paddingTop={{ xs: "10px", md: "0"}}>
           <Box sx = {{ display: "flex",flexDirection: 'column', p: 1}} className="product-item" >
-          <table >
-                <tr><td class="label" style={{width: "130px"}} >Item name:</td><td>{quickViewProduct.itemName}</td></tr>
-                <tr><td class="label">Art No:</td><td>{quickViewProduct.artNo}</td></tr>
-                <tr><td class="label">Ref No:</td><td>{quickViewProduct.refNo}</td></tr>
-                <tr><td class="label">Design:</td><td>{quickViewProduct.design}</td></tr>
-                <tr><td class="label">Composition:</td><td>{quickViewProduct.composition}</td></tr>
-                <tr><td class="label">Product type:</td><td>{quickViewProduct.productType}</td></tr>
-                <tr><td class="label">Product style:</td><td>{quickViewProduct.productStyle}</td></tr>
-                <tr><td class="label">Print style:</td><td>{quickViewProduct.printType}</td></tr>
-                <tr><td class="label">Price per meter:</td><td><b>from&nbsp;{quickViewProduct.price}$</b></td></tr>
-              </table>
+            <table style={{ fontSize: "15px" }}>
+            <PropertyItem maxWidth={200} label="Item name" value={quickViewProduct.itemName} />
+            <PropertyItem maxWidth={200} label="Art No" value={quickViewProduct.artNo} />
+            <PropertyItem maxWidth={200} label="Ref No" value={quickViewProduct.refNo} />
+            <PropertyItem maxWidth={200} label="Design" value={quickViewProduct.design} />
+            <PropertyItem maxWidth={200} label="Composition" value={quickViewProduct.composition} />
+            <PropertyItem maxWidth={200} label="Product type" value={quickViewProduct.productType} />
+            <PropertyItem maxWidth={200} label="Product style" value={quickViewProduct.productStyle} />
+            <PropertyItem maxWidth={200} label="Print style" value={quickViewProduct.printType} />
+            <PropertyItem maxWidth={200} label="Price per meter" value={quickViewProduct.price}$ />
+            </table>
                   <Box sx={{
                     display: "flex",
                     flexDirection: 'row',

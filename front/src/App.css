@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lobster&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Parkinsans:wght@300..800&display=swap');
+
 .errorLabel {
   color: red;
   font-size: 12px;
@@ -312,10 +314,24 @@ table.shopping-cart  td img {
 }
 
 span.item-label  {
-  color: #868695;
+  color: #447753;
   padding-right: 6px;
   display: inline-block;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  /* font-optical-sizing: auto;
+  font-style: normal; */
 }
+
+span.item-value  {
+  color: #111;
+  display: inline-block;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+}
+
 
 span.text-overflow-ellipsis {
   display: block;
