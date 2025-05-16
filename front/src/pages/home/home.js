@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -14,9 +14,8 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { Button } from "@mui/material";
-import TextField from '@mui/material/TextField';
-import Modal from '@mui/material/Modal';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import Modal from '@mui/material/Modal';
 
 import axios from 'axios'
 
@@ -42,12 +41,7 @@ import ItemProduct from './itemproduct';
 import ItemProductRow from './itemproductrow';
 import ShoppingCart from '../../components/shoppingcart';
 import CheckboxList from '../../components/checkboxlist';
-import { addShoppingCart, getShoppingCart, setShoppingCart } from '../../functions/shoppingcart';
-import { computePrice } from '../../functions/helper';
-import QuantityInput from '../../components/quantityinput';
 import { postProduct } from '../../api/products'
-import { postOrder } from '../../api/orders'
-import { v4 as uuid } from 'uuid'
 
 import { addToCart, removeFromCart, updateQuantity, flushCart } from './../../store/cartSlice'
 import PropertyQuantity from "../../components/propertyquantity";
@@ -55,7 +49,6 @@ import PropertyItem from '../../components/propertyitem';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
-const textStyle = { m: 0, mb: 2 }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -125,47 +118,20 @@ export default function Home(props) {
     const [addArtNo, setAddArtNo] = useState("")
     const [addDesign, setAddDesign] = useState("")
 
-    const [clientAddress, setClientAddress] = useState("")
-    const [clientName, setClientName] = useState("")
-    const [clientPhone, setClientPhone] = useState("")
-    const [clientEmail, setClientEmail] = useState("")
-
-    const [orderError, setOrderError] = useState(false)
-    const [savingError, setSavingError] = useState(false)
     const [showQuickView, setShowQuickView] = React.useState(false);
     const [quickViewProduct, setQuickViewProduct] = React.useState(null);//{ notValid: true, colors: [{ imagePath: [''] }]});
 
-    const [showShoppingCart, setShowShoppingCart] = React.useState(false);
-    const [showInfo, setShowInfo] = React.useState(false);
     const [info, setInfo] = React.useState("");
 
     // store thumbs swiper instance
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
     const [cartQuantity, setCartQuantity] = useState(1)
-    //const [displayCartQuantity, setDisplayCartQuantity] = useState(true)
     const [cartIsRolls, setCartIsRolls] = useState(false)
     const [cartHelp, setCartHelp] = useState(false)
-    //const [addToCartFunction, setAddToCartFunction] = useState("Add to Cart")
 
-   // const { cartItems } = useShoppingCartStore((state) => ({ items: state.items }));
-
-    /*useEffect(() => {
-      localStorage.setItem('shoppingCart', shoppingCart);
-    }, [shoppingCart]);*/
-
-    const modalSx = {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: "800px",
-      boxShadow: 24,
-      padding: "20px 40px 40px 40px", 
-      outline: "none",
-      bgcolor: 'background.paper',
-    }  
-
+    const shoppingCartRef = useRef()
+    
     const dispatch = useDispatch();
     const _addToCart = () => { 
       dispatch(addToCart({ quickViewProduct, cartQuantity, cartIsRolls })); 
@@ -222,50 +188,10 @@ export default function Home(props) {
    }
 
    const handleShowShoppingCart = (event) => {
-    setShowShoppingCart(event)
+    shoppingCartRef.current.displayWindow(true);
+    /////setShowShoppingCart(event)
     //setAddToCartFunction("Add to Cart");
    }
-
-  const handleMakeOrder = async (event) => {
-
-    if (!clientAddress || !clientEmail || !clientName || !clientPhone) {
-      setOrderError(true)
-      return
-    }
-
-    let items = shopCart.map( (it) => { return {
-      productId: it.product.id,
-      quantity: it.quantity,
-      itemName: it.product.itemName,
-      refNo: it.product.refNo,
-      artNo: it.product.artNo,
-      design: it.product.design,
-      price: (it.quantity > 500 ? it.product.price : ( it.quantity > 300 ? it.product.price1 : it.product.price2 ))
-    }} )
-
-    let order = {
-      uuid : uuid(),
-      clientName : clientName,
-      clientPhone : clientPhone,
-      clientEmail : clientEmail,
-      clientAddress : clientAddress,
-      items : items
-    }
-
-    let r = await postOrder(order)
-
-    if (r && r.ok == true) {
-      //props.setLastAction("Order has been created")
-      setOrderError(false)
-      setShowShoppingCart(false)
-      setShowInfo(true)
-      setInfo("Your order has been successfully created. Please check the email address you provided when placing your order.")
-      props.updateCart([])
-      //navigate("/updateproduct?id=" + r.id)
-    } else {
-      setOrderError(true)
-    }
-  }
 
   const handleAddToCart = (event) => {
     _addToCart();
@@ -277,7 +203,8 @@ export default function Home(props) {
 
   const handleOpenCart = (event) => {
     setShowQuickView(false)
-    setShowShoppingCart(true)
+    shoppingCartRef.current.displayWindow(true);
+    /////setShowShoppingCart(true)
     //setAddToCartFunction("Add to Cart")
     setCartQuantity(1) //todo - "in cart"
     setCartIsRolls(false)
@@ -571,102 +498,18 @@ export default function Home(props) {
       </Modal> )} 
       {/* Quick view modal - end */}
 
-      {/* Shopping cart modal */}
-      <Modal
-        open={showShoppingCart}
-        onClose={function() { setShowShoppingCart(false); }}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        id="shoppingCartModal"
-        sx={{ width: "auto", outline: "none", overflow: "scroll", p: 0 }} >
-
-        <Box sx={{...modalSx, ...{borderRadius: "10px"}}} >
-
-          <ShoppingCart/> 
-        
-        <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#333", p:0, pb: 2, pt: 2}}> Delivery information </Typography>
-        <Grid container spacing={1} >
-          <Grid item xs={12} md={4} >
-                <TextField
-                  margin="normal"
-                  size="small"
-                  id="clientName"
-                  name="clientName"
-                  label="Client name"
-                  sx = {{...textStyle, ...{width: "100%"}}}
-                  value={clientName}
-                  onChange={ev => setClientName(ev.target.value) }
-                />
-          </Grid>
-          <Grid item xs={12} md={4} >
-                <TextField
-                  margin="normal"
-                  size="small"
-                  id="clientPhone"
-                  name="clientPhone"
-                  label="Client phone"
-                  sx = {{...textStyle, ...{width: "100%"}}}
-                  value={clientPhone}
-                  onChange={ev => setClientPhone(ev.target.value) }
-                />
-          </Grid>
-          <Grid item xs={12} md={4} >
-                <TextField
-                  margin="normal"
-                  size="small"
-                  id="clientEmail"
-                  name="clientEmail"
-                  label="Client email"
-                  sx = {{...textStyle, ...{width: "100%"}}}
-                  value={clientEmail}
-                  onChange={ev => setClientEmail(ev.target.value) }
-                />
-          </Grid>
-          <Grid item xs={12} md={12} >
-                <TextField
-                  margin="normal"
-                  size="small"
-                  id="clientAddress"
-                  name="clientAddress"
-                  label="Client address"
-                  sx = {{...textStyle, ...{width: "100%"}}}
-                  value={clientAddress}
-                  onChange={ev => setClientAddress(ev.target.value) }
-                />
-          </Grid>
-        </Grid>
-
-        { orderError &&
-            <Box sx={{ textAlign: "center", marginTop: 2, fontSize: "12pt", color: "red" }}>
-            An error has occurred. Please check that all fields are filled in correctly and completely and try saving again.
-            </Box> }
-
-        <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "right"}}>
-        <Button
-            variant="contained"
-            //sx={{...roundButtonStyle, ...{ml: 3}}}
-            className="add-to-cart-button"
-            onClick={handleMakeOrder} >
-                Make order
-        </Button>
-        <Button
-            variant="contained"
-            //sx={{...roundButtonStyle, ...{ml: 3}}}
-            className="add-to-cart-button"
-            sx={{ml: 1}}
-            onClick={() => {
-              setShowShoppingCart(false);
-              }}>
-                Close
-        </Button>
-        </Box>
-        </Box>
-      </Modal>
+          <ShoppingCart 
+            //ref={instance => { this.child = instance; }}
+            ref={shoppingCartRef}
+            closeDialog={(text) => { 
+              ////setShowShoppingCart(false);
+              setInfo(text);
+            }} /> 
 
       {/* Show info modal */}
       <Modal
-        open={showInfo}
-        onClose={function() { setShowInfo(false) }}
+        open={info && info.length > 0}
+        onClose={function() { setInfo("") }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
         sx={{ width: "auto", outline: "none" }} >
@@ -687,7 +530,7 @@ export default function Home(props) {
         <Box sx={{ width: "100%", textAlign:"right", pr: 3, pb: 2 }} >
         <IconButton
            sx={{ position: "absolute", top: 6, mr: 0 }}
-           onClick={() => { setShowInfo(false) }}>
+           onClick={() => { setInfo("") }}>
             <CloseIcon />
         </IconButton>
         </Box>
@@ -695,11 +538,10 @@ export default function Home(props) {
         <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "center", pt: 3}}>
         <Button
             variant="contained"
-            onClick={(e) => { setShowInfo(false) }} >
+            onClick={(e) => { setInfo("") }} >
                 Close
         </Button>
         </Box>
-
         </Box>
       </Modal>
 

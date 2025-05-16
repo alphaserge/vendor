@@ -70,15 +70,15 @@ export default function PropertyQuantity(props) {
     let help = ""
     if (!isNumber(quantity) || !isNumber(props.product.rollLength) ) {
       if (isRolls === true ) {
-        help ="= ? m"
+        help ="? m"
       } else {
-        help ="= ? roll"
+        help ="? roll"
       }
     } else {
       if (isRolls === true ) {
-        help = "= " + (quantity * props.product.rollLength).toFixed(2) + " m"
+        help = (quantity * props.product.rollLength).toFixed(2) + " m"
       } else {
-        help = "= " + (quantity / props.product.rollLength).toFixed(2) + " rolls"
+        help = (quantity / props.product.rollLength).toFixed(2) + " rolls"
       }
     } 
 
