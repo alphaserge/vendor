@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -14,7 +13,6 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { Button } from "@mui/material";
-import useMediaQuery from '@mui/material/useMediaQuery';
 import Modal from '@mui/material/Modal';
 
 import axios from 'axios'
@@ -41,6 +39,7 @@ import ItemProduct from './itemproduct';
 import ItemProductRow from './itemproductrow';
 import ShoppingCart from '../../components/shoppingcart';
 import CheckboxList from '../../components/checkboxlist';
+import Info from '../../components/info';
 import { postProduct } from '../../api/products'
 
 import { addToCart, removeFromCart, updateQuantity, flushCart } from './../../store/cartSlice'
@@ -507,43 +506,8 @@ export default function Home(props) {
             }} /> 
 
       {/* Show info modal */}
-      <Modal
-        open={info && info.length > 0}
-        onClose={function() { setInfo("") }}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        sx={{ width: "auto", outline: "none" }} >
-
-        <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: "330px",
-          boxShadow: 24,
-          padding: "45px 40px 40px 40px",
-          outline: "none",
-          bgcolor: 'background.paper',
-           }}>
-          
-        {/* <Typography>Modal title</Typography> */}
-        <Box sx={{ width: "100%", textAlign:"right", pr: 3, pb: 2 }} >
-        <IconButton
-           sx={{ position: "absolute", top: 6, mr: 0 }}
-           onClick={() => { setInfo("") }}>
-            <CloseIcon />
-        </IconButton>
-        </Box>
-        <Typography sx={{fontSize: "16px", color: "#333" , textAlign: "center" }}>{info}</Typography>
-        <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "center", pt: 3}}>
-        <Button
-            variant="contained"
-            onClick={(e) => { setInfo("") }} >
-                Close
-        </Button>
-        </Box>
-        </Box>
-      </Modal>
+      {( info && info.length > 0 && 
+        <Info message={info} close={ ()=>{ setInfo(""); }} /> )}
 
       <Container sx={{padding: 0 }} className="header-container" >
       </Container>
@@ -626,6 +590,12 @@ export default function Home(props) {
 
           </Box>
           </Box>
+
+        {/*<Button
+            variant="contained"
+            onClick={(e) => { setInfo("8934 u8929 c20u23 4") }} >
+                Close
+        </Button>*/}
 
         <Footer sx={{ mt: 2, mb: 2 }} />
 

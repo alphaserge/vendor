@@ -314,18 +314,18 @@ table.shopping-cart  td img {
 }
 
 span.item-label  {
-  color: #447753;
+  color: #4b5a76;
   padding-right: 6px;
   display: inline-block;
   font-family: "Inter", sans-serif;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 300;
   /* font-optical-sizing: auto;
   font-style: normal; */
 }
 
 span.item-value  {
-  color: #111;
+  color: #222;
   display: inline-block;
   font-family: "Inter", sans-serif;
   font-size: 14px;
