@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -9,25 +9,8 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import { Button } from "@mui/material";
-import Modal from '@mui/material/Modal';
 
 import axios from 'axios'
-
-// import Swiper core and required modules
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Thumbs } from 'swiper/modules';
-
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
-import 'swiper/css/thumbs';
 
 import config from "../../config.json"
 
@@ -39,12 +22,9 @@ import ItemProduct from './itemproduct';
 import ItemProductRow from './itemproductrow';
 import ShoppingCart from '../../components/shoppingcart';
 import CheckboxList from '../../components/checkboxlist';
+import QuickView from '../../components/quickview';
 import Info from '../../components/info';
 import { postProduct } from '../../api/products'
-
-import { addToCart, removeFromCart, updateQuantity, flushCart } from './../../store/cartSlice'
-import PropertyQuantity from "../../components/propertyquantity";
-import PropertyItem from '../../components/propertyitem';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -122,31 +102,8 @@ export default function Home(props) {
 
     const [info, setInfo] = React.useState("");
 
-    // store thumbs swiper instance
-    const [thumbsSwiper, setThumbsSwiper] = useState(null);
-
-    const [cartQuantity, setCartQuantity] = useState(1)
-    const [cartIsRolls, setCartIsRolls] = useState(false)
-    const [cartHelp, setCartHelp] = useState(false)
-
     const shoppingCartRef = useRef()
-    
-    const dispatch = useDispatch();
-    const _addToCart = () => { 
-      dispatch(addToCart({ quickViewProduct, cartQuantity, cartIsRolls })); 
-    };
-
-  const setQuantity = (index, quantity) => {
-    setCartQuantity(quantity)
-  }
-
-  const setIsRolls = (index, isRolls) => {
-    setCartIsRolls(isRolls)
-  }
-
-  const setHelp = (index, help) => {
-    setCartHelp(help)
-  }    
+    const quickViewRef = useRef()
 
     const dropFilters = (e) => {
       setSelectedTextileType([])
@@ -188,26 +145,11 @@ export default function Home(props) {
 
    const handleShowShoppingCart = (event) => {
     shoppingCartRef.current.displayWindow(true);
-    /////setShowShoppingCart(event)
-    //setAddToCartFunction("Add to Cart");
    }
 
-  const handleAddToCart = (event) => {
-    _addToCart();
-    //setAddToCartFunction("Open cart")
-    setCartQuantity(1)
-    setCartIsRolls(false)
-    //setDisplayCartQuantity(false)
-  };
-
-  const handleOpenCart = (event) => {
-    setShowQuickView(false)
-    shoppingCartRef.current.displayWindow(true);
-    /////setShowShoppingCart(true)
-    //setAddToCartFunction("Add to Cart")
-    setCartQuantity(1) //todo - "in cart"
-    setCartIsRolls(false)
-  }
+   const handleShowQuickView = (event) => {
+    quickViewRef.current.displayWindow(true);
+   }
 
     const searchProducts = async (e) => {
 
@@ -350,8 +292,10 @@ export default function Home(props) {
     }
 
     const quickView = (e, data) => {
-      setShowQuickView(true)
+      //setShowQuickView(true)
       setQuickViewProduct(data)
+      handleShowQuickView();
+      
       //setAddToCartFunction("Add to Cart")
     }
 
@@ -376,134 +320,28 @@ export default function Home(props) {
     navigate("/")
   }
   
-  const productImgHolderClass = "product-img-holder"
-  //const productInCart = quickViewProduct.notValid!==true ? shopCart.map((x) => { return x.product.id }).indexOf(quickViewProduct.id) > 0 : false;
-  const productInCart = quickViewProduct ? shopCart.map((x) => { return x.product.id }).indexOf(quickViewProduct.id) >= 0 : false;
-  if (quickViewProduct) {
-    const ccc = shopCart.map((x) => { return x.product.id }).indexOf(quickViewProduct.id);
-    const ddd = ccc;
-  }
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
 
-      {/* Quick view modal - start */}
-      {(quickViewProduct &&
-      <Modal
-        open={showQuickView}
-        onClose={function() { setAddProduct(false) }}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        sx={{ width: "auto", outline: "none" }} >
+      {/* Quick view modal */}
+      {(quickViewProduct && 
+        <QuickView 
+          product={quickViewProduct} 
+          ref={quickViewRef}
+          closeDialog={(action) => { 
+            if (action=='open cart') {
+              handleShowShoppingCart();
+            }
+          }}
+        />)} 
 
-        <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          margin: "",
-          height: "auto",
-          width: "890px",
-          boxShadow: 24,
-          padding: "20px 20px 20px 20px",
-          outline: "none",
-          bgcolor: 'background.paper',
-          display: "flex",
-          flexDirection: 'row',
-          alignItems: 'center', justifyContent: "right" }}>
-        <IconButton
-           sx={{ position: "absolute", top: 6, mr: -2, zIndex: 100, backgroundColor: "#ddd" }}
-           onClick={() => { setShowQuickView(false) }}>
-            <CloseIcon />
-        </IconButton>
-
-        <Grid container spacing={0} >
-          <Grid item xs={12} md={5} sx={{paddingLeft:"0px"}} >
-          <Swiper
-                className="swiper"
-                modules={[Thumbs, Navigation, Pagination,]} // Navigation, Pagination, Scrollbar, A11y]}
-                /*slidesPerView={1}
-                //navigation */
-                thumbs={{ swiper: thumbsSwiper }}
-                //watchSlidesProgress
-                //onSwiper={setThumbsSwiper}
-                //onSwiper={(swiper) => console.log(swiper)}
-                //pagination={{ clickable: true }}
-                //scrollbar={{ draggable: true }}
-
-                onSlideChange={() => console.log('slide change')} >
-                  {quickViewProduct.colors.map((cv, index) => {
-                   return <Box key={"product-box-00"} >
-                   <SwiperSlide key={"product-swiper-00"} sx={{ display: "flex", justifyContent: "center" }} >
-                    <Box className={productImgHolderClass} >
-                      <Box component={"img"} key={"product-swiper-00"}
-                        src={config.api + "/" + cv.imagePath[0]}
-                        alt={"photo_00"} className="product-img"
-                        sx={{ borderRadius: 0 }}
-                        />
-                      </Box>
-                   </SwiperSlide>
-                   </Box>
-                })}
-                </Swiper>
-          </Grid>
-          <Grid item xs={12} md={7} paddingLeft={{ xs: "0", md: "10px"}} paddingTop={{ xs: "10px", md: "0"}}>
-          <Box sx = {{ display: "flex",flexDirection: 'column', p: 1}} className="product-item" >
-            <table style={{ fontSize: "15px" }}>
-            <PropertyItem maxWidth={200} label="Item name" value={quickViewProduct.itemName} />
-            <PropertyItem maxWidth={200} label="Art No" value={quickViewProduct.artNo} />
-            <PropertyItem maxWidth={200} label="Ref No" value={quickViewProduct.refNo} />
-            <PropertyItem maxWidth={200} label="Design" value={quickViewProduct.design} />
-            <PropertyItem maxWidth={200} label="Composition" value={quickViewProduct.composition} />
-            <PropertyItem maxWidth={200} label="Product type" value={quickViewProduct.productType} />
-            <PropertyItem maxWidth={200} label="Product style" value={quickViewProduct.productStyle} />
-            <PropertyItem maxWidth={200} label="Print style" value={quickViewProduct.printType} />
-            <PropertyItem maxWidth={200} label="Price per meter" value={quickViewProduct.price}$ />
-            </table>
-                  <Box sx={{
-                    display: "flex",
-                    flexDirection: 'row',
-                    justifyContent: 'flex-start',
-                    className:"quantity",
-                    mt: 2 }}>
-                      {(productInCart!==true && <> <PropertyQuantity 
-                          maxWidth={200} 
-                          label="Quantity" 
-                          index={-1} 
-                          product={quickViewProduct} 
-                          quantity={cartQuantity} 
-                          isRolls={cartIsRolls} 
-                          setQuantity={setQuantity} 
-                          setRolls={setIsRolls} 
-                          setHelp={setHelp} />
-                        <Button
-                          variant="contained"
-                          startIcon={<ShoppingCartOutlinedIcon/>}
-                          className="add-to-cart-button"
-                          onClick={handleAddToCart} 
-                          sx={{ml: 4}}>Add to cart</Button></>)}
-                      {(productInCart===true && <Button
-                          variant="contained"
-                          startIcon={<ShoppingCartOutlinedIcon/>}
-                          className="add-to-cart-button"
-                          onClick={handleOpenCart}
-                          sx={{ml: 4}}>In cart</Button> )}
-                  </Box>
-            </Box>
-          </Grid>
-        </Grid>
-        </Box>
-      </Modal> )} 
-      {/* Quick view modal - end */}
-
-          <ShoppingCart 
-            //ref={instance => { this.child = instance; }}
-            ref={shoppingCartRef}
-            closeDialog={(text) => { 
-              ////setShowShoppingCart(false);
-              setInfo(text);
-            }} /> 
+      {/* Shopping cart modal */}
+        <ShoppingCart 
+          ref={shoppingCartRef}
+          closeDialog={(text) => { 
+            setInfo(text);
+          }} /> 
 
       {/* Show info modal */}
       {( info && info.length > 0 && 

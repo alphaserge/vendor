@@ -60,7 +60,7 @@ export default function ItemProduct(props) {
             <Box className="product-item">{props.data.itemName}</Box>
             <Box sx={{display: "flex", flexDirection:"row"}}> 
               <Box className="product-item">Product code:&nbsp;{props.data.refNo}</Box>
-              <Box className="product-price-text" style={{marginLeft:"auto"}} > From&nbsp;${props.data.price}</Box>
+              <Box className="product-price-text" style={{marginLeft:"auto"}}><span style={{fontSize: "larger"}}>&nbsp;{props.data.price}</span> $</Box>
             </Box> 
             {/* <Box className="product-price"><Box className="product-price-text"> From&nbsp;${props.data.price}</Box></Box>  */}
           </Box>
