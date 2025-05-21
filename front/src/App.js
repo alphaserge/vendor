@@ -196,7 +196,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home user={user} loggedIn={loggedIn} setLoggedIn={setLoggedIn} cart={cart} addToCart={addToCart} updateCart={updateCart} />} />
+          <Route path="/" element={<Home user={user} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setUser={setUser} />} />
           <Route path="/logout" element={<Logout setLoggedIn={setLoggedIn} setUser={setUser} />} />
           <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setUser={setUser} />} />

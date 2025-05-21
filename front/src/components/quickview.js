@@ -19,6 +19,7 @@ import { Thumbs } from 'swiper/modules';
 import { addToCart, removeFromCart, updateQuantity, flushCart } from './../store/cartSlice'
 import PropertyQuantity from "../components/propertyquantity";
 import PropertyItem from '../components/propertyitem';
+import ItemName from '../components/itemname';
 
 import config from "../config.json"
 
@@ -31,7 +32,7 @@ import 'swiper/css/thumbs';
 
 const QuickView = React.forwardRef((props, ref) => {
 
-  const [show, setShow] = React.useState(false);
+  const [showModal, setShowModal] = React.useState(false);
   const [product, setProduct] = useState(props.product)
   const shopCart = useSelector((state) => state.cart.items)
 
@@ -56,7 +57,7 @@ const QuickView = React.forwardRef((props, ref) => {
   }))
 
   const displayWindow = (show) => {
-    setShow(show);
+    setShowModal(show);
   }
 
   const [cartQuantity, setCartQuantity] = useState(1)
@@ -90,7 +91,7 @@ const QuickView = React.forwardRef((props, ref) => {
   };
 
   const handleOpenCart = (event) => {
-    setShow(false)
+    setShowModal(false)
     props.closeDialog('open cart')
   } 
 
@@ -100,8 +101,8 @@ const QuickView = React.forwardRef((props, ref) => {
 return <>
   {/* Show info modal */}
   <Modal
-    open={show}
-    onClose={function() { setShow(false) }}
+    open={showModal}
+    onClose={function() { setShowModal(false) }}
     aria-labelledby="modal-modal-title"
     aria-describedby="modal-modal-description"
     sx={{ width: "auto", outline: "none" }} >
@@ -111,29 +112,31 @@ return <>
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      margin: "",
+      margin: "0px",
       height: "auto",
-      width: "890px",
+      width: "950px",
       boxShadow: 24,
-      padding: "20px 20px 20px 20px",
+      padding: "0px",
       outline: "none",
-      bgcolor: 'background.paper',
+      bgcolor: '#fff',
       display: "flex",
+      overflow: "hidden",
       flexDirection: 'row',
+      borderRadius: "20px",
       alignItems: 'center', justifyContent: "right" }}>
     <IconButton
-        sx={{ position: "absolute", top: 6, mr: -2, zIndex: 100, backgroundColor: "#ddd" }}
-        onClick={() => { setShow(false) }}>
-        <CloseIcon />
+        sx={{ position: "absolute", top: 1, mr: 0, zIndex: 100, backgroundColor: "#fff", border: "2px solid #ccc", border: "none" }}
+        onClick={() => { setShowModal(false) }}>
+        <CloseIcon sx={{ fontSize: 24 }}/>
     </IconButton>
 
     <Grid container spacing={0} >
-      <Grid item xs={12} md={5} sx={{paddingLeft:"0px"}} >
+      <Grid item xs={12} md={6} sx={{paddingLeft:"0px"}} >
       <Swiper
             className="swiper"
             modules={[Thumbs, Navigation, Pagination,]} // Navigation, Pagination, Scrollbar, A11y]}
-            /*slidesPerView={1}
-            //navigation */
+            /*slidesPerView={1}*/
+            navigation 
             thumbs={{ swiper: thumbsSwiper }}
             //watchSlidesProgress
             //onSwiper={setThumbsSwiper}
@@ -145,22 +148,21 @@ return <>
               {props.product.colors.map((cv, index) => {
                 return <Box key={"product-box-00"} >
                 <SwiperSlide key={"product-swiper-00"} sx={{ display: "flex", justifyContent: "center" }} >
-                <Box className={productImgHolderClass} >
+                <Box sx={{ width: 600, height: 600, overflow: "hidden", padding: 0, cursor: "pointer" }} >
                   <Box component={"img"} key={"product-swiper-00"}
                     src={config.api + "/" + cv.imagePath[0]}
                     alt={"photo_00"} className="product-img"
-                    sx={{ borderRadius: 0 }}
-                    />
+                    sx={{ borderRadius: 0 }} />
                   </Box>
                 </SwiperSlide>
                 </Box>
             })}
             </Swiper>
       </Grid>
-      <Grid item xs={12} md={7} paddingLeft={{ xs: "0", md: "10px"}} paddingTop={{ xs: "10px", md: "0"}}>
-      <Box sx = {{ display: "flex",flexDirection: 'column', p: 1}} className="product-item" >
-        <table style={{ fontSize: "15px" }}>
-        <PropertyItem maxWidth={200} label="Item name" value={props.product.itemName} />
+      <Grid item xs={12} md={6} paddingLeft={{ xs: "0", md: "10px"}} paddingTop={{ xs: "10px", md: "0"}}>
+      <Box sx = {{ display: "flex", flexDirection: 'column', p: 1}} className="product-item" >
+        <ItemName label="Item name" value={props.product.itemName} />
+        <table style={{ fontSize: "15px", paddingLeft: 20 }}>
         <PropertyItem maxWidth={200} label="Art No" value={props.product.artNo} />
         <PropertyItem maxWidth={200} label="Ref No" value={props.product.refNo} />
         <PropertyItem maxWidth={200} label="Design" value={props.product.design} />
@@ -170,35 +172,39 @@ return <>
         <PropertyItem maxWidth={200} label="Print style" value={props.product.printType} />
         <PropertyItem maxWidth={200} label="Price per meter" value={props.product.price}$ />
         </table>
-              <Box sx={{
-                display: "flex",
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-                className:"quantity",
-                mt: 2 }}>
-                  {(productInCart!==true && <> <PropertyQuantity 
-                      maxWidth={200} 
-                      label="Quantity" 
-                      index={-1} 
-                      product={props.product} 
-                      quantity={cartQuantity} 
-                      isRolls={cartIsRolls} 
-                      setQuantity={setQuantity} 
-                      setRolls={setIsRolls} 
-                      setHelp={setHelp} />
-                    <Button
-                      variant="contained"
-                      startIcon={<ShoppingCartOutlinedIcon/>}
-                      className="add-to-cart-button"
-                      onClick={handleAddToCart} 
-                      sx={{ml: 4}}>Add to cart</Button></>)}
-                  {(productInCart===true && <Button
-                      variant="contained"
-                      startIcon={<ShoppingCartOutlinedIcon/>}
-                      className="add-to-cart-button"
-                      onClick={handleOpenCart}
-                      sx={{ml: 4}}>In cart</Button> )}
-              </Box>
+          <Box sx={{
+            display: "flex",
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: "center",
+            className:"quantity",
+            mt: 4,
+            pl: "20px",
+            pr: "20px" }}>
+              {(productInCart!==true && <> <PropertyQuantity 
+                  maxWidth={200} 
+                  label="Quantity" 
+                  index={-1} 
+                  product={props.product} 
+                  quantity={cartQuantity} 
+                  isRolls={cartIsRolls} 
+                  setQuantity={setQuantity} 
+                  setRolls={setIsRolls} 
+                  setHelp={setHelp}
+                  />
+                <Button
+                  variant="contained"
+                  startIcon={<ShoppingCartOutlinedIcon/>}
+                  className="button"
+                  onClick={handleAddToCart} 
+                  sx={{mt: 4, p: "12px", width: "90%" }}>Add to cart</Button></>)}
+              {(productInCart===true && <Button
+                  variant="contained"
+                  startIcon={<ShoppingCartOutlinedIcon/>}
+                  className="button"
+                  onClick={handleOpenCart}
+                  sx={{mt: 4, p: "12px", width: "90%" }}>In cart</Button> )}
+          </Box>
         </Box>
       </Grid>
     </Grid>

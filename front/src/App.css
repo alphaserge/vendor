@@ -1,4 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lobster&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Parkinsans:wght@300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lobster&family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Parkinsans:wght@300..800&display=swap');
+
+.App {
+  background-color: #e4f1df;
+}
 
 .errorLabel {
   color: red;
@@ -42,73 +46,6 @@ li > .color_select_item {
   width: auto;
   max-width: 900px;
 }
-
-/* .main-content {
-  max-width: 1260px;
-  margin: 40px auto; } */
-
-
-.main-section {
-  /* font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
-}
-
-/* .mainContainer {
-  flex-direction: column;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
-
-.titleContainer {
-  display: flex;
-  flex-direction: column;
-  font-size: 64px;
-  font-weight: bolder;
-  align-items: center;
-  justify-content: center;
-}
-
-.resultContainer, .historyItem { 
-  flex-direction: row;
-  display: flex;
-  width: 400px;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.historyContainer {
-  flex-direction: column;
-  display: flex;
-  height: 200px;
-  align-items: center;
-  flex-grow: 5;
-  justify-content: flex-start;
-}
-
-.buttonContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 260px;
-}
-
-.inputContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-.inputBox {
-  height: 48px;
-  width: 360px;
-  font-size: large;
-  border-radius: 8px;
-  border: 1px solid grey;
-  padding-left: 8px;
-} */
 
 div.product-img-holder {
   width:310px;
@@ -191,8 +128,6 @@ img.product-img {
   display: inline-block;
   font-weight: bold;
   color: #77809f;
-  /* color: #fff; */
-  /* background-color: #18515e; */
   border-radius: 4px;
   padding: 0px 8px;
   font-size: 17px;
@@ -202,12 +137,7 @@ img.product-img {
   font-size: 15px;
   padding: 2px 0;
   color: #000;
-  /* width: 200px;
-  height: 26px;
-  margin-left: 20px;
-  text-align: left; */
-  /* display: flex;
-  flex-direction: row; */
+  font-family: "Merriweather Sans", "Merriweather";
 }
 
 .product-item .label {
@@ -215,9 +145,6 @@ img.product-img {
   font-weight: bold;
   color: #000;
   min-width: 112px; 
-  /* color: #68f; 
-  color: #77809f; a44438 3b748e
-  color: #5691ac; */
 }
 
 @media (max-width: 900px) {
@@ -314,12 +241,12 @@ table.shopping-cart  td img {
 }
 
 span.item-label  {
-  color: #4b5a76;
-  padding-right: 6px;
+  color: #868695;
+  /* padding-right: 6px; */
   display: inline-block;
-  font-family: "Inter", sans-serif;
+  /* font-family: "Inter", sans-serif; */
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 500;
   /* font-optical-sizing: auto;
   font-style: normal; */
 }
@@ -327,11 +254,19 @@ span.item-label  {
 span.item-value  {
   color: #222;
   display: inline-block;
-  font-family: "Inter", sans-serif;
+  /* font-family: "Inter", sans-serif; */
   font-size: 14px;
   font-weight: 400;
 }
 
+div.item-name  {
+  color: #222;
+  /* font-family: "Inter", sans-serif; */
+  font-size: 18px;
+  font-weight: 400;
+  width: 100%;
+  text-align: center;
+}
 
 span.text-overflow-ellipsis {
   display: block;
@@ -371,10 +306,10 @@ span.text-overflow-ellipsis {
   margin-right: 10px;
 }
 
-.swiper {
+/* .swiper {
   width: 100%;
   height: 100%;
-}
+} */
 
 .no-link:hover .product-quickview {
   visibility: visible;
@@ -384,15 +319,12 @@ span.text-overflow-ellipsis {
   visibility: visible;
 }
 
-.add-to-cart-button {
-  /* height: 40px;
-  margin: 10px;
-  padding-left: 40px;
-  padding-right: 40px;  */
+.button {
   background-color: #3d694a!important;
   border-radius: 6px!important;
-  font-size: 13px!important;
+  font-size: 18px!important;
   text-transform: none!important;
+  font-family: "Merriweather Sans"!important;
 }
 
 .swiper-slide {
@@ -491,7 +423,7 @@ a.no-link {
   background-color:white;
   padding: 0 5px;
   font-size: 11px;
-  font-family: "Roboto","Helvetica","Arial",sans-serif; 
+  font-family: Merriweather, Montserrat, Arimo, Roboto, Helvetica, Arial, sans-serif; 
   font-weight: 300;
 }
 

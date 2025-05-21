@@ -144,11 +144,15 @@ export default function Home(props) {
    }
 
    const handleShowShoppingCart = (event) => {
-    shoppingCartRef.current.displayWindow(true);
+    if (shoppingCartRef.current) {
+      shoppingCartRef.current.displayWindow(true);
+    }
    }
 
    const handleShowQuickView = (event) => {
-    quickViewRef.current.displayWindow(true);
+    if (quickViewRef.current) {
+      quickViewRef.current.displayWindow(true);
+    }
    }
 
     const searchProducts = async (e) => {

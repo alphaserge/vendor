@@ -87,40 +87,41 @@ export default function PropertyQuantity(props) {
 
   return <>
   <tr>
-            <td><span class="item-label">{props.label}:</span></td>
-            <td>
-                <TextField
-                  // type="number"
-                  margin="normal"
-                  size="small" 
-                  sx = {{ 
-                    width: 68, 
-                    mt: '0px', 
-                    ml: 0, 
-                    mr: 0, 
-                    mb: '-3px',
-                    // "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": { display: "none" },
-                    // "& input[type=number]": { MozAppearance: "textfield" },
-                  }}
-                  value={quantity}
-                  onChange={handleChange}
-                  inputProps={{
-                    style: {
-                      height: "5px",
-                    },
-                  }}
-                />
-                <Select
-                  value={isRolls===true? "roll":"m" }
-                  label="Unit"
-                  onChange={selectChange}
-                  sx={{ height: "23px", ml: 1, mt: '0px'  }} >
-                  <MenuItem value={'m'}>m</MenuItem>
-                  <MenuItem value={'roll'}>roll</MenuItem>
-                </Select>
-                {/* &nbsp;-&nbsp;{help} */}
-            </td>
-         </tr>
-         <tr><td><span class="item-label">&nbsp;</span></td><td><span class="item-label">{help}</span></td></tr>
-         </>
+    <td><span class="item-label">{props.label}:</span></td>
+    <td>
+        <TextField
+          // type="number"
+          margin="normal"
+          size="small" 
+          sx = {{ 
+            width: 68, 
+            mt: '-2px', 
+            ml: 2, 
+            mr: 0, 
+            mb: '0px',
+            // "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button": { display: "none" },
+            // "& input[type=number]": { MozAppearance: "textfield" },
+          }}
+          value={quantity}
+          onChange={handleChange}
+          inputProps={{
+            style: {
+              height: "10px",
+            },
+          }}
+        />
+        <Select
+          value={isRolls===true? "roll":"m" }
+          label="Unit"
+          onChange={selectChange}
+          sx={{ height: "28px", ml: 1, mt: '-3px'  }} >
+          <MenuItem value={'m'}>m</MenuItem>
+          <MenuItem value={'roll'}>roll</MenuItem>
+        </Select>
+        {/* &nbsp;-&nbsp;{help} */}
+    
+      <span class="item-label">&nbsp;&nbsp; {" ("}</span></td><td><span class="item-label">{help}&nbsp;{")"}</span>
+    </td>
+  </tr>
+ </>
 }
