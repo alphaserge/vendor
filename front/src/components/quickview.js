@@ -197,13 +197,13 @@ return <>
                   startIcon={<ShoppingCartOutlinedIcon/>}
                   className="button"
                   onClick={handleAddToCart} 
-                  sx={{mt: 4, p: "12px", width: "90%" }}>Add to cart</Button></>)}
+                  sx={{mt: 4, p: "8px", width: "160px" }}>Add to cart</Button></>)}
               {(productInCart===true && <Button
                   variant="contained"
                   startIcon={<ShoppingCartOutlinedIcon/>}
                   className="button"
                   onClick={handleOpenCart}
-                  sx={{mt: 4, p: "12px", width: "90%" }}>In cart</Button> )}
+                  sx={{mt: 4, p: "8px", width: "160px" }}>In cart</Button> )}
           </Box>
         </Box>
       </Grid>

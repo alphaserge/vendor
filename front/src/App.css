@@ -137,7 +137,7 @@ img.product-img {
   font-size: 15px;
   padding: 2px 0;
   color: #000;
-  font-family: "Merriweather Sans", "Merriweather";
+  font-family: "Merriweather", "Merriweather Sans";
 }
 
 .product-item .label {
@@ -245,7 +245,7 @@ span.item-label  {
   /* padding-right: 6px; */
   display: inline-block;
   /* font-family: "Inter", sans-serif; */
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 500;
   /* font-optical-sizing: auto;
   font-style: normal; */
@@ -255,7 +255,7 @@ span.item-value  {
   color: #222;
   display: inline-block;
   /* font-family: "Inter", sans-serif; */
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 400;
 }
 
@@ -322,9 +322,9 @@ span.text-overflow-ellipsis {
 .button {
   background-color: #3d694a!important;
   border-radius: 6px!important;
-  font-size: 18px!important;
+  font-size: 16px!important;
   text-transform: none!important;
-  font-family: "Merriweather Sans"!important;
+  font-family: "Merriweather"!important;
 }
 
 .swiper-slide {

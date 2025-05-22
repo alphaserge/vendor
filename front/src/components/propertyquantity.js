@@ -106,12 +106,12 @@ export default function PropertyQuantity(props) {
           onChange={handleChange}
           inputProps={{
             style: {
-              height: "10px",
+              height: "14px",
             },
           }}
         />
         <Select
-          value={isRolls===true? "roll":"m" }
+          value={isRolls===true? "roll":"m"}
           label="Unit"
           onChange={selectChange}
           sx={{ height: "28px", ml: 1, mt: '-3px'  }} >
