@@ -247,6 +247,7 @@ span.item-label  {
   /* font-family: "Inter", sans-serif; */
   font-size: 16px;
   font-weight: 500;
+  padding-right: 10px;
   /* font-optical-sizing: auto;
   font-style: normal; */
 }
@@ -350,6 +351,38 @@ span.text-overflow-ellipsis {
   width: "300px";
   height: "300px";
 }*/
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: #000; /* Change arrow color */
+  background-color: #fff; /* Change arrow background */
+  padding: 0px;
+  border-radius: 50%;
+  font-size: 6px; /* Change arrow size */
+  width: 44px;
+  height: 44px;
+}
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  font-size: 16px; /* Change arrow size */
+}
+
+/* The container for the pagination dots. */
+.swiper-pagination {
+  
+}
+/* Each individual dot. */
+.swiper-pagination-bullet {
+  background-color: lightgray; /* Inactive bullet color */
+  opacity: 0.7;
+  color: #ffffff00;
+}
+/* The active dot. */
+.swiper-pagination-bullet-active {
+background-color: black; /* Active bullet color */
+      opacity: 1;
+}
+
 
 .action-button {
   background-color: #000 !important;

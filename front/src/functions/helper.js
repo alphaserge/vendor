@@ -81,4 +81,8 @@ export const idFromUrl = () => {
     const search = window.location.search
     const params = new URLSearchParams(search)
     return params.get('id')
-  }
+}
+
+export const fined = (text) => {
+    return text ? text : "not specified"
+}

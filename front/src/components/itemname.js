@@ -8,8 +8,8 @@ export default function ItemName(props) {
     color: "#242424", 
     textAlign: "center", 
     fontSize: "21px", 
-    fontWeight: "500",
-    padding: "40px 25px 20px 20px" }}>{props.value}
+    fontWeight: "600",
+    padding: "20px 20px 40px 20px" }}>{props.value}
     </Box>
          
 }

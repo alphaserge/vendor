@@ -22,6 +22,7 @@ import PropertyItem from '../components/propertyitem';
 import ItemName from '../components/itemname';
 
 import config from "../config.json"
+import { fined } from "../functions/helper"
 
 // Import Swiper styles
 import 'swiper/css';
@@ -45,7 +46,7 @@ const QuickView = React.forwardRef((props, ref) => {
       transform: 'translate(-50%, -50%)',
       width: "800px",
       boxShadow: 24,
-      padding: "20px 40px 40px 40px", 
+      padding: "20px 40px 40px 40px",
       outline: "none",
       bgcolor: 'background.paper',
     }
@@ -66,10 +67,10 @@ const QuickView = React.forwardRef((props, ref) => {
 
   // store thumbs swiper instance
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
-  
+
   const dispatch = useDispatch();
-  const _addToCart = () => { 
-    dispatch(addToCart({ product, cartQuantity, cartIsRolls })); 
+  const _addToCart = () => {
+    dispatch(addToCart({ product, cartQuantity, cartIsRolls }));
   };
 
   const setQuantity = (index, quantity) => {
@@ -93,7 +94,7 @@ const QuickView = React.forwardRef((props, ref) => {
   const handleOpenCart = (event) => {
     setShowModal(false)
     props.closeDialog('open cart')
-  } 
+  }
 
   const productImgHolderClass = "product-img-holder"
   const productInCart = props.product ? shopCart.map((x) => { return x.product.id }).indexOf(props.product.id) >= 0 : false;
@@ -136,12 +137,16 @@ return <>
             className="swiper"
             modules={[Thumbs, Navigation, Pagination,]} // Navigation, Pagination, Scrollbar, A11y]}
             /*slidesPerView={1}*/
-            navigation 
+            navigation
             thumbs={{ swiper: thumbsSwiper }}
             //watchSlidesProgress
             //onSwiper={setThumbsSwiper}
             //onSwiper={(swiper) => console.log(swiper)}
-            //pagination={{ clickable: true }}
+            pagination={{ 
+              clickable: true,
+              renderBullet: function (index, className) 
+                { return `<span class="${className}"  >${index + 1}</span>`; },
+             }}
             //scrollbar={{ draggable: true }}
 
             onSlideChange={() => console.log('slide change')} >
@@ -159,44 +164,44 @@ return <>
             })}
             </Swiper>
       </Grid>
-      <Grid item xs={12} md={6} paddingLeft={{ xs: "0", md: "10px"}} paddingTop={{ xs: "10px", md: "0"}}>
-      <Box sx = {{ display: "flex", flexDirection: 'column', p: 1}} className="product-item" >
+      <Grid item xs={12} md={6} sx={{ height: "100%", margin: "auto auto"}} paddingLeft={{ xs: "0", md: "10px"}} paddingTop={{ xs: "10px", md: "0"}}>
+      <Box sx = {{ display: "flex", flexDirection: 'column', p: 1, height: "100%", justifyContent: "space-between"}} className="product-item" >
         <ItemName label="Item name" value={props.product.itemName} />
-        <table style={{ fontSize: "15px", paddingLeft: 20 }}>
-        <PropertyItem maxWidth={200} label="Art No" value={props.product.artNo} />
-        <PropertyItem maxWidth={200} label="Ref No" value={props.product.refNo} />
-        <PropertyItem maxWidth={200} label="Design" value={props.product.design} />
-        <PropertyItem maxWidth={200} label="Composition" value={props.product.composition} />
-        <PropertyItem maxWidth={200} label="Product type" value={props.product.productType} />
-        <PropertyItem maxWidth={200} label="Product style" value={props.product.productStyle} />
-        <PropertyItem maxWidth={200} label="Print style" value={props.product.printType} />
-        <PropertyItem maxWidth={200} label="Price per meter" value={props.product.price}$ />
+        <Box sx={{ display: "flex", flexGrow: 1 }} >
+        <table style={{ paddingLeft: 10 }}>
+        <PropertyItem maxWidth={270} label="Art No" value={fined(props.product.artNo)} />
+        <PropertyItem maxWidth={270} label="Ref No" value={fined(props.product.refNo)} />
+        <PropertyItem maxWidth={270} label="Design" value={fined(props.product.design)} />
+        <PropertyItem maxWidth={270} label="Composition" value={fined(props.product.composition)} />
+        <PropertyItem maxWidth={270} label="Product type" value={fined(props.product.productType)} />
+        <PropertyItem maxWidth={270} label="Product style" value={fined(props.product.productStyle)} />
+        <PropertyItem maxWidth={270} label="Print style" value={fined(props.product.printType)} />
+        <PropertyItem maxWidth={270} label="Price per meter" value={props.product.price + " $"} />
         </table>
+        </Box>
           <Box sx={{
-            display: "flex",
+            display: "flex", 
             flexDirection: 'column',
-            justifyContent: 'center',
             alignItems: "center",
             className:"quantity",
-            mt: 4,
             pl: "20px",
             pr: "20px" }}>
-              {(productInCart!==true && <> <PropertyQuantity 
-                  maxWidth={200} 
-                  label="Quantity" 
-                  index={-1} 
-                  product={props.product} 
-                  quantity={cartQuantity} 
-                  isRolls={cartIsRolls} 
-                  setQuantity={setQuantity} 
-                  setRolls={setIsRolls} 
+              {(productInCart!==true && <> <PropertyQuantity
+                  maxWidth={200}
+                  label="Quantity"
+                  index={-1}
+                  product={props.product}
+                  quantity={cartQuantity}
+                  isRolls={cartIsRolls}
+                  setQuantity={setQuantity}
+                  setRolls={setIsRolls}
                   setHelp={setHelp}
                   />
                 <Button
                   variant="contained"
                   startIcon={<ShoppingCartOutlinedIcon/>}
                   className="button"
-                  onClick={handleAddToCart} 
+                  onClick={handleAddToCart}
                   sx={{mt: 4, p: "8px", width: "160px" }}>Add to cart</Button></>)}
               {(productInCart===true && <Button
                   variant="contained"
