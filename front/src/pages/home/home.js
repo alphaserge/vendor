@@ -149,12 +149,6 @@ export default function Home(props) {
     }
    }
 
-   const handleShowQuickView = (event) => {
-    if (quickViewRef.current) {
-      quickViewRef.current.displayWindow(true);
-    }
-   }
-
     const searchProducts = async (e) => {
 
       setSearch(e)
@@ -298,12 +292,16 @@ export default function Home(props) {
     const quickView = (e, data) => {
       //setShowQuickView(true)
       setQuickViewProduct(data)
-      handleShowQuickView();
-      
       //setAddToCartFunction("Add to Cart")
+      if (quickViewRef.current) {
+        quickViewRef.current.displayWindow(true);
+    }
+
     }
 
     useEffect(() => {
+
+      //console.log(quickViewRef.current);
       loadProducts()
       loadColors()
       loadSeasons()
@@ -318,7 +316,7 @@ export default function Home(props) {
         setAddProduct(true)
       }
       //console.log('use effect:' + selectedSeason)
-    }, [selectedSeason, selectedColor, selectedDesignType, selectedPrintType, selectedProductType, selectedTextileType]);
+    }, [quickViewRef, selectedSeason, selectedColor, selectedDesignType, selectedPrintType, selectedProductType, selectedTextileType]);
 
   if (!props.user || props.user.Id == 0) {
     navigate("/")

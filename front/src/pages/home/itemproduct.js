@@ -43,7 +43,7 @@ export default function ItemProduct(props) {
   return (
     
           <Box className="no-link" sx={{ mb: 0, width: "320px" }} >
-          <Box className="product-quickview" onClick={(e)=>{props.quickView(e, props.data)}} >Quick view</Box>
+          <Box className="product-quickview" onClick={(e)=>{ alert(props.quickView); props.quickView(e, props.data)}} >Quick view</Box>
           <Swiper className="swiper" >
             {props.data.colors.map((cv, index) => {
               return <Box key={"product-box-"+index} >
@@ -56,12 +56,12 @@ export default function ItemProduct(props) {
           
           </Swiper>
             
-          <Box sx={{ display: "flex", flexDirection: 'column', alignItems: "left", ml: 1, mt: 1}}>
-            <Box className="product-item">{props.data.itemName}</Box>
-            <Box sx={{display: "flex", flexDirection:"row"}}> 
-              <Box className="product-item">Product code:&nbsp;{props.data.refNo}</Box>
-              <Box className="product-price-text" style={{marginLeft:"auto"}}><span style={{fontSize: "larger"}}>&nbsp;{props.data.price}</span> $</Box>
+          <Box sx={{ display: "flex", flexDirection: 'row', alignItems: "left", ml: 1, mt: 1}}>
+            <Box sx={{ display: "flex", flexDirection: "column"}}> 
+              <Box className="product-item">{props.data.itemName}</Box>
+              <Box className="product-item">Ref:&nbsp;{props.data.refNo}</Box>
             </Box> 
+            <Box className="product-price-text" style={{marginLeft:"auto"}}><span style={{fontSize: "larger"}}>&nbsp;{props.data.price}</span> $</Box>
             {/* <Box className="product-price"><Box className="product-price-text"> From&nbsp;${props.data.price}</Box></Box>  */}
           </Box>
             {/* <Box display="flex" alignItems={"center"} justifyContent={"left"} >
