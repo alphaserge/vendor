@@ -45,8 +45,6 @@ export default function ItemProductRow(props) {
     useEffect(() => {
     }, []);
 
-console.log(props.data)
-
   return (
     
     <FormControl sx={{ mt: 0, width: 740 }} > 

@@ -722,10 +722,6 @@ useEffect(() => {
   let id = idFromUrl()
   loadProduct(id, setProduct)
 
-  /*console.log('------------------------')
-  console.log('UpdateProduct useEffect')
-  console.log('------------------------')*/
-
   getColors(setColors)
   getDesignTypes(setDesignTypes)
   getOverworkTypes(setOverworkTypes)
@@ -741,12 +737,6 @@ useEffect(() => {
   }, []);
 
   const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
-
-  /*console.log('------------------------')
-  console.log('UpdateProduct render')
-  console.log('textileType:')
-  console.log(textileType)
-  console.log('------------------------')*/
 
   return (
     <ThemeProvider theme={defaultTheme}>

@@ -138,7 +138,6 @@ export default function MainSection(props) {
 
 
 useEffect(() => {
-    //console.log(props.title)
   }, []);
 
   const { classes } = props;

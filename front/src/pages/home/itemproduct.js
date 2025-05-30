@@ -43,7 +43,7 @@ export default function ItemProduct(props) {
   return (
     
           <Box className="no-link" sx={{ mb: 0, width: "320px" }} >
-          <Box className="product-quickview" onClick={(e)=>{ alert(props.quickView); props.quickView(e, props.data)}} >Quick view</Box>
+          <Box className="product-quickview" onClick={(e)=>{ props.quickView(e, props.data)}} >Quick view</Box>
           <Swiper className="swiper" >
             {props.data.colors.map((cv, index) => {
               return <Box key={"product-box-"+index} >

@@ -106,7 +106,7 @@ return <>
     onClose={function() { setShowModal(false) }}
     aria-labelledby="modal-modal-title"
     aria-describedby="modal-modal-description"
-    sx={{ width: "auto", outline: "none" }} >
+    sx={{ width: "auto", outline: "none"}} >
 
     <Box sx={{
       position: 'absolute',
@@ -131,12 +131,13 @@ return <>
         <CloseIcon sx={{ fontSize: 24 }}/>
     </IconButton>
 
+    {( props.product &&
     <Grid container spacing={0} >
       <Grid item xs={12} md={6} sx={{paddingLeft:"0px"}} >
       <Swiper
             className="swiper"
             modules={[Thumbs, Navigation, Pagination,]} // Navigation, Pagination, Scrollbar, A11y]}
-            /*slidesPerView={1}*/
+            //slidesPerView={1}
             navigation
             thumbs={{ swiper: thumbsSwiper }}
             //watchSlidesProgress
@@ -212,7 +213,7 @@ return <>
           </Box>
         </Box>
       </Grid>
-    </Grid>
+    </Grid> )}
     </Box>
   </Modal>
 </>

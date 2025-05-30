@@ -57,7 +57,6 @@ export default function Header(props) {
   const handleMenuClick = (event) => {
     let value = event.currentTarget.dataset.menuValue;
     if (value == "Fabrics") { 
-      console.log('redir')
       navigate("/listproduct")
       return
     }
@@ -75,8 +74,6 @@ export default function Header(props) {
   };
 
   useEffect(() => {
-    //console.log('props.title')
-    //console.log(props.title)
   }, []);
 
   

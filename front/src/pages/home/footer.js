@@ -32,7 +32,6 @@ function FabricIcon(props) {
 export default function Footer(props) {
   
 useEffect(() => {
-    //console.log(props.title)
   }, []);
 
   return (

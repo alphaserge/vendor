@@ -26,7 +26,6 @@ export default function Confirm(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     //const data = new FormData(event.currentTarget);
-    //console.log(data);
   };
 
   const onButtonClick = () => {

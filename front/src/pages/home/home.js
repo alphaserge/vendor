@@ -51,8 +51,6 @@ export default function Home(props) {
 
     const cartCount = useSelector((state) => state.cart.items.length)
     const shopCart = useSelector((state) => state.cart.items)
-    //const shopCart = useSelector((state) => state.cart.items)
-    //console.log(cart1)
 
     const navigate = useNavigate();
     const theme = useTheme();
@@ -98,7 +96,7 @@ export default function Home(props) {
     const [addDesign, setAddDesign] = useState("")
 
     const [showQuickView, setShowQuickView] = React.useState(false);
-    const [quickViewProduct, setQuickViewProduct] = React.useState(null);//{ notValid: true, colors: [{ imagePath: [''] }]});
+    const [quickViewProduct, setQuickViewProduct] = React.useState(null);
 
     const [info, setInfo] = React.useState("");
 
@@ -300,8 +298,6 @@ export default function Home(props) {
     }
 
     useEffect(() => {
-
-      //console.log(quickViewRef.current);
       loadProducts()
       loadColors()
       loadSeasons()
@@ -315,8 +311,7 @@ export default function Home(props) {
       if (getFromUrl("new")==1) {
         setAddProduct(true)
       }
-      //console.log('use effect:' + selectedSeason)
-    }, [quickViewRef, selectedSeason, selectedColor, selectedDesignType, selectedPrintType, selectedProductType, selectedTextileType]);
+    }, [quickViewProduct, quickViewRef, selectedSeason, selectedColor, selectedDesignType, selectedPrintType, selectedProductType, selectedTextileType]);
 
   if (!props.user || props.user.Id == 0) {
     navigate("/")
@@ -327,7 +322,7 @@ export default function Home(props) {
       <CssBaseline />
 
       {/* Quick view modal */}
-      {(quickViewProduct && 
+      {(
         <QuickView 
           product={quickViewProduct} 
           ref={quickViewRef}

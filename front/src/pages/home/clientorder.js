@@ -107,8 +107,6 @@ export default function ClientOrders(props) {
     const loadOrders = async (e) => {
 
       let api = config.api + '/Orders/Order?id=' + idFromUrl()
-      console.log('loadOrders api:')
-      console.log(api)
 
       axios.get(api, 
         /*{ params: 
@@ -121,8 +119,6 @@ export default function ClientOrders(props) {
           var result = res.data;
           setOrders(result)
           setFilter(false)
-          console.log('result:')
-          console.log(result)
           setLoaded(true)
       })
       .catch (error => {

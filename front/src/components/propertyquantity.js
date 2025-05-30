@@ -82,9 +82,6 @@ export default function PropertyQuantity(props) {
       }
     } 
 
-  //console.log('PropertyQuantity props.isRolls:' + props.product.id)
-  //console.log(props.isRolls)
-
   return <>
   <tr>
     <td><span class="item-label">{props.label}:</span></td>

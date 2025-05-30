@@ -132,6 +132,7 @@ img.product-img {
   border-radius: 4px;
   padding: 0px 8px;
   margin-top: 4px;
+  margin-right: 6px;
   font-size: 18px;
   font-family: "Merriweather", "Merriweather Sans";
 }
@@ -245,23 +246,38 @@ table.shopping-cart  td img {
 
 span.item-label  {
   color: #868695;
-  /* padding-right: 6px; */
   display: inline-block;
-  /* font-family: "Inter", sans-serif; */
   font-size: 16px;
   font-weight: 500;
   padding-right: 10px;
-  /* font-optical-sizing: auto;
-  font-style: normal; */
+  font-family: "Merriweather", "Merriweather Sans", "Inter", "sans-serif";
 }
 
 span.item-value  {
   color: #222;
   display: inline-block;
-  /* font-family: "Inter", sans-serif; */
   font-size: 16px;
   font-weight: 400;
+  font-family: "Merriweather", "Merriweather Sans", "Inter", "sans-serif";
 }
+
+span.order-item-label  {
+  color: #868695;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  padding-right: 10px;
+  font-family: "Merriweather", "Merriweather Sans", "Inter", "sans-serif";
+}
+
+span.order-item-value  {
+  color: #222;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: "Merriweather", "Merriweather Sans", "Inter", "sans-serif";
+}
+
 
 div.item-name  {
   color: #222;
