@@ -144,7 +144,7 @@ useEffect(() => {
   return (
     // #eeede8  efa29a
     <Box className="main-section">
-    <Box sx={{ backgroundColor: "#cdb9c4", color: "#fff", alignContent: "center", height: "44px" }} >
+    <Box sx={{ backgroundColor: "#000", color: "#fff", alignContent: "center", height: "44px" }} >
       <Grid container spacing={2} >
       <Grid item display={{ xs: "none", md: "block" }} xs={12} md={3} key={"mainsect-left"} sx={{ justifyItems : "center" }} >
         <p>-&nbsp;</p>
@@ -158,7 +158,7 @@ useEffect(() => {
       </Grid>
     </Box>
 
-    <Box sx={{ backgroundColor: "#abb39c", color: "#eee", alignContent: "center" }} style={{ height: "90px" }}  >
+    <Box sx={{ color: "#eee", alignContent: "center" }} style={{ height: "186px" }}  >
       <Grid container spacing={2} sx={{ alignContent: "center"  }} >
       <Grid item xs={12} md={4} key={"mainsect-left"} justifyItems={{ xs: "center", md: "right" }} sx={{ alignContent: "center" }} >
         <Box sx={{display: "flex", flexDirection: "row", color: APPEARANCE.BLACK }}>
@@ -227,7 +227,7 @@ useEffect(() => {
             alt={""}
           /> */}
           <picture class="header-logo-picture">
-          <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" style={{padding: 0, margin: 0, paddingTop: "10px"}}>
+          <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" style={{padding: 0, margin: 0, paddingTop: "10px", height: "180px"}}>
           </img>
           </picture>
 
