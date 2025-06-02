@@ -158,11 +158,11 @@ useEffect(() => {
       </Grid>
     </Box>
 
-    <Box sx={{ color: "#eee", alignContent: "center" }} style={{ height: "186px" }}  >
+    <Box sx={{ alignContent: "center" }} style={{ height: "186px" }}  >
       <Grid container spacing={2} sx={{ alignContent: "center"  }} >
       <Grid item xs={12} md={4} key={"mainsect-left"} justifyItems={{ xs: "center", md: "right" }} sx={{ alignContent: "center" }} >
-        <Box sx={{display: "flex", flexDirection: "row", color: APPEARANCE.BLACK }}>
-        <Tooltip title={props.user != undefined ? props.user.firstName: "Sign In"}>
+        <Box sx={{display: "flex", flexDirection: "row" }}>
+        <Tooltip title={props.user != undefined ? props.user.firstName: "Sign In"}  >
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1 }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
             <PersonOutlineOutlinedIcon fontSize="large" />
@@ -227,7 +227,7 @@ useEffect(() => {
             alt={""}
           /> */}
           <picture class="header-logo-picture">
-          <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" style={{padding: 0, margin: 0, paddingTop: "10px", height: "180px"}}>
+          <img src="/afm1.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" style={{padding: 0, margin: 0, paddingTop: "10px", height: "180px"}}>
           </img>
           </picture>
 
@@ -261,7 +261,7 @@ useEffect(() => {
     </Box>
 
     <Box id="simple-menu" display={{ xs: "none", md: "block" }} onMouseLeave={handleCloseMenu} >
-    <Box sx={{ backgroundColor: "#849785", color: "#eee", alignContent: "center", zIndex: 100 }} >
+    <Box sx={{ backgroundColor: "#000", color: "#eee", alignContent: "center", zIndex: 100 }} >
     <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row", justifyContent: "center" }} className="center-content"  >
       <Box 
         sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}

@@ -505,9 +505,13 @@ a.no-link {
   margin-bottom: 0 !important;
 }
 
-
 ul.four-column-list li {
   display: block;
   width: 20%;
   float: left;
+}
+
+.MuiSvgIcon-root {
+  color: #333;
+  /* font-weight: normal; */
 }
