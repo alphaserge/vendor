@@ -158,7 +158,7 @@ useEffect(() => {
       </Grid>
     </Box>
 
-    <Box sx={{ alignContent: "center" }} style={{ height: "186px" }}  >
+    <Box sx={{ alignContent: "center" }} style={{ height: "200px" }}  >
       <Grid container spacing={2} sx={{ alignContent: "center"  }} >
       <Grid item xs={12} md={4} key={"mainsect-left"} justifyItems={{ xs: "center", md: "right" }} sx={{ alignContent: "center" }} >
         <Box sx={{display: "flex", flexDirection: "row" }}>
@@ -227,7 +227,8 @@ useEffect(() => {
             alt={""}
           /> */}
           <picture class="header-logo-picture">
-          <img src="/afm1.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" style={{padding: 0, margin: 0, paddingTop: "10px", height: "180px"}}>
+          <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" 
+            style={{padding: "10px 0", height: "180px"}}>
           </img>
           </picture>
 
@@ -241,9 +242,9 @@ useEffect(() => {
                 placeholder="What are you looking for?"
                 name="search"
                 value={search}
-                style={{ width: "280px", border: "none", borderRadius: "4px", backgroundColor: "#fcfaf2", padding: "8px 12px" }}
+                sx={{ width: "280px" }}
                 onChange={ev => { setSearch(ev.target.value); props.searchProducts(ev.target.value)}}
-                variant="standard"
+                // variant="standard"
                 InputProps={{
                   disableUnderline: true,
                   endAdornment: (

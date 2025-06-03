@@ -368,6 +368,7 @@ export default function Home(props) {
 
         <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" >
           <Box display={{ xs: 'none', md: 'flex' }} sx={{ flexDirection: "column", minWidth: "200px" }}  >
+            <Box className="subtitle" >Shopping options</Box>
             <CheckboxList
               list={colors.map((it) => ({ key: it.id, name: it.value }))}
               title="Colours"
@@ -412,7 +413,7 @@ export default function Home(props) {
           {/* <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" > */}
           <Grid container spacing={1} sx={{marginX: "auto"}} >
             { view === "grid" && products.map((data, index) => (
-            <Grid item xs={12} md={4} key={"itemprod-"+index} sx={{ minWidth: "320px" }} >
+            <Grid item xs={6} md={3} key={"itemprod-"+index} sx={{ minWidth: "240px" }} >
               <ItemProduct data={data} index={index} quickView={quickView} />
             </Grid>
             ))}

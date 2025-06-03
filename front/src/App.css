@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400..700;1,400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lobster&family=Merriweather+Sans:ital,wght@0,300..800;1,300..800&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Parkinsans:wght@300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
 .App {
-  /* background-color: #e4f1df; */
+  background-color: #f3f3f3;
 }
 
 .errorLabel {
@@ -29,9 +29,6 @@ li > .color_select_item {
 
 .header-logo-picture {
   display: block;
-  /* height: 47px;
-  width: 363px;
-  margin-top: 25px; */
 }
 
 .center-content {
@@ -48,8 +45,8 @@ li > .color_select_item {
 }
 
 div.product-img-holder {
-  width:310px;
-  height:310px;    
+  width:240px;
+  height:230px;    
   overflow:hidden;
   padding: 0;
   cursor: pointer;
@@ -124,25 +121,19 @@ img.product-img {
   text-align: right;
 }
 
-.product-price-text {
-  display: inline-block;
-  font-weight: bold;
-  color: #77809f;
-  color: #111f;
-  border-radius: 4px;
-  padding: 0px 8px;
-  margin-top: 4px;
-  margin-right: 6px;
-  font-size: 18px;
-  font-family: "Merriweather", "Merriweather Sans";
-}
 
 .product-item {
   font-size: 15px;
-  padding: 2px 0;
+  padding: 8px 0 0 0;
   color: #000;
-  font-family: "Merriweather", "Merriweather Sans";
+  font-family: "Open-Sans", Arial;
 }
+
+.price {
+  color: #fd8bbb;
+  font-size: 14px;
+}
+
 
 .product-item .label {
   font-size: 15px;
@@ -160,36 +151,17 @@ img.product-img {
 }
 }
 
-.product-item .text {
-  
-}
-
-.product-item.price {
-  font-family: "YS Text", Helvetica, Arial, sans-serif;
-  font-size: 28px;
-  font-weight: 600; 
-  margin-left: 10px;
-  width: 60px;
-}
-
-.product-item.price > span {
-  padding: 4px;
-}
-
-/* .product-item span {
-  color: #18515E;
-} */
-
 div.quantity input[type=text]  {
   font-size: 18px;
 }
 
 .product-quickview {
-  font-size: 18px;
+  font-size: 16px;
   display: inline-block;
-  visibility: hidden;
+  /* visibility: hidden; */
+  opacity: 0;
   color: #fff;
-  background-color: #18515e;
+  background-color: #222;
   border-radius: 19px;
   border: 2px solid white;
   padding: 4px 16px;
@@ -197,10 +169,13 @@ div.quantity input[type=text]  {
   align-items: center;
   position: relative;
   z-index: 100;
-  top: 270px;
+  top: 200px;
   left: calc(50% - 52px);
   margin: 0 auto;
   cursor: pointer;
+  /* transition-property: color, font-size; 
+  transition-duration: 0.3s, 0.5s;*/
+  transition: 1.0s;
 }
 
 .cart-label {
@@ -250,7 +225,7 @@ span.item-label  {
   font-size: 16px;
   font-weight: 500;
   padding-right: 10px;
-  font-family: "Merriweather", "Merriweather Sans", "Inter", "sans-serif";
+  font-family: "Open-Sans", Arial, "Inter", "sans-serif";
 }
 
 span.item-value  {
@@ -258,7 +233,7 @@ span.item-value  {
   display: inline-block;
   font-size: 16px;
   font-weight: 400;
-  font-family: "Merriweather", "Merriweather Sans", "Inter", "sans-serif";
+  font-family: "Open-Sans", Arial, "Inter", "sans-serif";
 }
 
 span.order-item-label  {
@@ -267,7 +242,7 @@ span.order-item-label  {
   font-size: 14px;
   font-weight: 500;
   padding-right: 10px;
-  font-family: "Merriweather", "Merriweather Sans", "Inter", "sans-serif";
+  font-family: "Open-Sans", Arial, "Inter", "sans-serif";
 }
 
 span.order-item-value  {
@@ -275,7 +250,7 @@ span.order-item-value  {
   display: inline-block;
   font-size: 14px;
   font-weight: 400;
-  font-family: "Merriweather", "Merriweather Sans", "Inter", "sans-serif";
+  font-family: "Open-Sans", Arial, "Inter", "sans-serif";
 }
 
 
@@ -332,19 +307,20 @@ span.text-overflow-ellipsis {
 } */
 
 .no-link:hover .product-quickview {
-  visibility: visible;
+  /* visibility: visible; */
+  opacity: 1;
 }
 
-.no-link:active .product-quickview {
+/* .no-link:active .product-quickview {
   visibility: visible;
-}
+} */
 
 .button {
   background-color: #3d694a!important;
   border-radius: 6px!important;
   font-size: 16px!important;
   text-transform: none!important;
-  font-family: "Merriweather"!important;
+  font-family: "Open-Sans", Arial!important;
 }
 
 .swiper-slide {
@@ -475,7 +451,7 @@ a.no-link {
   background-color:white;
   padding: 0 5px;
   font-size: 11px;
-  font-family: Merriweather, Montserrat, Arimo, Roboto, Helvetica, Arial, sans-serif; 
+  font-family: "Open-Sans", Arial; 
   font-weight: 300;
 }
 
@@ -514,4 +490,25 @@ ul.four-column-list li {
 .MuiSvgIcon-root {
   color: #333;
   /* font-weight: normal; */
+}
+
+.subtitle {
+  font-size: 18px;
+  font-family: "Open Sans", Arial; 
+  font-weight: 300;
+  color: #333;
+}
+
+.subtitle-2 {
+  font-size: 16px;
+  font-family: "Open Sans", Arial!important; 
+  font-weight: 300;
+  color: #333;
+}
+
+.list-item {
+  font-size: 14px;
+  font-family: "Open Sans", Arial!important; 
+  font-weight: 300;
+  color: #333;
 }

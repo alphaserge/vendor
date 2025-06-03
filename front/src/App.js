@@ -162,6 +162,8 @@ function App() {
 
   useEffect(() => {
 
+    document.body.style.backgroundColor = '#fbfbfb';
+
     loadColors()
     loadSeasons()
     loadDesignTypes()
