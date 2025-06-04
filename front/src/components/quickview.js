@@ -96,7 +96,6 @@ const QuickView = React.forwardRef((props, ref) => {
     props.closeDialog('open cart')
   }
 
-  const productImgHolderClass = "product-img-holder"
   const productInCart = props.product ? shopCart.map((x) => { return x.product.id }).indexOf(props.product.id) >= 0 : false;
 
 return <>

@@ -39,8 +39,13 @@ export default function ItemProduct(props) {
 
   return (
     
-          <Box className="no-link" sx={{ mb: 0, width: "240px" }} >
-          <Box className="product-quickview" onClick={(e)=>{ props.quickView(e, props.data)}} >Quick view</Box>
+    <Box 
+      className="no-link" 
+      sx={{ mb: 0, width: "240px" }} 
+      onClick={(e)=>{ navigate("/product?id=" + props.data.id) }} >
+
+        <Box className="product-quickview" onClick={(e)=>{ props.quickView(e, props.data)}} >Quick view</Box>
+
           <Swiper className="swiper" >
             {props.data.colors.map((cv, index) => {
               return <Box key={"product-box-"+index} >
@@ -48,18 +53,18 @@ export default function ItemProduct(props) {
                 <Box className="product-img-holder" ><Box component={"img"} key={"product-swiper-"+index} 
                 src={config.api + "/" + cv.imagePath[0]} 
                 alt={"photo"+(index+1)} className="product-img" /></Box>
-              </SwiperSlide></Box>
-            })}
-          
+              </SwiperSlide>
+              </Box>
+          })}
           </Swiper>
-            
-          <Box sx={{ display: "flex", flexDirection: "column", marginLeft: "5px", marginTop: "10px"}}> 
-            <Box className="product-item">{props.data.itemName}</Box>
-            <Box className="product-item price">From ${toFixed2(props.data.price)} per meter</Box>
-          </Box> 
-          
-          <div style={{ clear: "left" }} >
-          </div>
-          </Box>
+        
+      <Box sx={{ display: "flex", flexDirection: "column", marginLeft: "5px", marginTop: "10px"}}> 
+        <Box className="product-item">{props.data.itemName}</Box>
+        <Box className="product-item price">From ${toFixed2(props.data.price)} per meter</Box>
+      </Box> 
+      
+      <div style={{ clear: "left" }} >
+      </div>
+    </Box>
 );
 }
