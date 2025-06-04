@@ -39,9 +39,16 @@ li > .color_select_item {
 }
 
 .center-content-menu {
-  margin: 15px auto;
+  /*margin: 15px auto;*/
   width: auto;
-  max-width: 900px;
+  max-width: 1200px;
+  display: block;
+}
+
+ul.four-column-list li {
+  display: block;
+  width: 20%;
+  /* float: left; */
 }
 
 div.product-img-holder {
@@ -481,12 +488,6 @@ a.no-link {
   margin-bottom: 0 !important;
 }
 
-ul.four-column-list li {
-  display: block;
-  width: 20%;
-  float: left;
-}
-
 .MuiSvgIcon-root {
   color: #333;
   /* font-weight: normal; */
@@ -512,3 +513,13 @@ ul.four-column-list li {
   font-weight: 300;
   color: #333;
 }
+
+.main-section {
+  font-family: "Open Sans", Arial; 
+  font-size: 15px;
+  font-weight: 400;
+}
+
+/*.caret::before {
+  content: "\e261";
+}*/

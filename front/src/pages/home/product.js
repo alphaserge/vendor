@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, useDispatch } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -167,14 +167,7 @@ export default function Product(props) {
           setOverworkType = {(v)=>{ }}
           />
 
-    <Box sx={{
-      width: "950px",
-      padding: "0px",
-      bgcolor: '#fff',
-      display: "flex",
-      overflow: "hidden",
-      flexDirection: 'row',
-      alignItems: 'center', justifyContent: "right" }}>
+    <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" >
 
     {( product &&
     <Grid container spacing={0} >
@@ -196,7 +189,7 @@ export default function Product(props) {
             //scrollbar={{ draggable: true }}
 
             onSlideChange={() => console.log('slide change')} >
-              {props.product.colors.map((cv, index) => {
+              {product.colors && product.colors.map((cv, index) => {
                 return <Box key={"product-box-00"} >
                 <SwiperSlide key={"product-swiper-00"} sx={{ display: "flex", justifyContent: "center" }} >
                 <Box sx={{ width: 600, height: 600, overflow: "hidden", padding: 0, cursor: "pointer" }} >

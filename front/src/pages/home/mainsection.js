@@ -18,15 +18,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-
-import { APPEARANCE } from '../../appearance';
-
-function FabricIcon(props) {
-  return (
-  <Icon src="./pag">
-  </Icon>
-  );
-  }
+import ExpandDown from './../../components/symbol/expanddown';
 
 const itemStyle = { padding: 0, margin: 0, cursor: "pointer" }  
 
@@ -262,58 +254,71 @@ useEffect(() => {
     </Box>
 
     <Box id="simple-menu" display={{ xs: "none", md: "block" }} onMouseLeave={handleCloseMenu} >
-    <Box sx={{ backgroundColor: "#000", color: "#eee", alignContent: "center", zIndex: 100 }} >
+    <Box sx={{ color: "#222", alignContent: "center", zIndex: 100 }} >
     <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row", justifyContent: "center" }} className="center-content"  >
       <Box 
         sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
         onMouseOver={e => { setPage(0); handleOpenMenu(e) }}
         onMouseLeave={handleCloseMenu} >
-        Textile type
+        TEXTILE TYPE <ExpandDown />
       </Box>
       <Box 
         sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
         onMouseOver={e => { setPage(1); handleOpenMenu(e) }}
         onMouseLeave={handleCloseMenu} >
-         Design type
+         DESIGN TYPE <ExpandDown />
          </Box>
          <Box 
         sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
         onMouseOver={e => { setPage(2); handleOpenMenu(e) }}
         onMouseLeave={handleCloseMenu} >
-         Season
+         SEASON <ExpandDown />
          </Box>
          <Box 
         sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
         onMouseOver={e => { setPage(3); handleOpenMenu(e) }}
         onMouseLeave={handleCloseMenu} >
-         Colour
+         COLOUR <ExpandDown />
          </Box>
          <Box 
         sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
         onMouseOver={e => { setPage(4); handleOpenMenu(e) }}
         onMouseLeave={handleCloseMenu} >
-         Print type
+         PRINT TYPE <ExpandDown />
          </Box>
          <Box 
         sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
         onMouseOver={e => { setPage(5); handleOpenMenu(e) }}
         onMouseLeave={handleCloseMenu} >
-         About
+         ABOUT <ExpandDown />
          </Box>
          <Box 
         sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
         onMouseOver={e => { setPage(6); handleOpenMenu(e) }}
         onMouseLeave={handleCloseMenu} >
-         Contact
+         CONTACT <ExpandDown />
          </Box>
 
     </Box>
     </Box> 
 
-    <Box  sx={{ backgroundColor: "#d8d8d8", color: "#222", zIndex: 10, position: "absolute", left: 0, width: "100%", paddingBottom: "12px"  }} display={openMenu?"block":"none"} >
+    <Box 
+      sx={{ 
+        color: "#222", 
+        zIndex: 10, 
+        position: "absolute", 
+        left: 0, 
+        width: "100%", 
+        paddingBottom: "12px" }} 
+      display={openMenu?"block":"none"} >
 
-    <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==0?"block":"none"}>
-    <ul sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="four-column-list center-content-menu" >
+    <Box onMouseLeave={handleCloseMenu} display={page==0?"block":"none"} 
+    sx= {{
+      width: "1200px",
+      margin: "0 auto",
+      backgroundColor: "#fff"
+    }} >
+    <ul sx={{  }} className="four-column-list center-content-menu" >
       {props.textileTypes && props.textileTypes.map((item) => {
         return (
           <ListItem key={item.key} sx={itemStyle} >
