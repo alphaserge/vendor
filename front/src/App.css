@@ -42,7 +42,7 @@ li > .color_select_item {
   /*margin: 15px auto;*/
   width: auto;
   max-width: 1200px;
-  display: block;
+  display: flex;
 }
 
 ul.four-column-list li {

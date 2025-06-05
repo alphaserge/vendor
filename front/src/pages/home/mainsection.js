@@ -253,153 +253,46 @@ useEffect(() => {
       </Grid>
     </Box>
 
-    <Box id="simple-menu" display={{ xs: "none", md: "block" }} onMouseLeave={handleCloseMenu} >
-    <Box sx={{ color: "#222", alignContent: "center", zIndex: 100 }} >
-    <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row", justifyContent: "center" }} className="center-content"  >
-      <Box 
-        sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
-        onMouseOver={e => { setPage(0); handleOpenMenu(e) }}
-        onMouseLeave={handleCloseMenu} >
-        TEXTILE TYPE <ExpandDown />
-      </Box>
-      <Box 
-        sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
-        onMouseOver={e => { setPage(1); handleOpenMenu(e) }}
-        onMouseLeave={handleCloseMenu} >
-         DESIGN TYPE <ExpandDown />
-         </Box>
-         <Box 
-        sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
-        onMouseOver={e => { setPage(2); handleOpenMenu(e) }}
-        onMouseLeave={handleCloseMenu} >
-         SEASON <ExpandDown />
-         </Box>
-         <Box 
-        sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
-        onMouseOver={e => { setPage(3); handleOpenMenu(e) }}
-        onMouseLeave={handleCloseMenu} >
-         COLOUR <ExpandDown />
-         </Box>
-         <Box 
-        sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
-        onMouseOver={e => { setPage(4); handleOpenMenu(e) }}
-        onMouseLeave={handleCloseMenu} >
-         PRINT TYPE <ExpandDown />
-         </Box>
-         <Box 
-        sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
-        onMouseOver={e => { setPage(5); handleOpenMenu(e) }}
-        onMouseLeave={handleCloseMenu} >
-         ABOUT <ExpandDown />
-         </Box>
-         <Box 
-        sx={{padding: "0 40px", margin: 0, cursor: "pointer"}}
-        onMouseOver={e => { setPage(6); handleOpenMenu(e) }}
-        onMouseLeave={handleCloseMenu} >
-         CONTACT <ExpandDown />
-         </Box>
-
-    </Box>
-    </Box> 
-
-    <Box 
-      sx={{ 
-        color: "#222", 
-        zIndex: 10, 
-        position: "absolute", 
-        left: 0, 
-        width: "100%", 
-        paddingBottom: "12px" }} 
-      display={openMenu?"block":"none"} >
-
-    <Box onMouseLeave={handleCloseMenu} display={page==0?"block":"none"} 
-    sx= {{
-      width: "1200px",
-      margin: "0 auto",
-      backgroundColor: "#fff"
-    }} >
-    <ul sx={{  }} className="four-column-list center-content-menu" >
-      {props.textileTypes && props.textileTypes.map((item) => {
-        return (
-          <ListItem key={item.key} sx={itemStyle} >
-            <ListItemText primary={item.value} onClick={() => handleTextileType(item)} />
-          </ListItem>
-        );
-      })}
-    </ul>
-    </Box>
-
-    <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==1?"block":"none"}>
-    <ul sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="four-column-list center-content-menu" >
-      {props.designTypes && props.designTypes.map((item) => {
-        return (
-          <ListItem key={item.key} sx={itemStyle} >
-            <ListItemText primary={item.value} onClick={() => handleDesignType(item)} />
-          </ListItem>
-        );
-      })}
-    </ul>
-    </Box>
-    
-    <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==2?"block":"none"}>
-    <ul sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="four-column-list center-content-menu" >
-      {props.seasons && props.seasons.map((item) => {
-        return (
-          <ListItem key={item.key} sx={itemStyle}  >
-            <ListItemText primary={item.value} key={item.key} onClick={() => handleSeason(item)} />
-          </ListItem>
-        );
-      })}
-    </ul>
-    </Box>
-
-    <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==3?"block":"none"}>
-    <ul sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="four-column-list center-content-menu" >
-      {props.colors && props.colors.map((item) => {
-        return (
-          <ListItem key={item.key} sx={itemStyle} >
-            <ListItemText primary={item.value} onClick={() => handleColor(item)} />
-          </ListItem>
-        );
-      })}
-    </ul>
-    </Box>
-
-    <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==4?"block":"none"}>
-    <ul sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="four-column-list center-content-menu" >
-      {props.printTypes && props.printTypes.map((item) => {
-        return (
-          <ListItem key={item.key} sx={itemStyle} >
-            <ListItemText primary={item.value} onClick={() => handlePrintType(item)} />
-          </ListItem>
-        );
-      })}
-    </ul>
-    </Box>
-
-    <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==5?"block":"none"}>
-    <Box sx={{ width: '100%', maxWidth: 800, height: '100%', textAlign: "justify" }} className="center-content-menu">
-    <b>JSC Textile Company Anzhelika</b> is a company in Russia, with its main office in Moscow. It operates in the industry of wholesale trade in clothing, textiles and related products. The company was founded on January 13, 2003.
-      <br/><br/>Being part of the light industrial complex, the company in its activities is primarily focused on satisfying the current needs of the end consumer. In order to saturate the market with its products, the organization cooperates with a number of large and small retail outlets in Moscow and other regions.
-    </Box>
-    </Box>
-
-    <Box sx={{ }} onMouseLeave={handleCloseMenu} display={page==6?"block":"none"}>
-    <Box sx={{ width: '100%', maxWidth: 800, height: '100%' }} className="center-content-menu">
-      <b>Showroom address:</b><br/>
-      <Box sx={{margin: "5px 0 0 10px"}}>Yaroslavskoe shosse, possession 1 building 1, Mytishchi, Moscow region, Russia<br/>
-      Postal code: 141009<br/>
-      Phones: +7 (926) 018-01-25,&nbsp;&nbsp;+7(916) 876-20-08</Box><br/>
-      <b>Headquarters:</b><br/>
-      <Box sx={{padding: "5px 0 0 10px"}}>
-      Bolshaya Gruzinskaya, 20, 3A/P Moscow, Russia<br/>
-      Postal code: 123242</Box>
-    </Box>
-    
-    </Box>
-
-    </Box>
-    </Box>
+<Box>
+<nav>
+  <ul className="mainmenu">
+    <li>
+      <a href="#0">Textile type</a>
+      <ul>
+        {props.textileTypes && props.textileTypes.map((item) => { return (
+          <li><a href="#0" onClick={() => handleTextileType(item)}>{item.value}</a></li>); })}
+      </ul>
+    </li>
+    <li>
+      <a href="#0">Design type</a>
+      <ul>
+        {props.designTypes && props.designTypes.map((item) => { return (
+          <li><a href="#0" onClick={() => handleDesignType(item)}>{item.value}</a></li>); })}
+      </ul>
+    </li>
+    <li>
+      <a href="#0">Season</a>
+      <ul>
+        {props.seasons && props.seasons.map((item) => { return (
+          <li><a href="#0" onClick={() => handleSeason(item)}>{item.value}</a></li>); })}
+      </ul>
+    </li>
+    <li>
+      <a href="#0">Color</a>
+      <ul class="columns-3">
+        {props.colors && props.colors.map((item) => { return (
+          <li><a href="#0" onClick={() => handleColor(item)}>{item.value}</a></li>); })}
+      </ul>
+    </li>
+    <li><a href="#0">Print type</a>
+    <ul>
+        {props.printTypes && props.printTypes.map((item) => { return (
+          <li><a href="#0" onClick={() => handlePrintType(item)}>{item.value}</a></li>); })}
+      </ul>
+    </li>
+  </ul>
+</nav>
+</Box>
     </Box>
   );
 }

@@ -23,6 +23,7 @@ import axios from 'axios'
 import config from "./config.json"
 
 import './App.css';
+import './components/menu.css';
 import { useEffect, useState } from 'react';
 
 const userInitialValue = () => {
