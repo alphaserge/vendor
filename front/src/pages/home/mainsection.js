@@ -257,39 +257,47 @@ useEffect(() => {
 <nav>
   <ul className="mainmenu">
     <li>
-      <a href="#0">Textile type</a>
-      <ul>
+      <a href="#0">Textile type <ExpandDown /></a>
+      <ul class="columns-2">
         {props.textileTypes && props.textileTypes.map((item) => { return (
           <li><a href="#0" onClick={() => handleTextileType(item)}>{item.value}</a></li>); })}
       </ul>
     </li>
     <li>
-      <a href="#0">Design type</a>
-      <ul>
+      <a href="#0">Design type <ExpandDown /></a>
+      <ul class="columns-2">
         {props.designTypes && props.designTypes.map((item) => { return (
           <li><a href="#0" onClick={() => handleDesignType(item)}>{item.value}</a></li>); })}
       </ul>
     </li>
     <li>
-      <a href="#0">Season</a>
-      <ul>
-        {props.seasons && props.seasons.map((item) => { return (
-          <li><a href="#0" onClick={() => handleSeason(item)}>{item.value}</a></li>); })}
-      </ul>
-    </li>
-    <li>
-      <a href="#0">Color</a>
+      <a href="#0">Color <ExpandDown /></a>
       <ul class="columns-3">
         {props.colors && props.colors.map((item) => { return (
           <li><a href="#0" onClick={() => handleColor(item)}>{item.value}</a></li>); })}
       </ul>
     </li>
-    <li><a href="#0">Print type</a>
+    <li>
+      <a href="#0">Season <ExpandDown /></a>
+      <ul>
+        {props.seasons && props.seasons.map((item) => { return (
+          <li><a href="#0" onClick={() => handleSeason(item)}>{item.value}</a></li>); })}
+      </ul>
+    </li>
+    <li><a href="#0">Print type <ExpandDown /></a>
     <ul>
         {props.printTypes && props.printTypes.map((item) => { return (
           <li><a href="#0" onClick={() => handlePrintType(item)}>{item.value}</a></li>); })}
       </ul>
     </li>
+
+    <li><a href="#0">Product type <ExpandDown /></a>
+    <ul>
+        {props.printTypes && props.productTypes.map((item) => { return (
+          <li><a href="#0" onClick={() => handlePrintType(item)}>{item.value}</a></li>); })}
+      </ul>
+    </li>
+
   </ul>
 </nav>
 </Box>

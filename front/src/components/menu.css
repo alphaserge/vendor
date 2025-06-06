@@ -10,7 +10,7 @@ nav {
   display: flex;
   margin: 0 auto;
   animation: slide-in 1s ease-out;
-  max-width: 900px;
+  max-width: 1200px;
   
 }
 
@@ -58,14 +58,15 @@ ul.mainmenu li ul {
   border-radius: 5px; 
   transition: opacity 0.2s, visibility 0.2s;*/
 }
-ul.mainmenu li:last-child ul {
-    margin-left: -90px;
-}
+/* ul.mainmenu li:last-child ul {
+    margin-left: -60px;
+} 
 ul.mainmenu li:nth-last-child(2) ul {
-    margin-left: -200px;
+    margin-left: -60px;
 }
-
-
+ul.mainmenu li:nth-last-child(3) ul {
+    margin-left: -200px;
+}*/
 
 ul.mainmenu li ul li {
   margin: -2px 0 0 -2px;

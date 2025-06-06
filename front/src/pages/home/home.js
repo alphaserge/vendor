@@ -352,6 +352,7 @@ export default function Home(props) {
           seasons={seasons}
           colors={colors}
           printTypes={printTypes}
+          productTypes={productTypes}
           cart={shopCart}
           openShoppingCart={handleShowShoppingCart}
           setSeason       = {(v)=>{ dropFilters(); setSelectedSeason(v)}}
