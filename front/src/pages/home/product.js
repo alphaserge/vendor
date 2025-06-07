@@ -12,7 +12,6 @@ import { useTheme } from '@mui/material/styles';
 import { Button } from "@mui/material";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 
-
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 import { Thumbs } from 'swiper/modules';
@@ -71,7 +70,7 @@ export default function Product(props) {
     const navigate = useNavigate();
     const theme = useTheme();
 
-    const [product, setProduct] = useState([])
+    const [product, setProduct] = useState({colors: []})
     const [info, setInfo] = React.useState("");
 
     const [cartQuantity, setCartQuantity] = useState(1)
@@ -128,11 +127,28 @@ export default function Product(props) {
       })
     }
 
+    /* link external script
+       https://stackoverflow.com/questions/34424845/adding-script-tag-to-react-jsx */
+    useEffect(() => {
+      const script = document.createElement('script');
+      script.src = "https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js";
+      script.async = true;
+      document.body.appendChild(script);
+      return () => {
+        document.body.removeChild(script);
+      }
+    }, []);
+
     useEffect(() => {
       loadProduct()
     }, [product]);
 
-    const productInCart = props.product ? shopCart.map((x) => { return x.product.id }).indexOf(props.product.id) >= 0 : false;
+    const productInCart = shopCart ? shopCart.map((x) => { return x.product.id }).indexOf(product.id) >= 0 : false;
+
+console.log('product.js shopCart:')
+console.log(product.shopCart)
+
+//new ImageZoom(document.getElementById("img-container"), options);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -157,12 +173,14 @@ export default function Product(props) {
           seasons={[]}
           colors={[]}
           printTypes={[]}
+          productTypes={[]}
           cart={shopCart}
           openShoppingCart={handleShowShoppingCart}
           setSeason       = {(v)=>{ }}
           setTextileType  = {(v)=>{ }}
           setDesignType   = {(v)=>{ }}
           setColor        = {(v)=>{ }}
+          setProductType    = {(v)=>{ }}
           setPrintType    = {(v)=>{ }}
           setOverworkType = {(v)=>{ }}
           />
@@ -173,7 +191,7 @@ export default function Product(props) {
     <Grid container spacing={0} >
       <Grid item xs={12} md={6} sx={{paddingLeft:"0px"}} >
       <Swiper
-            className="swiper"
+            className="swiper-product"
             modules={[Thumbs, Navigation, Pagination,]} // Navigation, Pagination, Scrollbar, A11y]}
             //slidesPerView={1}
             navigation
@@ -181,26 +199,34 @@ export default function Product(props) {
             //watchSlidesProgress
             //onSwiper={setThumbsSwiper}
             //onSwiper={(swiper) => console.log(swiper)}
-            pagination={{ 
-              clickable: true,
+            pagination={{ clickable: true,
               renderBullet: function (index, className) 
                 { return `<span class="${className}"  >${index + 1}</span>`; },
              }}
+             sx={{ width: "550px", height: "310px" }}
             //scrollbar={{ draggable: true }}
-
             onSlideChange={() => console.log('slide change')} >
-              {product.colors && product.colors.map((cv, index) => {
-                return <Box key={"product-box-00"} >
-                <SwiperSlide key={"product-swiper-00"} sx={{ display: "flex", justifyContent: "center" }} >
-                <Box sx={{ width: 600, height: 600, overflow: "hidden", padding: 0, cursor: "pointer" }} >
+
+              {(product.colors && product.colors.map((cv, index) => {
+                return <SwiperSlide 
+                id={"img-container-" + index}
+                  key={"product-swiper-" + index} 
+                  sx={{ display: "flex", 
+                        justifyContent: "center" }} >
+                
                   <Box component={"img"} key={"product-swiper-00"}
                     src={config.api + "/" + cv.imagePath[0]}
                     alt={"photo_00"} className="product-img"
-                    sx={{ borderRadius: 0 }} />
-                  </Box>
+                    sx={{ borderRadius: 0, 
+                      width: 400, 
+                      height: 300, 
+                      overflow: "hidden", 
+                      padding: 0, 
+                      cursor: "pointer" }} />
+                  
                 </SwiperSlide>
-                </Box>
-            })}
+                
+            }))}
             </Swiper>
       </Grid>
       <Grid item xs={12} md={6} sx={{ height: "100%", margin: "auto auto"}} paddingLeft={{ xs: "0", md: "10px"}} paddingTop={{ xs: "10px", md: "0"}}>
@@ -254,7 +280,7 @@ export default function Product(props) {
     </Grid> )}
     </Box>
 
-        <Footer sx={{ mt: 2, mb: 2 }} />
+    {/* <Footer sx={{ mt: 2, mb: 2 }} /> */}
 
     </ThemeProvider>
   );

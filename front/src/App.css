@@ -118,8 +118,8 @@ div.product-img {
 }
 
 img.product-img {
-  height: 100%;
-  width: 100%;
+  /* height: 100%;
+  width: 100%; */
 }
 
 .product-price {
@@ -313,6 +313,11 @@ span.text-overflow-ellipsis {
   height: 100%;
 } */
 
+.swiper-product {
+  width: 530px;
+  height: 310px;
+}
+
 .no-link:hover .product-quickview {
   /* visibility: visible; */
   opacity: 1;
@@ -333,7 +338,7 @@ span.text-overflow-ellipsis {
 .swiper-slide {
   text-align: center;
   font-size: 18px;
-  background: #fff;
+  /* background: #fff; */
   width: auto;
 
   /* Center slide text vertically */
@@ -344,8 +349,8 @@ span.text-overflow-ellipsis {
 
 .swiper-slide img {
   display: block;
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100%; */
   object-fit: cover;
 }
 

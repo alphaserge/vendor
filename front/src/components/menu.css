@@ -50,13 +50,15 @@ ul.mainmenu li ul {
   display: block;
   margin: 12px -12px;
   padding: 10px;
-  background: #FFF;
-  /* background: #FFA91B;
-  border: 2px solid #F7C833;
-  border-right: 2px solid #F89329;
+  background: #f2f2f2;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 10px;
+  /* background: #FFA91B; */
+  /* border: 2px solid #F7C833; */
+  /* border-right: 2px solid #F89329;
   border-bottom: 2px solid #F89329;
-  border-radius: 5px; 
-  transition: opacity 0.2s, visibility 0.2s;*/
+  border-radius: 5px;  */
+  /* border: 2px solid #ddd; */
+  transition: opacity 0.2s, visibility 0.2s;
 }
 /* ul.mainmenu li:last-child ul {
     margin-left: -60px;
