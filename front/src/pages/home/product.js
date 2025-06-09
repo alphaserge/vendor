@@ -16,6 +16,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 import { Thumbs } from 'swiper/modules';
 
+import ReactSlick from '../../components/ReactSlick';
+
 import axios from 'axios'
 
 import config from "../../config.json"
@@ -77,6 +79,8 @@ export default function Product(props) {
     const [cartIsRolls, setCartIsRolls] = useState(false)
     const [cartHelp, setCartHelp] = useState(false)
 
+    const [domReady, setDomReady] = React.useState(false)
+
     // store thumbs swiper instance
     const [thumbsSwiper, setThumbsSwiper] = useState(null);
     
@@ -130,6 +134,7 @@ export default function Product(props) {
     /* link external script
        https://stackoverflow.com/questions/34424845/adding-script-tag-to-react-jsx */
     useEffect(() => {
+      //setDomReady(true)
       const script = document.createElement('script');
       script.src = "https://unpkg.com/js-image-zoom@0.4.1/js-image-zoom.js";
       script.async = true;
@@ -138,6 +143,11 @@ export default function Product(props) {
         document.body.removeChild(script);
       }
     }, []);
+
+    React.useEffect(() => {
+    setDomReady(true)
+    }, [])
+
 
     useEffect(() => {
       loadProduct()
@@ -190,44 +200,21 @@ console.log(product.shopCart)
     {( product &&
     <Grid container spacing={0} >
       <Grid item xs={12} md={6} sx={{paddingLeft:"0px"}} >
-      <Swiper
-            className="swiper-product"
-            modules={[Thumbs, Navigation, Pagination,]} // Navigation, Pagination, Scrollbar, A11y]}
-            //slidesPerView={1}
-            navigation
-            thumbs={{ swiper: thumbsSwiper }}
-            //watchSlidesProgress
-            //onSwiper={setThumbsSwiper}
-            //onSwiper={(swiper) => console.log(swiper)}
-            pagination={{ clickable: true,
-              renderBullet: function (index, className) 
-                { return `<span class="${className}"  >${index + 1}</span>`; },
-             }}
-             sx={{ width: "550px", height: "310px" }}
-            //scrollbar={{ draggable: true }}
-            onSlideChange={() => console.log('slide change')} >
+      
 
-              {(product.colors && product.colors.map((cv, index) => {
-                return <SwiperSlide 
-                id={"img-container-" + index}
-                  key={"product-swiper-" + index} 
-                  sx={{ display: "flex", 
-                        justifyContent: "center" }} >
-                
-                  <Box component={"img"} key={"product-swiper-00"}
-                    src={config.api + "/" + cv.imagePath[0]}
-                    alt={"photo_00"} className="product-img"
-                    sx={{ borderRadius: 0, 
-                      width: 400, 
-                      height: 300, 
-                      overflow: "hidden", 
-                      padding: 0, 
-                      cursor: "pointer" }} />
-                  
-                </SwiperSlide>
-                
-            }))}
-            </Swiper>
+        <div className="fluid__image-container">
+                   { domReady===true && <ReactSlick {...{
+                        rimProps: {
+                            enlargedImagePortalId: 'portal',
+                            enlargedImageContainerDimensions: {
+                                width: '200%',
+                                height: '100%'
+                            }
+                        }
+                    }}/> }
+        </div>
+
+
       </Grid>
       <Grid item xs={12} md={6} sx={{ height: "100%", margin: "auto auto"}} paddingLeft={{ xs: "0", md: "10px"}} paddingTop={{ xs: "10px", md: "0"}}>
       <Box sx = {{ display: "flex", flexDirection: 'column', p: 1, height: "100%", justifyContent: "space-between"}} className="product-item" >
