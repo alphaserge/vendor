@@ -36,11 +36,11 @@ import ItemName from '../../components/itemname';
 import { fined } from "../../functions/helper"
 
 // Import Swiper styles
-import 'swiper/css';
+/*import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import 'swiper/css/thumbs';
+import 'swiper/css/thumbs';*/
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -213,13 +213,19 @@ console.log(product.shopCart)
                         }
                     }}/> }
         </div>
+        
 
 
       </Grid>
       <Grid item xs={12} md={6} sx={{ height: "100%", margin: "auto auto"}} paddingLeft={{ xs: "0", md: "10px"}} paddingTop={{ xs: "10px", md: "0"}}>
-      <Box sx = {{ display: "flex", flexDirection: 'column', p: 1, height: "100%", justifyContent: "space-between"}} className="product-item" >
+        <div
+                        id="portal"
+                        className="portal"
+                        style={{width: "auto", height: "auto", zIndex: 10}}
+                    />
+      <Box sx = {{  p: 1, height: "100%", zIndex: 2 }} className="product-item" >
         <ItemName label="Item name" value={product.itemName} />
-        <Box sx={{ display: "flex", flexGrow: 1 }} >
+        <Box sx={{ display: "flex" }} >
         <table style={{ paddingLeft: 10 }}>
         <PropertyItem maxWidth={270} label="Art No" value={fined(product.artNo)} />
         <PropertyItem maxWidth={270} label="Ref No" value={fined(product.refNo)} />
