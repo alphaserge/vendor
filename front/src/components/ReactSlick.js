@@ -81,8 +81,8 @@ export default class ReactSlickExample extends Component {
                                 },
                                 largeImage: {
                                     src: src.large,
-                                    width: 1426,
-                                    height: 2000
+                                    width: 400,
+                                    height: 400
                                 },
                                 lensStyle: { backgroundColor: 'rgba(0,0,0,.6)' }
                             }}

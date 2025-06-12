@@ -12,11 +12,12 @@ import { useTheme } from '@mui/material/styles';
 import { Button } from "@mui/material";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
-import { Thumbs } from 'swiper/modules';
+// import { Swiper, SwiperSlide } from 'swiper/react';
+// import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+// import { Thumbs } from 'swiper/modules';
 
 import ReactSlick from '../../components/ReactSlick';
+import '../../styles/react-slick.css';
 
 import axios from 'axios'
 
@@ -195,15 +196,13 @@ console.log(product.shopCart)
           setOverworkType = {(v)=>{ }}
           />
 
-    <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" >
+    {/* <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" > */}
 
-    {( product &&
-    <Grid container spacing={0} >
-      <Grid item xs={12} md={6} sx={{paddingLeft:"0px"}} >
-      
-
-        <div className="fluid__image-container">
-                   { domReady===true && <ReactSlick {...{
+    {/* ----- */}
+    {( product && domReady == true &&
+    <div className="fluid react-slick">
+                <div className="fluid__image-container">
+                    <ReactSlick {...{
                         rimProps: {
                             enlargedImagePortalId: 'portal',
                             enlargedImageContainerDimensions: {
@@ -211,19 +210,14 @@ console.log(product.shopCart)
                                 height: '100%'
                             }
                         }
-                    }}/> }
-        </div>
-        
-
-
-      </Grid>
-      <Grid item xs={12} md={6} sx={{ height: "100%", margin: "auto auto"}} paddingLeft={{ xs: "0", md: "10px"}} paddingTop={{ xs: "10px", md: "0"}}>
-        <div
+                    }}/>
+                </div>
+                <div className="fluid__instructions" style={{position: 'relative'}}>
+                    <div
                         id="portal"
                         className="portal"
-                        style={{width: "auto", height: "auto", zIndex: 10}}
                     />
-      <Box sx = {{  p: 1, height: "100%", zIndex: 2 }} className="product-item" >
+                          <Box sx = {{  p: 1, height: "100%", zIndex: 2 }} className="product-item" >
         <ItemName label="Item name" value={product.itemName} />
         <Box sx={{ display: "flex" }} >
         <table style={{ paddingLeft: 10 }}>
@@ -269,9 +263,14 @@ console.log(product.shopCart)
                   sx={{mt: 4, p: "8px", width: "160px" }}>In cart</Button> )}
           </Box>
         </Box>
-      </Grid>
-    </Grid> )}
-    </Box>
+                </div>
+                <div style={{height: '1000px'}} />
+            </div>
+
+    )}
+    {/* ----- */}
+
+    {/* </Box> */}
 
     {/* <Footer sx={{ mt: 2, mb: 2 }} /> */}
 
