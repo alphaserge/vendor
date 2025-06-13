@@ -16,16 +16,11 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 // import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 // import { Thumbs } from 'swiper/modules';
 
-import ReactSlick from '../../components/ReactSlick';
-import '../../styles/react-slick.css';
-
 import axios from 'axios'
 
 import config from "../../config.json"
 
-import Header from './header';
-import Footer from './footer';
-
+import ImageMagnifier from '../../components/imagemagnifier';
 import MainSection from './mainsection';
 import ShoppingCart from '../../components/shoppingcart';
 
@@ -126,6 +121,8 @@ export default function Product(props) {
       axios.get(config.api + '/Products/Product?id=' + getFromUrl('id'))
       .then(function (result) {
           setProduct(result.data)
+          //console.log('result.data:')
+          //console.log(result.data)
       })
       .catch (error => {
         console.log(error)
@@ -156,8 +153,8 @@ export default function Product(props) {
 
     const productInCart = shopCart ? shopCart.map((x) => { return x.product.id }).indexOf(product.id) >= 0 : false;
 
-console.log('product.js shopCart:')
-console.log(product.shopCart)
+//console.log('product.js shopCart:')
+//console.log(product.shopCart)
 
 //new ImageZoom(document.getElementById("img-container"), options);
 
@@ -200,24 +197,21 @@ console.log(product.shopCart)
 
     {/* ----- */}
     {( product && domReady == true &&
-    <div className="fluid react-slick">
-                <div className="fluid__image-container">
-                    <ReactSlick {...{
-                        rimProps: {
-                            enlargedImagePortalId: 'portal',
-                            enlargedImageContainerDimensions: {
-                                width: '200%',
-                                height: '100%'
-                            }
-                        }
-                    }}/>
-                </div>
-                <div className="fluid__instructions" style={{position: 'relative'}}>
-                    <div
-                        id="portal"
-                        className="portal"
-                    />
-                          <Box sx = {{  p: 1, height: "100%", zIndex: 2 }} className="product-item" >
+
+     <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row", height: "calc(100vh - 330px)" }} className="center-content" >
+     <Box sx={{display:"flex", padding: 10}}>
+            {( product.colors && product.colors.length>0 && 
+              <ImageMagnifier 
+                src={config.api + "/" + product.colors[0].imagePath[0]}
+                images={product.colors.map((it, ix) => { return {label: "Picture "+ix, src: config.api + "/" + it.imagePath[0]} })}
+                width={200}
+                height={200}
+                magnifierHeight={400}
+                magnifierWidth={800}
+                zoomLevel={6}
+                alt="Sample Image"
+            /> )}
+            <Box sx={{paddingLeft: 10}}>
         <ItemName label="Item name" value={product.itemName} />
         <Box sx={{ display: "flex" }} >
         <table style={{ paddingLeft: 10 }}>
@@ -263,10 +257,8 @@ console.log(product.shopCart)
                   sx={{mt: 4, p: "8px", width: "160px" }}>In cart</Button> )}
           </Box>
         </Box>
-                </div>
-                <div style={{height: '1000px'}} />
-            </div>
-
+        </Box>
+        </Box>
     )}
     {/* ----- */}
 

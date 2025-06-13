@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { create } from 'zustand'
 
 import Home from './pages/home/home';
 import UpdateProduct from './pages/home/updateproduct';
