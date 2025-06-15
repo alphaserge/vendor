@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
 .App {
-  background-color: #f3f3f3;
+  background-color: #fbfbfb;
 }
 
 .errorLabel {
@@ -32,7 +32,7 @@ li > .color_select_item {
 }
 
 .center-content {
-  margin: 15px auto;
+  margin: 0 auto;
   /* justify-content: center; */
   width: auto;
   max-width: 1260px;  
@@ -227,12 +227,14 @@ table.shopping-cart  td img {
 }
 
 span.item-label  {
-  color: #868695;
+  color: #333;
   display: inline-block;
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   padding-right: 10px;
   font-family: "Open-Sans", Arial, "Inter", "sans-serif";
+  /*text-transform: uppercase;
+  text-align: right;*/
 }
 
 span.item-value  {
@@ -498,11 +500,17 @@ a.no-link {
   /* font-weight: normal; */
 }
 
+.underline {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 13px;
+    margin-right: 20px;
+}
+
 .subtitle {
   font-size: 18px;
   font-family: "Open Sans", Arial; 
-  font-weight: 300;
-  color: #333;
+  font-weight: 400;
+  color: #444;
 }
 
 .subtitle-2 {

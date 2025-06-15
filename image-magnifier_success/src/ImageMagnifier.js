@@ -1,13 +1,7 @@
-import { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-
-const fixUrl = (s) => {
-    return s.replace(/\\/g, '/')
-}
+import { useState } from 'react';
 
 const ImageMagnifier = ({
     src,
-    images,
     className,
     width,
     height,
@@ -18,31 +12,16 @@ const ImageMagnifier = ({
 }) => {
     const [showMagnifier, setShowMagnifier] = useState(false);
     const [[imgWidth, imgHeight], setSize] = useState([0, 0]);
-    const [[bgPosX, bgPosY], setBgPos] = useState([0, 0]);
-    const [magnifierTop, setMagnifierTop] = useState(0);
-    const [magnifierLeft, setMagnifierLeft] = useState(0);
-    const [imgSrc, setImgSrc] = useState(fixUrl(src));
-
-    const thumbImageClick = (e) => {
-        const el = e.currentTarget;
-        setImgSrc(fixUrl(el.src))
-    }
+    const [[x, y], setXY] = useState([0, 0]);
+    const [[kx, ky], setKXY] = useState([1, 1]);
+    const [[bgx, bgy], setBGXY] = useState([0, 0]);
 
     const mouseEnter = (e) => {
         const el = e.currentTarget;
-        const { top, left } = el.getBoundingClientRect();
+
         const { width, height } = el.getBoundingClientRect();
-        
         setSize([width, height]);
         setShowMagnifier(true);
-        setMagnifierTop(top)
-        setMagnifierLeft(left + width + 10)
-        /*console.log('imgSrc:')
-        console.log(imgSrc)
-        console.log(src)
-        setImgSrc(src.replace(/\\/g, '/'))
-        console.log(imgSrc)
-        console.log('----')*/
     }
 
     const mouseLeave = (e) => {
@@ -55,7 +34,6 @@ const ImageMagnifier = ({
         const { top, left } = el.getBoundingClientRect();
         const { width, height } = el.getBoundingClientRect();
 
-        /* local cursor coordinates in img */
         let x = e.pageX - left - window.scrollX;
         let y = e.pageY - top - window.scrollY;
 
@@ -69,23 +47,74 @@ const ImageMagnifier = ({
         if (bg_y < -height*zoomLevel + magnifierHeight) {
             bg_y = -height*zoomLevel + magnifierHeight;
         }
- 
-        setBgPos([bg_x, bg_y]);
-  };
 
+        /*if (bg_x < -width*zoomLevel) {
+            bg_x = -width*zoomLevel
+        }
 
-    // useEffect(() => {
-    //   setImgSrc(src)
-    // }, [src]);
+        let magx = zoomLevel*width/magnifierWidth;
+        let magy = zoomLevel*height/magnifierHeight;
+        let mw = magnifierWidth;
+        let mh = magnifierHeight;*/
 
+        /*if (x < mw/magx) {
+            x = mw/magx
+        }
+        if (x > width-mw/magx) {
+            x = width-mw/magx
+        }
+        if (y < mh/magy) {
+            y = mh/magy
+        }
+        if (y > height-mh/magy) {
+            y = height-mh/magy
+        }*/
+
+        //let bg_x = mw/2 - x*magx;
+        //let bg_y = mh/2 - y*magy;
+
+        setBGXY([bg_x, bg_y]);
+
+        console.log( 'x:' + x + '  x1:' + x1 + '  bgx:' + bg_x + '  bgy:' + bg_y)
+
+        /*setXY([x, y]);
+        let xx = x - magnifierWidth/(2*zoomLevel);
+        let yy = y - magnifierHeight/(2*zoomLevel);
+        if (xx < magnifierWidth/(2*zoomLevel)) {
+            xx = magnifierWidth/(2*zoomLevel);
+        }
+        if (xx > width - magnifierWidth/(2*zoomLevel)) {
+            xx = width - magnifierWidth/(2*zoomLevel);
+        }
+        if (yy < magnifierHeight/(2*zoomLevel)) {
+            yy = magnifierHeight/(2*zoomLevel);
+        }
+        if (yy > height - magnifierHeight/(2*zoomLevel)) {
+            yy = height - magnifierHeight/(2*zoomLevel);
+        }
+        let xxx = xx*zoomLevel; 
+        let yyy = yy*zoomLevel;
+
+        let xxxx = magnifierWidth/2 - xxx;
+        let yyyy = magnifierHeight/2 - yyy;
+
+        if (xxxx < -width*zoomLevel + magnifierWidth) {
+            xxxx = -width*zoomLevel + magnifierWidth
+        }
+
+        setBGXY([xxxx, yyyy]);*/
+        //setKXY([width/magnifierWidth, height/magnifierHeight])
+
+        //console.log( 'width:' + width + ' magnifierWidth' + magnifierWidth + '   zoomLevel: ' +  zoomLevel +  ' xxxx yyyy: ' + xxxx + ' ' + yyyy)
+    };
 
     return <div className="relative inline-block">
         <img
-            src={imgSrc}
+            src={src}
             className={className}
             // width={width}
             // height={height}
-            style={{maxWidth: "360px"}}
+            style={{maxWidth: "200px"}}
             alt={alt}
             onMouseEnter={(e) => mouseEnter(e)}
             onMouseLeave={(e) => mouseLeave(e)}
@@ -94,10 +123,7 @@ const ImageMagnifier = ({
         <div
             style={{
                 display: showMagnifier ? '' : 'none',
-                zIndex: 10,
-                position: 'absolute',
-                left: `${magnifierLeft}px`,
-                top: `${magnifierTop}px`,
+                position: 'relative',
                 pointerEvents: 'none',
                 height: `${magnifierHeight}px`,
                 width: `${magnifierWidth}px`,
@@ -107,13 +133,13 @@ const ImageMagnifier = ({
                 border: '1px solid lightgrey',
                 backgroundColor: 'white',
                 borderRadius: '5px',
-                backgroundImage: `url('${imgSrc}')`,
+                backgroundImage: `url('${src}')`,
                 backgroundRepeat: 'no-repeat',
                 // top: `${y - magnifierHeight / 2}px`,
                 // left: `${x - magnifierWidth / 2}px`,
                 backgroundSize: `${imgWidth * zoomLevel}px ${imgHeight * zoomLevel}px`,
-                backgroundPositionX: `${bgPosX}px`,
-                backgroundPositionY: `${bgPosY}px`,
+                backgroundPositionX: `${bgx}px`,
+                backgroundPositionY: `${bgy}px`,
                 //backgroundPositionX: `${-x * zoomLevel + magnifierWidth/2}px`,
 
                 //backgroundPositionX: `${(1-zoomLevel)*x +kx*magnifierWidth}px`,
@@ -122,18 +148,6 @@ const ImageMagnifier = ({
                 //backgroundPositionY: `${-y * zoomLevel + magnifierHeight/2}px`,
             }}
         />
-        <Box sx={{display: "flex", marginTop: "10px"}}>
-            { 
-                images.map((item, index) => { return (
-                <img
-                    src={item.src}
-                    style={{width: "50px", height: "50px", marginRight: "10px", borderRadius: "6px", cursor: "pointer"}}
-                    //alt={alt}
-                    onClick={(e) => thumbImageClick(e)}
-                    />) } ) 
-            }
-        </Box>
-
 
 
 {/* <div

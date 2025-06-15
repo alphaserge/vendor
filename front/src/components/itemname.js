@@ -7,9 +7,10 @@ export default function ItemName(props) {
   return <Box title={props.value} sx={{ 
     color: "#242424", 
     textAlign: "center", 
-    fontSize: "21px", 
-    fontWeight: "600",
-    padding: "20px 20px 40px 20px" }}>{props.value}
+    fontFamily: "font-family: 'Open-Sans', Arial, Inter, 'sans-serif'",
+    fontSize: "32px", 
+    fontWeight: "300",
+    padding: "0 10px 10px 10px" }}>{props.value}
     </Box>
          
 }

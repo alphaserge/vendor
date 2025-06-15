@@ -198,8 +198,8 @@ export default function Product(props) {
     {/* ----- */}
     {( product && domReady == true &&
 
-     <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row", height: "calc(100vh - 330px)" }} className="center-content" >
-     <Box sx={{display:"flex", padding: 10}}>
+     <Box sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "row", height: "calc(100vh - 330px)" }} className="center-content" >
+     <Box sx={{display:"flex", marginTop: "20px" }}>
             {( product.colors && product.colors.length>0 && 
               <ImageMagnifier 
                 src={config.api + "/" + product.colors[0].imagePath[0]}
@@ -213,17 +213,17 @@ export default function Product(props) {
             /> )}
             <Box sx={{paddingLeft: 10}}>
         <ItemName label="Item name" value={product.itemName} />
-        <Box sx={{ display: "flex" }} >
-        <table style={{ paddingLeft: 10 }}>
-        <PropertyItem maxWidth={270} label="Art No" value={fined(product.artNo)} />
-        <PropertyItem maxWidth={270} label="Ref No" value={fined(product.refNo)} />
-        <PropertyItem maxWidth={270} label="Design" value={fined(product.design)} />
-        <PropertyItem maxWidth={270} label="Composition" value={fined(product.composition)} />
-        <PropertyItem maxWidth={270} label="Product type" value={fined(product.productType)} />
-        <PropertyItem maxWidth={270} label="Product style" value={fined(product.productStyle)} />
-        <PropertyItem maxWidth={270} label="Print style" value={fined(product.printType)} />
-        <PropertyItem maxWidth={270} label="Price per meter" value={product.price + " $"} />
-        </table>
+        <Box sx={{ display: "flex", flexDirection: "column" }} >
+        
+        <PropertyItem  label="Article No :" value={fined(product.artNo)} />
+        <PropertyItem  label="Ref No :" value={fined(product.refNo)} />
+        <PropertyItem  label="Design :" value={fined(product.design)} />
+        <PropertyItem  label="Composition :" value={fined(product.composition)} />
+        <PropertyItem  label="Product type :" value={fined(product.productType)} />
+        <PropertyItem  label="Product style :" value={fined(product.productStyle)} />
+        <PropertyItem  label="Print style :" value={fined(product.printType)} />
+        <PropertyItem  label="Price per meter :" value={product.price + " $"} />
+        
         </Box>
           <Box sx={{
             display: "flex", 

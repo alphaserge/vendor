@@ -42,15 +42,15 @@ export default function CheckboxList(props) {
   };*/
 
   return (
-    <Box sx={{ border: "none", width: "100%", paddingTop: "10px", backgroundColor: "transparent" }} >
+    <Box className="underline" sx={{ width: "100%", paddingBottom: "10px", backgroundColor: "transparent" }} >
     <Accordion className="header-menu" defaultExpanded={props.expanded? props.expanded : false} disableGutters sx={{ boxShadow: "none", backgroundColor: "transparent" }} >
 
     <AccordionSummary expandIcon={<ExpandMoreIcon sx={{margin: 0}} />} sx={{ maxWidth: "744px", margin: "0 auto !important", padding: "0 3px", flexDirection: "row-reverse" }} >
       <Typography sx={{ width: "100%", margin: 0 }} className="subtitle-2"> &nbsp;&nbsp;{props.title}</Typography>
     </AccordionSummary>
 
-    <AccordionDetails sx={{ maxWidth: "744px", margin: "0 auto", padding: "0 0px", overflowX: "hidden", overflowY: "scroll" }}>
-    <List sx={{ width: '100%', maxWidth: 360, height: props.height? props.height : 210  }}>
+    <AccordionDetails sx={{ maxWidth: "744px", margin: "0 auto", padding: "0 0px", overflowX: "hidden", overflowY: "auto"  }}>
+    <List sx={{ width: '100%', maxWidth: 360, height: "auto" }}>  {/* height: props.height? props.height : 210  */}
       {props.list.map((item) => {
         const labelId = `checkbox-list-label-${item.key}`;
 

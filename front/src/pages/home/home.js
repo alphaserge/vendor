@@ -365,29 +365,22 @@ export default function Home(props) {
 
         <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" >
           <Box display={{ xs: 'none', md: 'flex' }} sx={{ flexDirection: "column", minWidth: "200px" }}  >
-            <Box className="subtitle" >Shopping options</Box>
-            <CheckboxList
-              list={colors.map((it) => ({ key: it.id, name: it.value }))}
-              title="Colours"
-              height={310}
-              expanded={true}
-              setValueFn={setSelectedColor}
-              value={selectedColor}
-            />
-            <CheckboxList
-              list={seasons.map((it) => ({ key: it.id, name: it.value }))}
-              title="Seasons"
-              height={120}
-              expanded={true}
-              setValueFn={setSelectedSeason }
-              value={selectedSeason}
-            />
+            {/* <Box className="subtitle" >Shopping options</Box> */}
+            <strong role="heading" aria-level="2" class="subtitle underline">Shopping Options</strong>
             <CheckboxList
               list={designTypes.map((it) => ({ key: it.id, name: it.value }))}
               title="Design types"
               expanded={true}
               setValueFn={setSelectedDesignType}
               value={selectedDesignType}
+            />
+            <CheckboxList
+              list={productTypes.map((it) => ({ key: it.id, name: it.value }))}
+              title="Product types"
+              //height={80}
+              expanded={true}
+              setValueFn={setSelectedProductType}
+              value={selectedProductType}
             />
             <CheckboxList
               list={printTypes.map((it) => ({ key: it.id, name: it.value }))}
@@ -397,12 +390,20 @@ export default function Home(props) {
               value={selectedPrintType}
             />
             <CheckboxList
-              list={productTypes.map((it) => ({ key: it.id, name: it.value }))}
-              title="Product types"
-              height={80}
+              list={colors.map((it) => ({ key: it.id, name: it.value }))}
+              title="Colours"
+              // height={310}
               expanded={true}
-              setValueFn={setSelectedProductType}
-              value={selectedProductType}
+              setValueFn={setSelectedColor}
+              value={selectedColor}
+            />
+            <CheckboxList
+              list={seasons.map((it) => ({ key: it.id, name: it.value }))}
+              title="Seasons"
+              //height={120}
+              expanded={true}
+              setValueFn={setSelectedSeason }
+              value={selectedSeason}
             />
           </Box>
 
