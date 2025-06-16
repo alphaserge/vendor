@@ -227,10 +227,10 @@ table.shopping-cart  td img {
 }
 
 span.item-label  {
-  color: #333;
+  color: #444;
   display: inline-block;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 500;
   padding-right: 10px;
   font-family: "Open-Sans", Arial, "Inter", "sans-serif";
   /*text-transform: uppercase;

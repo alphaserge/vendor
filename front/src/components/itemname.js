@@ -5,12 +5,13 @@ import Box from '@mui/material/Box';
 
 export default function ItemName(props) {
   return <Box title={props.value} sx={{ 
-    color: "#242424", 
-    textAlign: "center", 
+    color: "#333", 
+    //textAlign: "center", 
     fontFamily: "font-family: 'Open-Sans', Arial, Inter, 'sans-serif'",
-    fontSize: "32px", 
-    fontWeight: "300",
-    padding: "0 10px 10px 10px" }}>{props.value}
+    fontSize: "30px", 
+    fontWeight: "normal",
+    //letterSpacing: "1px",
+    padding: "10px 10px 20px 0px" }}>{props.value}
     </Box>
          
 }
