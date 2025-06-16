@@ -133,7 +133,7 @@ img.product-img {
   font-size: 15px;
   padding: 8px 0 0 0;
   color: #000;
-  font-family: "Open-Sans", Arial;
+  font-family: "Chiron Sung HK", "Open-Sans", Arial;
 }
 
 .price {
@@ -232,7 +232,7 @@ span.item-label  {
   font-size: 15px;
   font-weight: 500;
   padding-right: 10px;
-  font-family: "Open-Sans", Arial, "Inter", "sans-serif";
+  font-family: "Chiron Sung HK", "Open-Sans", Arial, "Inter", "sans-serif";
   /*text-transform: uppercase;
   text-align: right;*/
 }
@@ -242,7 +242,7 @@ span.item-value  {
   display: inline-block;
   font-size: 16px;
   font-weight: 400;
-  font-family: "Open-Sans", Arial, "Inter", "sans-serif";
+  font-family: "Chiron Sung HK", "Open-Sans", Arial, "Inter", "sans-serif";
 }
 
 span.order-item-label  {
@@ -251,7 +251,7 @@ span.order-item-label  {
   font-size: 14px;
   font-weight: 500;
   padding-right: 10px;
-  font-family: "Open-Sans", Arial, "Inter", "sans-serif";
+  font-family: "Chiron Sung HK", "Open-Sans", Arial, "Inter", "sans-serif";
 }
 
 span.order-item-value  {
@@ -259,7 +259,7 @@ span.order-item-value  {
   display: inline-block;
   font-size: 14px;
   font-weight: 400;
-  font-family: "Open-Sans", Arial, "Inter", "sans-serif";
+  font-family: "Chiron Sung HK", "Open-Sans", Arial, "Inter", "sans-serif";
 }
 
 
@@ -334,7 +334,7 @@ span.text-overflow-ellipsis {
   border-radius: 6px!important;
   font-size: 16px!important;
   text-transform: none!important;
-  font-family: "Open-Sans", Arial!important;
+  font-family: "Chiron Sung HK", "Open-Sans", Arial!important;
 }
 
 .swiper-slide {
@@ -465,7 +465,7 @@ a.no-link {
   background-color:white;
   padding: 0 5px;
   font-size: 11px;
-  font-family: "Open-Sans", Arial; 
+  font-family: "Chiron Sung HK", "Open-Sans", Arial; 
   font-weight: 300;
 }
 

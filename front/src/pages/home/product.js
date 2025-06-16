@@ -27,7 +27,9 @@ import ShoppingCart from '../../components/shoppingcart';
 import { addToCart, removeFromCart, updateQuantity, flushCart } from './../../store/cartSlice' 
 import PropertyQuantity from "../../components/propertyquantity";
 import PropertyItem from '../../components/propertyitem';
+import Price from '../../components/price';
 import ItemName from '../../components/itemname';
+import Quantity from '../../components/quantity';
 
 import { fined } from "../../functions/helper"
 
@@ -121,8 +123,8 @@ export default function Product(props) {
       axios.get(config.api + '/Products/Product?id=' + getFromUrl('id'))
       .then(function (result) {
           setProduct(result.data)
-          //console.log('result.data:')
-          //console.log(result.data)
+          console.log('result.data:')
+          console.log(result.data)
       })
       .catch (error => {
         console.log(error)
@@ -149,9 +151,11 @@ export default function Product(props) {
 
     useEffect(() => {
       loadProduct()
-    }, [product]);
+    }, []);
 
     const productInCart = shopCart ? shopCart.map((x) => { return x.product.id }).indexOf(product.id) >= 0 : false;
+
+    console.log(product)
 
 //console.log('product.js shopCart:')
 //console.log(product.shopCart)
@@ -213,6 +217,15 @@ export default function Product(props) {
             /> )}
             <Box sx={{paddingLeft: 10}}>
         <ItemName label="Item name" value={product.itemName} />
+        <Price label="Price per meter :" price={product.price} />
+        <Quantity defaultValue={1} />
+
+{/* <input
+  type="text"
+  pattern="(?:0|[1-9]\d*)"
+  inputMode="decimal"
+  autoComplete="off"/> 
+   */}
         <Box sx={{ display: "flex", flexDirection: "column" }} >
         
         <PropertyItem  label="Article No :" value={fined(product.artNo)} />
@@ -222,7 +235,7 @@ export default function Product(props) {
         <PropertyItem  label="Product type :" value={fined(product.productType)} />
         <PropertyItem  label="Product style :" value={fined(product.productStyle)} />
         <PropertyItem  label="Print style :" value={fined(product.printType)} />
-        <PropertyItem  label="Price per meter :" value={product.price + " $"} />
+        
         
         </Box>
           <Box sx={{
