@@ -37,12 +37,6 @@ const ImageMagnifier = ({
         setShowMagnifier(true);
         setMagnifierTop(top)
         setMagnifierLeft(left + width + 10)
-        /*console.log('imgSrc:')
-        console.log(imgSrc)
-        console.log(src)
-        setImgSrc(src.replace(/\\/g, '/'))
-        console.log(imgSrc)
-        console.log('----')*/
     }
 
     const mouseLeave = (e) => {
@@ -73,19 +67,28 @@ const ImageMagnifier = ({
         setBgPos([bg_x, bg_y]);
   };
 
-
     // useEffect(() => {
     //   setImgSrc(src)
     // }, [src]);
 
-
-    return <div className="relative inline-block">
+    return <Box sx={{ width: width+60, height: height, display: "block" }}>
+        <Box sx={{display: "flex", flexDirection: "column", float: "left" }}>
+            { 
+                images.map((item, index) => { return (
+                <img
+                    src={item.src}
+                    style={{width: "50px", height: "50px", marginBottom: "10px", borderRadius: "0px", cursor: "pointer"}}
+                    //alt={alt}
+                    onClick={(e) => thumbImageClick(e)}
+                    />) } ) 
+            }
+        </Box>
         <img
             src={imgSrc}
             className={className}
-            // width={width}
-            // height={height}
-            style={{maxWidth: "360px"}}
+            width={width}
+            height={height}
+            style={{maxWidth: width + "px", marginLeft: "10px", display: "block", float: "left"}}
             alt={alt}
             onMouseEnter={(e) => mouseEnter(e)}
             onMouseLeave={(e) => mouseLeave(e)}
@@ -122,43 +125,7 @@ const ImageMagnifier = ({
                 //backgroundPositionY: `${-y * zoomLevel + magnifierHeight/2}px`,
             }}
         />
-        <Box sx={{display: "flex", marginTop: "10px"}}>
-            { 
-                images.map((item, index) => { return (
-                <img
-                    src={item.src}
-                    style={{width: "50px", height: "50px", marginRight: "10px", borderRadius: "6px", cursor: "pointer"}}
-                    //alt={alt}
-                    onClick={(e) => thumbImageClick(e)}
-                    />) } ) 
-            }
-        </Box>
-
-
-
-{/* <div
-            style={{
-                display: showMagnifier ? '' : 'none',
-                position: 'absolute',
-                pointerEvents: 'none',
-                height: `${magnifierHeight}px`,
-                width: `${magnifierWidth}px`,
-                opacity: '1',
-                border: '1px solid lightgrey',
-                backgroundColor: 'white',
-                borderRadius: '5px',
-                backgroundImage: `url('${src}')`,
-                backgroundRepeat: 'no-repeat',
-                top: `${y - magnifierHeight / 2}px`,
-                left: `${x - magnifierWidth / 2}px`,
-                backgroundSize: `${imgWidth * zoomLevel}px ${imgHeight * zoomLevel}px`,
-                backgroundPositionX: `${-x * zoomLevel + magnifierWidth / 2}px`,
-                backgroundPositionY: `${-y * zoomLevel + magnifierHeight / 2}px`,
-            }}
-        /> */}
-
-    </div>
-
+    </Box>
 
 
 };

@@ -18,7 +18,6 @@ li > .color_select_item {
   display: inline;
 }
 
-
 .site-logo {
   font-size: 26px;
   font-weight: 400;
@@ -536,3 +535,11 @@ a.no-link {
 /*.caret::before {
   content: "\e261";
 }*/
+
+.qty-button.increase:before {
+    content: "\e262";
+}
+
+.qty-button.decrease:before {
+    content: "\e261";
+}

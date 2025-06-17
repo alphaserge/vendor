@@ -196,7 +196,7 @@ function App() {
   }, [])
 
   return (
-    <div className="App">
+    <div style={{ width: "100%" }} >
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home user={user} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />

@@ -30,6 +30,7 @@ import PropertyItem from '../../components/propertyitem';
 import Price from '../../components/price';
 import ItemName from '../../components/itemname';
 import Quantity from '../../components/quantity';
+import Amount from '../../components/amount';
 
 import { fined } from "../../functions/helper"
 
@@ -203,22 +204,28 @@ export default function Product(props) {
     {( product && domReady == true &&
 
      <Box sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "row", height: "calc(100vh - 330px)" }} className="center-content" >
-     <Box sx={{display:"flex", marginTop: "20px" }}>
+     <Grid container sx={{ marginTop: "20px" }}>
+      <Grid item xs={12} md={6} sx={{display: "flex"}} justifyContent={{ md: "end", xs: "space-around" }} >
             {( product.colors && product.colors.length>0 && 
               <ImageMagnifier 
                 src={config.api + "/" + product.colors[0].imagePath[0]}
+                sx={{padding: "0 10px"}}
                 images={product.colors.map((it, ix) => { return {label: "Picture "+ix, src: config.api + "/" + it.imagePath[0]} })}
-                width={200}
-                height={200}
-                magnifierHeight={400}
-                magnifierWidth={800}
+                width={360}
+                height={360}
+                magnifierHeight={500}
+                magnifierWidth={600}
                 zoomLevel={6}
                 alt="Sample Image"
             /> )}
-            <Box sx={{paddingLeft: 10}}>
+            </Grid>
+            <Grid item xs={12} md={6}>
+            <Box sx={{paddingLeft: 10, display: "block", float: "left"}}>
         <ItemName label="Item name" value={product.itemName} />
         <Price label="Price per meter :" price={product.price} />
         <Quantity defaultValue={1} />
+        <br/>
+        <Amount />
 
 {/* <input
   type="text"
@@ -270,7 +277,8 @@ export default function Product(props) {
                   sx={{mt: 4, p: "8px", width: "160px" }}>In cart</Button> )}
           </Box>
         </Box>
-        </Box>
+        </Grid>
+        </Grid>
         </Box>
     )}
     {/* ----- */}
