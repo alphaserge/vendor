@@ -78,10 +78,9 @@ export default function Product(props) {
     const [cartIsRolls, setCartIsRolls] = useState(false)
     const [cartHelp, setCartHelp] = useState(false)
 
+
     const [domReady, setDomReady] = React.useState(false)
 
-    // store thumbs swiper instance
-    const [thumbsSwiper, setThumbsSwiper] = useState(null);
     
     const shoppingCartRef = useRef()
 
@@ -225,7 +224,7 @@ export default function Product(props) {
         <Price label="Price per meter :" price={product.price} />
         <Quantity defaultValue={1} />
         <br/>
-        <Amount />
+        <Amount value={cartQuantity} setValue={(e)=>{setQuantity(0,e)}} />
 
 {/* <input
   type="text"

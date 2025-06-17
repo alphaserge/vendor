@@ -536,10 +536,14 @@ a.no-link {
   content: "\e261";
 }*/
 
-.qty-button.increase:before {
+/*.qty-button.increase:before {
     content: "\e262";
 }
 
 .qty-button.decrease:before {
     content: "\e261";
+}*/
+
+.updown:hover {
+  background-color: #888;
 }
