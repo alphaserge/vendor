@@ -8,6 +8,12 @@ export default function Amount(props) {
 
   const [value, setValue] =  useState(props.value)
 
+  function inputChange(e) {
+    //console.log(v);
+    let value = parseInt(e.target.value)
+    if ( value < 1 ) { value = 1 }
+    props.setValue(value)
+  }
   function buttonClick(incr) {
     //console.log(v);
     let value = props.value + incr
@@ -15,7 +21,7 @@ export default function Amount(props) {
     props.setValue(value)
   }
 
-  return <Box sx={{display: "flex", flexDirection: "row", fontFamily: ap.FONTFAMILY, fontSize: ap.FONTSIZE, margin: "0 14px 0 0 ", padding: 0 }}> 
+  return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center", fontFamily: ap.FONTFAMILY, fontSize: ap.FONTSIZE, margin: "0 14px 0 0 ", padding: 0 }}> 
   {(props.label && <Box style={{
                 fontSize: "inherit",
                 fontFamily: "inherit",
@@ -23,7 +29,7 @@ export default function Amount(props) {
                 lineHeight: 1.375,
                 color: "#333",
                 margin: "0 8px 0 0",
-                padding: "14px 0px",
+                padding: "0px 0px",
                 outline: 0,
                 minWidth: 0,
                 width: props.labelWidth ? props.labelWidth : "4rem",
@@ -32,15 +38,15 @@ export default function Amount(props) {
             <input
               type="text"
               pattern="(?:0|[1-9]\d*)"
-              width="10px"
               inputMode="decimal"
               autoComplete="off"
               value={props.value+""}
+              onChange={inputChange}
               style={{
-                fontSize: "0.875rem",
+                fontSize: ap.FONTSIZE,
                 fontFamily: "inherit",
                 fontWeight: "400",
-                lineHeight: 1.375,
+                lineHeight: 1.075,
                 color: "#333",
                 border: "1px solid #bbb",
                 boxShadow: "0 2px 4px rgba(0,0,0, 0.05)" ,
@@ -49,11 +55,11 @@ export default function Amount(props) {
                 padding: "14px 12px",
                 outline: 0,
                 minWidth: 0,
-                width: "4rem",
+                width: "80px",
                 textAlign: "center"
               }}
               /> 
-            <Box sx={{display: "flex", flexDirection: "column", width: "32px", height: "16px", fontSize: "18px"}}> 
+            <Box sx={{display: "flex", flexDirection: "column", width: "32px", height: "46px", fontSize: "18px"}}> 
               {/* <span class="material-symbols-outlined" style={{fontSize: "18px", textAlign: "center", transform: "rotate(0.5turn)"}} >stat_minus_1</span>
               <span class="material-symbols-outlined" style={{fontSize: "18px", textAlign: "center" }} >stat_minus_1</span> */}
               <div class="material-symbols-outlined" onMouseDown={e => e.preventDefault()} onClick={(e) => { buttonClick(1 )}} style={{ padding: "2px 0", margin: "0 0 1px 0", fontSize: "18px", textAlign: "center", cursor: "pointer", transform: "rotate(0.5turn)"}}>stat_minus_1</div>

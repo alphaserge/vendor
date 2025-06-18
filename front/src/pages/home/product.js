@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 
 // import { Swiper, SwiperSlide } from 'swiper/react';
@@ -203,7 +203,8 @@ export default function Product(props) {
     {/* ----- */}
     {( product && domReady == true &&
 
-     <Box sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "row", height: "calc(100vh - 330px)" }} className="center-content" >
+    <Box sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "column" }} className="center-content" >
+     <Box sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "row" }}  >  {/* height: "calc(100vh - 330px)" */}
      <Grid container sx={{ marginTop: "20px" }}>
       <Grid item xs={12} md={6} sx={{display: "flex"}} justifyContent={{ md: "end", xs: "space-around" }} >
             {( product.colors && product.colors.length>0 && 
@@ -211,8 +212,8 @@ export default function Product(props) {
                 src={config.api + "/" + product.colors[0].imagePath[0]}
                 sx={{padding: "0 10px"}}
                 images={product.colors.map((it, ix) => { return {label: "Picture "+ix, src: config.api + "/" + it.imagePath[0]} })}
-                width={360}
-                height={360}
+                width={330}
+                height={330}
                 magnifierHeight={500}
                 magnifierWidth={600}
                 zoomLevel={6}
@@ -221,53 +222,32 @@ export default function Product(props) {
             </Grid>
             <Grid item xs={12} md={6}>
             <Box sx={{paddingLeft: 10, display: "block", float: "left"}}>
+              <div style={{paddingLeft: "20px"}} >
         <ItemName label="Item name" value={product.itemName} />
         <Price label="Price per meter :" price={product.price} />
-        <Box sx={{ display: "flex", marginTop: "14px" }}>
-          <Property fontSize={ap.FONTSIZE} color="#777" value={product.rollLength + " meters in roll"} />
-        </Box>
-       
-       <Box sx={{ display: "flex", marginTop: "20px" }} >
-         <Amount value={cartQuantity} label="Meters" labelWidth="3.5rem" setValue={(e)=>{setQuantity(0,e)}} />
-         <Amount value={cartQuantity} label="Rolls" labelWidth="2.8rem" setValue={(e)=>{setQuantity(0,e)}} /> 
-       </Box>
+       </div>
 
-        <Box sx={{ display: "flex", flexDirection: "column" }} >
-        
-        <PropertyItem label="Article No :" value={fined(product.artNo)} />
-        <PropertyItem label="Ref No :" value={fined(product.refNo)} />
-        <PropertyItem label="Design :" value={fined(product.design)} />
-        <PropertyItem label="Composition :" value={fined(product.composition)} />
-        <PropertyItem label="Product type :" value={fined(product.productType)} />
-        <PropertyItem label="Product style :" value={fined(product.productStyle)} />
-        <PropertyItem label="Print style :" value={fined(product.printType)} />
-        
-        
-        </Box>
           <Box sx={{
-            display: "flex", 
-            flexDirection: 'column',
-            alignItems: "center",
-            className:"quantity",
             pl: "20px",
             pr: "20px" }}>
-              {(productInCart!==true && <> <PropertyQuantity
-                  maxWidth={200}
-                  label="Quantity"
-                  index={-1}
-                  product={product}
-                  quantity={cartQuantity}
-                  isRolls={cartIsRolls}
-                  setQuantity={setQuantity}
-                  setRolls={setIsRolls}
-                  setHelp={setHelp}
-                  />
+              {(productInCart!==true && 
+              <> 
+                <Box sx={{ display: "flex", marginTop: "20px", width: "930px" }} >
+                  <Amount value={cartQuantity} label="Meters" labelWidth="3.2rem" setValue={(e)=>{setQuantity(0,e)}} />
+                  <Amount value={cartQuantity} label="or rolls" labelWidth="4.0rem" setValue={(e)=>{setQuantity(0,e)}} /> 
+                </Box>
+
+                <Box sx={{ display: "flex", marginTop: "14px" }}>
+                  <Property fontSize={ap.FONTSIZE} color={ap.COLOR} value={product.rollLength + " meters in roll"} />
+                </Box>
+
                 <Button
                   variant="contained"
-                  startIcon={<ShoppingCartOutlinedIcon/>}
-                  className="button"
+                  startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
                   onClick={handleAddToCart}
-                  sx={{mt: 4, p: "8px", width: "160px" }}>Add to cart</Button></>)}
+                  sx={{mt: 4, p: "12px", width: "160px", backgroundColor: "#222", color: "#fff", borderRadius: 0 }}>Add to cart</Button>
+              </>)}
+
               {(productInCart===true && <Button
                   variant="contained"
                   startIcon={<ShoppingCartOutlinedIcon/>}
@@ -278,6 +258,32 @@ export default function Product(props) {
         </Box>
         </Grid>
         </Grid>
+        </Box>
+        <Box sx={{ justifyItems: "end", display: "flex", alignItems: "center", flexDirection: "column", margin: "40px 20px 20px 120px" }}  >  {/* height: "calc(100vh - 330px)" */}
+        <Typography 
+          sx={{fontFamily:ap.FONTFAMILY,
+          fontSize:ap.SUBTITLE.FONTSIZE, 
+          fontWeight:ap.SUBTITLE.FONTWEIGHT, 
+          color:ap.SUBTITLE.COLOR,
+          padding: "0 0 10px 0"}} >More information:</Typography>
+        
+        <Box sx={{ justifyContent: "center", display: "flex", alignItems: "end", flexDirection: "row", margin: "10px 20px 20px 120px" }}  >  {/* height: "calc(100vh - 330px)" */}
+        <Grid container>
+          <Grid item xs={12} md={6} sx={{display: "flex", flexDirection: "column"}} >
+        <PropertyItem label="Article No :" value={fined(product.artNo)} />
+        <PropertyItem label="Ref No :" value={fined(product.refNo)} />
+        <PropertyItem label="Design :" value={fined(product.design)} />
+        <PropertyItem label="Composition :" value={fined(product.composition)} />
+        </Grid>
+        <Grid item xs={12} md={6} sx={{display: "flex", flexDirection: "column"}} >
+        
+        <PropertyItem label="Product type :" value={fined(product.productType)} />
+        <PropertyItem label="Product style :" value={fined(product.productStyle)} />
+        <PropertyItem label="Print style :" value={fined(product.printType)} />
+        </Grid>
+        </Grid>
+        </Box>
+        </Box>
         </Box>
     )}
     {/* ----- */}

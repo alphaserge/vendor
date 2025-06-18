@@ -9,5 +9,8 @@ export default function Price(props) {
     color: (props.color ? props : ap.PRICE.COLOR), 
     fontFamily: ap.PRICE.FONTFAMILY, 
     fontSize: ap.PRICE.FONTSIZE, 
-    fontWeight: ap.PRICE.FONTWEIGHT }}>From <b>$ {toFixed2(props.price)}</b> per meter</Box>
+    fontWeight: ap.PRICE.FONTWEIGHT }}>
+      from $ {toFixed2(props.price)} per meter
+      {/* <span style={{ color: "#444"}}>Price: </span> from $ {toFixed2(props.price)} per meter */}
+      </Box>
 }

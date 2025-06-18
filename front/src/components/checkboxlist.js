@@ -10,6 +10,8 @@ import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Typography from '@mui/material/Typography';
 
+import {APPEARANCE as ap} from '../appearance';
+
 export default function CheckboxList(props) {
   const value = props.value ? props.value : [];
   const [checked, setChecked] = React.useState(value);
@@ -42,7 +44,7 @@ export default function CheckboxList(props) {
   };*/
 
   return (
-    <Box className="underline" sx={{ width: "100%", paddingBottom: "10px", backgroundColor: "transparent" }} >
+    <Box className="underline" sx={{ width: "100%", paddingBottom: "10px", backgroundColor: "transparent", fontFamily: ap.FONTFAMILY }} >
     <Accordion className="header-menu" defaultExpanded={props.expanded? props.expanded : false} disableGutters sx={{ boxShadow: "none", backgroundColor: "transparent" }} >
 
     <AccordionSummary expandIcon={<ExpandMoreIcon sx={{margin: 0}} />} sx={{ maxWidth: "744px", margin: "0 auto !important", padding: "0 3px", flexDirection: "row-reverse" }} >
@@ -71,7 +73,10 @@ export default function CheckboxList(props) {
                   //onChange={dataChange}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={item.name} sx={{ padding: "2px 0px", margin: 0 }} className="list-item"/>
+              <ListItemText id={labelId} primary={item.name} 
+                className="list-item" 
+                sx={{ padding: "2px 0px", margin: 0, fontFamily: ap.FONTFAMILY }}
+                primaryTypographyProps={{fontFamily: ap.FONTFAMILY}}  />
             </ListItemButton>
           </ListItem>
         );
