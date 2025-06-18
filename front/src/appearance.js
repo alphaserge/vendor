@@ -1,6 +1,8 @@
 export const APPEARANCE = {
     
-    FONT: "'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif'",
+    FONTFAMILY: "'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif'",
+    FONTSIZE: "15px",
+    COLOR: "#222",
 
     PRICE: {
         COLOR: "#fd8bb5",

@@ -29,8 +29,9 @@ import PropertyQuantity from "../../components/propertyquantity";
 import PropertyItem from '../../components/propertyitem';
 import Price from '../../components/price';
 import ItemName from '../../components/itemname';
-import Quantity from '../../components/quantity';
 import Amount from '../../components/amount';
+import Property from '../../components/property';
+import {APPEARANCE as ap} from '../../appearance';
 
 import { fined } from "../../functions/helper"
 
@@ -222,25 +223,24 @@ export default function Product(props) {
             <Box sx={{paddingLeft: 10, display: "block", float: "left"}}>
         <ItemName label="Item name" value={product.itemName} />
         <Price label="Price per meter :" price={product.price} />
-        <Quantity defaultValue={1} />
-        <br/>
-        <Amount value={cartQuantity} setValue={(e)=>{setQuantity(0,e)}} />
+        <Box sx={{ display: "flex", marginTop: "14px" }}>
+          <Property fontSize={ap.FONTSIZE} color="#777" value={product.rollLength + " meters in roll"} />
+        </Box>
+       
+       <Box sx={{ display: "flex", marginTop: "20px" }} >
+         <Amount value={cartQuantity} label="Meters" labelWidth="3.5rem" setValue={(e)=>{setQuantity(0,e)}} />
+         <Amount value={cartQuantity} label="Rolls" labelWidth="2.8rem" setValue={(e)=>{setQuantity(0,e)}} /> 
+       </Box>
 
-{/* <input
-  type="text"
-  pattern="(?:0|[1-9]\d*)"
-  inputMode="decimal"
-  autoComplete="off"/> 
-   */}
         <Box sx={{ display: "flex", flexDirection: "column" }} >
         
-        <PropertyItem  label="Article No :" value={fined(product.artNo)} />
-        <PropertyItem  label="Ref No :" value={fined(product.refNo)} />
-        <PropertyItem  label="Design :" value={fined(product.design)} />
-        <PropertyItem  label="Composition :" value={fined(product.composition)} />
-        <PropertyItem  label="Product type :" value={fined(product.productType)} />
-        <PropertyItem  label="Product style :" value={fined(product.productStyle)} />
-        <PropertyItem  label="Print style :" value={fined(product.printType)} />
+        <PropertyItem label="Article No :" value={fined(product.artNo)} />
+        <PropertyItem label="Ref No :" value={fined(product.refNo)} />
+        <PropertyItem label="Design :" value={fined(product.design)} />
+        <PropertyItem label="Composition :" value={fined(product.composition)} />
+        <PropertyItem label="Product type :" value={fined(product.productType)} />
+        <PropertyItem label="Product style :" value={fined(product.productStyle)} />
+        <PropertyItem label="Print style :" value={fined(product.printType)} />
         
         
         </Box>

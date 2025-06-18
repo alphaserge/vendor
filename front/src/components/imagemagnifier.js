@@ -71,13 +71,13 @@ const ImageMagnifier = ({
     //   setImgSrc(src)
     // }, [src]);
 
-    return <Box sx={{ width: width+60, height: height, display: "block" }}>
+    return <Box sx={{ width: width+70, height: height, display: "block" }}>
         <Box sx={{display: "flex", flexDirection: "column", float: "left" }}>
             { 
                 images.map((item, index) => { return (
                 <img
                     src={item.src}
-                    style={{width: "50px", height: "50px", marginBottom: "10px", borderRadius: "0px", cursor: "pointer"}}
+                    style={{width: "50px", height: "50px", marginBottom: "15px", borderRadius: "0px", cursor: "pointer"}}
                     //alt={alt}
                     onClick={(e) => thumbImageClick(e)}
                     />) } ) 
@@ -88,7 +88,7 @@ const ImageMagnifier = ({
             className={className}
             width={width}
             height={height}
-            style={{maxWidth: width + "px", marginLeft: "10px", display: "block", float: "left"}}
+            style={{maxWidth: width + "px", marginLeft: "15px", display: "block", float: "left"}}
             alt={alt}
             onMouseEnter={(e) => mouseEnter(e)}
             onMouseLeave={(e) => mouseLeave(e)}
