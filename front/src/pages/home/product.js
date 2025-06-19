@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from 'react-redux'
 
+import { makeStyles, useStyles } from '@mui/material/styles';
+//import {  withStyles } from '@mui/styles';
+import { withStyles } from '@mui/styles';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
@@ -59,6 +62,31 @@ const MenuProps = {
   },
 };
 
+/*const useStyles = makeStyles({
+  flexGrow: {
+    flex: '1',
+  },
+  button: {
+    backgroundColor: '#222',
+    color: '#fff',
+    '&:hover': {
+      backgroundColor: '#fd8bb5',
+      color: '#fff',
+  },
+}})*/
+
+const StyledButton = withStyles({
+  root: {
+    backgroundColor: '#222',
+    color: '#fff',
+    '&:hover': {
+      backgroundColor: '#fd8bb5',
+      color: '#fff',
+  },
+}})(Button);
+
+
+
 const getFromUrl = (name) => {
   const search = window.location.search
   const params = new URLSearchParams(search)
@@ -67,31 +95,31 @@ const getFromUrl = (name) => {
 
 export default function Product(props) {
 
-    const cartCount = useSelector((state) => state.cart.items.length)
-    const shopCart = useSelector((state) => state.cart.items)
+  //const classes = useStyles()
 
-    const navigate = useNavigate();
-    const theme = useTheme();
+  const cartCount = useSelector((state) => state.cart.items.length)
+  const shopCart = useSelector((state) => state.cart.items)
 
-    const [product, setProduct] = useState({colors: []})
-    const [info, setInfo] = React.useState("");
+  const navigate = useNavigate();
+  const theme = useTheme();
 
-    const [cartQuantity, setCartQuantity] = useState(1)
-    const [cartUnit, setCartUnit] = useState(1)
-    const [cartIsRolls, setCartIsRolls] = useState(false)
-    const [cartHelp, setCartHelp] = useState(false)
+  const [product, setProduct] = useState({colors: []})
+  const [info, setInfo] = React.useState("");
 
+  const [cartQuantity, setCartQuantity] = useState(1)
+  const [cartUnit, setCartUnit] = useState(1)
+  const [cartIsRolls, setCartIsRolls] = useState(false)
+  const [cartHelp, setCartHelp] = useState(false)
 
-    const [domReady, setDomReady] = React.useState(false)
+  const [domReady, setDomReady] = React.useState(false)
+  
+  const shoppingCartRef = useRef()
 
-    
-    const shoppingCartRef = useRef()
-
-    const handleShowShoppingCart = (event) => {
+  const handleShowShoppingCart = (event) => {
     if (shoppingCartRef.current) {
       shoppingCartRef.current.displayWindow(true);
     }
-   }
+  }
 
     const dispatch = useDispatch();
 
@@ -248,11 +276,18 @@ export default function Product(props) {
                   <Property fontSize={ap.FONTSIZE} color={ap.COLOR} value={product.rollLength + " meters in roll"} />
                 </Box>
 
-                <Button
+                <StyledButton
                   variant="contained"
                   startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
                   onClick={handleAddToCart}
-                  sx={{mt: 4, p: "12px", width: "160px", backgroundColor: "#222", color: "#fff", borderRadius: 0 }}>Add to cart</Button>
+                  //className={classes.button}
+                  sx={{ 
+                    mt: 4, 
+                    p: "12px", 
+                    width: "160px", 
+                    backgroundColor: "#222", 
+                    color: "#fff", 
+                    borderRadius: 0 }}>Add to cart</StyledButton>
               </>)}
 
               {(productInCart===true && <Button
