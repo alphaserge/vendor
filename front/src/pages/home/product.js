@@ -30,6 +30,7 @@ import PropertyItem from '../../components/propertyitem';
 import Price from '../../components/price';
 import ItemName from '../../components/itemname';
 import Amount from '../../components/amount';
+import Selector from '../../components/selector';
 import Property from '../../components/property';
 import {APPEARANCE as ap} from '../../appearance';
 
@@ -76,6 +77,7 @@ export default function Product(props) {
     const [info, setInfo] = React.useState("");
 
     const [cartQuantity, setCartQuantity] = useState(1)
+    const [cartUnit, setCartUnit] = useState(1)
     const [cartIsRolls, setCartIsRolls] = useState(false)
     const [cartHelp, setCartHelp] = useState(false)
 
@@ -100,7 +102,11 @@ export default function Product(props) {
     const setQuantity = (index, quantity) => {
       setCartQuantity(quantity)
     }
-  
+
+    const setUnit = (u) => {
+      setCartUnit(u)
+    }
+    
     const setIsRolls = (index, isRolls) => {
       setCartIsRolls(isRolls)
     }
@@ -233,8 +239,9 @@ export default function Product(props) {
               {(productInCart!==true && 
               <> 
                 <Box sx={{ display: "flex", marginTop: "20px", width: "930px" }} >
-                  <Amount value={cartQuantity} label="Meters" labelWidth="3.2rem" setValue={(e)=>{setQuantity(0,e)}} />
-                  <Amount value={cartQuantity} label="or rolls" labelWidth="4.0rem" setValue={(e)=>{setQuantity(0,e)}} /> 
+                  <Amount value={cartQuantity} setValue={(e)=>{setQuantity(0,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
+                  <Selector list={["meters","rolls"]} setValue={setUnit} /> 
+                  {/* <Amount value={cartQuantity} label="or rolls" labelWidth="4.0rem" setValue={(e)=>{setQuantity(0,e)}} />  */}
                 </Box>
 
                 <Box sx={{ display: "flex", marginTop: "14px" }}>

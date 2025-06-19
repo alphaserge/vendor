@@ -77,7 +77,7 @@ const ImageMagnifier = ({
                 images.map((item, index) => { return (
                 <img
                     src={item.src}
-                    style={{width: "50px", height: "50px", marginBottom: "15px", borderRadius: "0px", cursor: "pointer"}}
+                    style={{width: "50px", height: "50px", marginBottom: "15px", borderRadius: "0px", cursor: "pointer", backgroundColor: "#ccc", padding: "1px"}}
                     //alt={alt}
                     onClick={(e) => thumbImageClick(e)}
                     />) } ) 

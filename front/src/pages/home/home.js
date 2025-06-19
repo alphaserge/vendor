@@ -364,9 +364,9 @@ export default function Home(props) {
           />
 
         <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" >
-          <Box display={{ xs: 'none', md: 'flex' }} sx={{ flexDirection: "column", minWidth: "200px" }}  >
+          <Box display={{ xs: 'none', md: 'flex' }} sx={{ flexDirection: "column", minWidth: "200px", marginTop: "4px" }}  >
             {/* <Box className="subtitle" >Shopping options</Box> */}
-            <strong role="heading" aria-level="2" class="subtitle underline">Shopping Options</strong>
+            {/* <strong role="heading" aria-level="2" class="subtitle underline">Shopping Options</strong> */}
             <CheckboxList
               list={designTypes.map((it) => ({ key: it.id, name: it.value }))}
               title="Design types"
