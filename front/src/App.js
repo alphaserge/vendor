@@ -7,6 +7,7 @@ import AddProduct from './pages/home/addproduct';
 import ListProduct from './pages/home/listproduct';
 import ClientOrders from './pages/home/clientorders';
 import ClientOrder from './pages/home/clientorder';
+import ShoppingCart from './pages/home/shoppingcart';
 import Menu from './pages/home/menu';
 import Login from './pages/auth/login';
 import Logout from './pages/auth/logout';
@@ -214,6 +215,7 @@ function App() {
           <Route path="/clientorders" element={<ClientOrders user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/clientorder" element={<ClientOrder user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/menu" element={<Menu lastAction={lastAction} setLastAction={setLastAction} />} />
+          <Route path="/shoppingcart" element={<ShoppingCart user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           {/* <Route path="/header" element={<PrimarySearchAppBar />} /> */}
         </Routes>
       </BrowserRouter>

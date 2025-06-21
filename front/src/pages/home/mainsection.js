@@ -22,7 +22,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ExpandDown from './../../components/symbol/expanddown';
 
-const itemStyle = { padding: 0, margin: 0, cursor: "pointer" }  
+const buttonStyle = { color: "#222", backgroundColor: "#fff", border: "2px solid #333", borderRadius: "50%", padding: "3px" }  
 
 export default function MainSection(props) {
 
@@ -160,7 +160,7 @@ useEffect(() => {
         <Tooltip title={props.favorites != undefined ? props.favorites.amount : "Your favorite list is empty"}>
           <IconButton onClick={(e)=>{navigate("/")}} sx={{ p: 0, ml: 1, mr: 1 }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
-            <HomeOutlinedIcon fontSize="large" sx={{color: "#fff", backgroundColor: "#222", borderRadius: "50%", padding: "3px"}} />
+            <HomeOutlinedIcon fontSize="large" sx={buttonStyle} />
           </IconButton>
         </Tooltip>
 
@@ -168,7 +168,7 @@ useEffect(() => {
         <Tooltip title={props.user != undefined ? props.user.firstName: "Sign In"}  >
           <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 0, mr: 1 }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
-            <PersonOutlineOutlinedIcon fontSize="large" sx={{color: "#fff", backgroundColor: "#222", borderRadius: "50%", padding: "3px"}} />
+            <PersonOutlineOutlinedIcon fontSize="large" sx={buttonStyle} />
           </IconButton>
         </Tooltip>
         <Menu
@@ -208,14 +208,14 @@ useEffect(() => {
         <Tooltip title={props.cart != undefined ? props.cart.length + " items" : "Your shopping cart is empty"}>
           <Box className="cart-label" onClick={(e)=>{ props.openShoppingCart(true) }} >{props.cart && props.cart.length}</Box>
           <IconButton onClick={(e)=>{ props.openShoppingCart(true) }} sx={{ p: 0, ml: "-16px", mr: 1 }}>
-            <ShoppingCartOutlinedIcon fontSize="large" sx={{color: "#fff", backgroundColor: "#222", borderRadius: "50%", padding: "3px"}} />
+            <ShoppingCartOutlinedIcon fontSize="large" sx={buttonStyle} />
           </IconButton>
         </Tooltip>
 
         <Tooltip title={props.favorites != undefined ? props.favorites.amount : "Your favorite list is empty"}>
           <IconButton onClick={props.openFavorites} sx={{ p: 0, ml: 0, mr: 1 }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
-            <FavoriteBorderOutlinedIcon fontSize="large" sx={{color: "#fff", backgroundColor: "#222", borderRadius: "50%", padding: "3px"}} />
+            <FavoriteBorderOutlinedIcon fontSize="large" sx={buttonStyle} />
           </IconButton>
         </Tooltip>
 

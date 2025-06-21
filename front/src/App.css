@@ -231,7 +231,7 @@ span.item-label  {
   color: #444;
   display: inline-block;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 400;
   padding-right: 10px;
   font-family: "Chiron Sung HK", "Open-Sans", Arial, "Inter", "sans-serif";
   /*text-transform: uppercase;
@@ -241,7 +241,7 @@ span.item-label  {
 span.item-value  {
   color: #222;
   display: inline-block;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
   font-family: "Chiron Sung HK", "Open-Sans", Arial, "Inter", "sans-serif";
 }
@@ -515,10 +515,11 @@ a.no-link {
 }
 
 .subtitle-2 {
-  font-size: 16px;
+  font-size: 18px;
   font-family: "Chiron Sung HK", "Open-Sans", Arial;
   font-weight: 300;
   color: #333;
+  flex-grow: 0;
 }
 
 .list-item {

@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { makeStyles, useStyles } from '@mui/material/styles';
+//import { useStyles } from '@mui/material/styles';
 //import {  withStyles } from '@mui/styles';
-import { withStyles } from '@mui/styles';
+import { makeStyles, withStyles } from '@mui/styles';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
@@ -14,10 +14,8 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import { Button, Typography } from "@mui/material";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-
-// import { Swiper, SwiperSlide } from 'swiper/react';
-// import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
-// import { Thumbs } from 'swiper/modules';
+import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/material"
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 import axios from 'axios'
 
@@ -25,7 +23,7 @@ import config from "../../config.json"
 
 import ImageMagnifier from '../../components/imagemagnifier';
 import MainSection from './mainsection';
-import ShoppingCart from '../../components/shoppingcart';
+import ShoppingCart from '../../components/shoppingcartmodal';
 
 import { addToCart, removeFromCart, updateQuantity, flushCart } from './../../store/cartSlice' 
 import PropertyQuantity from "../../components/propertyquantity";
@@ -39,13 +37,16 @@ import {APPEARANCE as ap} from '../../appearance';
 
 import { fined } from "../../functions/helper"
 
-// Import Swiper styles
-/*import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
-import 'swiper/css/thumbs';*/
-
+const useStyles = makeStyles((theme) => ({
+  noexpand: {
+    flexGrow: "0!important",
+    marginLeft: 0
+  },
+  expand: {
+    flexGrow: 0,
+    marginLeft: "4px"
+  },
+}));
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -79,6 +80,8 @@ const StyledButton = withStyles({
   root: {
     backgroundColor: '#222',
     color: '#fff',
+    fontSize: "18px",
+    textTransform: "none!important",
     '&:hover': {
       backgroundColor: '#fd8bb5',
       color: '#fff',
@@ -95,7 +98,7 @@ const getFromUrl = (name) => {
 
 export default function Product(props) {
 
-  //const classes = useStyles()
+  const classes = useStyles()
 
   const cartCount = useSelector((state) => state.cart.items.length)
   const shopCart = useSelector((state) => state.cart.items)
@@ -240,7 +243,7 @@ export default function Product(props) {
     <Box sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "column" }} className="center-content" >
      <Box sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "row" }}  >  {/* height: "calc(100vh - 330px)" */}
      <Grid container sx={{ marginTop: "20px" }}>
-      <Grid item xs={12} md={6} sx={{display: "flex"}} justifyContent={{ md: "end", xs: "space-around" }} >
+      <Grid item xs={12} md={6} sx={{display: "flex", minWidth: "400px"}} justifyContent={{ md: "end", xs: "space-around" }} >
             {( product.colors && product.colors.length>0 && 
               <ImageMagnifier 
                 src={config.api + "/" + product.colors[0].imagePath[0]}
@@ -254,7 +257,7 @@ export default function Product(props) {
                 alt="Sample Image"
             /> )}
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} sx={{ minWidth: "400px" }}>
             <Box sx={{paddingLeft: 10, display: "block", float: "left"}}>
               <div style={{paddingLeft: "20px"}} >
         <ItemName label="Item name" value={product.itemName} />
@@ -269,7 +272,6 @@ export default function Product(props) {
                 <Box sx={{ display: "flex", marginTop: "20px", width: "930px" }} >
                   <Amount value={cartQuantity} setValue={(e)=>{setQuantity(0,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
                   <Selector list={["meters","rolls"]} setValue={setUnit} /> 
-                  {/* <Amount value={cartQuantity} label="or rolls" labelWidth="4.0rem" setValue={(e)=>{setQuantity(0,e)}} />  */}
                 </Box>
 
                 <Box sx={{ display: "flex", marginTop: "14px" }}>
@@ -285,47 +287,60 @@ export default function Product(props) {
                     mt: 4, 
                     p: "12px", 
                     width: "160px", 
+                    fontSize: ap.FONTSIZE,
                     backgroundColor: "#222", 
                     color: "#fff", 
                     borderRadius: 0 }}>Add to cart</StyledButton>
               </>)}
 
-              {(productInCart===true && <Button
+              {(productInCart===true && 
+              <Box sx={{ width: "930px" }}> 
+                {(productInCart===true && <StyledButton
                   variant="contained"
-                  startIcon={<ShoppingCartOutlinedIcon/>}
-                  className="button"
+                  startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
+                  //className="button"
                   onClick={handleOpenCart}
-                  sx={{mt: 4, p: "8px", width: "160px" }}>In cart</Button> )}
+                  sx={{
+                    mt: 3, 
+                    p: "12px", 
+                    width: "160px", 
+                    fontSize: ap.FONTSIZE,// "18px",
+                    backgroundColor: "#222", 
+                    color: "#fff",  
+                    borderRadius: 0 }}>In cart</StyledButton> )}
+              </Box>)}
           </Box>
-        </Box>
-        </Grid>
-        </Grid>
-        </Box>
-        <Box sx={{ justifyItems: "end", display: "flex", alignItems: "center", flexDirection: "column", margin: "40px 20px 20px 120px" }}  >  {/* height: "calc(100vh - 330px)" */}
-        <Typography 
-          sx={{fontFamily:ap.FONTFAMILY,
-          fontSize:ap.SUBTITLE.FONTSIZE, 
-          fontWeight:ap.SUBTITLE.FONTWEIGHT, 
-          color:ap.SUBTITLE.COLOR,
-          padding: "0 0 10px 0"}} >More information:</Typography>
-        
-        <Box sx={{ justifyContent: "center", display: "flex", alignItems: "end", flexDirection: "row", margin: "10px 20px 20px 120px" }}  >  {/* height: "calc(100vh - 330px)" */}
-        <Grid container>
-          <Grid item xs={12} md={6} sx={{display: "flex", flexDirection: "column"}} >
+
+        <Box sx={{ justifyContent: "flex-start", display: "flex", alignItems: "flex-start", flexDirection: "row", margin: "25px 20px 20px 20px" }}  >  {/* height: "calc(100vh - 330px)" */}
+          <Accordion defaultExpanded={false} disableGutters sx={{ boxShadow: "none", backgroundColor: "transparent" }} >
+
+          <AccordionSummary 
+            classes={{ content: classes.noexpand, expanded: classes.noexpand }} 
+            expandIcon={<ExpandMoreIcon sx={{marginLeft: "0"}} />} 
+            sx={{ maxWidth: "744px", padding: "0 3px", flexGrow: 0, justifyContent: "flex-start" }} >
+          
+            <Typography sx={{ margin: 0, fontFamily: ap.FONTFAMILY, fontSize: ap.FONTSIZE, fontWeight: "600", flexGrow: 0, paddingRight: "4px" }} className="subtitle-2" >More information</Typography>
+          </AccordionSummary>
+
+          <AccordionDetails sx={{ maxWidth: "744px", margin: "0 auto", padding: "0 0px", overflowX: "hidden", overflowY: "auto"  }}>
         <PropertyItem label="Article No :" value={fined(product.artNo)} />
         <PropertyItem label="Ref No :" value={fined(product.refNo)} />
         <PropertyItem label="Design :" value={fined(product.design)} />
         <PropertyItem label="Composition :" value={fined(product.composition)} />
-        </Grid>
-        <Grid item xs={12} md={6} sx={{display: "flex", flexDirection: "column"}} >
         
         <PropertyItem label="Product type :" value={fined(product.productType)} />
         <PropertyItem label="Product style :" value={fined(product.productStyle)} />
         <PropertyItem label="Print style :" value={fined(product.printType)} />
+        </AccordionDetails>
+        </Accordion>
+        </Box>
+
+        </Box>
         </Grid>
         </Grid>
         </Box>
-        </Box>
+        
+        
         </Box>
     )}
     {/* ----- */}

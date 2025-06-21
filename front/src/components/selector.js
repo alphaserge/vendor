@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import Box from '@mui/material/Box';
+import 'material-symbols';
 
 import { APPEARANCE as ap } from "../appearance"
 
@@ -60,7 +61,7 @@ export default function Selector(props) {
               {/* <span class="material-symbols-outlined" style={{fontSize: "18px", textAlign: "center", transform: "rotate(0.5turn)"}} >stat_minus_1</span>
               <span class="material-symbols-outlined" style={{fontSize: "18px", textAlign: "center" }} >stat_minus_1</span> */}
               <div class="material-symbols-outlined" onMouseDown={e => e.preventDefault()} onClick={(e) => { buttonClick(1 )}} style={{ padding: "2px 0", margin: "0 0 1px 0", fontSize: "18px", textAlign: "center", cursor: "pointer", transform: "rotate(0.5turn)"}}>stat_minus_1</div>
-              <div class="material-symbols-outlined" onMouseDown={e => e.preventDefault()} onClick={(e) => { buttonClick(-1)}} style={{ padding: "2px 0", margin: "1px 0 0 0", fontSize: "18px", textAlign: "center",  cursor: "pointer"}}>stat_minus_1</div>
+              <div class="material-symbols-outlined" onMouseDown={e => e.preventDefault()} onClick={(e) => { buttonClick(-1)}} style={{ padding: "2px 0", margin: "1px 0 0 0", fontSize: "18px", textAlign: "center",  cursor: "pointer"}}><span class="material-symbols-outlined">stat_minus_1</span></div>
               {/* &#0708; &#8743; */}
             </Box>
         </Box>

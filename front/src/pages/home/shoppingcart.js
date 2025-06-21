@@ -1,28 +1,106 @@
-import React, { useState, useEffect, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
-import Box from '@mui/material/Box';
+import { useDispatch, useSelector } from 'react-redux'
+
+import { v4 as uuid } from 'uuid'
+import { makeStyles, withStyles } from '@mui/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
+import { Button, Typography } from "@mui/material";
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/material"
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import TextField from '@mui/material/TextField';
-import { Button } from "@mui/material";
-
-import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
-import Modal from '@mui/material/Modal';
 
-import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate, useLocation } from "react-router-dom";
-import { v4 as uuid } from 'uuid'
+import axios from 'axios'
 
-import PropertyItem from './propertyitem';
-import PropertyQuantity from './propertyquantity';
-import { computePrice } from '../functions/helper';
-import { postOrder } from '../api/orders'
-import config from "../config.json"
+import { computePrice } from '../../functions/helper';
+import config from "../../config.json"
+import { postOrder } from '../../api/orders'
 
-import { addToCart, removeFromCart, updateQuantity, flushCart } from '../store/cartSlice'
+import ImageMagnifier from '../../components/imagemagnifier';
+import MainSection from './mainsection';
+import ShoppingCart from '../../components/shoppingcartmodal';
 
-const ShoppingCartModal = React.forwardRef((props, ref) => {
+import { addToCart, removeFromCart, updateQuantity, flushCart } from './../../store/cartSlice' 
+import PropertyQuantity from "../../components/propertyquantity";
+import PropertyItem from '../../components/propertyitem';
+import Price from '../../components/price';
+import ItemName from '../../components/itemname';
+import Amount from '../../components/amount';
+import Selector from '../../components/selector';
+import Property from '../../components/property';
+import {APPEARANCE as ap} from '../../appearance';
+
+import { fined } from "../../functions/helper"
+
+const useStyles = makeStyles((theme) => ({
+  noexpand: {
+    flexGrow: "0!important",
+    marginLeft: 0
+  },
+  expand: {
+    flexGrow: 0,
+    marginLeft: "4px"
+  },
+}));
+
+// TODO remove, this demo shouldn't need to reset the theme.
+const defaultTheme = createTheme()
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+/*const useStyles = makeStyles({
+  flexGrow: {
+    flex: '1',
+  },
+  button: {
+    backgroundColor: '#222',
+    color: '#fff',
+    '&:hover': {
+      backgroundColor: '#fd8bb5',
+      color: '#fff',
+  },
+}})*/
+
+const StyledButton = withStyles({
+  root: {
+    backgroundColor: '#222',
+    color: '#fff',
+    fontSize: "18px",
+    textTransform: "none!important",
+    '&:hover': {
+      backgroundColor: '#fd8bb5',
+      color: '#fff',
+  },
+}})(Button);
+
+const getFromUrl = (name) => {
+  const search = window.location.search
+  const params = new URLSearchParams(search)
+  return params.get(name)
+}
+
+export default function Product(props) {
+
+  const classes = useStyles()
 
     const [showShoppingCart, setShowShoppingCart] = React.useState(false);
     const [clientAddress, setClientAddress] = useState("")
@@ -37,28 +115,6 @@ const ShoppingCartModal = React.forwardRef((props, ref) => {
   const navigate = useNavigate();
 
   const textStyle = { m: 0, mb: 2 }
-
-  const modalSx = {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: "800px",
-      boxShadow: 24,
-      padding: "20px 40px 40px 40px", 
-      outline: "none",
-      bgcolor: 'background.paper',
-    }
-
-  useImperativeHandle(ref, () => ({
-    displayWindow(show) {
-      displayWindow(show)
-    }
-  }))
-
-  const displayWindow = (show) => {
-    setShowShoppingCart(show);
-  }
 
   const changeQuantity = (index, quantity) => { 
     dispatch(updateQuantity({ index, quantity }));
@@ -78,6 +134,10 @@ const ShoppingCartModal = React.forwardRef((props, ref) => {
 
   const setHelp = (index, help) => {
     shopCart[index].help = help
+  }
+
+  const handleShowShoppingCart = () => {
+    navigate("/")
   }
 
 const makeOrder = async (event) => {
@@ -117,19 +177,36 @@ const makeOrder = async (event) => {
     }
   }
 
-return <>
+  return (
+    <ThemeProvider theme={defaultTheme}>
+      <CssBaseline />
 
-      {/* Shopping cart modal */}
-      <Modal
-        open={showShoppingCart}
-        onClose={function() { setShowShoppingCart(false); }}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        id="shoppingCartModal"
-        sx={{ width: "auto", outline: "none", overflow: "scroll", p: 0 }} >
+      <Container sx={{padding: 0 }} className="header-container" >
+      </Container>
 
-        <Box sx={{...modalSx, ...{borderRadius: "10px"}}} >
+        <MainSection
+          user={props.user}
+          title={props.title}
+          searchProducts={null}
+          textileTypes={[]}
+          designTypes={[]}
+          seasons={[]}
+          colors={[]}
+          printTypes={[]}
+          productTypes={[]}
+          cart={shopCart}
+          openShoppingCart={handleShowShoppingCart}
+          setSeason       = {(v)=>{ }}
+          setTextileType  = {(v)=>{ }}
+          setDesignType   = {(v)=>{ }}
+          setColor        = {(v)=>{ }}
+          setProductType    = {(v)=>{ }}
+          setPrintType    = {(v)=>{ }}
+          setOverworkType = {(v)=>{ }}
+          />
 
+    <Box sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "column" }} className="center-content" >
+        
     <Box sx={{display: "flex", height: "60px", pt: 1}}>
       <Typography sx={{fontSize: "18px", fontWeight: 600, color: "#333", p:0, pb: 2, flexGrow: 1}}>
         {/* Your shopping items:&nbsp;{items.length}&nbsp;items */}
@@ -266,10 +343,8 @@ return <>
         </Button>
         </Box>
 
-
-        </Box>
-      </Modal>
-</>
-})
-
-export default ShoppingCartModal;
+    </Box>
+ 
+    </ThemeProvider>
+  );
+}
