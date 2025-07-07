@@ -3,21 +3,21 @@ import { useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { makeStyles, useStyles } from '@mui/material/styles';
-//import {  withStyles } from '@mui/styles';
-import { withStyles } from '@mui/styles';
+//import { useStyles } from '@mui/material/styles';
+import { makeStyles, withStyles } from '@mui/styles';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
-import { Button, Typography } from "@mui/material";
+import { Button, FormControl, Typography } from "@mui/material";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-
-// import { Swiper, SwiperSlide } from 'swiper/react';
-// import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
-// import { Thumbs } from 'swiper/modules';
+import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/material"
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import styled from 'styled-components'
 
 import axios from 'axios'
 
@@ -25,7 +25,7 @@ import config from "../../config.json"
 
 import ImageMagnifier from '../../components/imagemagnifier';
 import MainSection from './mainsection';
-import ShoppingCart from '../../components/shoppingcart';
+import ShoppingCart from '../../components/shoppingcartmodal';
 
 import { addToCart, removeFromCart, updateQuantity, flushCart } from './../../store/cartSlice' 
 import PropertyQuantity from "../../components/propertyquantity";
@@ -39,13 +39,16 @@ import {APPEARANCE as ap} from '../../appearance';
 
 import { fined } from "../../functions/helper"
 
-// Import Swiper styles
-/*import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
-import 'swiper/css/thumbs';*/
-
+const useStyles = makeStyles((theme) => ({
+  noexpand: {
+    flexGrow: "0!important",
+    marginLeft: 0
+  },
+  expand: {
+    flexGrow: 0,
+    marginLeft: "4px"
+  },
+}));
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -75,16 +78,37 @@ const MenuProps = {
   },
 }})*/
 
-const StyledButton = withStyles({
+const StyledButton = styled(Button)`
+  border-radius: 0,
+  background-color: '#222',
+    color: '#fff',
+    font-size: "18px",
+    text-transform: "none!important",
+  &:hover {
+    background: #f33;
+  }
+`
+/*const StyledButton = withStyles({
   root: {
     backgroundColor: '#222',
     color: '#fff',
+    fontSize: "18px",
+    textTransform: "none!important",
     '&:hover': {
       backgroundColor: '#fd8bb5',
       color: '#fff',
-  },
-}})(Button);
+  }
+}})(Button);*/
 
+const StyledSelect = withStyles({
+  borderRadius: '0px',
+    root: {
+            borderRadius: '0px',
+            '& fieldset.MuiOutlinedInput-notchedOutline': {
+              borderColor: "#bbb",
+            },
+          }
+  })(Select);
 
 
 const getFromUrl = (name) => {
@@ -95,7 +119,7 @@ const getFromUrl = (name) => {
 
 export default function Product(props) {
 
-  //const classes = useStyles()
+  const classes = useStyles()
 
   const cartCount = useSelector((state) => state.cart.items.length)
   const shopCart = useSelector((state) => state.cart.items)
@@ -104,12 +128,16 @@ export default function Product(props) {
   const theme = useTheme();
 
   const [product, setProduct] = useState({colors: []})
+
   const [info, setInfo] = React.useState("");
 
   const [cartQuantity, setCartQuantity] = useState(1)
-  const [cartUnit, setCartUnit] = useState(1)
+  const [cartUnit, setCartUnit] = useState("meters")
+  const [cartColor, setCartColor] = useState({colorNames: "select color", colorVariantId: -1})
   const [cartIsRolls, setCartIsRolls] = useState(false)
   const [cartHelp, setCartHelp] = useState(false)
+  const [filteredImages, setFilteredImages] = useState(null)
+  const [colorVarId, setColorVarId] = useState(-1)
 
   const [domReady, setDomReady] = React.useState(false)
   
@@ -124,17 +152,13 @@ export default function Product(props) {
     const dispatch = useDispatch();
 
     const _addToCart = () => {
-      dispatch(addToCart({ product, cartQuantity, cartIsRolls }));
+      dispatch(addToCart({ product, cartColor, cartQuantity, cartUnit }));
     };
   
     const setQuantity = (index, quantity) => {
       setCartQuantity(quantity)
     }
 
-    const setUnit = (u) => {
-      setCartUnit(u)
-    }
-    
     const setIsRolls = (index, isRolls) => {
       setCartIsRolls(isRolls)
     }
@@ -144,22 +168,44 @@ export default function Product(props) {
     }
   
     const handleAddToCart = (event) => {
+      if (colorVarId ==- 1) 
+      {
+        return 
+      }
+
       _addToCart();
       setCartQuantity(1)
       setCartIsRolls(false)
     };
   
     const handleOpenCart = (event) => {
-      //!!!
+      navigate("/shoppingcart")
     }
+
+    const handleColorVarChange = (e, it) => {
+      //setCartColorVar({colorNames: e.target.value.colorNames, colorVariantId: e.target.value.colorVariantId})
+      setCartColor(e.target.value)
+      setColorVarId(e.target.value.colorVariantId)
+    }
+
+    var selectColors = product.colors
+      .filter((it,ix) => { return it.colorNames != "PRODUCT"})
+      //.map((it, ix) => ({ colorNames: it.colorNames, colorVariantId: it.colorVariantId}))
+      //console.log('selectColors')
+      //console.log(selectColors)
+      
+    //selectColors.push({ colorNames: "select color", colorVariantId: -2 })
+
+      //console.log('selectColors')
+      //console.log(selectColors)
 
     const loadProduct = async (e) => {
 
       axios.get(config.api + '/Products/Product?id=' + getFromUrl('id'))
       .then(function (result) {
           setProduct(result.data)
-          console.log('result.data:')
-          console.log(result.data)
+          //console.log('result.data:')
+          //console.log(result.data)
       })
       .catch (error => {
         console.log(error)
@@ -188,12 +234,25 @@ export default function Product(props) {
       loadProduct()
     }, []);
 
+
+      
+    /*useEffect(() => {
+    var filtered = product && product.colors.length ? product.colors.map((it, ix) => { return { 
+                  label: "Picture " + ix, 
+                  src: config.api + "/" + it.imagePath[0],
+                  colorVar: {
+                      colorNames: it.colorNames,
+                      colorVariantId: it.colorVariantId
+                  }}}) : []
+                  setFilteredImages(filtered)
+                }, [])*/
     const productInCart = shopCart ? shopCart.map((x) => { return x.product.id }).indexOf(product.id) >= 0 : false;
 
-    console.log(product)
+    //console.log(filtered)
+    //console.log(cartColor)
 
-//console.log('product.js shopCart:')
-//console.log(product.shopCart)
+console.log('colorVarId:')
+console.log(colorVarId)
 
 //new ImageZoom(document.getElementById("img-container"), options);
 
@@ -233,33 +292,49 @@ export default function Product(props) {
           />
 
     {/* <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" > */}
-
     {/* ----- */}
     {( product && domReady == true &&
 
-    <Box sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "column" }} className="center-content" >
-     <Box sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "row" }}  >  {/* height: "calc(100vh - 330px)" */}
+     <Box className="center-content" sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "row" }}  >  {/* height: "calc(100vh - 330px)" */}
      <Grid container sx={{ marginTop: "20px" }}>
-      <Grid item xs={12} md={6} sx={{display: "flex"}} justifyContent={{ md: "end", xs: "space-around" }} >
+      <Grid item xs={12} md={6} sx={{display: "flex", minWidth: "400px", paddingRight: "30px"}} justifyContent={{ md: "flex-end", xs: "space-around" }} >
             {( product.colors && product.colors.length>0 && 
               <ImageMagnifier 
-                src={config.api + "/" + product.colors[0].imagePath[0]}
+                //src={config.api + "/" + product.colors[0].imagePath[0]}
                 sx={{padding: "0 10px"}}
-                images={product.colors.map((it, ix) => { return {label: "Picture "+ix, src: config.api + "/" + it.imagePath[0]} })}
+                images={colorVarId == -1 ? product.colors.map((it, ix) => { return { 
+                  label: "Picture " + ix, 
+                  src: config.api + "/" + it.imagePath[0],
+                  colorVar: {
+                      colorNames: it.colorNames,
+                      colorVariantId: it.colorVariantId
+                  }}})
+                : product.colors.filter((i)=> { return i.colorVariantId == colorVarId}).map((it, ix) => { return { 
+                  label: "Picture " + ix, 
+                  src: config.api + "/" + it.imagePath[0],
+                  colorVar: {
+                      colorNames: it.colorNames,
+                      colorVariantId: it.colorVariantId
+                  }}})
+                }
+                colorVarId={colorVarId}
                 width={330}
                 height={330}
                 magnifierHeight={500}
                 magnifierWidth={600}
                 zoomLevel={6}
-                alt="Sample Image"
+                alt={product.itemName + " photo"}
             /> )}
             </Grid>
-            <Grid item xs={12} md={6}>
-            <Box sx={{paddingLeft: 10, display: "block", float: "left"}}>
-              <div style={{paddingLeft: "20px"}} >
+            <Grid item xs={12} md={6} sx={{ display: "flex", minWidth: "400px" }} justifyContent={{ md: "flex-start", xs: "space-around" }} >
+            <Box sx={{width: "400px", marginLeft: "70px"}}>
+            <Box sx={{ display: "flex", flexDirection: "column"}} >
+        <Box sx={{
+            pl: "20px",
+            pr: "20px" }}>
         <ItemName label="Item name" value={product.itemName} />
         <Price label="Price per meter :" price={product.price} />
-       </div>
+       </Box>
 
           <Box sx={{
             pl: "20px",
@@ -268,16 +343,40 @@ export default function Product(props) {
               <> 
                 <Box sx={{ display: "flex", marginTop: "20px", width: "930px" }} >
                   <Amount value={cartQuantity} setValue={(e)=>{setQuantity(0,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
-                  <Selector list={["meters","rolls"]} setValue={setUnit} /> 
-                  {/* <Amount value={cartQuantity} label="or rolls" labelWidth="4.0rem" setValue={(e)=>{setQuantity(0,e)}} />  */}
+                  <Selector value={cartUnit} list={["meters","rolls"]} setValue={setCartUnit} /> 
                 </Box>
 
-                <Box sx={{ display: "flex", marginTop: "14px" }}>
+                <Box sx={{ display: "flex", marginTop: "18px" }}>
                   <Property fontSize={ap.FONTSIZE} color={ap.COLOR} value={product.rollLength + " meters in roll"} />
                 </Box>
 
-                <StyledButton
-                  variant="contained"
+                <Box sx={{ display: "flex", marginTop: "18px" }}>
+                
+                <FormControl>
+                {/*<InputLabel id="demo-simple-select-label">color</InputLabel>*/}
+                <StyledSelect
+                  //labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  //value={cartColorVar.colorNames}
+                  value={cartColor}
+                  //label="color"
+                  sx={{width: "250px", borderRadius: "0px"}}
+                  displayEmpty
+        renderValue={(value) => {
+          if (!value) {
+            return <Typography color="gray">your label here</Typography>;
+          }
+          return <>{value.colorNames}</>;
+        }}
+                  onChange={handleColorVarChange} >
+                  { selectColors.map((it, ix) => (
+                      <MenuItem key={"sh_"+ix}  value={it}>{it.colorNames}</MenuItem> )) }
+                </StyledSelect>
+                </FormControl>
+              </Box>
+
+                <Button
+                  //variant="contained"
                   startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
                   onClick={handleAddToCart}
                   //className={classes.button}
@@ -285,47 +384,59 @@ export default function Product(props) {
                     mt: 4, 
                     p: "12px", 
                     width: "160px", 
-                    backgroundColor: "#222", 
+                    fontSize: ap.FONTSIZE,
+                    textTransform: "none",
+                    backgroundColor: colorVarId !=- 1 ? "#222":"#ccc", 
                     color: "#fff", 
-                    borderRadius: 0 }}>Add to cart</StyledButton>
+                    borderRadius: 0 }}>Add to cart</Button>
               </>)}
 
-              {(productInCart===true && <Button
+              {(productInCart===true && 
+              <Box sx={{ width: "930px" }}> 
+                {(productInCart===true && <Button
                   variant="contained"
-                  startIcon={<ShoppingCartOutlinedIcon/>}
-                  className="button"
+                  startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
+                  //className="button"
                   onClick={handleOpenCart}
-                  sx={{mt: 4, p: "8px", width: "160px" }}>In cart</Button> )}
+                  sx={{
+                    mt: 3, 
+                    p: "12px", 
+                    width: "160px", 
+                    fontSize: ap.FONTSIZE,// "18px",
+                    textTransform: "none",
+                    backgroundColor: "#222", 
+                    color: "#fff",  
+                    borderRadius: 0 }}>In cart</Button> )}
+              </Box>)}
           </Box>
-        </Box>
-        </Grid>
-        </Grid>
-        </Box>
-        <Box sx={{ justifyItems: "end", display: "flex", alignItems: "center", flexDirection: "column", margin: "40px 20px 20px 120px" }}  >  {/* height: "calc(100vh - 330px)" */}
-        <Typography 
-          sx={{fontFamily:ap.FONTFAMILY,
-          fontSize:ap.SUBTITLE.FONTSIZE, 
-          fontWeight:ap.SUBTITLE.FONTWEIGHT, 
-          color:ap.SUBTITLE.COLOR,
-          padding: "0 0 10px 0"}} >More information:</Typography>
-        
-        <Box sx={{ justifyContent: "center", display: "flex", alignItems: "end", flexDirection: "row", margin: "10px 20px 20px 120px" }}  >  {/* height: "calc(100vh - 330px)" */}
-        <Grid container>
-          <Grid item xs={12} md={6} sx={{display: "flex", flexDirection: "column"}} >
+
+        <Box sx={{ justifyContent: "flex-start", display: "flex", alignItems: "flex-start", flexDirection: "row", margin: "25px 20px 20px 20px" }}  >  {/* height: "calc(100vh - 330px)" */}
+          <Accordion defaultExpanded={false} disableGutters sx={{ boxShadow: "none", backgroundColor: "transparent" }} >
+
+          <AccordionSummary 
+            classes={{ content: classes.noexpand, expanded: classes.noexpand }} 
+            expandIcon={<ExpandMoreIcon sx={{marginLeft: "0"}} />} 
+            sx={{ maxWidth: "744px", padding: "0 3px", flexGrow: 0, justifyContent: "flex-start" }} >
+          
+            <Typography sx={{ margin: 0, fontFamily: ap.FONTFAMILY, fontSize: ap.FONTSIZE, fontWeight: "600", flexGrow: 0, paddingRight: "4px" }} className="subtitle-2" >More information</Typography>
+          </AccordionSummary>
+
+          <AccordionDetails sx={{ maxWidth: "744px", margin: "0 auto", padding: "0 0px", overflowX: "hidden", overflowY: "auto"  }}>
         <PropertyItem label="Article No :" value={fined(product.artNo)} />
         <PropertyItem label="Ref No :" value={fined(product.refNo)} />
         <PropertyItem label="Design :" value={fined(product.design)} />
         <PropertyItem label="Composition :" value={fined(product.composition)} />
-        </Grid>
-        <Grid item xs={12} md={6} sx={{display: "flex", flexDirection: "column"}} >
         
         <PropertyItem label="Product type :" value={fined(product.productType)} />
         <PropertyItem label="Product style :" value={fined(product.productStyle)} />
         <PropertyItem label="Print style :" value={fined(product.printType)} />
-        </Grid>
-        </Grid>
+        </AccordionDetails>
+        </Accordion>
         </Box>
         </Box>
+        </Box>
+        </Grid>
+        </Grid>
         </Box>
     )}
     {/* ----- */}

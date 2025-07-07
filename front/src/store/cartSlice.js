@@ -15,7 +15,7 @@ export const cartSlice = createSlice({
       // which detects changes to a "draft state" and produces a brand new
       // immutable state based off those changes.
       // Also, no return statement is required from these functions.
-      state.items.push({quantity: item.payload.cartQuantity, isRolls: item.payload.cartIsRolls, product: item.payload.quickViewProduct})
+      state.items.push({quantity: item.payload.cartQuantity, unit: item.payload.cartUnit, product: item.payload.product, colorVar: item.payload.cartColor})
       localStorage.setItem($LOCALSTORAGE_CART_KEY, JSON.stringify(state.items));
 
     },
@@ -27,8 +27,21 @@ export const cartSlice = createSlice({
     },
 
     updateQuantity: (state, item) => {
-      if (item.payload.index > -1 && item.payload.index <= state.items.length) {
+      /*return state.map(todo =>
+                (todo.product.id === item.payload.product.id)
+                    ? { ...todo, quantity: item.payload.quantity }
+                    : todo
+            )*/
+      
+      if (item.payload.index > -1 && item.payload.index < state.items.length) {
           state.items[item.payload.index].quantity = parseFloat(item.payload.quantity);
+          localStorage.setItem($LOCALSTORAGE_CART_KEY, JSON.stringify(state.items));
+      }
+    },
+
+    updateUnit: (state, item) => {
+      if (item.payload.index > -1 && item.payload.index <= state.items.length) {
+          state.items[item.payload.index].unit = parseFloat(item.payload.unit);
           localStorage.setItem($LOCALSTORAGE_CART_KEY, JSON.stringify(state.items));
       }
     },
@@ -46,7 +59,7 @@ const store = configureStore({
 })
 
 // Action creators are generated for each case reducer function
-export const { addToCart, removeFromCart, updateQuantity, flushCart } = cartSlice.actions
+export const { addToCart, removeFromCart, updateQuantity, updateUnit, flushCart } = cartSlice.actions
 
 const { actions, reducer } = cartSlice;
 

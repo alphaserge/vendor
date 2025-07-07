@@ -8,5 +8,6 @@ export default function Property(props) {
     color: (props.color ? props : ap.COLOR), 
     fontFamily: ap.FONTFAMILY, 
     fontSize: (props.fontSize ? props : ap.FONTSIZE), 
-    fontWeight: ap.FONTWEIGHT }}>{props.value}</Box>
+    fontWeight: ap.FONTWEIGHT,
+    padding: "4px 10px" }}>{props.value}</Box>
 }

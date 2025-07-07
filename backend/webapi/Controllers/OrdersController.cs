@@ -142,12 +142,18 @@ namespace chiffon_back.Controllers
 
             foreach (var o in orders) {
                 o.VendorName = ctx.Vendors.FirstOrDefault(x => x.Id == o.VendorId)?.VendorName;
-                var items = from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
+                var query = from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
                             join p in ctx.Products on oi.ProductId equals p.Id into jointable
                             from j in jointable.DefaultIfEmpty()
                             join v in ctx.Vendors on j.VendorId equals v.Id into joinvendors
                             from jv in joinvendors.DefaultIfEmpty()
                             select new { oi, j, jv };
+
+                var items = query.ToList();
+
+                if (items.Count == 0) {
+                    continue;
+                }
                 
                 List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
                 foreach (var item in items) {
@@ -298,7 +304,7 @@ namespace chiffon_back.Controllers
                 string itemsBody = $"<table style='background-color: #def; padding: 20px;'>" + 
                     $"<thead><th style={label}><b>Photo</b></th><th style={label}><b>Fabric name</b></th>" + 
                     $"<th style={label}><b>Ref No.</b></th><th style={label}><b>Art No.</b></th>" + 
-                    $"<th style={label}><b>Design</b></th><th style={label}><b>Quantity</b></th>" + 
+                    $"<th style={label}><b>Design/Color</b></th><th style={label}><b>Quantity</b></th>" + 
                     $"<th style={label}><b>Price (per 1 m.)</b></th></thead>";
 
                 List<LinkedResource> linkedRes = new List<LinkedResource>();
@@ -317,15 +323,13 @@ namespace chiffon_back.Controllers
                     if (product != null)
                     {
                         string img = String.Empty;
-                        foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == product.Id).ToList())
-                        {
-                            var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                        Context.ColorVariant cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.ColorVariantId);
+                        
+                            var imageFiles = DirectoryHelper.GetImageFiles(cv?.Uuid!);
                             if (imageFiles.Count > 0)
                             {
                                 img = imageFiles[0];
-                                break;
                             }
-                        }
 
                         if (String.IsNullOrEmpty(img))
                         {
@@ -351,7 +355,7 @@ namespace chiffon_back.Controllers
                             + product.ItemName + $"</td><td style={cell}>" 
                             + product.RefNo + $"</td style={cell}><td>" 
                             + product.ArtNo + $"</td><td style={cell}>" 
-                            + product.Design + $"</td><td style={rightAlign}>" 
+                            + product.Design + "<br/>" + item.ColorNames + $"</td><td style={rightAlign}>" 
                             + newItem.Quantity + $" m </td><td style={rightAlign}>" 
                             + String.Format("{0:0.0#}", item.Price) + " $</td></tr>";
                         linkedRes.Add(LinkedImg);
@@ -392,17 +396,19 @@ namespace chiffon_back.Controllers
 
                     SmtpClient client = new SmtpClient("smtp.mail.ru", Convert.ToInt32(587))
                     {
-                        Credentials = new NetworkCredential("elizarov.sa@mail.ru", "KZswYNWrd9eY1xVfvkre"),
+                        Credentials = new NetworkCredential("elizarov.sa@mail.ru", "5nwKmZ2SpintVmFRQVZV"), //"KZswYNWrd9eY1xVfvkre"),
                         EnableSsl = true,
                         DeliveryMethod = SmtpDeliveryMethod.Network,
                         Timeout = 5000
                     };
                     
+
                     mess.From = new MailAddress("elizarov.sa@mail.ru");
                     mess.To.Add(new MailAddress(newOrder.ClientEmail));
                     mess.To.Add(new MailAddress(ordersManager));
                     mess.Subject = "A new order has been created in the company Angelika";
                     mess.SubjectEncoding = Encoding.UTF8;
+                    
                     //mess.Body = $"<h2>Hello, {mdUser.FirstName}!</h2><p>You received this letter because this address was used when creating an account on the Anzhelika company website</p><p>To complete your account creation, click <a href='{frontendUrl}/confirm?token={hash}'>this link</a></p>";
                     // !! to do - add link to order !!
                     mess.Body = body;

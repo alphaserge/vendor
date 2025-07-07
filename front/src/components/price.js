@@ -5,7 +5,7 @@ import {APPEARANCE as ap} from "../appearance"
 import {toFixed2} from "../functions/helper"
 
 export default function Price(props) {
-  return <Box sx={{ 
+  return <Box sx={{ ml: "2px",
     color: (props.color ? props : ap.PRICE.COLOR), 
     fontFamily: ap.PRICE.FONTFAMILY, 
     fontSize: ap.PRICE.FONTSIZE, 

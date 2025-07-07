@@ -18,9 +18,11 @@ import MenuItem from '@mui/material/MenuItem';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import HomeIcon from '@mui/icons-material/Home';
+import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import ExpandDown from './../../components/symbol/expanddown';
 
-const itemStyle = { padding: 0, margin: 0, cursor: "pointer" }  
+const buttonStyle = { color: "#222", backgroundColor: "#fff", border: "2px solid #333", borderRadius: "50%", padding: "3px" }  
 
 export default function MainSection(props) {
 
@@ -154,10 +156,19 @@ useEffect(() => {
       <Grid container spacing={2} sx={{ alignContent: "center"  }} >
       <Grid item xs={12} md={4} key={"mainsect-left"} justifyItems={{ xs: "center", md: "right" }} sx={{ alignContent: "center" }} >
         <Box sx={{display: "flex", flexDirection: "row" }}>
-        <Tooltip title={props.user != undefined ? props.user.firstName: "Sign In"}  >
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1, mr: 1 }}>
+
+        <Tooltip title={props.favorites != undefined ? props.favorites.amount : "Your favorite list is empty"}>
+          <IconButton onClick={(e)=>{navigate("/")}} sx={{ p: 0, ml: 1, mr: 1 }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
-            <PersonOutlineOutlinedIcon fontSize="large" />
+            <HomeOutlinedIcon fontSize="large" sx={buttonStyle} />
+          </IconButton>
+        </Tooltip>
+
+
+        <Tooltip title={props.user != undefined ? props.user.firstName: "Sign In"}  >
+          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 0, mr: 1 }}>
+            {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
+            <PersonOutlineOutlinedIcon fontSize="large" sx={buttonStyle} />
           </IconButton>
         </Tooltip>
         <Menu
@@ -196,15 +207,15 @@ useEffect(() => {
         
         <Tooltip title={props.cart != undefined ? props.cart.length + " items" : "Your shopping cart is empty"}>
           <Box className="cart-label" onClick={(e)=>{ props.openShoppingCart(true) }} >{props.cart && props.cart.length}</Box>
-          <IconButton onClick={(e)=>{ props.openShoppingCart(true) }} sx={{ p: 0, ml: "-10px", mr: 1 }}>
-            <ShoppingCartOutlinedIcon fontSize="large" />
+          <IconButton onClick={(e)=>{ navigate("/shoppingcart") /*props.openShoppingCart(true)*/ }} sx={{ p: 0, ml: "-16px", mr: 1 }}>
+            <ShoppingCartOutlinedIcon fontSize="large" sx={buttonStyle} />
           </IconButton>
         </Tooltip>
 
         <Tooltip title={props.favorites != undefined ? props.favorites.amount : "Your favorite list is empty"}>
-          <IconButton onClick={props.openFavorites} sx={{ p: 0, ml: 1, mr: 1 }}>
+          <IconButton onClick={props.openFavorites} sx={{ p: 0, ml: 0, mr: 1 }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
-            <FavoriteBorderOutlinedIcon fontSize="large" />
+            <FavoriteBorderOutlinedIcon fontSize="large" sx={buttonStyle} />
           </IconButton>
         </Tooltip>
 
@@ -218,7 +229,7 @@ useEffect(() => {
             image="/afm.png"
             alt={""}
           /> */}
-          <picture class="header-logo-picture">
+          <picture class="header-logo-picture" onClick={(e)=>{ navigate("/") }}>
           <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" 
             style={{padding: "10px 0", height: "180px"}}>
           </img>

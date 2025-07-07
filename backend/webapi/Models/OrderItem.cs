@@ -19,5 +19,10 @@
         public string? Composition { get; set; }
         public string? VendorName { get; set; }
         public string? imagePath { get; set; }
+        public int? ColorVariantId { get; set; }
+        public string? ColorNames { get; set; }
+        //public string? ImagePath { get; set; }
+
+
     }
 }

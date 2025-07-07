@@ -20,7 +20,7 @@ import Footer from './footer';
 import MainSection from './mainsection';
 import ItemProduct from './itemproduct';
 import ItemProductRow from './itemproductrow';
-import ShoppingCart from '../../components/shoppingcart';
+import ShoppingCart from '../../components/shoppingcartmodal';
 import CheckboxList from '../../components/checkboxlist';
 import QuickView from '../../components/quickview';
 import Info from '../../components/info';

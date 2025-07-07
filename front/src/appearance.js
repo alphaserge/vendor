@@ -15,9 +15,10 @@ export const APPEARANCE = {
         COLOR: "#fff",
     },
 
-    TITLE: {
-        COLOR: "#222",
-        FONTSIZE: "32px",
+    PAGEHEADER: {
+        COLOR: "#444",
+        FONTSIZE: "20px",
+        FONTWEIGHT: "500"
     },
 
     SUBTITLE: {

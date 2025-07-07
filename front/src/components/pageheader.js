@@ -5,14 +5,13 @@ import Box from '@mui/material/Box';
 
 import {APPEARANCE as ap} from '../appearance';
 
-export default function ItemName(props) {
+export default function PageHeader(props) {
   return <Box title={props.value} sx={{ 
-    color: "#222", 
     fontFamily: ap.FONTFAMILY,
-    fontSize: "24px", 
-    fontWeight: "600",
-    //letterSpacing: "1px",
-    padding: "10px 10px 20px 0px" }}>{props.value}
+    color: ap.PAGEHEADER.COLOR, 
+    fontSize: ap.PAGEHEADER.FONTSIZE, 
+    fontWeight: ap.PAGEHEADER.FONTWEIGHT,
+    padding: "30px 0" }}>{props.value}
     </Box>
          
 }

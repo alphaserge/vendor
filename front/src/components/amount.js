@@ -7,6 +7,9 @@ import { APPEARANCE as ap } from "../appearance"
 export default function Amount(props) {
 
   const [value, setValue] =  useState(props.value)
+  const inputPadding = props.size && props.size=="small" ? "4px 6px" : "14px 12px";
+  const arrowFontSize = props.size && props.size=="small" ? "14px" : "18px";
+  const margin1 = props.size && props.size=="small" ? "3px 0 1px 0" : "0 0 1px 0"; 
 
   function inputChange(e) {
     //console.log(v);
@@ -51,8 +54,8 @@ export default function Amount(props) {
                 border: "1px solid #bbb",
                 boxShadow: "0 2px 4px rgba(0,0,0, 0.05)" ,
                 borderRadius: "0px",
-                margin: "0 8px",
-                padding: "14px 12px",
+                margin: "0 8px 0 2px",
+                padding: (props.size && props.size=="small" ? "4px 6px" : "14px 12px"),
                 outline: 0,
                 minWidth: 0,
                 width: "80px",
@@ -62,8 +65,27 @@ export default function Amount(props) {
             <Box sx={{display: "flex", flexDirection: "column", width: "32px", height: "46px", fontSize: "18px"}}> 
               {/* <span class="material-symbols-outlined" style={{fontSize: "18px", textAlign: "center", transform: "rotate(0.5turn)"}} >stat_minus_1</span>
               <span class="material-symbols-outlined" style={{fontSize: "18px", textAlign: "center" }} >stat_minus_1</span> */}
-              <div class="material-symbols-outlined" onMouseDown={e => e.preventDefault()} onClick={(e) => { buttonClick(1 )}} style={{ padding: "2px 0", margin: "0 0 1px 0", fontSize: "18px", textAlign: "center", cursor: "pointer", transform: "rotate(0.5turn)"}}>stat_minus_1</div>
-              <div class="material-symbols-outlined" onMouseDown={e => e.preventDefault()} onClick={(e) => { buttonClick(-1)}} style={{ padding: "2px 0", margin: "1px 0 0 0", fontSize: "18px", textAlign: "center",  cursor: "pointer"}}>stat_minus_1</div>
+              <div 
+                class="material-symbols-outlined" 
+                onMouseDown={e => e.preventDefault()} 
+                onClick={(e) => { buttonClick(1 )}} 
+                style={{ 
+                  padding: "2px 0", 
+                  margin: margin1, 
+                  fontSize: arrowFontSize, 
+                  textAlign: "center", 
+                  cursor: "pointer", 
+                  transform: "rotate(0.5turn)"}}>stat_minus_1</div>
+              <div 
+                class="material-symbols-outlined" 
+                onMouseDown={e => e.preventDefault()} 
+                onClick={(e) => { buttonClick(-1)}} 
+                style={{ 
+                  padding: "2px 0", 
+                  margin: "1px 0 0 0", 
+                  fontSize: arrowFontSize, 
+                  textAlign: "center", 
+                  cursor: "pointer"}}>stat_minus_1</div>
               {/* &#0708; &#8743; */}
             </Box>
         </Box>

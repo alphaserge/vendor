@@ -28,6 +28,7 @@ li > .color_select_item {
 
 .header-logo-picture {
   display: block;
+  cursor: pointer;
 }
 
 .center-content {
@@ -187,6 +188,7 @@ div.quantity input[type=text]  {
 .cart-label {
   font-size: 11px;
   display: inline-block;
+  position: relative;
   color: #fff;
   background-color: #F78997;
   border-radius: 8px;
@@ -196,7 +198,7 @@ div.quantity input[type=text]  {
   z-index: 100;
   padding-left: 5px;
   top: -12px;
-  left: 13px;
+  left: 0;
   cursor: pointer;
 }
 .cart-button {
@@ -228,8 +230,8 @@ table.shopping-cart  td img {
 span.item-label  {
   color: #444;
   display: inline-block;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 400;
   padding-right: 10px;
   font-family: "Chiron Sung HK", "Open-Sans", Arial, "Inter", "sans-serif";
   /*text-transform: uppercase;
@@ -513,10 +515,11 @@ a.no-link {
 }
 
 .subtitle-2 {
-  font-size: 16px;
+  font-size: 18px;
   font-family: "Chiron Sung HK", "Open-Sans", Arial;
   font-weight: 300;
   color: #333;
+  flex-grow: 0;
 }
 
 .list-item {

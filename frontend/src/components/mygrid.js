@@ -20,16 +20,16 @@ export default function MyGrid(props) {
   return (
   <FormControl error={ false } required sx={{ ...props.itemStyle,  ...{width: "100%",  display: "flex" } }} > 
 
-  <Card sx={{ maxWidth: 740, mt: 2, boxShadow: "none", backgroundColor: "#eee", borderRadius: "8px" }}>
+  <Card sx={{ maxWidth: 740, mt: 2, boxShadow: "none", backgroundColor: "#e8e8e8", borderRadius: "8px" }}>
   <CardContent sx={{ pb: 0 }}>
 
-    <Box sx={{ display: "inline", padding: "3px 5px", flexDirection: "row", backgroundColor: "none", color: "#4f4fc2", fontSize: "normal" }}>
+    <Box sx={{ display: "inline", padding: "3px 5px", flexDirection: "row", backgroundColor: "#aaa", borderRadius: "6px", color: "#fff", fontSize: "13px", fontWeight: "400" }}>
       {/* <Typography gutterBottom variant="h7" component="div" mr={10} className="order-header"> */}
-      Order No. {props.data.number} from {formattedDate(props.data.created)}
+      {props.data.number} / {formattedDate(props.data.created)}
       &nbsp;&nbsp;&nbsp;&nbsp;
       {/* </Typography>
       <Typography gutterBottom variant="h7" component="div" className="order-header"> */}
-      Client name: {props.data.client}  {props.data.phone}
+      {props.data.client} {props.data.phone}
       {/* </Typography> */}
     </Box>
 
@@ -39,7 +39,7 @@ export default function MyGrid(props) {
           xs={12} 
           md={12} 
           key={"itemprod-"+index} 
-          sx={{ padding: "8px 6px", backgroundColor: (index %2 ? "transparent" : "#f8f8f8"), alignItems: "center" }} >
+          sx={{ padding: "8px 6px", backgroundColor: (index %2 ? "transparent" : "transparent"), alignItems: "center" }} >
           <MyGridRow 
             show={props.show}
             edit={props.edit}

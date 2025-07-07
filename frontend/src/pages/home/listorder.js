@@ -48,7 +48,7 @@ export default function ListOrder(props) {
                 vendor  : d.vendorName,
                 client  : d.clientName,
                 phone   : d.clientPhone,
-                items   : d.items.map((it) => { return {
+                items   : ( !!d.items ? d.items.map((it) => { return {
                   id        : it.id,
                   imagePath : it.imagePath,
                   product   : it.itemName,
@@ -56,10 +56,12 @@ export default function ListOrder(props) {
                   price     : it.price,
                   owner    : it.vendorName,
                   quantity  : it.quantity,
-                  quantity2 : it.vendorQuantity ? it.vendorQuantity : "",
-              }})
+                  quantity2 : it.vendorQuantity ? it.vendorQuantity : ""
+                  }}) : [])
               }
           });
+
+          result = result.filter((i)=> { return i.items.length > 0})
           
           setOrders(result)
           setFilter(false)

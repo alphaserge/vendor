@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
+import { propsToClassKey } from '@mui/styles';
 
 const fixUrl = (s) => {
     return s.replace(/\\/g, '/')
 }
 
 const ImageMagnifier = ({
-    src,
+    //src,
     images,
     className,
+    colorVarId,
     width,
     height,
     alt,
@@ -21,9 +23,11 @@ const ImageMagnifier = ({
     const [[bgPosX, bgPosY], setBgPos] = useState([0, 0]);
     const [magnifierTop, setMagnifierTop] = useState(0);
     const [magnifierLeft, setMagnifierLeft] = useState(0);
-    const [imgSrc, setImgSrc] = useState(fixUrl(src));
+    const [imgSrc, setImgSrc] = useState(fixUrl(images[0].src));
+    const [imags, setImags] = useState(images)
+    //const [colVarId, setColVarId] = useState(colorVarId)
 
-    const thumbImageClick = (e) => {
+    const thumbImageClick = (e, item) => {
         const el = e.currentTarget;
         setImgSrc(fixUrl(el.src))
     }
@@ -67,22 +71,33 @@ const ImageMagnifier = ({
         setBgPos([bg_x, bg_y]);
   };
 
-    // useEffect(() => {
-    //   setImgSrc(src)
-    // }, [src]);
+    var fi = imags.map((item, index) => { return fixUrl(item.src) })
+    if (colorVarId != -1 ) {
+        fi = imags.filter((i)=> {return i.colorVar.colorVariantId==colorVarId}).map((item, index) => { return fixUrl(item.src) })
+    }
 
-    return <Box sx={{ width: width+70, height: height, display: "block" }}>
-        <Box sx={{display: "flex", flexDirection: "column", float: "left" }}>
+    if (fi.length > 0 && !fi.includes(imgSrc)) {
+        setImgSrc(fi[0])
+    }
+     /*useEffect(() => {
+       const f = images;// images.filter((i)=>{return i.colorVariantId == colVarId})
+       setImags(f)
+       setImgSrc(f.length ? f[0].src : "-1-")
+     }, [colVarId]);*/
+
+    return <Box sx={{ width: width, height: height+80, display: "flex", flexDirection: "row" }}>
+        {/*<Box sx={{display: "flex", flexDirection: "column", float: "left" }}>
             { 
                 images.map((item, index) => { return (
                 <img
                     src={item.src}
                     style={{width: "50px", height: "50px", marginBottom: "15px", borderRadius: "0px", cursor: "pointer", backgroundColor: "#ccc", padding: "1px"}}
                     //alt={alt}
-                    onClick={(e) => thumbImageClick(e)}
+                    onClick={(e) => thumbImageClick(e,item)}
                     />) } ) 
             }
-        </Box>
+        </Box>*/}
+        <Box sx={{display: "flex", flexDirection: "column", float: "left" }}>
         <img
             src={imgSrc}
             className={className}
@@ -92,8 +107,19 @@ const ImageMagnifier = ({
             alt={alt}
             onMouseEnter={(e) => mouseEnter(e)}
             onMouseLeave={(e) => mouseLeave(e)}
-            onMouseMove={(e) => mouseMove(e)}
-        />
+            onMouseMove={(e) => mouseMove(e)} />
+        <Box sx={{display: "flex", flexDirection: "row", marginTop: "10px", marginLeft: "15px" }}>
+            { 
+                fi.map((item, index) => { return (
+                <img
+                    src={item}
+                    style={{width: "50px", height: "50px", marginRight: "9px", borderRadius: "0px", cursor: "pointer", backgroundColor: "#ccc", padding: "1px"}}
+                    //alt={alt}
+                    onClick={(e) => thumbImageClick(e,item)}
+                    />) } ) 
+            }
+        </Box>
+        </Box>
         <div
             style={{
                 display: showMagnifier ? '' : 'none',
