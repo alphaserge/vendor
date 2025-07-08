@@ -20,10 +20,10 @@ export default function MyGrid(props) {
   return (
   <FormControl error={ false } required sx={{ ...props.itemStyle,  ...{width: "100%",  display: "flex" } }} > 
 
-  <Card sx={{ maxWidth: 740, mt: 2, boxShadow: "none", backgroundColor: "#e8e8e8", borderRadius: "8px" }}>
+  <Card sx={{ maxWidth: 740, mt: 4, boxShadow: "none", borderTop: "1px solid #bbb", borderRadius: 0 }}>
   <CardContent sx={{ pb: 0 }}>
 
-    <Box sx={{ display: "inline", padding: "3px 5px", flexDirection: "row", backgroundColor: "#aaa", borderRadius: "6px", color: "#fff", fontSize: "13px", fontWeight: "400" }}>
+    <Box sx={{ display: "flex", color: "#000", fontSize: "13px", fontWeight: "400", pt: 1, pb: 2 }}>
       {/* <Typography gutterBottom variant="h7" component="div" mr={10} className="order-header"> */}
       {props.data.number} / {formattedDate(props.data.created)}
       &nbsp;&nbsp;&nbsp;&nbsp;
