@@ -49,8 +49,40 @@ export default function ListOrder(props) {
     })
   };
 
+  const setAccept = async (itemId) => {
+
+  await axios.post(config.api + '/Orders/Accept', 
+    {
+      itemId: itemId,
+    })
+    .then(function (response) {
+      console.log(response);
+      return true;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return false;
+    })
+  };
+
+    const handleAccept = (itemId) => {
+      let d = itemId;
+      setAccept(itemId)
+      let ords = [...orders]
+      for (let j=0; j< ords.length; j++) {
+          for (let i=0; i< ords[j].items.length; i++) {
+            if (ords[j].items[i].id == itemId) {
+              ords[j].items[i].confirmByVendor = Date.now()
+              break
+            }
+          }
+        }
+        setOrders(ords)
+    }
+
 
     const handleSave = (event) => {
+      
       for (let j=0; j< orders.length; j++) {
           for (let i=0; i< orders[j].items.length; i++) {
             if (orders[j].items[i].changes) {
@@ -98,7 +130,8 @@ export default function ListOrder(props) {
                   unit: it.unit,
                   colorNames: it.colorNames,
                   details : it.details,
-                  changes : false
+                  changes : false,
+                  confirmByVendor: it.confirmByVendor
                   }}) : [])
               }
           });
@@ -174,13 +207,16 @@ export default function ListOrder(props) {
               image: true,
               product: true, 
               spec: false, 
-              owner: true, 
+              //owner: true, 
+              colorNames: true,
               price: true, 
               quantity: true, 
               details: false, 
             }}
             edit = {{ details: true }}
+            button = {{ confirm: true }}
             setDetails={setDetails} 
+            handleAccept={handleAccept} 
             /> }
 
             <Button 

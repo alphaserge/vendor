@@ -41,10 +41,12 @@ return (
             key={"orders-grid-"+index}
             show={props.show}
             edit={props.edit}
+            button={props.button}
             data={item} 
             index={index} 
             orderId={item.id}
-            setDetails={props.setDetails} />
+            setDetails={props.setDetails}
+            handleAccept={props.handleAccept} />
          // </Grid> */}
     ))}
 

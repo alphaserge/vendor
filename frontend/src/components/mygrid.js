@@ -43,10 +43,12 @@ export default function MyGrid(props) {
           <MyGridRow 
             show={props.show}
             edit={props.edit}
+            button={props.button}
             item={item} 
             index={index}
             orderId={props.orderId} 
             setDetails={props.setDetails}
+            handleAccept={props.handleAccept}
             sx={{ alignItems: "center" }}
             />
         </Grid>

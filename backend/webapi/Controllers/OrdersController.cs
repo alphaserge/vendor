@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
@@ -169,11 +170,14 @@ namespace chiffon_back.Controllers
                         Design = item.j.Design,
                         Price = item.oi.Price,
                         Quantity = item.oi.Quantity,
+                        Unit = item.oi.Unit,
                         VendorQuantity = item.oi.VendorQuantity,
                         OrderRolls = item.oi.OrderRolls,
                         Details = item.oi.Details,
+                        ColorNames = item.oi.ColorNames,
                         VendorId = item.j.VendorId,
-                        VendorName = item.jv.VendorName
+                        VendorName = item.jv.VendorName,
+                        ConfirmByVendor = item.oi.ConfirmByVendor,
                     };
 
                     string imagePath = string.Empty;
@@ -252,6 +256,7 @@ namespace chiffon_back.Controllers
                     VendorQuantity = item.oi.VendorQuantity,
                     OrderRolls = item.oi.OrderRolls,
                     Details = item.oi.Details,
+                    ConfirmByVendor = item.oi.ConfirmByVendor,
                 };
 
                 orderItems.Add(orderItem);
@@ -487,6 +492,35 @@ namespace chiffon_back.Controllers
             }
         }
 
+
+        [HttpPost("Accept")]
+        public ActionResult Accept(OrderItemAccept acpt)
+        {
+            try
+            {
+                Context.OrderItem oi = ctx.OrderItems.FirstOrDefault(x => x.Id == acpt.ItemId);
+                if (oi != null)
+                {
+                    oi.ConfirmByVendor = DateTime.Now;
+                    if (oi.Details.IsNullOrEmpty())
+                    {
+                        oi.Details = $"{oi.Quantity} {oi.Unit}";
+                    }
+                    ctx.SaveChanges();
+                }
+
+                return CreatedAtAction(nameof(OrderItem), new { id = acpt.ItemId }, "");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/Accept: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/Accept: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+                return CreatedAtAction(nameof(OrderItem), new { id = -1 }, null);
+            }
+        }
 
 
 

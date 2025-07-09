@@ -37,4 +37,9 @@
         public string? Details { get; set; }
     }
 
+    public class OrderItemAccept
+    {
+        public int? ItemId { get; set; }
+    }
+
 }

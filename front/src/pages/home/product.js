@@ -128,6 +128,14 @@ export default function Product(props) {
   const theme = useTheme();
 
   const [product, setProduct] = useState({colors: []})
+  const [colors, setColors] = useState([])
+  const [seasons, setSeasons] = useState([])
+  const [designTypes, setDesignTypes] = useState([])
+  const [textileTypes, setTextileTypes] = useState([])
+  const [overworkTypes, setOverworkTypes] = useState([])
+  const [productTypes, setProductTypes] = useState([])
+  const [printTypes, setPrintTypes] = useState([])
+  const [productStyles, setProductStyles] = useState([])
 
   const [info, setInfo] = React.useState("");
 
@@ -190,14 +198,104 @@ export default function Product(props) {
 
     var selectColors = product.colors
       .filter((it,ix) => { return it.colorNames != "PRODUCT"})
-      //.map((it, ix) => ({ colorNames: it.colorNames, colorVariantId: it.colorVariantId}))
-      //console.log('selectColors')
-      //console.log(selectColors)
-      
-    //selectColors.push({ colorNames: "select color", colorVariantId: -2 })
 
-      //console.log('selectColors')
-      //console.log(selectColors)
+
+    const loadColors = () => {
+      axios.get(config.api + '/Colors')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.colorName, rgb:item.rgb }))
+          setColors(items)
+      })
+      .catch (error => {
+        console.log('Home loadColors error:' )
+        console.log(error)
+      })
+    }
+
+    const loadSeasons = () => {
+      axios.get(config.api + '/Seasons')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.seasonName }))
+          setSeasons(items)
+      })
+      .catch (error => {
+        console.log('Home loadSeasons error:' )
+        console.log(error)
+      })
+    }
+
+    const loadDesignTypes = () => {
+      axios.get(config.api + '/DesignTypes')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.designName }))
+          setDesignTypes(items)
+      })
+      .catch (error => {
+        console.log('Home loadDesignTypes error:' )
+        console.log(error)
+      })
+    }
+
+    const loadTextileTypes = () => {
+      axios.get(config.api + '/TextileTypes')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.textileTypeName }))
+          setTextileTypes(items)
+      })
+      .catch (error => {
+        console.log('Home loadDesignTypes error:' )
+        console.log(error)
+      })
+    }
+
+    const loadOverworkTypes = () => {
+      axios.get(config.api + '/OverworkTypes')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.overWorkName }))
+          setOverworkTypes(items)
+      })
+      .catch (error => {
+        console.log('Home loadDesignTypes error:' )
+        console.log(error)
+      })
+    }
+
+    const loadProductTypes = () => {
+      axios.get(config.api + '/ProductTypes')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.typeName }))
+          setProductTypes(items)
+      })
+      .catch (error => {
+        console.log('Home loadProductTypes error:' )
+        console.log(error)
+      })
+    }
+
+    const loadPrintTypes = () => {
+      axios.get(config.api + '/PrintTypes')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.typeName }))
+          setPrintTypes(items)
+      })
+      .catch (error => {
+        console.log('Home loadPrintTypes error:' )
+        console.log(error)
+      })
+    }
+
+    const loadProductStyles = () => {
+      axios.get(config.api + '/ProductStyles')
+      .then(function (res) {
+          let items = res.data.map((item)=>({ id:item.id, value:item.styleName }))
+          setProductStyles(items)
+      })
+      .catch (error => {
+        console.log('Home loadProductStyles error:' )
+        console.log(error)
+      })
+    }
+
 
     const loadProduct = async (e) => {
 
@@ -232,6 +330,14 @@ export default function Product(props) {
 
     useEffect(() => {
       loadProduct()
+      loadColors()
+      loadSeasons()
+      loadDesignTypes()
+      loadTextileTypes()
+      //loadOverworkTypes()
+      loadProductTypes()
+      //loadPrintTypes()
+      loadProductStyles()
     }, []);
 
 
@@ -274,12 +380,12 @@ console.log(colorVarId)
           user={props.user}
           title={props.title}
           searchProducts={null}
-          textileTypes={[]}
-          designTypes={[]}
-          seasons={[]}
-          colors={[]}
-          printTypes={[]}
-          productTypes={[]}
+          textileTypes={textileTypes}
+          designTypes={designTypes}
+          seasons={seasons}
+          colors={colors}
+          printTypes={printTypes}
+          productTypes={productTypes}
           cart={shopCart}
           openShoppingCart={handleShowShoppingCart}
           setSeason       = {(v)=>{ }}
@@ -295,7 +401,7 @@ console.log(colorVarId)
     {/* ----- */}
     {( product && domReady == true &&
 
-     <Box className="center-content" sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "row" }}  >  {/* height: "calc(100vh - 330px)" */}
+     <Box className="center-content" sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "row", pt: 4 }}  >  {/* height: "calc(100vh - 330px)" */}
      <Grid container sx={{ marginTop: "20px" }}>
       <Grid item xs={12} md={6} sx={{display: "flex", minWidth: "400px", paddingRight: "30px"}} justifyContent={{ md: "flex-end", xs: "space-around" }} >
             {( product.colors && product.colors.length>0 && 

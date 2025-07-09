@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
 
@@ -12,9 +13,12 @@ import config from "../config.json"
 import { formattedPrice } from "../functions/helper"
 import { InputLabel } from "@mui/material"
 
+import { APPEARANCE } from '../appearance';
+
 const labelStyle = { m: 0, ml: 0, mr: 4 }
 const labelStyle1 = { m: 0, ml: 0, mr: 4 }
-
+const buttonStyle = { height: 26, backgroundColor: "#222", color: APPEARANCE.WHITE, textTransform: "none" }
+const disableStyle = { height: 26, backgroundColor: "#ccc", color: APPEARANCE.WHITE, textTransform: "none" }
 
 export default function MyGridRow(props) {
 
@@ -38,6 +42,10 @@ export default function MyGridRow(props) {
       }
     }
 
+    console.log('props.item.confirmByVendor')
+    console.log(props.item.confirmByVendor)
+
+
 //e.target.id === "valuequantity2-0"  nodeName: "INPUT"
     
     useEffect(() => {
@@ -49,11 +57,11 @@ export default function MyGridRow(props) {
       
         { extend!==true && <Box 
             sx={{ display: "flex", flexDirection: "row", alignItems: "center", padding: 0, cursor: "pointer" }}
-            onClick={(e)=>{ if (e.target.nodeName.toUpperCase() !== "INPUT") { setExtend(true) }; console.log(e.target.id); console.log(e)}}
+            //onClick={(e)=>{ if (e.target.nodeName.toUpperCase() !== "INPUT") { /* setExtend(true)*/ }; }}
           >
           { props.show.image && <Box component={"img"} key={"grid-image-" + props.index} 
                 src={config.api + "/" + props.item.imagePath} 
-                sx={{width: "40px", height: "30px", mr: 2}}
+                sx={{width: "50px", height: "50px", mr: 2}}
                 alt={"photo"+(props.index + 1)}  /> }
 
             { props.show.product && <Box component={"div"} key={"grid-valuename-" + props.index} sx={{ flexGrow: 1 }} >
@@ -68,12 +76,16 @@ export default function MyGridRow(props) {
                 {props.item.owner}
             </Box> }
 
+            { props.show.colorNames && <Box component={"div"} key={"grid-valueowner-" + props.index} sx={{ width: "120px" }} >
+                {props.item.colorNames}
+            </Box> }
+
             { props.show.price && <Box component={"div"} key={"grid-valueprice-" + props.index} sx={{ width: "60px", pl:1, textAlign: "right" }} >
                 {formattedPrice(props.item.price)}<span style={{marginLeft: "2px", fontSize: "small"}}>$</span>
             </Box> }
 
-            { props.show.quantity && <Box component={"div"} key={"grid-valuequantity-" + props.index} sx={{ width: "45px", pl:1, textAlign: "right"  }} >
-                {props.item.quantity}
+            { props.show.quantity && <Box component={"div"} key={"grid-valuequantity-" + props.index} sx={{ width: "100px", pl:1, textAlign: "right"  }} >
+                {props.item.quantity} {props.item.unit}
             </Box> }
 
             { props.show.details && <Box component={"div"} key={"grid-valuedetails-" + props.index} sx={{ width: "60px", pl:1 }} >
@@ -95,8 +107,20 @@ export default function MyGridRow(props) {
                       height: "10px",
                     },
                   }}
-                /> }  
+                /> }
                 {/* </FormControl> */}
+
+            { props.button.confirm && <Box component={"div"} key={"grid-valuedetails-" + props.index} sx={{ width: "60px", pl:1 }} >
+                <Button 
+                              variant="contained"
+                              style={props.item.confirmByVendor!=null ? disableStyle : buttonStyle}
+                              sx={props.item.confirmByVendor!=null ? disableStyle : buttonStyle}
+                              disabled={props.item.confirmByVendor!=null}
+                              onClick={(e) => { props.handleAccept(props.item.id) }} >
+                                  Accept
+                            </Button>
+            </Box> }
+
           </Box> 
     }
 
