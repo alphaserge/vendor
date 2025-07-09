@@ -43,7 +43,8 @@ return (
             edit={props.edit}
             data={item} 
             index={index} 
-            setQuantity2={props.setQuantity2} />
+            orderId={item.id}
+            setDetails={props.setDetails} />
          // </Grid> */}
     ))}
 

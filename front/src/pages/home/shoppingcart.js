@@ -198,6 +198,7 @@ const makeOrder = async (event) => {
     let items = shopCart.map((it) => { return {
       productId: it.product.id,
       quantity: it.quantity,
+      unit: it.unit,
       itemName: it.product.itemName,
       refNo: it.product.refNo,
       artNo: it.product.artNo,
@@ -338,7 +339,6 @@ const makeOrder = async (event) => {
               color: "#fff", 
               borderRadius: 0 }}>Create order</Button>
         </Box>
-
     </Box>
     </Box> )}
 

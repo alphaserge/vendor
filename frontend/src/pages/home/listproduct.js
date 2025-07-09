@@ -175,7 +175,7 @@ export default function ListProduct(props) {
 
       //const params = new url.URLSearchParams({ foo: 'bar' });      
 
-      axios.get(config.api + '/Products/Products?id=0', //!!!! todo +props.user.id, 
+      axios.get(config.api + '/Products/Products?id='+props.user.id, 
         { params: 
             { 
               name: itemName,

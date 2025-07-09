@@ -21,8 +21,20 @@
         public string? imagePath { get; set; }
         public int? ColorVariantId { get; set; }
         public string? ColorNames { get; set; }
+        public string? Unit { get; set; }
+        public DateTime? ConfirmByVendor { get; set; }
+        public DateTime? ShippedByVendor { get; set; }
+        public DateTime? InStock { get; set; }
+        public DateTime? ShippedToClient { get; set; }
+        public DateTime? RecievedByClient { get; set; }
+
         //public string? ImagePath { get; set; }
-
-
     }
+
+    public class ChangeDetails
+    {
+        public int? Id { get; set; }
+        public string? Details { get; set; }
+    }
+
 }

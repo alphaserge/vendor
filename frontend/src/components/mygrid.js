@@ -11,7 +11,7 @@ import { formattedDate } from '../functions/helper';
 
 export default function MyGrid(props) {
 
-  const setQuantity2 = (id, value) => {
+  const setDetails = (id, value) => {
     //..
   }
 
@@ -44,8 +44,9 @@ export default function MyGrid(props) {
             show={props.show}
             edit={props.edit}
             item={item} 
-            index={index} 
-            setQuantity2={setQuantity2}
+            index={index}
+            orderId={props.orderId} 
+            setDetails={props.setDetails}
             sx={{ alignItems: "center" }}
             />
         </Grid>

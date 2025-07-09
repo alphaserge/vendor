@@ -462,5 +462,33 @@ namespace chiffon_back.Controllers
             }
         }
 
+        [HttpPost("ChangeDetails")]
+        public ActionResult ChangeDetails(Models.ChangeDetails cd)
+        {
+            try
+            {
+                Context.OrderItem oi = ctx.OrderItems.FirstOrDefault(x => x.Id == cd.Id);
+                if (oi != null)
+                {
+                    oi.Details = cd.Details;
+                    ctx.SaveChanges();
+                }
+
+                return CreatedAtAction(nameof(OrderItem), new { id = cd.Id }, "");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/ChangeDetails: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/ChangeDetails: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+                return CreatedAtAction(nameof(OrderItem), new { id = -1 }, null);
+            }
+        }
+
+
+
+
     }
 }

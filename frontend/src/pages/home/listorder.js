@@ -5,6 +5,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 
 import axios from 'axios'
 
@@ -12,10 +13,14 @@ import config from "../../config.json"
 import Header from './header';
 import Footer from './footer';
 import MyOrders from '../../components/myorders';
+import { APPEARANCE } from '../../appearance';
+import { colors } from "@mui/material";
 
 const defaultTheme = createTheme()
 const outboxStyle = { maxWidth: "744px", margin: "80px auto 20px auto", padding: "0 10px" }
 const entities = ['incoming orders', 'sent orders', 'recieved orders']
+const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, color: APPEARANCE.WHITE, m: 1 }
+const disableStyle = { width: 90, height: 40, backgroundColor: "#ccc", color: APPEARANCE.WHITE, m: 1 }
 
 export default function ListOrder(props) {
 
@@ -24,7 +29,39 @@ export default function ListOrder(props) {
     const [orders, setOrders] = useState([])
     const [filter, setFilter] = useState(false)
     const [entity, setEntity] = useState('incoming orders');
-    
+    const [modified, setModified] = useState(false)
+
+
+  const changeDetails = async (id, details) => {
+
+  await axios.post(config.api + '/Orders/ChangeDetails', 
+    {
+      id: id,
+      details: details,
+    })
+    .then(function (response) {
+      console.log(response);
+      return true;
+    })
+    .catch(function (error) {
+      console.log(error);
+      return false;
+    })
+  };
+
+
+    const handleSave = (event) => {
+      for (let j=0; j< orders.length; j++) {
+          for (let i=0; i< orders[j].items.length; i++) {
+            if (orders[j].items[i].changes) {
+              changeDetails(orders[j].items[i].id, orders[j].items[i].details)
+            }
+          }
+        }
+
+         loadOrders()
+    }
+
     const loadOrders = async (e) => {
 
       let api = config.api + '/Orders'// config.api + '/Orders' //'/VendorOrders?vendorId=' + props.user.vendorId
@@ -43,11 +80,13 @@ export default function ListOrder(props) {
           var result = res.data.map((d) => 
           {
               return {
+                id: d.id,
                 created : d.created,
                 number  : d.number,
                 vendor  : d.vendorName,
-                client  : d.clientName,
+                client  : d.vendorName,
                 phone   : d.clientPhone,
+                changes : false,
                 items   : ( !!d.items ? d.items.map((it) => { return {
                   id        : it.id,
                   imagePath : it.imagePath,
@@ -56,7 +95,10 @@ export default function ListOrder(props) {
                   price     : it.price,
                   owner    : it.vendorName,
                   quantity  : it.quantity,
-                  quantity2 : it.vendorQuantity ? it.vendorQuantity : ""
+                  unit: it.unit,
+                  colorNames: it.colorNames,
+                  details : it.details,
+                  changes : false
                   }}) : [])
               }
           });
@@ -65,14 +107,33 @@ export default function ListOrder(props) {
           
           setOrders(result)
           setFilter(false)
+          setModified(false)
       })
       .catch (error => {
         console.log(error)
       })
     }
 
-    const setQuantity2 = (id, value) => {
-      console.log('set quantity2')
+    const setDetails = (orderId, id, value) => {
+
+      let ords = [...orders]
+      for (let j=0; j< ords.length; j++) {
+        if (ords[j].id == orderId) {
+          for (let i=0; i< ords[j].items.length; i++) {
+            if (ords[j].items[i].id == id) {
+              ords[j].items[i].details = value
+              ords[j].items[i].changes = true;
+              ords[j].changes = true;
+              setOrders(ords)
+              setModified(true)
+              break
+            }
+          }
+        }
+      }
+      console.log('set details')
+      console.log(id)
+      console.log(value)
     }
 
     const changeEntity = (e, index) => {
@@ -86,6 +147,9 @@ export default function ListOrder(props) {
   if (!props.user || props.user.Id === 0) {
     navigate("/")
   }
+
+  const changes = orders.map(e => e.changes).indexOf(true) != -1
+  console.log("changes: " + changes)
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -113,11 +177,20 @@ export default function ListOrder(props) {
               owner: true, 
               price: true, 
               quantity: true, 
-              quantity2: false, 
+              details: false, 
             }}
-            edit = {{ quantity2: true }}
-            setQuantity2={setQuantity2} 
+            edit = {{ details: true }}
+            setDetails={setDetails} 
             /> }
+
+            <Button 
+              variant="contained"
+              style={changes ? buttonStyle : disableStyle}
+              //sx= {changes ? buttonStyle : disableStyle}
+              disabled={!changes}
+              onClick={handleSave} >
+                  Save
+            </Button>
 
           </Box>
           <br/>

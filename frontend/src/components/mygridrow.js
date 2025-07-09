@@ -3,12 +3,18 @@ import React, { useState, useEffect } from "react";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
 
 import "swiper/css";
 import { sendToVendor } from '../api/orders'
 
 import config from "../config.json"
 import { formattedPrice } from "../functions/helper"
+import { InputLabel } from "@mui/material"
+
+const labelStyle = { m: 0, ml: 0, mr: 4 }
+const labelStyle1 = { m: 0, ml: 0, mr: 4 }
+
 
 export default function MyGridRow(props) {
 
@@ -70,24 +76,27 @@ export default function MyGridRow(props) {
                 {props.item.quantity}
             </Box> }
 
-            { props.show.quantity2 && <Box component={"div"} key={"grid-valuequantity2-" + props.index} sx={{ width: "60px", pl:1 }} >
+            { props.show.details && <Box component={"div"} key={"grid-valuedetails-" + props.index} sx={{ width: "60px", pl:1 }} >
                 {props.item.quantity2}
             </Box> }
 
-            { props.edit.quantity2 && <TextField
+{/* <FormControl><InputLabel id={"label_details_"+props.index} size="small" sx={labelStyle1} >Details:</InputLabel>  */}
+            { props.edit.details && <TextField labelId={"label_details_"+props.index}
                   margin="normal"
                   size="small" 
-                  id={"valuequantity2-" + props.index}
-                  name={"valuequantity2-" + props.index}
-                  sx = {{ width: 60, mt: '-3px', ml: 2, mr: 0, mb: '-3px' }}
-                  value={props.item.quantity2}
-                  onChange={ev => props.setQuantity2(props.id, ev.target.value)}
+                  //label="details"
+                  id={"valuedetails-" + props.index}
+                  name={"valuedetails-" + props.index}
+                  sx = {{ width: 120, mt: '-3px', ml: 2, mr: 0, mb: '-3px' }}
+                  value={props.item.details}
+                  onChange={ev => props.setDetails(props.orderId, props.item.id, ev.target.value)}
                   inputProps={{
                     style: {
                       height: "10px",
                     },
                   }}
-                /> }
+                /> }  
+                {/* </FormControl> */}
           </Box> 
     }
 
