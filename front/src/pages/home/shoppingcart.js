@@ -132,6 +132,9 @@ const getFromUrl = (name) => {
 
  const textStyle = { m: 0, mb: 2 }
 
+ function randomInt(min, max) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
 
 export default function ShoppingCart(props) {
 
@@ -144,6 +147,8 @@ export default function ShoppingCart(props) {
     const [clientEmail, setClientEmail] = useState("")
     const [step, setStep] = useState("cart")
     const [fieldsValid, setFieldsValid] = useState(false)
+    const [sms, setSms] = useState("")
+    const [code, setCode] = useState(randomInt(1001,9999))
 
     const [orderError, setOrderError] = useState(false)
 
@@ -167,6 +172,19 @@ export default function ShoppingCart(props) {
     changeQuantity(index, quantity)
   }
 
+  const sendSms = (e) => {
+      let url = "https://elizarov.sa@mail.ru:PGzuNeMuy2LzKjx7FPtH3uL_xsMX7I8P@gate.smsaero.ru/v2/sms/send?number=79167220074&text=Your code: " + code + "&sign=SMS Aero"
+          axios.get(url)
+          .then(function (res) {
+              //...
+          })
+          .catch (error => {
+            console.log('sendSms error:' )
+            console.log(error)
+          })
+    
+    
+  }
 
   const setUnit = (index, unit) => {
     changeUnit(index, unit)
@@ -389,7 +407,34 @@ const makeOrder = async (event) => {
                   value={clientAddress}
                   onChange={ev => { setClientAddress(ev.target.value); checkAddress(ev.target.value); } }
                 />
+<Box sx={{display: "flex"}}>
+                <StyledTextField
+                  disabled={!fieldsValid}
+                  margin="normal"
+                  size="small"
+                  id="smscode"
+                  name="sms-code"
+                  label="SMS code"
+                  sx = {{...textStyle, ...{width: "100px"}}}
+                  value={sms}
+                  onChange={ev => { setSms(ev.target.value)  } }
+                />
 
+                <Button
+            
+            onClick={sendSms}
+            sx={{ 
+              
+              p: "3px 8px", 
+              height: "32px",
+              marginTop: "3px",
+              marginLeft: "8px",
+              fontSize: "14px",
+              textTransform: "none",
+              backgroundColor: fieldsValid ? "#222":"#ccc", 
+              color: "#fff", 
+              borderRadius: 0 }}>Send</Button>
+</Box>
         { orderError &&
             <Box sx={{ textAlign: "center", marginTop: 2, fontSize: "12pt", color: "red" }}>
             An error has occurred. Please check that all fields are filled in correctly and completely and try saving again.
@@ -399,13 +444,14 @@ const makeOrder = async (event) => {
           <Button
             startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
             onClick={makeOrder}
+            disabled={sms != code}
             sx={{ 
               mt: 4, 
-              p: "12px", 
-              width: "160px", 
+              p: "6px", 
+              width: "120px", 
               fontSize: ap.FONTSIZE,
               textTransform: "none",
-              backgroundColor: fieldsValid ? "#222":"#ccc", 
+              backgroundColor: sms == code ? "#222":"#ccc", 
               color: "#fff", 
               borderRadius: 0 }}>Confirm</Button>
         </Box>

@@ -64,32 +64,36 @@ export default function MyGridRow(props) {
                 sx={{width: "50px", height: "50px", mr: 2}}
                 alt={"photo"+(props.index + 1)}  /> }
 
-            { props.show.product && <Box component={"div"} key={"grid-valuename-" + props.index} sx={{ flexGrow: 1 }} >
+            { props.show.product && <Box component={"div"} key={"grid-valuename-" + props.index} sx={{ flexGrow: 1, padding: "5px" }} >
                 {props.item.product}
             </Box> }
 
-            { props.show.spec && <Box component={"div"} key={"grid-valuespec-" + props.index} >
+            { props.show.spec && <Box component={"div"} key={"grid-valuespec-" + props.index} sx={{ padding: "10px" }} >
                 {props.item.spec}
             </Box> }
 
-            { props.show.owner && <Box component={"div"} key={"grid-valueowner-" + props.index} sx={{ width: "120px" }} >
+            { props.show.owner && <Box component={"div"} key={"grid-valueowner-" + props.index} sx={{ padding: "10px" }} >
                 {props.item.owner}
             </Box> }
 
-            { props.show.colorNames && <Box component={"div"} key={"grid-valueowner-" + props.index} sx={{ width: "120px" }} >
+            { props.show.colorNames && <Box component={"div"} key={"grid-valuecolor-" + props.index} sx={{ padding: "10px" }} >
                 {props.item.colorNames}
             </Box> }
 
-            { props.show.price && <Box component={"div"} key={"grid-valueprice-" + props.index} sx={{ width: "60px", pl:1, textAlign: "right" }} >
+            { props.show.price && <Box component={"div"} key={"grid-valueprice-" + props.index} sx={{ width: "60px", padding: "5px", textAlign: "right" }} >
                 {formattedPrice(props.item.price)}<span style={{marginLeft: "2px", fontSize: "small"}}>$</span>
             </Box> }
 
-            { props.show.quantity && <Box component={"div"} key={"grid-valuequantity-" + props.index} sx={{ width: "100px", pl:1, textAlign: "right"  }} >
-                {props.item.quantity} {props.item.unit}
+            { props.show.quantity && <Box component={"div"} key={"grid-valuequantity-" + props.index} sx={{ width: "100px", padding: "5px", textAlign: "right"  }} >
+                {props.item.quantity} {props.item.unit.replace('rolls','r').replace('meters','m')}
             </Box> }
 
-            { props.show.details && <Box component={"div"} key={"grid-valuedetails-" + props.index} sx={{ width: "60px", pl:1 }} >
-                {props.item.quantity2}
+            { props.show.details && <Box component={"div"} key={"grid-valuedetails-" + props.index} sx={{ width: "80px", padding: "5px" }} >
+                {props.item.details}
+            </Box> }
+
+            { props.show.status && <Box component={"div"} key={"grid-valuestatus-" + props.index} sx={{ width: "60px", padding: "5px" }} >
+                {props.item.status}
             </Box> }
 
 {/* <FormControl><InputLabel id={"label_details_"+props.index} size="small" sx={labelStyle1} >Details:</InputLabel>  */}

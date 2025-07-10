@@ -4,6 +4,7 @@ import UpdateProduct from './pages/home/updateproduct';
 import AddProduct from './pages/home/addproduct';
 import ListProduct from './pages/home/listproduct';
 import ListOrder from './pages/home/listorder';
+import ListOrderV from './pages/home/listorderv';
 import ClientOrders from './pages/home/clientorders';
 import VendorOrders from './pages/home/vendororders';
 import Orders from './pages/home/orders';
@@ -98,7 +99,8 @@ function App() {
           <Route path="/addproduct" element={<AddProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/updateproduct" element={<UpdateProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/listproduct" element={<ListProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
-          <Route path="/listorder" element={<ListOrder user={user} lastAction={lastAction} setLastAction={setLastAction} />} />          
+          <Route path="/listorder" element={<ListOrder user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
+          <Route path="/listorderv" element={<ListOrderV user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/clientorders" element={<ClientOrders user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/vendororders" element={<VendorOrders user={user} lastAction={lastAction} setLastAction={setLastAction} />} /> 
           <Route path="/orders" element={<Orders user={user} lastAction={lastAction} setLastAction={setLastAction} />} />

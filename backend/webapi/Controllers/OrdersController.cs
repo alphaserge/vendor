@@ -223,6 +223,80 @@ namespace chiffon_back.Controllers
             return orders.AsEnumerable();
         }
 
+        [HttpGet("OrderItems")]
+        public IEnumerable<Models.OrderItem> GetOrderItems([FromQuery] string id)
+        {
+            var query =
+                from oi in ctx.OrderItems join p in ctx.Products//.Where(x=>x.VendorId.ToString()==vendorId) 
+                    on oi.ProductId equals p.Id into jointable
+                    from j in jointable.DefaultIfEmpty()
+                    select new { oi, j};
+
+            var items = query.ToList();
+
+            List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
+            foreach (var item in items)
+            {
+                if (item.j.VendorId.ToString() != id)
+                    continue;
+
+                Models.OrderItem orderItem = new Models.OrderItem()
+                {
+                    OrderId = item.oi.Id,
+                    ProductId = item.oi.ProductId,
+                    Id = item.oi.Id,
+                    ArtNo = item.j.ArtNo,
+                    RefNo = item.j.RefNo,
+                    ItemName = item.j.ItemName,
+                    Composition = item.j.Composition,
+                    Design = item.j.Design,
+                    Price = item.oi.Price,
+                    Quantity = item.oi.Quantity,
+                    Unit = item.oi.Unit,
+                    RollLength = item.j.RollLength,
+                    VendorQuantity = item.oi.VendorQuantity,
+                    OrderRolls = item.oi.OrderRolls,
+                    Details = item.oi.Details,
+                    ColorNames = item.oi.ColorNames,
+                    VendorId = item.j.VendorId,
+                    VendorName = ctx.Vendors.FirstOrDefault(x=>x.Id==item.j.VendorId).VendorName,
+                    ConfirmByVendor = item.oi.ConfirmByVendor,
+                };
+
+                string imagePath = string.Empty;
+                if (!String.IsNullOrEmpty(item.j.PhotoUuids))
+                {
+                    foreach (string uuid in PhotoHelper.GetPhotoUuids(item.j.PhotoUuids))
+                    {
+                        var imageFiles = DirectoryHelper.GetImageFiles(uuid);
+                        if (imageFiles.Count > 0)
+                        {
+                            imagePath = imageFiles[0];
+                            break;
+                        }
+                    }
+                }
+
+                if (String.IsNullOrEmpty(imagePath))
+                {
+                    foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == item.j.Id).ToList())
+                    {
+                        var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                        if (imageFiles.Count > 0)
+                        {
+                            imagePath = imageFiles[0];
+                            break;
+                        }
+                    }
+                }
+
+                orderItem.imagePath = imagePath;
+                orderItems.Add(orderItem);
+            }
+
+            return orderItems.AsEnumerable();
+        }
+
         [HttpGet("{id}")]
         //public Models.Product? Product([FromQuery] string id)
         public Models.Order? GetOrder([FromQuery] string id)
@@ -504,7 +578,22 @@ namespace chiffon_back.Controllers
                     oi.ConfirmByVendor = DateTime.Now;
                     if (oi.Details.IsNullOrEmpty())
                     {
-                        oi.Details = $"{oi.Quantity} {oi.Unit}";
+                        oi.Details = $"{oi.Quantity} {oi.Unit.Replace("rolls", "r").Replace("meters","m")}";
+                        var q = oi.Quantity;
+                        var r = ctx.Products.FirstOrDefault(x=>x.Id==oi.ProductId).RollLength;
+                        String details = "";
+                        if (q != null && r != null)
+                        {
+                            Decimal n = Math.Floor(q.Value / r.Value);
+                            if (n > 0)
+                            {
+                                details = String.Format("{0:0.##}", n) + "*" + String.Format("{0:0.##}", r);
+                            }
+                            q -= n * r;
+                            details += "+" + String.Format("{0:0.##}", q);
+                            oi.Details = details;
+                        }
+                        
                     }
                     ctx.SaveChanges();
                 }

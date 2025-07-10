@@ -22,7 +22,7 @@ import { getFromUrl } from '../../functions/helper';
 
 import config from "../../config.json"
 
-const pages = ['Fabrics', 'Accessories', 'Client Orders', 'Vendor Orders', 'Help', 'Orders', 'Contacts' ]; 
+const pages = ['Fabrics', 'Accessories', 'Orders', 'Help', 'Contacts' ]; 
 const settings = ['Profile', 'Account', 'Dashboard', 'Login', 'Logout', 'Register'];
 
 const menuPagesStyle = { fontSize: "14px", fontWeight: "normal", color: APPEARANCE.WHITE2, textTransform: "none" }
@@ -65,9 +65,16 @@ export default function Header(props) {
       return
     }
 
-    if (value == "Client Orders") { navigate("/clientorders"); return; }
-    if (value == "Vendor Orders") { navigate("/vendororders"); return; }
-    if (value == "Orders") { navigate("/orders?vendor=1"); return; }
+    if (value == "Orders") { 
+      if (props.user.vendorId==1) {
+        navigate("/listorder"); 
+      } else {
+        navigate("/listorderv"); 
+      }
+      return; 
+    }
+     
+
     if (value == "Contacts") { navigate("/contacts"); return; }
     if (value == "Profile") { navigate("/profile"); return; }
     if (value == "Account") { navigate("/account"); return; }
@@ -83,7 +90,7 @@ export default function Header(props) {
 
   useEffect(() => {
 
-    if (getFromUrl('vendor')+'' == '1') {
+    /*if (getFromUrl('vendor')+'' == '1') {
       var index = pages.indexOf('Vendor Orders');
       if (index !== -1) {
         pages.splice(index, 1);
@@ -98,7 +105,7 @@ export default function Header(props) {
       if (index !== -1) {
         pages.splice(index, 1);
       }
-    }
+    }*/
   
     //console.log('props.title')
     //console.log(props.title)

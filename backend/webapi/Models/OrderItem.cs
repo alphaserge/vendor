@@ -27,6 +27,7 @@
         public DateTime? InStock { get; set; }
         public DateTime? ShippedToClient { get; set; }
         public DateTime? RecievedByClient { get; set; }
+        public decimal? RollLength { get; set; }        
 
         //public string? ImagePath { get; set; }
     }

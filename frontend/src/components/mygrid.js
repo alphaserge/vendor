@@ -29,7 +29,7 @@ export default function MyGrid(props) {
       &nbsp;&nbsp;&nbsp;&nbsp;
       {/* </Typography>
       <Typography gutterBottom variant="h7" component="div" className="order-header"> */}
-      {props.data.client} {props.data.phone}
+      { props.show.client && (props.data.client + " " + props.data.phone)}
       {/* </Typography> */}
     </Box>
 

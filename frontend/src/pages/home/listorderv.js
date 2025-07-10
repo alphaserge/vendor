@@ -12,6 +12,7 @@ import axios from 'axios'
 import config from "../../config.json"
 import Header from './header';
 import Footer from './footer';
+import MyGrid from './../../components/mygrid';
 import MyOrders from '../../components/myorders';
 import { APPEARANCE } from '../../appearance';
 import { colors } from "@mui/material";
@@ -22,7 +23,7 @@ const entities = ['active orders', 'delivered orders']
 const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, color: APPEARANCE.WHITE, m: 1 }
 const disableStyle = { width: 90, height: 40, backgroundColor: "#ccc", color: APPEARANCE.WHITE, m: 1 }
 
-export default function ListOrder(props) {
+export default function ListOrderV(props) {
 
     const navigate = useNavigate();
 
@@ -69,37 +70,48 @@ export default function ListOrder(props) {
     const handleAccept = (itemId) => {
       let d = itemId;
       setAccept(itemId)
-      let ords = [...orders]
-      for (let j=0; j< ords.length; j++) {
-          for (let i=0; i< ords[j].items.length; i++) {
-            if (ords[j].items[i].id == itemId) {
-              ords[j].items[i].confirmByVendor = Date.now()
+      /*let ords = [...orders]
+          for (let i=0; i< ords[i].items.length; i++) {
+            if (ords[i].items[i].id == itemId) {
+              ords[i].items[i].confirmByVendor = Date.now()
+              if (ords[i].items[i].details==null && 
+                  ords[i].items[i].rollLength != null &&
+                  ords[i].items[i].quantity != null) {
+                let q = ords[i].items[i].quantity
+                let r = ords[i].items[i].rollLength
+                let n = Math.floor(q / r)
+                let details = "";
+                if (n > 0) {
+                  details = n + "r"
+                }
+                q -= r*n
+                details += "+"+q
+              }
               break
             }
-          }
+          
         }
-        setOrders(ords)
+        setOrders(ords)*/
+        setToggle(!toggle)
     }
 
 
     const handleSave = (event) => {
       
-      let ords = [...orders]
-      for (let j=0; j< ords.length; j++) {
-          for (let i=0; i< ords[j].items.length; i++) {
-            if (ords[j].items[i].changes) {
-              changeDetails(ords[j].items[i].id, ords[j].items[i].details)
+      for (let j=0; j< orders.length; j++) {
+          for (let i=0; i< orders[j].items.length; i++) {
+            if (orders[j].items[i].changes) {
+              changeDetails(orders[j].items[i].id, orders[j].items[i].details)
             }
           }
         }
-        setOrders(ords)
-        setToggle(!toggle)
-         //loadOrders()
+
+         loadOrders()
     }
 
     const loadOrders = async (e) => {
 
-      let api = config.api + '/Orders'// config.api + '/Orders' //'/VendorOrders?vendorId=' + props.user.vendorId
+      let api = config.api + '/Orders/OrderItems?id=3'// config.api + '/Orders' //'/VendorOrders?vendorId=' + props.user.vendorId
       /*if (viewAs == 'incoming orders') {
         api += '&status=incoming'
       }
@@ -115,42 +127,25 @@ export default function ListOrder(props) {
           var result = res.data.map((d) => 
           {
               return {
-                id: d.id,
-                created : d.created,
-                number  : d.number,
-                vendor  : d.vendorName,
-                client  : d.clientName,
-                phone   : d.clientPhone,
-                shippedByVendor : d.shippedByVendor,
-                changes : false,
-                items   : ( !!d.items ? d.items.map((it) => { return {
-                  id        : it.id,
-                  imagePath : it.imagePath,
-                  product   : it.itemName,
-                  spec      : it.composition,
-                  price     : it.price,
-                  owner    : it.vendorName,
-                  quantity  : it.quantity,
-                  unit: it.unit,
-                  colorNames: it.colorNames,
-                  details : it.details,
-                  changes : false,
-                  confirmByVendor: it.confirmByVendor,
-                  status: it.confirmByVendor != null ? "confirmed" : (it.confirmByVendor != null ? "shipped" : (it.inStock != null ? "in stock" : (it.shippedToClient != null ? "shipped to client" : (it.recievedByClient != null ? "recieved" : "ordered"))))
-                  }}) : [])
-              }
-          });
-
-          result = result.filter((i)=> { return i.items.length > 0})
-
-          if (entity == 'delivered orders'){
-            result = result.filter((i)=> { return i.items.length > 0})
-          }
-          
+                  id        : d.id,
+                  imagePath : d.imagePath,
+                  product   : d.itemName,
+                  spec      : d.composition,
+                  price     : d.price,
+                  owner     : d.vendorName,
+                  quantity  : d.quantity,
+                  unit      : d.unit,
+                  rollLength : d.rollLength,
+                  colorNames: d.colorNames,
+                  details   : d.details,
+                  changes   : false,
+                  confirmByVendor: d.confirmByVendor
+                  }
+              })
           setOrders(result)
           setFilter(false)
           setModified(false)
-      })
+          })      
       .catch (error => {
         console.log(error)
       })
@@ -173,6 +168,7 @@ export default function ListOrder(props) {
           }
         }
       }
+
       console.log('set details')
       console.log(id)
       console.log(value)
@@ -184,7 +180,7 @@ export default function ListOrder(props) {
         
     useEffect(() => {
       loadOrders()
-    }, [entity, toggle]);
+    }, [entity,toggle]);
 
   if (!props.user || props.user.Id === 0) {
     navigate("/")
@@ -206,31 +202,29 @@ export default function ListOrder(props) {
         <Box component="form" noValidate style={outboxStyle}>
 
           { entity !== "dummy" &&
-          <MyOrders 
-            data={orders} 
-            entity = {entity}
-            entities = {entities}
-            changeEntity = {changeEntity}
-            title = "Order list"
-            show = {{
-              image: true,
-              product: true, 
-              spec: false, 
-              owner: true, 
-              colorNames: true,
-              price: true, 
-              quantity: true, 
-              details: false, 
-              client: true,
-              details: true,
-              vendor: true,
-              status: true
-            }}
-            edit = {{ details: false }}
-            button = {{ confirm: false }}
-            setDetails={setDetails} 
-            handleAccept={handleAccept} 
-            /> }
+          <MyGrid 
+              key={"orders-grid"}
+              show = {{
+                image: true,
+                product: true, 
+                spec: false, 
+                //owner: true, 
+                colorNames: true,
+                price: true, 
+                quantity: true, 
+                details: false, 
+                client: true
+              }}
+              edit = {{ details: true }}
+              button = {{ confirm: true }}
+              setDetails={setDetails} 
+              handleAccept={handleAccept} 
+              entity = {entity}
+              entities = {entities}
+              changeEntity = {changeEntity}
+              title = "Order list"
+              data={{items: orders}} />
+          }
 
             <Button 
               variant="contained"
