@@ -135,8 +135,9 @@ export default function ListOrderV(props) {
                   owner     : d.vendorName,
                   quantity  : d.quantity,
                   unit      : d.unit,
-                  rollLength : d.rollLength,
+                  rollLength: d.rollLength,
                   colorNames: d.colorNames,
+                  colorNo   : d.colorNo,
                   details   : d.details,
                   changes   : false,
                   confirmByVendor: d.confirmByVendor
@@ -201,6 +202,7 @@ export default function ListOrderV(props) {
         
         <Box component="form" noValidate style={outboxStyle}>
 
+        <Box gutterBottom  mr={1} sx={{flexGrow: 1, fontWeight: "500", fontSize: "18px", pt: 6 }} >Order list</Box>
           { entity !== "dummy" &&
           <MyGrid 
               key={"orders-grid"}
@@ -213,7 +215,7 @@ export default function ListOrderV(props) {
                 price: true, 
                 quantity: true, 
                 details: false, 
-                client: true
+                client: false
               }}
               edit = {{ details: true }}
               button = {{ confirm: true }}
@@ -230,7 +232,7 @@ export default function ListOrderV(props) {
               variant="contained"
               style={changes ? buttonStyle : disableStyle}
               //sx= {changes ? buttonStyle : disableStyle}
-              disabled={!changes}
+              //disabled={!changes}
               onClick={handleSave} >
                   Save
             </Button>

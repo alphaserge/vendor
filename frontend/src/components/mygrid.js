@@ -25,7 +25,7 @@ export default function MyGrid(props) {
 
     <Box sx={{ display: "flex", color: "#000", fontSize: "13px", fontWeight: "400", pt: 1, pb: 2 }}>
       {/* <Typography gutterBottom variant="h7" component="div" mr={10} className="order-header"> */}
-      {props.data.number} / {formattedDate(props.data.created)}
+      { props.show.number && ( props.data.number + " / " + formattedDate(props.data.created))}
       &nbsp;&nbsp;&nbsp;&nbsp;
       {/* </Typography>
       <Typography gutterBottom variant="h7" component="div" className="order-header"> */}

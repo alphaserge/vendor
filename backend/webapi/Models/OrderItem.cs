@@ -20,6 +20,7 @@
         public string? VendorName { get; set; }
         public string? imagePath { get; set; }
         public int? ColorVariantId { get; set; }
+        public int? ColorNo { get; set; }
         public string? ColorNames { get; set; }
         public string? Unit { get; set; }
         public DateTime? ConfirmByVendor { get; set; }

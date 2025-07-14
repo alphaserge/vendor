@@ -412,6 +412,7 @@ console.log(colorVarId)
                   label: "Picture " + ix, 
                   src: config.api + "/" + it.imagePath[0],
                   colorVar: {
+                      colorNo: it.colorNo,
                       colorNames: it.colorNames,
                       colorVariantId: it.colorVariantId
                   }}})
@@ -419,6 +420,7 @@ console.log(colorVarId)
                   label: "Picture " + ix, 
                   src: config.api + "/" + it.imagePath[0],
                   colorVar: {
+                      colorNo: it.colorNo,
                       colorNames: it.colorNames,
                       colorVariantId: it.colorVariantId
                   }}})

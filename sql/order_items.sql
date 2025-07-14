@@ -28,4 +28,5 @@ alter TABLE [dbo].[OrderItems] add ColorVariantId [int] NULL
 go
 alter TABLE [dbo].[OrderItems] add [ColorNames] [varchar](50) NULL
 go
-	
+alter table [dbo].[OrderItems] add [ColorNo] [int] NULL	
+go

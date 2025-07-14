@@ -77,7 +77,7 @@ export default function MyGridRow(props) {
             </Box> }
 
             { props.show.colorNames && <Box component={"div"} key={"grid-valuecolor-" + props.index} sx={{ padding: "10px" }} >
-                {props.item.colorNames}
+                {props.item.colorNo ? "color " + props.item.colorNo + " - " : ""}{props.item.colorNames}
             </Box> }
 
             { props.show.price && <Box component={"div"} key={"grid-valueprice-" + props.index} sx={{ width: "60px", padding: "5px", textAlign: "right" }} >

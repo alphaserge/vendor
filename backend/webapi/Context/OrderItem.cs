@@ -12,6 +12,7 @@
         public string? Details { get; set; }
         public decimal? Price { get; set; }
         public int? ColorVariantId { get; set; }
+        public int? ColorNo { get; set; }
         public string? ColorNames { get; set; }
         public string? Unit { get; set; }
         public DateTime? ConfirmByVendor { get; set; }

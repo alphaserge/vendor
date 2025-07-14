@@ -224,6 +224,7 @@ const makeOrder = async (event) => {
       price: computePrice(it.product, it.quantity, it.unit=="rolls"), //(it.quantity > 500 ? it.product.price : ( it.quantity > 300 ? it.product.price1 : it.product.price2 )),
       colorVariantId: it.colorVar.colorVariantId,
       colorNames: it.colorVar.colorNames,
+      colorNo: it.colorVar.colorNo,
     }})
 
     let order = {
@@ -309,7 +310,7 @@ const makeOrder = async (event) => {
         <Grid item sx={{display: "flex", flexDirection: "column"}}>
           <Property value={fined(data.product.itemName)}  />
           {/* <Property value={data.product.colors.filter((e)=>{ return e.colorNames!="PRODUCT" && e.colorNames!=""}).map((e)=> { return e.colorNames }).join(", ")}  /> */}
-          <Property value={data.colorVar.colorNames} />
+          <Property value={"Color: " + data.colorVar.colorNo + " - " + data.colorVar.colorNames} />
         </Grid>
         </Link>
 

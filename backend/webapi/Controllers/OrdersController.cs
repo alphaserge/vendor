@@ -257,6 +257,7 @@ namespace chiffon_back.Controllers
                     VendorQuantity = item.oi.VendorQuantity,
                     OrderRolls = item.oi.OrderRolls,
                     Details = item.oi.Details,
+                    ColorNo = item.oi.ColorNo,
                     ColorNames = item.oi.ColorNames,
                     VendorId = item.j.VendorId,
                     VendorName = ctx.Vendors.FirstOrDefault(x=>x.Id==item.j.VendorId).VendorName,

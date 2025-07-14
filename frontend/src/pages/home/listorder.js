@@ -224,7 +224,8 @@ export default function ListOrder(props) {
               client: true,
               details: true,
               vendor: true,
-              status: true
+              status: true,
+              number: true
             }}
             edit = {{ details: false }}
             button = {{ confirm: false }}

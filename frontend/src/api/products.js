@@ -45,6 +45,7 @@ const makeProduct = (prod)  => {
     RefNo: prod.refNo,
     Composition: prod.composition,
     Weight: getInt(prod.weight),
+    RollLength: getInt(prod.rollLength),
     Width: getInt(prod.width),
     Uuid: prod.uuid,
 

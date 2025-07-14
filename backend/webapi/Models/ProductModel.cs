@@ -554,6 +554,7 @@ namespace chiffon_back.Models
                     prod.VendorId = product.VendorId;
                     prod.Weight = product.Weight;
                     prod.Width = product.Width;
+                    prod.RollLength = product.RollLength;
                     prod.GSM = product.GSM;
                     prod.MetersInKG = product.MetersInKG;
                     prod.ColorFastness = product.ColorFastness;

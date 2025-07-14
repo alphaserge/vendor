@@ -152,6 +152,7 @@ export default function UpdateProduct(props) {
     const [artNo, setArtNo] = useState("")
     const [design, setDesign] = useState("")
     const [gsm, setGsm] = useState("")
+    const [rollLength, setRollLength] = useState("")
     const [itemName, setItemName] = useState("")
     const [price, setPrice] = useState("")
     const [price2, setPrice2] = useState("")
@@ -397,6 +398,7 @@ export default function UpdateProduct(props) {
       season: season,
       weight: weight,
       width: width,
+      rollLength: rollLength,
       colorFastness: colorFastness,
       fabricConstruction: fabricConstruction,
       fabricYarnCount: fabricYarnCount,
@@ -681,6 +683,7 @@ const setProduct = (prod) => {
   setPrice3((prod.price*1.10).toFixed(2))
   setStock(non(prod.stock))
   setWidth(non(prod.width))
+  setRollLength(non(prod.rollLength))
   setWeight(non(prod.weight))
   setColorFastness(non(prod.colorFastness))
   setFabricConstruction(non(prod.fabricConstruction))
@@ -1191,6 +1194,19 @@ useEffect(() => {
                 />
               </Grid>
               <Grid item xs={12} md={6} sx={{...flexStyle}} >
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="rollLength"
+                  label="Roll length"
+                  name="rollLength"
+                  sx = {halfItemStyle}
+                  value={rollLength}
+                  onChange={ev => setRollLength(ev.target.value)}
+                />
+                </Grid>
+
+                <Grid item xs={12} md={6} sx={{...flexStyle}} >
                 <MySelect
                   id="addproduct-productstyle"
                   url="ProductStyles"
@@ -1204,10 +1220,6 @@ useEffect(() => {
                   setValueFn={productStyleChanged}
                   data={productStyles}
                 />
-                </Grid>
-
-                <Grid item xs={12} md={6} sx={{...flexStyle}} >
-                <></>
                 </Grid>
               </Grid>
 
