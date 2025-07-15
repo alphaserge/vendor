@@ -33,14 +33,10 @@ export default function MyGrid(props) {
       {/* </Typography> */}
     </Box>
 
-    <Grid container spacing={0} sx={{ padding: "10px 0" }} >
+    <table spacing={0} sx={{ padding: "10px 0" }} >
     { props.data.items.map((item, index) => (
-        <Grid item 
-          xs={12} 
-          md={12} 
-          key={"itemprod-"+index} 
-          sx={{ padding: "8px 6px", backgroundColor: (index %2 ? "transparent" : "transparent"), alignItems: "center" }} >
           <MyGridRow 
+            st={{ padding: "0 10px"}}
             show={props.show}
             edit={props.edit}
             button={props.button}
@@ -51,9 +47,8 @@ export default function MyGrid(props) {
             handleAccept={props.handleAccept}
             sx={{ alignItems: "center" }}
             />
-        </Grid>
     ))}
-    </Grid>
+    </table>
     </CardContent>
 
     {/* <CardActions sx={{ justifyContent: "right", mr: 3}} >

@@ -22,8 +22,6 @@ const disableStyle = { height: 26, backgroundColor: "#ccc", color: APPEARANCE.WH
 
 export default function MyGridRow(props) {
 
-  const [extend, setExtend] = useState(false)
-
     const handleSendToVendor = (vendorId) => {
       sendToVendor(vendorId)
       if (props.showInfo) {
@@ -53,51 +51,50 @@ export default function MyGridRow(props) {
 
   return (
     
-      <Box>
-      
-        { extend!==true && <Box 
-            sx={{ display: "flex", flexDirection: "row", alignItems: "center", padding: 0, cursor: "pointer" }}
-            //onClick={(e)=>{ if (e.target.nodeName.toUpperCase() !== "INPUT") { /* setExtend(true)*/ }; }}
-          >
-          { props.show.image && <Box component={"img"} key={"grid-image-" + props.index} 
+        <tr style={{ alignItems: "center", padding: 0, cursor: "pointer" }} >
+          { props.show.image && <td><img key={"grid-image-" + props.index} 
                 src={config.api + "/" + props.item.imagePath} 
-                sx={{width: "50px", height: "50px", mr: 2}}
-                alt={"photo"+(props.index + 1)}  /> }
+                style={{width: "50px", height: "50px", mr: 2}}
+                alt={"photo"+(props.index + 1)} /></td> }
 
-            { props.show.product && <Box component={"div"} key={"grid-valuename-" + props.index} sx={{ flexGrow: 1, padding: "5px" }} >
+            { props.show.product && <td key={"grid-valuename-" + props.index} style={props.st} >
                 {props.item.product}
-            </Box> }
+            </td> }
 
-            { props.show.spec && <Box component={"div"} key={"grid-valuespec-" + props.index} sx={{ padding: "10px" }} >
+            { props.show.spec && <td key={"grid-valuespec-" + props.index} style={props.st} >
                 {props.item.spec}
-            </Box> }
+            </td> }
 
-            { props.show.owner && <Box component={"div"} key={"grid-valueowner-" + props.index} sx={{ padding: "10px" }} >
+            { props.show.owner && <td key={"grid-valueowner-" + props.index} style={props.st} >
                 {props.item.owner}
-            </Box> }
+            </td> }
 
-            { props.show.colorNames && <Box component={"div"} key={"grid-valuecolor-" + props.index} sx={{ padding: "10px" }} >
+            { props.show.colorNames && <td key={"grid-valuecolor-" + props.index} style={props.st} >
                 {props.item.colorNo ? "color " + props.item.colorNo + " - " : ""}{props.item.colorNames}
-            </Box> }
+            </td> }
 
-            { props.show.price && <Box component={"div"} key={"grid-valueprice-" + props.index} sx={{ width: "60px", padding: "5px", textAlign: "right" }} >
+            { props.show.price && <td key={"grid-valueprice-" + props.index} style={props.st} >
                 {formattedPrice(props.item.price)}<span style={{marginLeft: "2px", fontSize: "small"}}>$</span>
-            </Box> }
+            </td> }
 
-            { props.show.quantity && <Box component={"div"} key={"grid-valuequantity-" + props.index} sx={{ width: "100px", padding: "5px", textAlign: "right"  }} >
-                {props.item.quantity} {props.item.unit.replace('rolls','r').replace('meters','m')}
-            </Box> }
+            { props.show.quantity && <td key={"grid-valuequantity-" + props.index} style={props.st} >
+                {props.item.quantity}
+            </td> }
 
-            { props.show.details && <Box component={"div"} key={"grid-valuedetails-" + props.index} sx={{ width: "80px", padding: "5px" }} >
+            { props.show.quantity && <td key={"grid-valuequantity-" + props.index} style={props.st} >
+                {props.item.unit} {/*.replace('rolls','r').replace('meters','m')} */}
+            </td> }
+
+            { props.show.details && <td key={"grid-valuedetails-" + props.index} style={props.st} >
                 {props.item.details}
-            </Box> }
+            </td> }
 
-            { props.show.status && <Box component={"div"} key={"grid-valuestatus-" + props.index} sx={{ width: "60px", padding: "5px" }} >
+            { props.show.status && <td key={"grid-valuestatus-" + props.index} style={props.st} >
                 {props.item.status}
-            </Box> }
+            </td> }
 
 {/* <FormControl><InputLabel id={"label_details_"+props.index} size="small" sx={labelStyle1} >Details:</InputLabel>  */}
-            { props.edit.details && <TextField labelId={"label_details_"+props.index}
+            { props.edit.details && <td key={"grid-valuedetailss-" + props.index} style={props.st} > <TextField labelId={"label_details_"+props.index}
                   margin="normal"
                   size="small" 
                   //label="details"
@@ -111,10 +108,10 @@ export default function MyGridRow(props) {
                       height: "10px",
                     },
                   }}
-                /> }
+                /></td> }
                 {/* </FormControl> */}
 
-            { props.button.confirm && <Box component={"div"} key={"grid-valuedetails-" + props.index} sx={{ width: "60px", pl:1 }} >
+            { props.button.confirm && <td key={"grid-valuedetails-" + props.index} sx={{ width: "60px", pl:1 }} >
                 <Button 
                               variant="contained"
                               style={props.item.confirmByVendor!=null ? disableStyle : buttonStyle}
@@ -123,45 +120,10 @@ export default function MyGridRow(props) {
                               onClick={(e) => { props.handleAccept(props.item.id) }} >
                                   Accept
                             </Button>
-            </Box> }
+            </td> }
 
-          </Box> 
-    }
+          </tr> 
 
-{ extend===true && <Box sx={{ display: "flex", flexDirection: "row", height: 100, padding: 0, cursor: "pointer" }}>
-  { props.show.image && <Box component={"img"} key={"grid-image-" + props.index} 
-                src={config.api + "/" + props.item.imagePath} 
-                sx={{width: "90px", height: "90px", mr: 2}}
-                alt={"photo"+(props.index + 1)}  /> }
-                
-  <Box sx={{ flexGrow: 2, display: "flex", flexDirection: "column" }}>
-    
-    <Box sx={{ display: "flex", flexDirection: "row", pl: 2 }}>
-      <Box sx={{pr: 2, width: 100}}>Item name:</Box>{props.item.product}
-    </Box> 
+)
 
-    <Box sx={{ display: "flex", flexDirection: "row", pl: 2 }}>
-      <Box sx={{pr: 2, width: 100}}>Composition:</Box>{props.item.spec}
-    </Box> 
-
-  </Box>
-
-  <Box sx={{ display: "flex", flexDirection: "column", pr: 3 }}>
-
-    <Box sx={{ display: "flex", flexDirection: "row", pl: 2 }}>
-      <Box sx={{pr: 2, width: 70}}>Price:</Box>{formattedPrice(props.item.price)}<span style={{marginLeft: "2px", fontSize: "small"}}>$</span>
-    </Box> 
-
-    <Box sx={{ display: "flex", flexDirection: "row", pl: 2 }}>
-      <Box sx={{pr: 2, width: 70}}>Quantity:</Box>{formattedPrice(props.item.quantity)}<span style={{marginLeft: "2px", fontSize: "small"}}>$</span>
-    </Box>
-
-  </Box>
-
-  </Box>
-  
-  }
-
-  </Box>
-);
 }
