@@ -173,17 +173,24 @@ export default function ShoppingCart(props) {
   }
 
   const sendSms = (e) => {
-      let url = "https://elizarov.sa@mail.ru:PGzuNeMuy2LzKjx7FPtH3uL_xsMX7I8P@gate.smsaero.ru/v2/sms/send?number=79167220074&text=Your code: " + code + "&sign=SMS Aero"
+
+      axios.post("https://elizarov.sa@mail.ru:PGzuNeMuy2LzKjx7FPtH3uL_xsMX7I8P@gate.smsaero.ru/v2/auth")
+      .then(function (res) {
+        let url = "https://elizarov.sa@mail.ru:PGzuNeMuy2LzKjx7FPtH3uL_xsMX7I8P@gate.smsaero.ru/v2/sms/send?number=79167220074&text=Your code: " + code + "&sign=SMS Aero"
           axios.get(url)
           .then(function (res) {
-              //...
+              let rr = res
           })
           .catch (error => {
             console.log('sendSms error:' )
             console.log(error)
           })
-    
-    
+      })
+      .catch (error => {
+        console.log('sendSms error:' )
+        console.log(error)
+      })
+
   }
 
   const setUnit = (index, unit) => {
