@@ -14,6 +14,7 @@ import { Button, Typography } from "@mui/material";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/material"
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -52,6 +53,10 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 0,
     marginLeft: "4px"
   },
+  label: {
+   backgroundColor: "white",
+   color: "#888"
+  }
 }));
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -59,6 +64,9 @@ const defaultTheme = createTheme()
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
+
+const halfItemStyle1 = { width: "calc( 50% - 4px )", m: 0 }
+const labelStyle1 = { m: 0, ml: 0, mr: 4 }
 
 const MenuProps = {
   PaperProps: {
@@ -124,13 +132,34 @@ const StyledLink = withStyles({
     }
   })(Link);
 
+const styles = theme => ({
+  root: {
+    display: "flex",
+    textAlign: "center",
+    width: 300,
+    marginLeft: 100,
+    marginTop: 200
+  },
+  hidden: {
+    display: "none"
+  },
+  button: {
+    background: "green"
+  }, 
+  label: {
+   backgroundColor: "white",
+   color: "#888"
+  }
+});
+
+
 const getFromUrl = (name) => {
   const search = window.location.search
   const params = new URLSearchParams(search)
   return params.get(name)
 }
 
- const textStyle = { m: 0, mb: 2 }
+ const textStyle = { m: 0, mb: 2, backgroundColor: "#fff" }
 
  function randomInt(min, max) { // min and max included 
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -375,16 +404,26 @@ const makeOrder = async (event) => {
       <PageHeader value={"Delivery information"} />
       {/* <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#3d694a", p:0, pb: 2, pt: 2}}> Delivery information </Typography> */}
         
+
+              {/* <FormControl sx = {halfItemStyle1}>
+              <InputLabel id="client-name-label" sx={labelStyle1} size="small" >Your name</InputLabel> */}
                 <StyledTextField
                   margin="normal"
                   size="small"
                   id="clientName"
                   name="clientName"
                   label="Your name"
+                  labelId="client-name-label"
+                  key="client-name"
                   sx = {{...textStyle, ...{width: "200px"}}}
                   value={clientName}
+                  //InputLabelProps={{ shrink: !!clientName, classes: { root: classes.label } }} 
+
+
+
                   onChange={ev => { setClientName(ev.target.value); checkName(ev.target.value);  } }
                 />
+                {/* </FormControl> */}
                 <StyledTextField
                   margin="normal"
                   size="small"
