@@ -73,16 +73,12 @@ export default function MyGridRow(props) {
                 {props.item.colorNo ? "color " + props.item.colorNo + " - " : ""}{props.item.colorNames}
             </td> }
 
-            { props.show.price && <td key={"grid-valueprice-" + props.index} style={props.st} >
+            { props.show.price && <td key={"grid-valueprice-" + props.index} style={{...props.st, ...{textAlign: "right"}}} >
                 {formattedPrice(props.item.price)}<span style={{marginLeft: "2px", fontSize: "small"}}>$</span>
             </td> }
 
-            { props.show.quantity && <td key={"grid-valuequantity-" + props.index} style={props.st} >
-                {props.item.quantity}
-            </td> }
-
-            { props.show.quantity && <td key={"grid-valuequantity-" + props.index} style={props.st} >
-                {props.item.unit} {/*.replace('rolls','r').replace('meters','m')} */}
+            { props.show.quantity && <td key={"grid-valuequantity-" + props.index} style={{...props.st, ...{textAlign: "right"}}} >
+                {props.item.quantity}&nbsp;{props.item.unit.replace('rolls','r.').replace('meters','m.')}
             </td> }
 
             { props.show.details && <td key={"grid-valuedetails-" + props.index} style={props.st} >
@@ -94,7 +90,9 @@ export default function MyGridRow(props) {
             </td> }
 
 {/* <FormControl><InputLabel id={"label_details_"+props.index} size="small" sx={labelStyle1} >Details:</InputLabel>  */}
-            { props.edit.details && <td key={"grid-valuedetailss-" + props.index} style={props.st} > <TextField labelId={"label_details_"+props.index}
+            { props.edit.details && <td key={"grid-valueeditdetails-" + props.index} style={props.st} > 
+                <TextField labelId={"label_details_"+props.index}
+                  disabled={props.item.confirmByVendor!=null}
                   margin="normal"
                   size="small" 
                   //label="details"

@@ -100,6 +100,10 @@ const StyledButton = withStyles({
       backgroundColor: '#fd8bb5',
       color: '#fff',
   },
+  '&:disabled': {
+      backgroundColor: '#aaa',
+      color: '#fff',
+  },
 }})(Button);
 
 const StyledTextField1 = withStyles({
@@ -285,8 +289,8 @@ const makeOrder = async (event) => {
     }
   }
 
-  console.log('shopCart:')
-  console.log(shopCart)
+  console.log('fieldsValid:')
+  console.log(fieldsValid)
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -454,7 +458,7 @@ const makeOrder = async (event) => {
                   value={clientAddress}
                   onChange={ev => { setClientAddress(ev.target.value); checkAddress(ev.target.value); } }
                 />
-<Box sx={{display: "flex"}}>
+              { false && <Box sx={{display: "flex"}}>
                 <StyledTextField
                   disabled={!fieldsValid}
                   margin="normal"
@@ -466,13 +470,9 @@ const makeOrder = async (event) => {
                   value={sms}
                   onChange={ev => { setSms(ev.target.value)  } }
                 />
-
-                <Button
-            
+            <Button
             onClick={sendSms}
-            sx={{ 
-              
-              p: "3px 8px", 
+            sx={{ p: "3px 8px", 
               height: "32px",
               marginTop: "3px",
               marginLeft: "8px",
@@ -481,26 +481,28 @@ const makeOrder = async (event) => {
               backgroundColor: fieldsValid ? "#222":"#ccc", 
               color: "#fff", 
               borderRadius: 0 }}>Send</Button>
-</Box>
+          </Box> }
+
         { orderError &&
             <Box sx={{ textAlign: "center", marginTop: 2, fontSize: "12pt", color: "red" }}>
             An error has occurred. Please check that all fields are filled in correctly and completely and try saving again.
             </Box> }
 
         <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "right"}}>
-          <Button
+          <StyledButton
             startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
             onClick={makeOrder}
-            disabled={sms != code}
+            //disabled={sms != code}
+            disabled={fieldsValid==false}
             sx={{ 
               mt: 4, 
               p: "6px", 
               width: "120px", 
               fontSize: ap.FONTSIZE,
               textTransform: "none",
-              backgroundColor: sms == code ? "#222":"#ccc", 
+              backgroundColor: fieldsValid ? "#222":"#ccc", 
               color: "#fff", 
-              borderRadius: 0 }}>Confirm</Button>
+              borderRadius: 0 }} >Confirm</StyledButton>
         </Box>
         </Box>
         </Box> )}
