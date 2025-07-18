@@ -163,7 +163,7 @@ const getFromUrl = (name) => {
   return params.get(name)
 }
 
- const textStyle = { m: 0, mb: 2, backgroundColor: "#fff" }
+ const textStyle = { m: 0, mb: 2, backgroundColor: "#fff", fontFamily: ap.FONTFAMILY }
 
  function randomInt(min, max) { // min and max included 
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -250,6 +250,13 @@ export default function ShoppingCart(props) {
   const checkPhone = (phone) => {
     setFieldsValid(!!phone && !!clientEmail && !!clientName && !!clientAddress)
   }
+
+
+const confirmOrder = async (event) => {
+
+        setStep("confirm")
+
+}
 
 const makeOrder = async (event) => {
 
@@ -491,7 +498,7 @@ const makeOrder = async (event) => {
         <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "right"}}>
           <StyledButton
             startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
-            onClick={makeOrder}
+            onClick={confirmOrder}
             //disabled={sms != code}
             disabled={fieldsValid==false}
             sx={{ 
@@ -506,6 +513,16 @@ const makeOrder = async (event) => {
         </Box>
         </Box>
         </Box> )}
+
+    {(step == "confirm" &&  
+
+    <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column", pt: 8 }} className="center-content" >
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", minWidth: "600px" }}  >
+      {/* <PageHeader value={"Your order has been successfully created"} /> */}
+      <Property value={"Your order has been successfully created"} />
+      <Property value={"Please check the email address you provided when placing your order"} />
+      </Box>
+      </Box> )}
 
     {(step == "success" &&  
 

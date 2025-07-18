@@ -227,6 +227,14 @@ table.shopping-cart  td img {
   max-width: 80px;
 }
 
+input.MuiInputBase-input, 
+label.MuiFormLabel-root, 
+label.MuiInputLabel-root,
+button.MuiButtonBase-root,
+button.MuiButton-root {
+  font-family: "Chiron Sung HK", "Open-Sans", Arial, "Inter", "sans-serif"!important;
+}
+
 span.item-label  {
   color: #444;
   display: inline-block;
