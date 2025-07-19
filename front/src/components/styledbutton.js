@@ -12,7 +12,7 @@ export default withStyles({
     color: '#fff!important',
     fontSize: "15px!important",
     textTransform: "none!important",
-    padding: "8px 14px!important",
+    padding: "6px 12px!important",
     '&:hover': {
       backgroundColor: '#fd8bb5!important',
       color: '#fff',

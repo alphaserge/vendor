@@ -21,4 +21,16 @@
         public string? Email { get; set; }
     }
 
+    public class ClientOrderShort
+    {
+        public int Id { get; set; }
+        public DateTime? Created { get; set; }
+        public int Number { get; set; }
+        public string? ClientName { get; set; }
+        public decimal? Total { get; set; }
+        //public string?[] Names { get; set; }
+        public string?[] Images { get; set; }
+        //public string?[] Uuids { get; set; }
+    }
+
 }

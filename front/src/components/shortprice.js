@@ -10,7 +10,7 @@ export default function ShortPrice(props) {
     fontSize: ap.FONTSIZE, 
     fontWeight: ap.FONTWEIGHT,
     backgroundColor: "#ddd",
-    borderRadius: "50%",
+    borderRadius: "15%",
     width: "40px",
     height: "40px",
     textAlign: "center",

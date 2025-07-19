@@ -667,7 +667,45 @@ namespace chiffon_back.Controllers
             }
         }
 
+        [HttpGet("ClientOrdersShort")]
+        public IEnumerable<Models.ClientOrderShort> ClientOrdersShort([FromQuery] string email)
+        {
+            var filteredOrders = from o in ctx.Orders.Where(x => x.ClientEmail != null &&
+                              x.ClientEmail.Trim().ToLower() == email.Trim().ToLower()).OrderByDescending(x => x.Created) select o;
 
+            List<Models.ClientOrderShort> orders = new List<ClientOrderShort>();
+            foreach (var o in filteredOrders.ToList())
+            {
+                var query = from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
+                            join vv in ctx.ColorVariants on oi.ColorVariantId equals vv.Id into color_variants
+                            from cv in color_variants.DefaultIfEmpty()
+                            select new { oi, cv };
+                ClientOrderShort order = new ClientOrderShort()
+                {
+                    Id = o.Id,
+                    Created = o.Created,
+                    ClientName = o.ClientName,
+                    Number = o.Number,
+
+                };
+
+                List<string> names = new List<string>();
+                List<string> images = new List<string>();
+                foreach (var q in query.ToList())
+                {
+                    var imageFiles = DirectoryHelper.GetImageFiles(q.cv.Uuid!);
+                    if (imageFiles.Count > 0)
+                    {
+                        images.Add(imageFiles[0]);
+                        //
+                    }
+                }
+                order.Images = images.ToArray();
+                orders.Add(order);
+            }
+
+            return orders.AsEnumerable();
+        }
 
 
     }
