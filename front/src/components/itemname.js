@@ -9,7 +9,7 @@ export default function ItemName(props) {
   return <Box title={props.value} sx={{ 
     color: "#222", 
     fontFamily: ap.FONTFAMILY,
-    fontSize: "24px", 
+    fontSize: "20px", 
     fontWeight: "600",
     //letterSpacing: "1px",
     padding: "10px 10px 20px 0px" }}>{props.value}

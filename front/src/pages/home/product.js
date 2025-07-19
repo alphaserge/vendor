@@ -35,6 +35,7 @@ import ItemName from '../../components/itemname';
 import Amount from '../../components/amount';
 import Selector from '../../components/selector';
 import Property from '../../components/property';
+import StyledButton from '../../components/styledbutton';
 import {APPEARANCE as ap} from '../../appearance';
 
 import { fined } from "../../functions/helper"
@@ -78,6 +79,7 @@ const MenuProps = {
   },
 }})*/
 
+/* 
 const StyledButton = styled(Button)`
   border-radius: 0,
   background-color: '#222',
@@ -88,7 +90,7 @@ const StyledButton = styled(Button)`
     background: #f33;
   }
 `
-/*const StyledButton = withStyles({
+const StyledButton = withStyles({
   root: {
     backgroundColor: '#222',
     color: '#fff',
@@ -483,38 +485,18 @@ console.log(colorVarId)
                 </FormControl>
               </Box>
 
-                <Button
-                  //variant="contained"
+                <StyledButton
                   startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
                   onClick={handleAddToCart}
-                  //className={classes.button}
-                  sx={{ 
-                    mt: 4, 
-                    p: "12px", 
-                    width: "160px", 
-                    fontSize: ap.FONTSIZE,
-                    textTransform: "none",
-                    backgroundColor: colorVarId !=- 1 ? "#222":"#ccc", 
-                    color: "#fff", 
-                    borderRadius: 0 }}>Add to cart</Button>
+                  sx={{ mt: 3 }} >Add to cart</StyledButton>
               </>)}
 
               {(productInCart===true && 
               <Box sx={{ width: "930px" }}> 
-                {(productInCart===true && <Button
-                  variant="contained"
+                {(productInCart===true && <StyledButton
                   startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
-                  //className="button"
                   onClick={handleOpenCart}
-                  sx={{
-                    mt: 3, 
-                    p: "12px", 
-                    width: "160px", 
-                    fontSize: ap.FONTSIZE,// "18px",
-                    textTransform: "none",
-                    backgroundColor: "#222", 
-                    color: "#fff",  
-                    borderRadius: 0 }}>In cart</Button> )}
+                  sx={{ mt: 3 }}>In cart</StyledButton> )}
               </Box>)}
           </Box>
 
@@ -525,7 +507,6 @@ console.log(colorVarId)
             classes={{ content: classes.noexpand, expanded: classes.noexpand }} 
             expandIcon={<ExpandMoreIcon sx={{marginLeft: "0"}} />} 
             sx={{ maxWidth: "744px", padding: "0 3px", flexGrow: 0, justifyContent: "flex-start" }} >
-          
             <Typography sx={{ margin: 0, fontFamily: ap.FONTFAMILY, fontSize: ap.FONTSIZE, fontWeight: "600", flexGrow: 0, paddingRight: "4px" }} className="subtitle-2" >More information</Typography>
           </AccordionSummary>
 

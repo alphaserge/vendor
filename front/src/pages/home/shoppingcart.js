@@ -40,6 +40,9 @@ import PageHeader from '../../components/pageheader';
 import Amount from '../../components/amount';
 import Selector from '../../components/selector';
 import Property from '../../components/property';
+import ShortPrice from '../../components/shortprice';
+import StyledButton from '../../components/styledbutton';
+import Header from '../../components/header';
 
 import { fined, computePrice } from "../../functions/helper"
 import {APPEARANCE as ap} from '../../appearance';
@@ -90,21 +93,6 @@ const MenuProps = {
   },
 }})*/
 
-const StyledButton = withStyles({
-  root: {
-    backgroundColor: '#222',
-    color: '#fff',
-    fontSize: "18px",
-    textTransform: "none!important",
-    '&:hover': {
-      backgroundColor: '#fd8bb5',
-      color: '#fff',
-  },
-  '&:disabled': {
-      backgroundColor: '#aaa',
-      color: '#fff',
-  },
-}})(Button);
 
 const StyledTextField1 = withStyles({
   borderRadius: '0px',
@@ -178,10 +166,13 @@ export default function ShoppingCart(props) {
     const [clientName, setClientName] = useState("")
     const [clientPhone, setClientPhone] = useState("")
     const [clientEmail, setClientEmail] = useState("")
+    //const [emailSended, setEmailSended] = useState(false)
+    const [info, setInfo] = useState("")
     const [step, setStep] = useState("cart")
     const [fieldsValid, setFieldsValid] = useState(false)
     const [sms, setSms] = useState("")
     const [code, setCode] = useState(randomInt(1001,9999))
+    const [counter, setCounter] = useState(1)
 
     const [orderError, setOrderError] = useState(false)
 
@@ -224,6 +215,28 @@ export default function ShoppingCart(props) {
         console.log(error)
       })
 
+  }
+
+  const sendEmail = async (e) => {
+
+    const response = await fetch(config.api + '/Orders/Confirm', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({code: code, email: clientEmail, clientName: clientName})
+    })
+
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    //const json = await response.json();    
+    //setEmailSended(true)
+    setInfo("Please check your email and enter the code from the letter and click Confirm button")
+    setCounter(-1)
+    setTimeout(() => {
+      setCounter(1)
+    }, 1000*30);
+    console.log(response)
   }
 
   const setUnit = (index, unit) => {
@@ -334,10 +347,17 @@ const makeOrder = async (event) => {
 
     <Box sx={{ 
       display: "grid", 
-      gridTemplateColumns: "80px 1fr 100px 140px 140px 40px",
+      gridTemplateColumns: "80px 1fr 60px 140px 140px 40px",
       columnGap: "10px",
-      rowGap: "10px",
+      rowGap: "20px",
       alignItems: "center" }}>
+
+      <Grid item><Header text="Photo"></Header></Grid>
+      <Grid item><Header text="Item name"></Header></Grid>
+      <Grid item><Header text="Price"></Header></Grid>
+      <Grid item><Header text="Amount"></Header></Grid>
+      <Grid item><Header text="Unit"></Header></Grid>
+      <Grid item></Grid>
 
     {shopCart.map((data, index) => (
       <React.Fragment>
@@ -363,7 +383,7 @@ const makeOrder = async (event) => {
 
         <Link to={"/product?id=" + data.product.id}  style={{ textDecoration: 'none' }} >
         <Grid item>
-          <Property value={fined(data.product.price) + "$"} />
+          <ShortPrice value={fined(data.product.price) + "$"} />
         </Grid>
         </Link>
 
@@ -392,18 +412,10 @@ const makeOrder = async (event) => {
 
     </Box>
         <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "right"}}>
-          <Button
+          <StyledButton
             startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
             onClick={(e) => { setStep("delivery")} }
-            sx={{ 
-              mt: 4, 
-              p: "12px", 
-              width: "160px", 
-              fontSize: ap.FONTSIZE,
-              textTransform: "none",
-              backgroundColor: "#222", 
-              color: "#fff", 
-              borderRadius: 0 }}>Create order</Button>
+            sx={{ mt: 4 }}>Create order</StyledButton>
         </Box>
     </Box>
     </Box> )}
@@ -413,11 +425,6 @@ const makeOrder = async (event) => {
     <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column" }} className="center-content" >
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", minWidth: "600px" }}  >
       <PageHeader value={"Delivery information"} />
-      {/* <Typography sx={{fontSize: "16px", fontWeight: 500, color: "#3d694a", p:0, pb: 2, pt: 2}}> Delivery information </Typography> */}
-        
-
-              {/* <FormControl sx = {halfItemStyle1}>
-              <InputLabel id="client-name-label" sx={labelStyle1} size="small" >Your name</InputLabel> */}
                 <StyledTextField
                   margin="normal"
                   size="small"
@@ -428,13 +435,8 @@ const makeOrder = async (event) => {
                   key="client-name"
                   sx = {{...textStyle, ...{width: "200px"}}}
                   value={clientName}
-                  //InputLabelProps={{ shrink: !!clientName, classes: { root: classes.label } }} 
-
-
-
                   onChange={ev => { setClientName(ev.target.value); checkName(ev.target.value);  } }
                 />
-                {/* </FormControl> */}
                 <StyledTextField
                   margin="normal"
                   size="small"
@@ -465,21 +467,23 @@ const makeOrder = async (event) => {
                   value={clientAddress}
                   onChange={ev => { setClientAddress(ev.target.value); checkAddress(ev.target.value); } }
                 />
-              { false && <Box sx={{display: "flex"}}>
+              { true && <Box sx={{display: "flex"}}>
                 <StyledTextField
                   disabled={!fieldsValid}
                   margin="normal"
                   size="small"
                   id="smscode"
                   name="sms-code"
-                  label="SMS code"
-                  sx = {{...textStyle, ...{width: "100px"}}}
+                  label="Code from email"
+                  sx = {{...textStyle, ...{width: "140px"}}}
                   value={sms}
                   onChange={ev => { setSms(ev.target.value)  } }
                 />
             <Button
-            onClick={sendSms}
-            sx={{ p: "3px 8px", 
+            onClick={sendEmail}
+            sx={{ 
+              display: fieldsValid && ( counter>=0 ? "block":"none" ),
+              p: "3px 8px", 
               height: "32px",
               marginTop: "3px",
               marginLeft: "8px",
@@ -487,8 +491,11 @@ const makeOrder = async (event) => {
               textTransform: "none",
               backgroundColor: fieldsValid ? "#222":"#ccc", 
               color: "#fff", 
-              borderRadius: 0 }}>Send</Button>
-          </Box> }
+              borderRadius: 0 }}>Send e-mail</Button>
+          </Box>
+          }
+
+        { info && <Box sx={{ textAlign: "center", marginTop: 2, fontSize: "14px", color: "#333" }}>{info}</Box> }
 
         { orderError &&
             <Box sx={{ textAlign: "center", marginTop: 2, fontSize: "12pt", color: "red" }}>
@@ -498,18 +505,10 @@ const makeOrder = async (event) => {
         <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "right"}}>
           <StyledButton
             startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
-            onClick={confirmOrder}
-            //disabled={sms != code}
-            disabled={fieldsValid==false}
-            sx={{ 
-              mt: 4, 
-              p: "6px", 
-              width: "120px", 
-              fontSize: ap.FONTSIZE,
-              textTransform: "none",
-              backgroundColor: fieldsValid ? "#222":"#ccc", 
-              color: "#fff", 
-              borderRadius: 0 }} >Confirm</StyledButton>
+            onClick={makeOrder}
+            disabled={sms != code}
+            //disabled={fieldsValid==false}
+            sx={{ mt: 4 }} >Confirm</StyledButton>
         </Box>
         </Box>
         </Box> )}

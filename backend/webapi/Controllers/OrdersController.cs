@@ -3,6 +3,8 @@ using chiffon_back.Code;
 using chiffon_back.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Http.HttpResults;
+
 
 //using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +15,7 @@ using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Web;
 using System.Web.Http.Cors; // пространство имен CORS
@@ -502,9 +505,8 @@ namespace chiffon_back.Controllers
                     client.Send(mess);
                     mess.Dispose();
                     client.Dispose();
-                    Console.WriteLine("SignUp: Email was sended");
+                    Console.WriteLine("New order created and email was sended");
                 }
-
                 //------------------------------
 
 
@@ -611,6 +613,60 @@ namespace chiffon_back.Controllers
                 return CreatedAtAction(nameof(OrderItem), new { id = -1 }, null);
             }
         }
+
+        [HttpPost("Confirm")]
+        public ActionResult Confirm(Models.ConfirmCode confirm)
+        {
+            string label = "'font-weight: normal; font-size: 100%; padding: 5px 12px;'";
+            string cell = "'padding: 10px 20px;'";
+            string rightAlign = "'text-align: right;padding: 10px 20px;'";
+            string header = "'font-weight: #400; color: #66f;'";
+            string headerBlack = "'font-weight: bold; color: #000;'";
+
+            using (MailMessage mess = new MailMessage())
+            {
+                string? frontendUrl = _configuration.GetValue<string>("Url:Frontend");
+                string? ordersManager = _configuration.GetValue<string>("Orders:Manager");
+
+                string body = $"<p style={header}>Dear {confirm.ClientName}!</p><p style={header}>You order confirmation code is {confirm.Code}</p>";
+                body += $"<p style={header}>Best regards, textile company Angelika</p>";
+                body += $"<p style={headerBlack}>Our contacts:</p>";
+                body += "<p>Showroom address:<br/>Yaroslavskoe shosse, possession 1 building 1, Mytishchi, Moscow region, Russia.<br/>Postal code: 141009<br/>Phones: +7(926)018-01-25, +7(916)876-20-08";
+                body += "<p>Headquarters:<br/>Bolshaya Gruzinskaya, 20, 3A/P Moscow, Russia.<br/>Postal code: 123242</p>";
+
+                SmtpClient client = new SmtpClient("smtp.mail.ru", Convert.ToInt32(587))
+                {
+                    Credentials = new NetworkCredential("elizarov.sa@mail.ru", "5nwKmZ2SpintVmFRQVZV"), //"KZswYNWrd9eY1xVfvkre"),
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    Timeout = 5000
+                };
+
+                mess.From = new MailAddress("elizarov.sa@mail.ru");
+                mess.To.Add(new MailAddress(confirm.Email));
+                mess.To.Add(new MailAddress(ordersManager));
+                mess.Subject = "A new order confirmation code";
+                mess.SubjectEncoding = Encoding.UTF8;
+
+                //mess.Body = $"<h2>Hello, {mdUser.FirstName}!</h2><p>You received this letter because this address was used when creating an account on the Anzhelika company website</p><p>To complete your account creation, click <a href='{frontendUrl}/confirm?token={hash}'>this link</a></p>";
+                // !! to do - add link to order !!
+                mess.Body = body;
+                //mess.AlternateViews.Add(AV);
+                mess.IsBodyHtml = true;
+                /*try
+                {
+                    mess.Attachments.Add(new Attachment(какой файл добавлять для отправки));
+                }
+                catch { }*/
+                client.Send(mess);
+                mess.Dispose();
+                client.Dispose();
+                Console.WriteLine("A new order confirmation email was sended");
+
+                return Ok(new { email = confirm.Email });
+            }
+        }
+
 
 
 

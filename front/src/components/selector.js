@@ -8,8 +8,8 @@ import { APPEARANCE as ap } from "../appearance"
 export default function Selector(props) {
 
   const [index, setIndex]  =  useState(props.list.findIndex((el)=> el == props.value))
-  const inputPadding = props.size && props.size=="small" ? "4px 6px" : "14px 12px";
-  const arrowFontSize = props.size && props.size=="small" ? "14px" : "18px"; 
+  const inputPadding = props.size && props.size=="small" ? "4px 6px" : "10px 12px";
+  const arrowFontSize = props.size && props.size=="small" ? "14px" : "14px"; 
   const margin1 = props.size && props.size=="small" ? "3px 0 1px 0" : "0 0 1px 0"; 
   
   function buttonClick(incr) {
@@ -60,7 +60,7 @@ export default function Selector(props) {
                 textAlign: "center"
               }}
               /> 
-            <Box sx={{display: "flex", flexDirection: "column", width: "32px", height: "46px", fontSize: "18px"}}> 
+            <Box sx={{display: "flex", flexDirection: "column", width: "32px", height: "38px", fontSize: "18px"}}> 
               {/* <span class="material-symbols-outlined" style={{fontSize: "18px", textAlign: "center", transform: "rotate(0.5turn)"}} >stat_minus_1</span>
               <span class="material-symbols-outlined" style={{fontSize: "18px", textAlign: "center" }} >stat_minus_1</span> */}
               <div 

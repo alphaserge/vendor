@@ -17,8 +17,8 @@ export const APPEARANCE = {
 
     PAGEHEADER: {
         COLOR: "#444",
-        FONTSIZE: "20px",
-        FONTWEIGHT: "500"
+        FONTSIZE: "17px",
+        FONTWEIGHT: "700"
     },
 
     SUBTITLE: {
@@ -26,5 +26,4 @@ export const APPEARANCE = {
         FONTSIZE: "16px",
         FONTWEIGHT: "600"
     },
-
 }

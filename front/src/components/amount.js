@@ -8,7 +8,7 @@ export default function Amount(props) {
 
   const [value, setValue] =  useState(props.value)
   const inputPadding = props.size && props.size=="small" ? "4px 6px" : "14px 12px";
-  const arrowFontSize = props.size && props.size=="small" ? "14px" : "18px";
+  const arrowFontSize = props.size && props.size=="small" ? "14px" : "14px";
   const margin1 = props.size && props.size=="small" ? "3px 0 1px 0" : "0 0 1px 0"; 
 
   function inputChange(e) {
@@ -55,14 +55,14 @@ export default function Amount(props) {
                 boxShadow: "0 2px 4px rgba(0,0,0, 0.05)" ,
                 borderRadius: "0px",
                 margin: "0 8px 0 2px",
-                padding: (props.size && props.size=="small" ? "4px 6px" : "14px 12px"),
+                padding: (props.size && props.size=="small" ? "4px 6px" : "10px 12px"),
                 outline: 0,
                 minWidth: 0,
                 width: "80px",
                 textAlign: "center"
               }}
               /> 
-            <Box sx={{display: "flex", flexDirection: "column", width: "32px", height: "46px", fontSize: "18px"}}> 
+            <Box sx={{display: "flex", flexDirection: "column", width: "32px", height: "38px", fontSize: "18px"}}> 
               {/* <span class="material-symbols-outlined" style={{fontSize: "18px", textAlign: "center", transform: "rotate(0.5turn)"}} >stat_minus_1</span>
               <span class="material-symbols-outlined" style={{fontSize: "18px", textAlign: "center" }} >stat_minus_1</span> */}
               <div 

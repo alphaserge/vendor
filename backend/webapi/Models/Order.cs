@@ -14,4 +14,11 @@
         public string? ClientAddress { get; set; }
         public OrderItem[]? Items { get; set; }
     }
+    public class ConfirmCode
+    {
+        public int Code { get; set; }
+        public string? ClientName { get; set; }
+        public string? Email { get; set; }
+    }
+
 }
