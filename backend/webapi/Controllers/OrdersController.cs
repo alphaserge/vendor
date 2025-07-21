@@ -147,16 +147,16 @@ namespace chiffon_back.Controllers
             var mapper = config.CreateMapper();
             List <Vendor> vendorList = ctx.Vendors.Select(x => mapper.Map<Models.Vendor>(x)).ToList();
 
-            var query = ctx.Orders.AsQueryable();
+            var ordersQuery = ctx.Orders.AsQueryable();
             switch (filter.type)
             {
-                case "client": query = query.Where(x => x.ClientEmail!.Trim().ToLower() == filter.value.Trim().ToLower());
+                case "client":
+                    ordersQuery = ordersQuery.Where(x => x.ClientEmail!.Trim().ToLower() == filter.value.Trim().ToLower());
                     break;
                             
             }
 
-            List<Models.Order> orders =
-                ctx.Orders.OrderByDescending(x => x.Created)
+            List<Models.Order> orders = ordersQuery.OrderByDescending(x => x.Created)
                 .Select(x => mapper.Map<Models.Order>(x))
                 .ToList();
 

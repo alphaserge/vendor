@@ -14,7 +14,7 @@ import axios from 'axios'
 
 import config from "../../config.json"
 
-import Header from './header';
+//import Header from './header';
 import Footer from './footer';
 
 import MainSection from './mainsection';
