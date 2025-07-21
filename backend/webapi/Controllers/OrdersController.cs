@@ -25,6 +25,13 @@ namespace chiffon_back.Controllers
     [ApiController]
     [Route("[controller]")]
     [EnableCors(origins: "http://185.40.31.18:3000,http://185.40.31.18:3010", headers: "*", methods: "*")]
+
+    public class OrdersFilter
+    {
+        public string type { get; set; }
+        public string value { get; set; }
+    }
+
     public class OrdersController : ControllerBase
     {
         private MapperConfiguration config = new MapperConfiguration(cfg =>
@@ -135,13 +142,22 @@ namespace chiffon_back.Controllers
         }
 
         [HttpGet(Name = "Orders")]
-        public IEnumerable<Models.Order> Get()
+        public IEnumerable<Models.Order> Get(OrdersFilter filter)
         {
+            var mapper = config.CreateMapper();
+            List <Vendor> vendorList = ctx.Vendors.Select(x => mapper.Map<Models.Vendor>(x)).ToList();
+
+            var query = ctx.Orders.AsQueryable();
+            switch (filter.type)
+            {
+                case "client": query = query.Where(x => x.ClientEmail!.Trim().ToLower() == filter.value.Trim().ToLower());
+                    break;
+                            
+            }
+
             List<Models.Order> orders =
                 ctx.Orders.OrderByDescending(x => x.Created)
-                .Select(x =>
-                    config.CreateMapper()
-                        .Map<Models.Order>(x))
+                .Select(x => mapper.Map<Models.Order>(x))
                 .ToList();
 
             foreach (var o in orders) {
@@ -149,9 +165,9 @@ namespace chiffon_back.Controllers
                 var query = from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
                             join p in ctx.Products on oi.ProductId equals p.Id into jointable
                             from j in jointable.DefaultIfEmpty()
-                            join v in ctx.Vendors on j.VendorId equals v.Id into joinvendors
-                            from jv in joinvendors.DefaultIfEmpty()
-                            select new { oi, j, jv };
+                            join v in ctx.ColorVariants on oi.ColorVariantId equals v.Id into joincv
+                            from cv in joincv.DefaultIfEmpty()
+                            select new { oi, j, cv };
 
                 var items = query.ToList();
 
@@ -165,6 +181,7 @@ namespace chiffon_back.Controllers
                     {
                         OrderId = o.Id,
                         ProductId = item.oi.ProductId,
+                        ColorVariantId = item.cv.Id,
                         Id = item.oi.Id,
                         ArtNo = item.j.ArtNo,
                         RefNo = item.j.RefNo,
@@ -179,50 +196,25 @@ namespace chiffon_back.Controllers
                         Details = item.oi.Details,
                         ColorNames = item.oi.ColorNames,
                         VendorId = item.j.VendorId,
-                        VendorName = item.jv.VendorName,
+                        VendorName = vendorList.FirstOrDefault(x=>x.Id==item.j.VendorId)?.VendorName,
                         ConfirmByVendor = item.oi.ConfirmByVendor,
                     };
 
                     string imagePath = string.Empty;
-                    if (!String.IsNullOrEmpty(item.j.PhotoUuids))
+                    var imageFiles = DirectoryHelper.GetImageFiles(item.cv.Uuid!);
+                    if (imageFiles.Count > 0)
                     {
-                        foreach (string uuid in PhotoHelper.GetPhotoUuids(item.j.PhotoUuids))
-                        {
-                            var imageFiles = DirectoryHelper.GetImageFiles(uuid);
-                            if (imageFiles.Count > 0)
-                            {
-                                imagePath = imageFiles[0];
-                                break;
-                            }
-                        }
+                        orderItem.imagePath = imageFiles[0];
                     }
-
-                    if (String.IsNullOrEmpty(imagePath))
+                    else
                     {
-                        foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == item.j.Id).ToList())
-                        {
-                            var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
-                            if (imageFiles.Count > 0)
-                            {
-                                imagePath = imageFiles[0];
-                                break;
-                            }
-                        }
+                        orderItem.imagePath = @"colors\nopicture.png";
                     }
-
-                    orderItem.imagePath = imagePath;    
                     orderItems.Add(orderItem);
                 }
                 o.Items = orderItems.ToArray();
             }
 
-            /*var q =
-                from o in ctx.Orders
-                join oi in ctx.OrderItems on o.Id equals oi.OrderId into jointable
-                from j in jointable.DefaultIfEmpty()
-                join p in ctx.Products on j.ProductId equals p.Id into jointable1
-                from j1 in jointable1.DefaultIfEmpty()
-                select new { Order = o, v = j == null ? 0 : j.Quantity, j1.ItemName, j1.ArtNo, j1.RefNo, j1.Design, j1.Price }; */
             return orders.AsEnumerable();
         }
 
@@ -653,11 +645,11 @@ namespace chiffon_back.Controllers
                 mess.Body = body;
                 //mess.AlternateViews.Add(AV);
                 mess.IsBodyHtml = true;
-                /*try
+                /* try
                 {
                     mess.Attachments.Add(new Attachment(какой файл добавлять для отправки));
                 }
-                catch { }*/
+                catch { } */
                 client.Send(mess);
                 mess.Dispose();
                 client.Dispose();

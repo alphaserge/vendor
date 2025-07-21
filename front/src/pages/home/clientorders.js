@@ -74,7 +74,7 @@ const getFromUrl = (name) => {
   return params.get(name)
 }
 
-export default function ClientOrder(props) {
+export default function ClientOrders(props) {
 
     const navigate = useNavigate();
     const theme = useTheme();
