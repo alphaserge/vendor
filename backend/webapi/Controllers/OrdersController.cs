@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using chiffon_back.Code;
+using chiffon_back.Context;
 using chiffon_back.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -16,6 +17,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Reflection.PortableExecutable;
+using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Web.Http.Cors; // пространство имен CORS
@@ -145,7 +147,7 @@ namespace chiffon_back.Controllers
         public IEnumerable<Models.Order> Get(OrdersFilter filter)
         {
             var mapper = config.CreateMapper();
-            List <Vendor> vendorList = ctx.Vendors.Select(x => mapper.Map<Models.Vendor>(x)).ToList();
+            List <Models.Vendor> vendorList = ctx.Vendors.Select(x => mapper.Map<Models.Vendor>(x)).ToList();
 
             var ordersQuery = ctx.Orders.AsQueryable();
             switch (filter.type)
@@ -348,6 +350,28 @@ namespace chiffon_back.Controllers
         {
             try
             {
+                //string password = Helper.CreatePassword(8);
+                // create user first if not exists
+                var user = ctx.Users.FirstOrDefault(x => x.Email!.Trim().ToLower() == order.ClientEmail!.Trim().ToLower());
+                if (user == null)
+                {
+                    user = new Context.User()
+                    {
+                        Created = DateTime.Now,
+                        PasswordHash = order.Hash.ToString(),
+                        Email = order.ClientEmail!.Trim().ToLower(),
+                        FirstName = order.ClientName!.Trim().ToLower(),
+                        Phones = order.ClientPhone!.Trim().ToLower(),
+                        VendorId = 1,
+                        RegistrationHash = Helper.CreateHash(),
+                        IsLocked = false
+                    };
+                    ctx.Users.Add(user);
+                    ctx.SaveChanges();
+                    Console.WriteLine("Orders(post): User saved");
+                }
+
+
                 Context.Order newOrder = config.CreateMapper()
                     .Map<Context.Order>(order);
                 newOrder.Created = DateTime.Now;
@@ -460,6 +484,8 @@ namespace chiffon_back.Controllers
                     body += $"<p style={headerBlack}>Your order composition:</p>{itemsBody}";
                     body += $"<p><b>Total price: {total} $</b></p>";
                     body += $"<p>Your order link <a href='{frontendUrl}/orders/{newOrder.Id}'>here</a> </p>";
+                    body += $"<p>Your login is your email, password:  <a href='{frontendUrl}/orders/{newOrder.Id}'>here</a> </p>";
+
                     body += $"<p style={header}>Best regards, textile company Angelika</p>";
                     body += $"<p style={headerBlack}>Our contacts:</p>";
                     body += "<p>Showroom address:<br/>Yaroslavskoe shosse, possession 1 building 1, Mytishchi, Moscow region, Russia.<br/>Postal code: 141009<br/>Phones: +7(926)018-01-25, +7(916)876-20-08";
@@ -548,7 +574,7 @@ namespace chiffon_back.Controllers
                     ctx.SaveChanges();
                 }
 
-                return CreatedAtAction(nameof(OrderItem), new { id = cd.Id }, "");
+                return CreatedAtAction(nameof(Context.OrderItem), new { id = cd.Id }, "");
             }
             catch (Exception ex)
             {
@@ -557,7 +583,7 @@ namespace chiffon_back.Controllers
                 Console.WriteLine();
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/ChangeDetails: {1}", DateTime.Now, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/ChangeDetails: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
-                return CreatedAtAction(nameof(OrderItem), new { id = -1 }, null);
+                return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
             }
         }
 
@@ -593,7 +619,7 @@ namespace chiffon_back.Controllers
                     ctx.SaveChanges();
                 }
 
-                return CreatedAtAction(nameof(OrderItem), new { id = acpt.ItemId }, "");
+                return CreatedAtAction(nameof(Context.OrderItem), new { id = acpt.ItemId }, "");
             }
             catch (Exception ex)
             {
@@ -602,7 +628,7 @@ namespace chiffon_back.Controllers
                 Console.WriteLine();
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/Accept: {1}", DateTime.Now, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/Accept: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
-                return CreatedAtAction(nameof(OrderItem), new { id = -1 }, null);
+                return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
             }
         }
 

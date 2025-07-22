@@ -27,6 +27,8 @@ import axios from 'axios'
 
 import config from "../../config.json"
 import { postOrder } from '../../api/orders'
+import { generatePassword, stringToHash } from '../../functions/hash'
+
 
 import ImageMagnifier from '../../components/imagemagnifier';
 import MainSection from './mainsection';
@@ -273,6 +275,9 @@ const confirmOrder = async (event) => {
 
 const makeOrder = async (event) => {
 
+    const password = generatePassword()
+    const hash = stringToHash(password)
+
     let items = shopCart.map((it) => { return {
       productId: it.product.id,
       quantity: it.quantity,
@@ -293,6 +298,8 @@ const makeOrder = async (event) => {
       clientPhone : clientPhone,
       clientEmail : clientEmail,
       clientAddress : clientAddress,
+      hash: hash,
+      password: password,
       items : items
     }
 

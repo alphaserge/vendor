@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using chiffon_back.Code;
 using chiffon_back.Context;
 using chiffon_back.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -150,21 +151,7 @@ namespace chiffon_back.Controllers
                     });
                 }
 
-                // создаем hash для регистрации
-                string hash;
-                using (MD5 hashMD5 = MD5.Create())
-                {
-                    hash = String.Join
-                    (
-                        "",
-                        from ba in hashMD5.ComputeHash
-                        (
-                            Encoding.UTF8.GetBytes(DateTime.Now.ToString("yyyy-MM-dd_T_HH::mm::ss..fffffffK"))
-                        )
-                        select ba.ToString("x2")
-                    );
-                }
-
+                string hash = Helper.CreateHash();
                 Context.User dbUser = config.CreateMapper()
                     .Map<Context.User>(mdUser);
 
