@@ -221,24 +221,46 @@ export default function ShoppingCart(props) {
 
   const sendEmail = async (e) => {
 
-    const response = await fetch(config.api + '/Orders/Confirm', {
+    await axios.post(config.api + '/Confirm', 
+    { confirm: {
+        code: code, 
+        clientName: clientName, 
+        email: clientEmail
+      } })
+    .then(function (response) {
+      console.log(response);
+      //const json = await response.json();    
+      //setEmailSended(true)
+      setInfo("Please check your email and enter the code from the letter and click Confirm button")
+      setCounter(-1)
+      setTimeout(() => {
+        setCounter(1)
+      }, 1000*30);
+      console.log(response)
+    })
+    .catch(function (error) {
+      console.log(error);
+    })
+
+    /*const body = { code: code, clientName: clientName, email: clientEmail }
+    const response = await fetch(config.api + '/Confirm', {  //'/Orders/Confirm'
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({code: code, email: clientEmail, clientName: clientName})
+      body: JSON.stringify(body)
     })
 
     if (!response.ok) {
       throw new Error(`Response status: ${response.status}`);
     }
+      //const json = await response.json();    
+      //setEmailSended(true)
+      setInfo("Please check your email and enter the code from the letter and click Confirm button")
+      setCounter(-1)
+      setTimeout(() => {
+        setCounter(1)
+      }, 1000*30);
+      console.log(response)*/
 
-    //const json = await response.json();    
-    //setEmailSended(true)
-    setInfo("Please check your email and enter the code from the letter and click Confirm button")
-    setCounter(-1)
-    setTimeout(() => {
-      setCounter(1)
-    }, 1000*30);
-    console.log(response)
   }
 
   const setUnit = (index, unit) => {

@@ -484,7 +484,7 @@ namespace chiffon_back.Controllers
                     body += $"<p style={headerBlack}>Your order composition:</p>{itemsBody}";
                     body += $"<p><b>Total price: {total} $</b></p>";
                     body += $"<p>Your order link <a href='{frontendUrl}/orders/{newOrder.Id}'>here</a> </p>";
-                    body += $"<p>Your login is your email, password:  <a href='{frontendUrl}/orders/{newOrder.Id}'>here</a> </p>";
+                    body += $"<p>Your login is your email, your password is: {order.Password} </p>";
 
                     body += $"<p style={header}>Best regards, textile company Angelika</p>";
                     body += $"<p style={headerBlack}>Our contacts:</p>";
