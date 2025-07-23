@@ -22,7 +22,7 @@ export const getOrders = (setFn) => {
   
     //console.log(order)
     
-    const responce = await fetch(config.api + '/Orders', {
+    const responce = await fetch(config.api + '/Create', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(order)

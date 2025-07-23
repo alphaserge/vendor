@@ -456,9 +456,9 @@ console.log(colorVarId)
                   <Selector value={cartUnit} list={["meters","rolls"]} setValue={setCartUnit} /> 
                 </Box>
 
-                <Box sx={{ display: "flex", marginTop: "18px" }}>
+                {product.rollLength && <Box sx={{ display: "flex", marginTop: "18px" }}>
                   <Property fontSize={ap.FONTSIZE} color={ap.COLOR} value={product.rollLength + " meters in roll"} />
-                </Box>
+                </Box>}
 
                 <Box sx={{ display: "flex", marginTop: "18px" }}>
                 
@@ -488,6 +488,7 @@ console.log(colorVarId)
                 <StyledButton
                   startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
                   onClick={handleAddToCart}
+                  disabled={colorVarId==-1}
                   sx={{ mt: 3 }} >Add to cart</StyledButton>
               </>)}
 

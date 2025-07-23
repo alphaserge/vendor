@@ -25,7 +25,7 @@ using System.Web.Http.Cors; // пространство имен CORS
 namespace chiffon_back.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [EnableCors(origins: "http://185.40.31.18:3000,http://185.40.31.18:3010", headers: "*", methods: "*")]
 
     public class OrdersFilter
@@ -345,8 +345,8 @@ namespace chiffon_back.Controllers
             return order;
         }
 
-        [HttpPost(Name = "Orders")]
-        public ActionResult<Models.Order> Post(Models.Order order)
+        [HttpPost("Create")]
+        public ActionResult<Models.Order> Post([FromBody]Models.Order order)
         {
             try
             {
@@ -633,7 +633,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost("Confirm")]
-        public ActionResult Confirm(Models.ConfirmCode confirm)
+        public ActionResult Confirm([FromBody] Models.ConfirmCode confirm)
         {
             string label = "'font-weight: normal; font-size: 100%; padding: 5px 12px;'";
             string cell = "'padding: 10px 20px;'";

@@ -222,11 +222,11 @@ export default function ShoppingCart(props) {
   const sendEmail = async (e) => {
 
     await axios.post(config.api + '/Confirm', 
-    { confirm: {
+    { 
         code: code, 
         clientName: clientName, 
         email: clientEmail
-      } })
+    })
     .then(function (response) {
       console.log(response);
       //const json = await response.json();    
