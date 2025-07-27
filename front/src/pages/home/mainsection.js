@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, redirect } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate, useLocation, Link} from "react-router-dom";
+import { useSelector } from 'react-redux'
+
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { Icon } from '@mui/material';
@@ -20,7 +22,13 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import HomeIcon from '@mui/icons-material/Home';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+
+import axios from 'axios'
+import config from "../../config.json"
+import { getYearsFull } from "../../functions/helper"
+
 import ExpandDown from './../../components/symbol/expanddown';
+import {APPEARANCE as ap} from '../../appearance';
 
 const buttonStyle = { color: "#222", backgroundColor: "#fff", border: "2px solid #333", borderRadius: "50%", padding: "3px" }  
 
@@ -29,6 +37,10 @@ export default function MainSection(props) {
   const [search, setSearch] = useState("")
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
+
+  const shopCart = useSelector((state) => state.cart.items)
+  const shoppingCartRef = useRef()
+
 
   const styles = theme => ({
     textField: {
@@ -49,6 +61,8 @@ export default function MainSection(props) {
   const [openMenu, setOpenMenu] = useState(false);
   const [page, setPage] = useState(0);
 
+  const location = useLocation()
+
   const dropFilters = () => {
     if(props.setSeason) { props.setSeason([]) }
     if(props.setTextileType) { props.setTextileType([]) }
@@ -58,46 +72,16 @@ export default function MainSection(props) {
     if(props.setOverworkType) { props.setOverworkType([]) }
   }
 
-  const handleSeason = (event) => {
-    dropFilters()
-    if(props.setSeason) {
-      props.setSeason([event.id])
+  const handleFilter = (event, entity) => {
+    if(props.setFilter) {
+      props.setFilter("clear", [])
+      props.setFilter(entity, [event.id])
     }
-    setOpenMenu(false);
-  }
-  const handleTextileType = (event) => {
-    dropFilters()
-    if(props.setTextileType) {
-      props.setTextileType([event.id])
+
+    if (location.pathname != "/") {
+      navigate("/")
     }
-    setOpenMenu(false);
-  }
-  const handleDesignType = (event) => {
-    dropFilters()
-    if(props.setDesignType) {
-      props.setDesignType([event.id])
-    }
-    setOpenMenu(false);
-  }
-  const handleColor = (event) => {
-    dropFilters()
-    if(props.setColor) {
-      props.setColor([event.id])
-    }
-    setOpenMenu(false);
-  }
-  const handlePrintType = (event) => {
-    dropFilters()
-    if(props.setPrintType) {
-      props.setPrintType([event.id])
-    }
-    setOpenMenu(false);
-  }
-  const handleOverworkType = (event) => {
-    dropFilters()
-    if(props.setOverworkType) {
-      props.setOverworkType([event.id])
-    }
+
     setOpenMenu(false);
   }
 
@@ -130,90 +114,84 @@ export default function MainSection(props) {
     setAnchorElUser(null);
   };
 
+   const handleShowShoppingCart = (event) => {
+    if (shoppingCartRef.current) {
+      shoppingCartRef.current.displayWindow(true);
+    }
+   }
+
+    const searchProducts = async (e) => {
+
+      setSearch(e)
+      axios.get(config.api + '/Products/Products', //?id='+props.user.id,
+        { params:
+            {
+              search: e
+            }})
+      .then(function (res) {
+          props.setProducts(res.data)
+          navigate("/")
+      })
+      .catch (error => {
+        console.log(error)
+      })
+    }
 
 useEffect(() => {
   }, []);
 
+  const age = getYearsFull(new Date() , new Date(2013,1,1,0,0,0,0))
+
   const { classes } = props;
   return (
     // #eeede8  efa29a
+    
     <Box className="main-section">
-    <Box sx={{ backgroundColor: "#000", color: "#fff", alignContent: "center", height: "44px" }} >
-      <Grid container spacing={2} >
-      <Grid item display={{ xs: "none", md: "block" }} xs={12} md={3} key={"mainsect-left"} sx={{ justifyItems : "center" }} >
-        <p>-&nbsp;</p>
+    <Box sx={{ backgroundColor: "#222", color: "#fff", alignContent: "center", height: "40px" }} >
+      <Grid container spacing={2} className="center-content" >
+      <Grid item display={{ xs: "none", md: "block" }} xs={12} md={3} key={"mainsect-left"} sx={{ justifyItems : "center", pt:"0!important" }} >
+        {/* <p>-&nbsp;</p> */}
       </Grid>
-      <Grid item xs={12} md={6} key={"mainsect-center"} sx={{ justifyItems : "center" }}  >
-        <p>Sign up for our newsletter for 15% off</p>
+      <Grid item xs={12} md={6} key={"mainsect-center"} sx={{ justifyItems : "center", textAlign: "center", pt:"0!important" }}  >
+        <Typography sx={{ fontSize: ap.FONTSIZE, fontFamily: ap.FONTFAMILY }}>- {age} years of trading a wide range of high quality fabrics -</Typography>
       </Grid>
-      <Grid item display={{ xs: "none", md: "block" }} xs={12} md={3} key={"mainsect-right"} sx={{ justifyItems : "center" }} >
-        <p>-&nbsp;</p>
+      <Grid item display={{ xs: "none", md: "block" }} xs={12} md={3} key={"mainsect-right"} sx={{ justifyItems : "center", pt:"0!important" }} >
+        {/* <p>-&nbsp;</p> */}
       </Grid>
       </Grid>
     </Box>
 
-    <Box sx={{ alignContent: "center" }} style={{ height: "200px" }}  >
-      <Grid container spacing={2} sx={{ alignContent: "center"  }} >
-      <Grid item xs={12} md={4} key={"mainsect-left"} justifyItems={{ xs: "center", md: "right" }} sx={{ alignContent: "center" }} >
-        <Box sx={{display: "flex", flexDirection: "row" }}>
+    <Box sx={{ alignContent: "center", height: "170px", pt: 1 }}  >
+      <Grid container spacing={0} sx={{ textAlign: "center" }} className="center-content" >
+      <Grid item xs={12} md={4} key={"mainsect-left"} textAlign={{ xs: "center", md: "center" }} sx={{ alignContent: "center" }} >
+        <Box sx={{display: "flex", flexDirection: "row", justifyContent: "center" }}>
 
         <Tooltip title={props.favorites != undefined ? props.favorites.amount : "Your favorite list is empty"}>
-          <IconButton onClick={(e)=>{navigate("/")}} sx={{ p: 0, ml: 1, mr: 1 }}>
+          <IconButton onClick={(e)=>{navigate("/")}} sx={{ p: 0, ml: 2, mr: "10px" }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
             <HomeOutlinedIcon fontSize="large" sx={buttonStyle} />
           </IconButton>
         </Tooltip>
 
 
-        <Tooltip title={props.user != undefined ? props.user.firstName: "Sign In"}  >
-          <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 0, mr: 1 }}>
+      <Link to="/orders" style={{ textDecoration: 'none' }} >
+        <Tooltip title="Your orders"  >
+          <IconButton onClick={(e)=>{navigate("/orders")}} sx={{ p: 0, ml: 0, mr: "10px" }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
             <PersonOutlineOutlinedIcon fontSize="large" sx={buttonStyle} />
           </IconButton>
         </Tooltip>
-        <Menu
-          sx={{ mt: '45px' }}
-          id="menu-appbar"
-          anchorEl={anchorElUser}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          keepMounted
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          open={Boolean(anchorElUser)}
-          onClose={handleCloseUserMenu}
-        >
-          {!props.user &&
-          <MenuItem
-            key={"menu-1"} 
-            data-menu-value={"menu-1"}
-            onClick={handleMenuClick}>
-            <Typography textAlign="center">Sign up</Typography>
-          </MenuItem>}
-
-          {props.user &&
-          <MenuItem
-            key={"menu-1"} 
-            data-menu-value={"menu-1"}
-            onClick={handleMenuClick}>
-            <Typography textAlign="center">Log out</Typography>
-          </MenuItem>}
-        </Menu>
-
+        </Link>
         
-        <Tooltip title={props.cart != undefined ? props.cart.length + " items" : "Your shopping cart is empty"}>
-          <Box className="cart-label" onClick={(e)=>{ props.openShoppingCart(true) }} >{props.cart && props.cart.length}</Box>
-          <IconButton onClick={(e)=>{ navigate("/shoppingcart") /*props.openShoppingCart(true)*/ }} sx={{ p: 0, ml: "-16px", mr: 1 }}>
+        <Tooltip title={shopCart && shopCart.length>0  ? shopCart + " items" : "Shopping cart is empty"}>
+          <Box className="cart-label" onClick={(e)=>{ handleShowShoppingCart(true) }} >{shopCart && shopCart.length}</Box>
+          <IconButton onClick={(e)=>{ navigate("/shoppingcart") /*props.openShoppingCart(true)*/ }} sx={{ p: 0, ml: "-16px", mr: "10px" }}>
             <ShoppingCartOutlinedIcon fontSize="large" sx={buttonStyle} />
           </IconButton>
         </Tooltip>
 
         <Tooltip title={props.favorites != undefined ? props.favorites.amount : "Your favorite list is empty"}>
-          <IconButton onClick={props.openFavorites} sx={{ p: 0, ml: 0, mr: 1 }}>
+          <IconButton onClick={props.openFavorites} sx={{ p: 0, ml: 0, mr: "10px" }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
             <FavoriteBorderOutlinedIcon fontSize="large" sx={buttonStyle} />
           </IconButton>
@@ -231,12 +209,12 @@ useEffect(() => {
           /> */}
           <picture class="header-logo-picture" onClick={(e)=>{ navigate("/") }}>
           <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" 
-            style={{padding: "10px 0", height: "180px"}}>
+            style={{padding: "10px 0", height: "140px"}}>
           </img>
           </picture>
 
       </Grid>
-      <Grid item xs={12} md={4} key={"mainsect-right"} justifyItems={{ xs: "center", md: "left" }}  sx={{ alignContent: "center" }} >
+      <Grid item xs={12} md={4} key={"mainsect-right"} textAlign={{ xs: "center", md: "center" }}  sx={{ alignContent: "center" }} >
       <Box>
           <TextField
                 margin="normal"
@@ -264,55 +242,70 @@ useEffect(() => {
       </Grid>
     </Box>
 
-<Box>
+<Box sx={{backgroundColor: "#222", color: "#fff", fontSize: "15px"}}>
 <nav>
   <ul className="mainmenu">
     <li>
       <a href="#0">Textile type <ExpandDown /></a>
       <ul class="columns-2">
-        {props.textileTypes && props.textileTypes.map((item) => { return (
-          <li><a href="#0" onClick={() => handleTextileType(item)}>{item.value}</a></li>); })}
+        {props.data.textileTypes && props.data.textileTypes.map((item) => { return (
+          <li><a href="#0" onClick={() => handleFilter(item,"textileType")}>{item.value}</a></li>); })}
       </ul>
     </li>
     <li>
       <a href="#0">Design type <ExpandDown /></a>
       <ul class="columns-2">
-        {props.designTypes && props.designTypes.map((item) => { return (
-          <li><a href="#0" onClick={() => handleDesignType(item)}>{item.value}</a></li>); })}
+        {props.data.designTypes && props.data.designTypes.map((item) => { return (
+          <li><a href="#0" onClick={() => handleFilter(item,"designType")}>{item.value}</a></li>); })}
       </ul>
     </li>
     <li>
       <a href="#0">Color <ExpandDown /></a>
       <ul class="columns-3">
-        {props.colors && props.colors.map((item) => { return (
-          <li><a href="#0" onClick={() => handleColor(item)}>{item.value}</a></li>); })}
+        {props.data.colors && props.data.colors.map((item) => { return (
+          <li><a href="#0" onClick={() => handleFilter(item,"color")}>{item.value}</a></li>); })}
       </ul>
     </li>
     <li>
       <a href="#0">Season <ExpandDown /></a>
       <ul>
-        {props.seasons && props.seasons.map((item) => { return (
-          <li><a href="#0" onClick={() => handleSeason(item)}>{item.value}</a></li>); })}
+        {props.data.seasons && props.data.seasons.map((item) => { return (
+          <li><a href="#0" onClick={() => handleFilter(item,"season")}>{item.value}</a></li>); })}
       </ul>
     </li>
     <li><a href="#0">Print type <ExpandDown /></a>
     <ul>
-        {props.printTypes && props.printTypes.map((item) => { return (
-          <li><a href="#0" onClick={() => handlePrintType(item)}>{item.value}</a></li>); })}
+        {props.data.printTypes && props.data.printTypes.map((item) => { return (
+          <li><a href="#0" onClick={() => handleFilter(item,"printType")}>{item.value}</a></li>); })}
       </ul>
     </li>
 
     <li><a href="#0">Product type <ExpandDown /></a>
     <ul>
-        {props.printTypes && props.productTypes.map((item) => { return (
-          <li><a href="#0" onClick={() => handlePrintType(item)}>{item.value}</a></li>); })}
+        {props.data.printTypes && props.data.productTypes.map((item) => { return (
+          <li><a href="#0" onClick={() => handleFilter(item,"productType")}>{item.value}</a></li>); })}
+      </ul>
+    </li>
+
+    <li><a href="#0">Contacts <ExpandDown /></a>
+    <ul style={{ minWidth: "200px" }} >
+      <Box sx={{ minWidth: "200px" }} >
+      <b>Showroom address:</b><br/>
+      <Box sx={{margin: "5px 0 0 10px"}}>Yaroslavskoe shosse, possession 1 building 1, Mytishchi, Moscow region, Russia<br/>
+      Postal code: 141009<br/></Box>
+      <b>Phones:</b><br/>+7 (926) 018-01-25 <br/>+7(916) 876-20-08<br/>
+      <b>Headquarters:</b><br/>
+      <Box sx={{padding: "5px 0 0 10px"}}>
+      Bolshaya Gruzinskaya, 20, 3A/P Moscow, Russia<br/>
+      Postal code: 123242</Box>
+    </Box>
       </ul>
     </li>
 
   </ul>
 </nav>
 </Box>
-    </Box>
+</Box>
   );
 }
 

@@ -32,6 +32,7 @@ import { generatePassword, stringToHash } from '../../functions/hash'
 
 import ImageMagnifier from '../../components/imagemagnifier';
 import MainSection from './mainsection';
+import Footer from './footer';
 
 import { addToCart, removeFromCart, updateQuantity, updateUnit, flushCart } from './../../store/cartSlice' 
 import PropertyQuantity from "../../components/propertyquantity";
@@ -348,26 +349,10 @@ const makeOrder = async (event) => {
       <Container sx={{padding: 0 }} className="header-container" >
       </Container>
 
-        <MainSection
-          user={props.user}
-          title={props.title}
-          searchProducts={null}
-          textileTypes={[]}
-          designTypes={[]}
-          seasons={[]}
-          colors={[]}
-          printTypes={[]}
-          productTypes={[]}
-          cart={shopCart}
-          openShoppingCart={handleShowShoppingCart}
-          setSeason       = {(v)=>{ }}
-          setTextileType  = {(v)=>{ }}
-          setDesignType   = {(v)=>{ }}
-          setColor        = {(v)=>{ }}
-          setProductType    = {(v)=>{ }}
-          setPrintType    = {(v)=>{ }}
-          setOverworkType = {(v)=>{ }}
-          />
+      <MainSection
+        user={props.user}
+        //searchProducts={searchProducts}
+        data={props.data}/>
 
     {(step == "cart" &&       
     <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column" }} className="center-content" >
@@ -572,6 +557,9 @@ const makeOrder = async (event) => {
       </Box>
       </Box> )}
 
+<br/>
+<br/>
+      <Footer sx={{ mt: 2, mb: 2 }} />
  
     </ThemeProvider>
   );

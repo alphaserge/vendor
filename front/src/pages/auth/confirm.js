@@ -38,8 +38,10 @@ export default function Confirm(props) {
       axios.get(config.api + '/Auth/confirm?token=' + searchParams.get("token"))
       .then(function (r) {
         try {
-          props.setLoggedIn(true)
-          props.setUser(r)
+              let d = {...props.data}
+              d.loggedIn = true;
+              d.user = r;
+              props.setData(d)
           navigate("/success")
           //setVendorList(result)
         }

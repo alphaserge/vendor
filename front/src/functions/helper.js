@@ -3,7 +3,19 @@ export const non = (s) => {
     return s ? s : "";
 }
 
-export const formattedDate = (value, empty) => {
+export const getYearsApproximate = (date1, date2) => {
+  const diffMilliseconds = Math.abs(date2 - date1);
+  const millisecondsInYear = 1000 * 60 * 60 * 24 * 365.25; // Average days in a year
+  return diffMilliseconds / millisecondsInYear;
+}
+
+export const  getYearsFull = (date1, date2) => {
+  const year1 = date1.getFullYear();
+  const year2 = date2.getFullYear();
+  return Math.abs(year2 - year1);
+}
+
+export const formattedDate = (value, empty='') => {
     
     let nullWord = ''
 
@@ -77,10 +89,14 @@ export const computePrice = (product, quantity, isRolls) => {
     return toFixed2(product.price*1.1)
 }
 
-export const idFromUrl = () => {
+export const fromUrl = (paramName) => {
     const search = window.location.search
     const params = new URLSearchParams(search)
-    return params.get('id')
+    return params.get(paramName)
+}
+
+export const idFromUrl = () => {
+    return fromUrl('id')
 }
 
 export const fined = (text) => {

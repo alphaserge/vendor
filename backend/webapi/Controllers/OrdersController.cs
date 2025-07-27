@@ -20,18 +20,20 @@ using System.Reflection.PortableExecutable;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+//using System.Web.Http;
 using System.Web.Http.Cors; // пространство имен CORS
 
 namespace chiffon_back.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [EnableCors(origins: "http://185.40.31.18:3000,http://185.40.31.18:3010", headers: "*", methods: "*")]
 
     public class OrdersFilter
     {
         public string type { get; set; }
         public string value { get; set; }
+        public string id { get; set; }
     }
 
     public class OrdersController : ControllerBase
@@ -42,6 +44,8 @@ namespace chiffon_back.Controllers
                 cfg.CreateMap<Context.Order, Models.Order>();
                 cfg.CreateMap<Models.OrderItem, Context.OrderItem>();
                 cfg.CreateMap<Context.OrderItem, Models.OrderItem>();
+                cfg.CreateMap<Models.Vendor, Context.Vendor>();
+                cfg.CreateMap<Context.Vendor, Models.Vendor>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
@@ -143,19 +147,30 @@ namespace chiffon_back.Controllers
             return new Models.Order();
         }
 
-        [HttpGet(Name = "Orders")]
-        public IEnumerable<Models.Order> Get(OrdersFilter filter)
+        [HttpGet("Orders")]
+        public IEnumerable<Models.Order> Get(string type, string value, string id)
         {
             var mapper = config.CreateMapper();
             List <Models.Vendor> vendorList = ctx.Vendors.Select(x => mapper.Map<Models.Vendor>(x)).ToList();
 
             var ordersQuery = ctx.Orders.AsQueryable();
-            switch (filter.type)
+
+            if (!id.IsNullOrEmpty())
             {
-                case "client":
-                    ordersQuery = ordersQuery.Where(x => x.ClientEmail!.Trim().ToLower() == filter.value.Trim().ToLower());
-                    break;
-                            
+                ordersQuery = ordersQuery.Where(x => x.Id.ToString() == id);
+            }
+            else
+            {
+                switch (type)
+                {
+                    case "client":
+                        if (!value.IsNullOrEmpty())
+                        {
+                            ordersQuery = ordersQuery.Where(x => x.ClientEmail!.Trim().ToLower() == value.Trim().ToLower());
+                        }
+                        break;
+
+                }
             }
 
             List<Models.Order> orders = ordersQuery.OrderByDescending(x => x.Created)
@@ -305,6 +320,9 @@ namespace chiffon_back.Controllers
                     config.CreateMapper()
                         .Map<Models.Order>(x)).FirstOrDefault();
 
+            if (order == null)
+                return null;
+
             var items = from oi in ctx.OrderItems.Where(x => x.OrderId == order.Id)
                         join p in ctx.Products on oi.ProductId equals p.Id into jointable
                         from j in jointable.DefaultIfEmpty()
@@ -350,8 +368,10 @@ namespace chiffon_back.Controllers
         {
             try
             {
-                //string password = Helper.CreatePassword(8);
+                string informPassword = "";
+
                 // create user first if not exists
+                string[] names = Helper.ParseFirstLastName(order.ClientName!.Trim());
                 var user = ctx.Users.FirstOrDefault(x => x.Email!.Trim().ToLower() == order.ClientEmail!.Trim().ToLower());
                 if (user == null)
                 {
@@ -360,17 +380,18 @@ namespace chiffon_back.Controllers
                         Created = DateTime.Now,
                         PasswordHash = order.Hash.ToString(),
                         Email = order.ClientEmail!.Trim().ToLower(),
-                        FirstName = order.ClientName!.Trim().ToLower(),
-                        Phones = order.ClientPhone!.Trim().ToLower(),
+                        FirstName = names[0],
+                        LastName = names[1],
+                        Phones = order.ClientPhone!.Trim(),
                         VendorId = 1,
                         RegistrationHash = Helper.CreateHash(),
                         IsLocked = false
                     };
                     ctx.Users.Add(user);
                     ctx.SaveChanges();
+                    informPassword = order.Password;
                     Console.WriteLine("Orders(post): User saved");
                 }
-
 
                 Context.Order newOrder = config.CreateMapper()
                     .Map<Context.Order>(order);
@@ -470,7 +491,7 @@ namespace chiffon_back.Controllers
                 //------------------------------mail
                 using (MailMessage mess = new MailMessage())
                 {
-                    string? frontendUrl = _configuration.GetValue<string>("Url:Frontend");
+                    string? frontendUrl = _configuration.GetValue<string>("Url:Website");
                     string? ordersManager = _configuration.GetValue<string>("Orders:Manager");
 
                     string body = $"<p style={header}>Dear {newOrder.ClientName}!</p><p style={header}>You have successfully created a new order with number " + newOrder.Number + "</p>";
@@ -483,8 +504,11 @@ namespace chiffon_back.Controllers
                     body += $"<tr><td style={label}>Delivery address:</td><td>{newOrder.ClientAddress}</td></tr></table>";
                     body += $"<p style={headerBlack}>Your order composition:</p>{itemsBody}";
                     body += $"<p><b>Total price: {total} $</b></p>";
-                    body += $"<p>Your order link <a href='{frontendUrl}/orders/{newOrder.Id}'>here</a> </p>";
-                    body += $"<p>Your login is your email, your password is: {order.Password} </p>";
+                    body += $"<p>Your order link <a href='{frontendUrl}/orders?id={newOrder.Id}'>here</a> </p>";
+                    if (!informPassword.IsNullOrEmpty())
+                    {
+                        body += $"<p>Your email is login, the password is: {informPassword} </p>";
+                    }
 
                     body += $"<p style={header}>Best regards, textile company Angelika</p>";
                     body += $"<p style={headerBlack}>Our contacts:</p>";

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import { useSelector } from 'react-redux'
 
@@ -7,84 +7,55 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Grid from '@mui/material/Grid';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 import axios from 'axios'
 
 import config from "../../config.json"
 import Footer from './footer';
-import { APPEARANCE } from '../../appearance';
-import { colors } from "@mui/material";
+import { APPEARANCE as ap} from '../../appearance';
+import { appBarClasses, colors } from "@mui/material";
 
+import PageHeader from '../../components/pageheader';
+import Header from '../../components/header';
 import MainSection from './mainsection';
+import { idFromUrl, formattedDate } from "../../functions/helper";
+import StyledButton from '../../components/styledbutton';
 
 const defaultTheme = createTheme()
-const outboxStyle = { maxWidth: "744px", margin: "80px auto 20px auto", padding: "0 10px" }
-const entities = ['active orders', 'delivered orders']
-const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, color: APPEARANCE.WHITE, m: 1 }
-const disableStyle = { width: 90, height: 40, backgroundColor: "#ccc", color: APPEARANCE.WHITE, m: 1 }
 
 export default function Orders(props) {
 
   const navigate = useNavigate();
   const [orders, setOrders] = useState([])
 
-    const cartCount = useSelector((state) => state.cart.items.length)
-    const shopCart = useSelector((state) => state.cart.items)
+    const loadOrders = async (e) => {
 
-    const [colors, setColors] = useState([])
-    const [seasons, setSeasons] = useState([])
-    const [designTypes, setDesignTypes] = useState([])
-    const [textileTypes, setTextileTypes] = useState([])
-    const [overworkTypes, setOverworkTypes] = useState([])
-    const [productTypes, setProductTypes] = useState([])
-    const [printTypes, setPrintTypes] = useState([])
-    const [productStyles, setProductStyles] = useState([])
-    
-    const [selectedTextileType, setSelectedTextileType] = useState([])
-    const [selectedDesignType, setSelectedDesignType] = useState([])
-    const [selectedSeason, setSelectedSeason] = useState([])
-    const [selectedColor, setSelectedColor] = useState([])
-    const [selectedPrintType, setSelectedPrintType] = useState([])
-    const [selectedProductType, setSelectedProductType] = useState([])
-    const [selectedOverworkType, setSelectedOverworkType] = useState([])
+      if (!props.data.user) {
+        navigate("/login")
+        return
+      }
 
-    const [products, setProducts] = useState([])
-    const [search, setSearch] = useState("")
+      let filter = { type: "client", value: props.data.user.email }
+      let id = idFromUrl()
+      if (!!id) {
+        filter.id = id
+      }
 
-    const shoppingCartRef = useRef()
-    
-const handleShowShoppingCart = (event) => {
-    if (shoppingCartRef.current) {
-      shoppingCartRef.current.displayWindow(true);
-    }
-   }
-
-
-    const searchProducts = async (e) => {
-
-      setSearch(e)
-      axios.get(config.api + '/Products/Products?id='+props.user.id,
-        { params:
-            {
-              search: e
-            }})
+      let api = config.api + '/Orders'
+      console.log('api:')
+      console.log(api)
+      console.log(props.data.user.email)
+      axios.get(api, { 
+        params: { type: "client", value: props.data.user.email, id: id }})
       .then(function (res) {
-          var result = res.data;
-          setProducts(result)
-      })
-      .catch (error => {
-        console.log(error)
-      })
-    }
-
-
-  const loadOrders = async (e) => {
-
-    let api = config.api + '/ClientOrders'
-
-      axios.get(api, { type: "client", value: props.user.email })
-      .then(function (res) {
+        if (!res.data) {
+          //navigate("/login")
+          return
+        }
           var result = res.data.map((d) => 
           {
               return {
@@ -94,6 +65,8 @@ const handleShowShoppingCart = (event) => {
                 vendor  : d.vendorName,
                 client  : d.clientName,
                 phone   : d.clientPhone,
+                email   : d.clientEmail,
+                address : d.clientAddress,
                 shippedByVendor : d.shippedByVendor,
                 changes : false,
                 items   : ( !!d.items ? d.items.map((it) => { return {
@@ -150,58 +123,61 @@ const handleShowShoppingCart = (event) => {
       console.log(id)
       console.log(value)
     }
-
-    const dropFilters = (e) => {
-      setSelectedTextileType([])
-      setSelectedDesignType([])
-      setSelectedSeason([])
-      setSelectedColor([])
-      setSelectedPrintType([])
-      setSelectedProductType([])
-      setSelectedOverworkType([])
-    }
-
-
-    const changeEntity = (e, index) => {
-      //setEntity(e.target.value)
-    }
         
     useEffect(() => {
       loadOrders()
     }, [])// [entity, toggle]);
 
-  if (!props.user || props.user.Id === 0) {
-    navigate("/")
+  if (!props.data.user || props.data.user.Id === 0) {
+    navigate("/login")
   }
 
-  const changes = orders.map(e => e.changes).indexOf(true) != -1
-  console.log("changes: " + changes)
+  console.log("orders: ")
+  console.log(orders)
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
 
-       <MainSection
-          user={props.user}
-          title={props.title}
-          searchProducts={searchProducts}
-          textileTypes={textileTypes}
-          designTypes={designTypes}
-          seasons={seasons}
-          colors={colors}
-          printTypes={printTypes}
-          productTypes={productTypes}
-          cart={shopCart}
-          openShoppingCart={handleShowShoppingCart}
-          setSeason       = {(v)=>{ dropFilters(); setSelectedSeason(v)}}
-          setTextileType  = {(v)=>{ dropFilters(); setSelectedTextileType(v)}}
-          setDesignType   = {(v)=>{ dropFilters(); setSelectedDesignType(v)}}
-          setColor        = {(v)=>{ dropFilters(); setSelectedColor(v)}}
-          setPrintType    = {(v)=>{ dropFilters(); setSelectedPrintType(v)}}
-          setOverworkType = {(v)=>{ dropFilters(); setSelectedOverworkType(v)}}
-          />
-      
-              
+      <MainSection
+        user={props.user}
+        //searchProducts={searchProducts}
+        data={props.data}/>
+
+        <Box className="center-content" sx={{minHeight: "300px", padding: "0px 100px"}}>
+        <PageHeader value="Your orders list"></PageHeader>
+        <Box sx={{ 
+          display: "grid", 
+          gridTemplateColumns: "100px 100px 100px 100px 100px 100px",
+          columnGap: "10px",
+          rowGap: "20px",
+          fontFamily: ap.FONTFAMILY,
+          fontSize: "16px",
+          alignItems: "center" }}>
+                  <Grid item><Header text="Number"></Header></Grid>
+                  <Grid item><Header text="Date"></Header></Grid>
+                  <Grid item><Header text="Items"></Header></Grid>
+                  <Grid item><Header text="Cost"></Header></Grid>
+                  <Grid item><Header text="Status"></Header></Grid>
+                  <Grid item><Header text="Pay"></Header></Grid>
+            
+                { orders.map((data, index) => ( 
+              <React.Fragment>
+                <Link to={"/order?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}} >{data.number.toString().padStart(4, '0')}</Grid></Link>
+                <Link to={"/order?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}} >{formattedDate(data.created)}</Grid></Link>
+                <Link to={"/order?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}}>{data.items.length}</Grid></Link>
+                <Link to={"/order?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}}>{data.items.reduce((n, currentItem) => n + currentItem.quantity*currentItem.price, 0)} $</Grid></Link>
+                <Link to={"/order?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}}>{"active"}</Grid></Link>
+                <Grid item sx={{textAlign: "center"}}>
+                  <IconButton size="small" aria-label="pay" sx={{backgroundColor: "#222", color: "#fff"}} onClick={(e)=> { navigate("/pay?id=" + data.id)}}><AttachMoneyIcon sx={{color: "#fff"}} /></IconButton>
+                </Grid>
+              </React.Fragment> ))}
+        </Box>
+        </Box>
+        <br/><br/>
+
+      <Footer sx={{ mt: 2, mb: 2 }} />
+
     </ThemeProvider>
   );
 }

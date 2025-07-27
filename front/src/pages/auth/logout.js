@@ -19,8 +19,10 @@ export default function Logout(props) {
 
   const navigate = useNavigate();
 
-  props.setLoggedIn(false)
-  props.setUser({
+  
+  let d = {...props.data}
+  d.loggedIn = false;
+  d.user = {
     id: 0,
     firstName: "",
     lastName: "",
@@ -30,7 +32,8 @@ export default function Logout(props) {
     isLocked: true,
     vendorId: 0,
     vendor: ""
-  })
+  };
+  props.setData(d)
 
   navigate("/login")
 

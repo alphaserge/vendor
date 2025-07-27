@@ -42,5 +42,29 @@ namespace chiffon_back.Code
             return hash;
         }
 
+        public static string[] ParseFirstLastName(string name)
+        {
+            string firstName = "";
+            string lastName = "";
+            string[] parts = name.Split(' ');
+            if (parts.Length == 1)
+            {
+                firstName = name;
+            }
+            if (parts.Length == 2)
+            {
+                firstName = parts[0];
+                lastName = parts[1];
+            }
+            if (parts.Length > 2)
+            {
+                firstName = parts[0];
+                List<string> partsList = parts.ToList();
+                partsList.RemoveAt(0);
+                lastName = string.Join(' ', partsList);
+            }
+            return [firstName, lastName];
+        }
+
     }
-}
+    }

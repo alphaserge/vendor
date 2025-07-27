@@ -41,7 +41,7 @@ export default function ItemProduct(props) {
     
     <Box 
       className="no-link" 
-      sx={{ mb: 0, width: "240px" }} 
+      sx={{ mb: 0, width: "230px" }} 
       onClick={(e)=>{ navigate("/product?id=" + props.data.id) }} >
 
         <Box className="product-quickview" onClick={(e)=>{ props.quickView(e, props.data)}} >Quick view</Box>

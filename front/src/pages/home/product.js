@@ -26,6 +26,7 @@ import config from "../../config.json"
 import ImageMagnifier from '../../components/imagemagnifier';
 import MainSection from './mainsection';
 import ShoppingCart from '../../components/shoppingcartmodal';
+import Footer from './footer';
 
 import { addToCart, removeFromCart, updateQuantity, flushCart } from './../../store/cartSlice' 
 import PropertyQuantity from "../../components/propertyquantity";
@@ -378,26 +379,10 @@ console.log(colorVarId)
       <Container sx={{padding: 0 }} className="header-container" >
       </Container>
 
-        <MainSection
-          user={props.user}
-          title={props.title}
-          searchProducts={null}
-          textileTypes={textileTypes}
-          designTypes={designTypes}
-          seasons={seasons}
-          colors={colors}
-          printTypes={printTypes}
-          productTypes={productTypes}
-          cart={shopCart}
-          openShoppingCart={handleShowShoppingCart}
-          setSeason       = {(v)=>{ }}
-          setTextileType  = {(v)=>{ }}
-          setDesignType   = {(v)=>{ }}
-          setColor        = {(v)=>{ }}
-          setProductType    = {(v)=>{ }}
-          setPrintType    = {(v)=>{ }}
-          setOverworkType = {(v)=>{ }}
-          />
+      <MainSection
+        user={props.user}
+        //searchProducts={searchProducts}
+        data={props.data}/>
 
     {/* <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" > */}
     {/* ----- */}
@@ -532,9 +517,10 @@ console.log(colorVarId)
     {/* ----- */}
 
     {/* </Box> */}
-
-    {/* <Footer sx={{ mt: 2, mb: 2 }} /> */}
-
+<br/>
+<br/>
+    <Footer sx={{ mt: 2, mb: 2 }} />
+ 
     </ThemeProvider>
   );
 }

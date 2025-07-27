@@ -47,14 +47,9 @@ function App() {
 
 
   const [loggedIn, setLoggedIn] = useState(false)
-  const [user, setUser] = useState(userInitialValue)
-  const [seasons, setSeasons] = useState([])
-  const [colors, setColors] = useState([])
-  const [designTypes, setDesignTypes] = useState([])
-  const [overworkTypes, setOverworkTypes] = useState([])
-  const [productTypes, setProductTypes] = useState([])
-  const [productStyles, setProductStyles] = useState([])
   const [cart, setCart] = useState(getShoppingCart())
+
+  const [data, setData] = useState({user: userInitialValue()})
 
   console.log("APP()")
 
@@ -86,97 +81,96 @@ function App() {
     console.log(cart)
   }
 
-  const loadSeasons = () => {
+  const loadData = () => {
+    var d = {...data}
+    //--
     axios.get(config.api + '/Seasons')
     .then(function (res) {
-        let items = res.data.map((item)=>({ id:item.id, value:item.seasonName }))
-        setSeasons(items)
+        d.seasons = res.data.map((item)=>({ id:item.id, value:item.seasonName }))
     })
     .catch (error => {
-      console.log('Addproduct loadSeasons error:' )
       console.log(error)
     })
-  }
-
-  const loadColors = () => {
+    //--
     axios.get(config.api + '/Colors')
     .then(function (res) {
-        let items = res.data.map((item)=>({ id:item.id, value:item.colorName, rgb:item.rgb }))
-        setColors(items)
+        d.colors = res.data.map((item)=>({ id:item.id, value:item.colorName, rgb:item.rgb }))
     })
     .catch (error => {
-      console.log('Addproduct loadColors error:' )
       console.log(error)
     })
-  }
-  
-  const loadDesignTypes = () => {
+    //--
+    axios.get(config.api + '/DesignTypes')
+    .then(function (res) {
+        d.designTypes = res.data.map((item)=>({ id:item.id, value:item.designName }))
+    })
+    .catch (error => {
+      console.log(error)
+    })
+    //--
+    axios.get(config.api + '/OverworkTypes')
+    .then(function (res) {
+        d.overworkTypes = res.data.map((item)=>({ id:item.id, value:item.overWorkName }))
+    })
+    .catch (error => {
+      console.log(error)
+    })
+    //--
+    axios.get(config.api + '/ProductTypes')
+    .then(function (res) {
+        d.productTypes = res.data.map((item)=>({ id:item.id, value:item.typeName }))
+    })
+    .catch (error => {
+      console.log(error)
+    })
+    //--
+    axios.get(config.api + '/ProductStyles')
+    .then(function (res) {
+        d.productStyles = res.data.map((item)=>({ id:item.id, value:item.styleName }))
+    })
+    .catch (error => {
+      console.log(error)
+    })
+    //--
+    axios.get(config.api + '/TextileTypes')
+    .then(function (res) {
+        d.textileTypes = res.data.map((item)=>({ id:item.id, value:item.textileTypeName }))
+    })
+    .catch (error => {
+      console.log(error)
+    })
+    //--
+    axios.get(config.api + '/PrintTypes')
+    .then(function (res) {
+        d.printTypes = res.data.map((item)=>({ id:item.id, value:item.typeName }))
+    })
+    .catch (error => {
+      console.log(error)
+    })
+
     axios.get(config.api + '/DesignTypes')
     .then(function (res) {
         let items = res.data.map((item)=>({ id:item.id, value:item.designName }))
-        setDesignTypes(items)
+        d.designTypes = items
+        setData(d)
+
     })
     .catch (error => {
-      console.log('Addproduct loadDesignTypes error:' )
+      console.log('App.js loadDesignTypes error:' )
       console.log(error)
     })
-  }
-  
-  const loadOverworkTypes = () => {
-    axios.get(config.api + '/OverworkTypes')
-    .then(function (res) {
-        let items = res.data.map((item)=>({ id:item.id, value:item.overWorkName }))
-        setOverworkTypes(items)
-    })
-    .catch (error => {
-      console.log('Addproduct loadDesignTypes error:' )
-      console.log(error)
-    })
-  }
-  
-  const loadProductTypes = () => {
-    axios.get(config.api + '/ProductTypes')
-    .then(function (res) {
-        let items = res.data.map((item)=>({ id:item.id, value:item.typeName }))
-        setProductTypes(items)
-    })
-    .catch (error => {
-      console.log('Addproduct loadProductTypes error:' )
-      console.log(error)
-    })
-  }
-  
-  const loadProductStyles = () => {
-    axios.get(config.api + '/ProductStyles')
-    .then(function (res) {
-        let items = res.data.map((item)=>({ id:item.id, value:item.styleName }))
-        setProductStyles(items)
-    })
-    .catch (error => {
-      console.log('Addproduct loadProductStyles error:' )
-      console.log(error)
-    })
+
+    setData(d)
   }
 
   useEffect(() => {
-    //...
-  }, [cart])
 
-  useEffect(() => {
+    document.body.style.backgroundColor = '#fbfbfb'
 
-    document.body.style.backgroundColor = '#fbfbfb';
+    loadData()
 
-    loadColors()
-    loadSeasons()
-    loadDesignTypes()
-    loadOverworkTypes()
-    loadProductTypes()
-    loadProductStyles()
-
-    // Fetch the user email and token from local storage
     const user = JSON.parse(localStorage.getItem("user"))
 
-    // If the token/email does not exist, mark the user as logged out
     if (!user || !user.token) {
       setLoggedIn(false)
       return
@@ -200,22 +194,22 @@ function App() {
     <div style={{ width: "100%" }} >
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home user={user} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
-          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setUser={setUser} />} />
-          <Route path="/logout" element={<Logout setLoggedIn={setLoggedIn} setUser={setUser} />} />
-          <Route path="/register" element={<Register setLoggedIn={setLoggedIn} setUser={setUser} />} />
-          <Route path="/confirm" element={<Confirm setLoggedIn={setLoggedIn} setUser={setUser} />} />
+          <Route path="/" element={<Home data={data} />} />
+          <Route path="/login" element={<Login data={data} setData={setData} />} />
+          <Route path="/logout" element={<Logout data={data} setData={setData} />} />
+          <Route path="/register" element={<Register data={data} />} setData={setData} />
+          <Route path="/confirm" element={<Confirm data={data} setData={setData} />} />
           <Route path="/info" element={<Info />} />
           <Route path="/success" element={<Success />} />
           <Route path="/error" element={<Error />} />
-          <Route path="/addproduct" element={<AddProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
-          <Route path="/updateproduct" element={<UpdateProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
-          <Route path="/listproduct" element={<ListProduct user={user} lastAction={lastAction} setLastAction={setLastAction} seasons={seasons} />} />
-          <Route path="/product" element={<Product user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
-          <Route path="/orders" element={<Orders user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
-          <Route path="/clientorder" element={<ClientOrder user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
-          <Route path="/menu" element={<Menu lastAction={lastAction} setLastAction={setLastAction} />} />
-          <Route path="/shoppingcart" element={<ShoppingCart user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
+          <Route path="/addproduct" element={<AddProduct data={data} />} />
+          <Route path="/updateproduct" element={<UpdateProduct data={data} />} />
+          <Route path="/listproduct" element={<ListProduct data={data} />} />
+          <Route path="/product" element={<Product data={data} />} />
+          <Route path="/orders" element={<Orders data={data} />} />
+          <Route path="/clientorder" element={<ClientOrder data={data} />} />
+          <Route path="/menu" element={<Menu />} />
+          <Route path="/shoppingcart" element={<ShoppingCart data={data} />} />
           {/* <Route path="/header" element={<PrimarySearchAppBar />} /> */}
         </Routes>
       </BrowserRouter>

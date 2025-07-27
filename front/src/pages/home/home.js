@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { useSelector } from 'react-redux'
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -11,7 +10,6 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 
 import axios from 'axios'
-
 import config from "../../config.json"
 
 //import Header from './header';
@@ -56,18 +54,8 @@ export default function Home(props) {
     const theme = useTheme();
 
     const [products, setProducts] = useState([])
-    const [filter, setFilter] = useState(false)
     const [search, setSearch] = useState("")
     const [addProduct, setAddProduct] = useState(false)
-
-    const [colors, setColors] = useState([])
-    const [seasons, setSeasons] = useState([])
-    const [designTypes, setDesignTypes] = useState([])
-    const [textileTypes, setTextileTypes] = useState([])
-    const [overworkTypes, setOverworkTypes] = useState([])
-    const [productTypes, setProductTypes] = useState([])
-    const [printTypes, setPrintTypes] = useState([])
-    const [productStyles, setProductStyles] = useState([])
 
     const [productStyle, setProductStyle] = useState("")
     const [productType, setProductType] = useState("")
@@ -79,7 +67,6 @@ export default function Home(props) {
     const [refNo, setRefNo] = useState("")
     const [artNo, setArtNo] = useState("")
     const [design, setDesign] = useState("")
-    const [view, setView] = useState("grid")
 
     const [selectedTextileType, setSelectedTextileType] = useState([])
     const [selectedDesignType, setSelectedDesignType] = useState([])
@@ -88,14 +75,7 @@ export default function Home(props) {
     const [selectedPrintType, setSelectedPrintType] = useState([])
     const [selectedProductType, setSelectedProductType] = useState([])
     const [selectedOverworkType, setSelectedOverworkType] = useState([])
-
     
-    const [addItemName, setAddItemName] = useState("")
-    const [addRefNo, setAddRefNo] = useState("")
-    const [addArtNo, setAddArtNo] = useState("")
-    const [addDesign, setAddDesign] = useState("")
-
-    const [showQuickView, setShowQuickView] = React.useState(false);
     const [quickViewProduct, setQuickViewProduct] = React.useState(null);
 
     const [info, setInfo] = React.useState("");
@@ -103,49 +83,28 @@ export default function Home(props) {
     const shoppingCartRef = useRef()
     const quickViewRef = useRef()
 
-    const dropFilters = (e) => {
-      setSelectedTextileType([])
-      setSelectedDesignType([])
-      setSelectedSeason([])
-      setSelectedColor([])
-      setSelectedPrintType([])
-      setSelectedProductType([])
-      setSelectedOverworkType([])
+    const setFilter = (entity, value) => {
+        if (entity == "clear") {
+          setSelectedTextileType([])
+          setSelectedColor([])
+          setSelectedDesignType([])
+          setSelectedOverworkType([])
+          setSelectedPrintType([])
+          setSelectedProductType([])
+          setSelectedSeason([])
+          return
+        }
+
+        switch (entity) {
+          case "color": setSelectedColor(value); break;
+          case "textileType": setSelectedTextileType(value); break;
+          case "designType": setSelectedDesignType(value); break;
+          case "overworkType": setSelectedOverworkType(value); break;
+          case "printType": setSelectedPrintType(value); break;
+          case "productType": setSelectedProductType(value); break;
+          case "selectedSeason": setSelectedSeason(value); break;
+        }
     }
-
-    const clearFilter = (e) => {
-      setProductStyle("")
-      setProductType("")
-      setColor([])
-      setDesignType([])
-      setOverworkType([])
-      setSeason([])
-      setItemName("")
-      setRefNo("")
-      setArtNo("")
-      setDesign("")
-      setSearch("")
-
-      axios.get(config.api + '/Products/Products?id='+'0', //+props.user.id,
-        { params:
-            {
-              vendorId: null
-            }})
-      .then(function (res) {
-          var result = res.data;
-          setProducts(result)
-          setFilter(false)
-        })
-      .catch (error => {
-        console.log(error)
-      })
-   }
-
-   const handleShowShoppingCart = (event) => {
-    if (shoppingCartRef.current) {
-      shoppingCartRef.current.displayWindow(true);
-    }
-   }
 
     const searchProducts = async (e) => {
 
@@ -191,134 +150,31 @@ export default function Home(props) {
       })
     }
 
-    const loadColors = () => {
-      axios.get(config.api + '/Colors')
-      .then(function (res) {
-          let items = res.data.map((item)=>({ id:item.id, value:item.colorName, rgb:item.rgb }))
-          setColors(items)
-      })
-      .catch (error => {
-        console.log('Home loadColors error:' )
-        console.log(error)
-      })
-    }
-
-    const loadSeasons = () => {
-      axios.get(config.api + '/Seasons')
-      .then(function (res) {
-          let items = res.data.map((item)=>({ id:item.id, value:item.seasonName }))
-          setSeasons(items)
-      })
-      .catch (error => {
-        console.log('Home loadSeasons error:' )
-        console.log(error)
-      })
-    }
-
-    const loadDesignTypes = () => {
-      axios.get(config.api + '/DesignTypes')
-      .then(function (res) {
-          let items = res.data.map((item)=>({ id:item.id, value:item.designName }))
-          setDesignTypes(items)
-      })
-      .catch (error => {
-        console.log('Home loadDesignTypes error:' )
-        console.log(error)
-      })
-    }
-
-    const loadTextileTypes = () => {
-      axios.get(config.api + '/TextileTypes')
-      .then(function (res) {
-          let items = res.data.map((item)=>({ id:item.id, value:item.textileTypeName }))
-          setTextileTypes(items)
-      })
-      .catch (error => {
-        console.log('Home loadDesignTypes error:' )
-        console.log(error)
-      })
-    }
-
-    const loadOverworkTypes = () => {
-      axios.get(config.api + '/OverworkTypes')
-      .then(function (res) {
-          let items = res.data.map((item)=>({ id:item.id, value:item.overWorkName }))
-          setOverworkTypes(items)
-      })
-      .catch (error => {
-        console.log('Home loadDesignTypes error:' )
-        console.log(error)
-      })
-    }
-
-    const loadProductTypes = () => {
-      axios.get(config.api + '/ProductTypes')
-      .then(function (res) {
-          let items = res.data.map((item)=>({ id:item.id, value:item.typeName }))
-          setProductTypes(items)
-      })
-      .catch (error => {
-        console.log('Home loadProductTypes error:' )
-        console.log(error)
-      })
-    }
-
-    const loadPrintTypes = () => {
-      axios.get(config.api + '/PrintTypes')
-      .then(function (res) {
-          let items = res.data.map((item)=>({ id:item.id, value:item.typeName }))
-          setPrintTypes(items)
-      })
-      .catch (error => {
-        console.log('Home loadPrintTypes error:' )
-        console.log(error)
-      })
-    }
-
-    const loadProductStyles = () => {
-      axios.get(config.api + '/ProductStyles')
-      .then(function (res) {
-          let items = res.data.map((item)=>({ id:item.id, value:item.styleName }))
-          setProductStyles(items)
-      })
-      .catch (error => {
-        console.log('Home loadProductStyles error:' )
-        console.log(error)
-      })
-    }
-
     const quickView = (e, data) => {
       //setShowQuickView(true)
       setQuickViewProduct(data)
       //setAddToCartFunction("Add to Cart")
       if (quickViewRef.current) {
         quickViewRef.current.displayWindow(true);
-    }
-
+      }
     }
 
     useEffect(() => {
       loadProducts()
-      loadColors()
-      loadSeasons()
-      loadDesignTypes()
-      loadTextileTypes()
-      loadOverworkTypes()
-      loadProductTypes()
-      loadPrintTypes()
-      loadProductStyles()
 
       if (getFromUrl("new")==1) {
         setAddProduct(true)
       }
+
     }, [quickViewProduct, quickViewRef, selectedSeason, selectedColor, selectedDesignType, selectedPrintType, selectedProductType, selectedTextileType]);
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
 
       {/* Quick view modal */}
-      {(
+      {/* {(
         <QuickView 
           product={quickViewProduct} 
           ref={quickViewRef}
@@ -327,7 +183,7 @@ export default function Home(props) {
               handleShowShoppingCart();
             }
           }}
-        />)} 
+        />)} */}
 
       {/* Shopping cart modal */}
         <ShoppingCart 
@@ -345,37 +201,23 @@ export default function Home(props) {
 
         <MainSection
           user={props.user}
-          title={props.title}
           searchProducts={searchProducts}
-          textileTypes={textileTypes}
-          designTypes={designTypes}
-          seasons={seasons}
-          colors={colors}
-          printTypes={printTypes}
-          productTypes={productTypes}
-          cart={shopCart}
-          openShoppingCart={handleShowShoppingCart}
-          setSeason       = {(v)=>{ dropFilters(); setSelectedSeason(v)}}
-          setTextileType  = {(v)=>{ dropFilters(); setSelectedTextileType(v)}}
-          setDesignType   = {(v)=>{ dropFilters(); setSelectedDesignType(v)}}
-          setColor        = {(v)=>{ dropFilters(); setSelectedColor(v)}}
-          setPrintType    = {(v)=>{ dropFilters(); setSelectedPrintType(v)}}
-          setOverworkType = {(v)=>{ dropFilters(); setSelectedOverworkType(v)}}
-          />
+          data={props.data}
+          setFilter = {(value, entity)=>{ setFilter(value, entity)}} />
 
         <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" >
           <Box display={{ xs: 'none', md: 'flex' }} sx={{ flexDirection: "column", minWidth: "200px", marginTop: "4px" }}  >
             {/* <Box className="subtitle" >Shopping options</Box> */}
             {/* <strong role="heading" aria-level="2" class="subtitle underline">Shopping Options</strong> */}
             <CheckboxList
-              list={designTypes.map((it) => ({ key: it.id, name: it.value }))}
+              list={!props.data.designTypes ? [] : props.data.designTypes.map((it) => ({ key: it.id, name: it.value }))}
               title="Design types"
               expanded={true}
               setValueFn={setSelectedDesignType}
               value={selectedDesignType}
             />
             <CheckboxList
-              list={productTypes.map((it) => ({ key: it.id, name: it.value }))}
+              list={!props.data.productTypes ? [] : props.data.productTypes.map((it) => ({ key: it.id, name: it.value }))}
               title="Product types"
               //height={80}
               expanded={true}
@@ -383,25 +225,25 @@ export default function Home(props) {
               value={selectedProductType}
             />
             <CheckboxList
-              list={printTypes.map((it) => ({ key: it.id, name: it.value }))}
+              list={!props.data.printTypes ? [] : props.data.printTypes.map((it) => ({ key: it.id, name: it.value }))}
               title="Print types"
               expanded={true}
               setValueFn={setSelectedPrintType}
               value={selectedPrintType}
             />
             <CheckboxList
-              list={colors.map((it) => ({ key: it.id, name: it.value }))}
+              list={!props.data.colors ? [] : props.data.colors.map((it) => ({ key: it.id, name: it.value }))}
               title="Colours"
               // height={310}
-              expanded={true}
+              expanded={false}
               setValueFn={setSelectedColor}
               value={selectedColor}
             />
             <CheckboxList
-              list={seasons.map((it) => ({ key: it.id, name: it.value }))}
+              list={!props.data.seasons ? [] : props.data.seasons.map((it) => ({ key: it.id, name: it.value }))}
               title="Seasons"
               //height={120}
-              expanded={true}
+              expanded={false}
               setValueFn={setSelectedSeason }
               value={selectedSeason}
             />
@@ -410,16 +252,11 @@ export default function Home(props) {
           <Box sx={{ padding: "10px" }} >
           {/* <Grid item xs={12} md={6} sx={{textAlign:"center", margin: "0 auto", mt: 2}} justifyContent={"center"} className="header-menu" > */}
           <Grid container spacing={1} sx={{marginX: "auto"}} >
-            { view === "grid" && products.map((data, index) => (
+            { products.map((data, index) => (
             <Grid item xs={6} md={3} key={"itemprod-"+index} sx={{ minWidth: "240px" }} >
               <ItemProduct data={data} index={index} quickView={quickView} />
             </Grid>
-            ))}
-            { view === "rows" && products.map((data, index) => (
-            <Grid item xs={12} md={12} key={"itemprod-"+index} >
-              <ItemProductRow data={data} index={index} />
-            </Grid>
-            ))}
+            ))}            
           </Grid>
 
           </Box>

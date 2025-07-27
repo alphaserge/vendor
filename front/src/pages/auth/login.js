@@ -18,6 +18,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import Copyright from '../copyright';
 import { stringToHash } from '../../functions/hash'
+import config from "../../config.json"
 
 import { APPEARANCE } from '../../appearance';
 
@@ -76,7 +77,7 @@ export default function Login(props) {
 
   // Call the server API to check if the given email ID already exists
   const checkAccountExists = (callback) => {
-      fetch("http://185.40.31.18:5001/Auth/check-account", {
+      fetch(config.api + "/Auth/check-account", {
           method: "POST",
           headers: {
               'Content-Type': 'application/json'
@@ -94,7 +95,7 @@ export default function Login(props) {
 
       let passwordHash = stringToHash(password)+''
 
-      fetch("http://185.40.31.18:5001/Auth", {
+      fetch(config.api + "/Auth", {
           method: "POST",
           headers: {
               'Content-Type': 'application/json'
@@ -109,10 +110,12 @@ export default function Login(props) {
       .then(r => {
           if (r.token != '') {
               localStorage.setItem("user", JSON.stringify({email, token: r.token}))
-              props.setLoggedIn(true)
-              props.setUser(r)
+              let d = {...props.data}
+              d.loggedIn = true;
+              d.user = r;
+              props.setData(d)
               localStorage.setItem("user", JSON.stringify(r));
-              navigate("/listproduct")
+              navigate("/")
           } else {
               window.alert("Wrong email or password")
           }

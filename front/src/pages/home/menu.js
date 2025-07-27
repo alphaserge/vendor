@@ -16,8 +16,6 @@ import Header from './header';
 import Copyright from '../copyright';
 import config from "../../config.json"
 
-import Footer from './blog/Footer';
-
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
 const buttonStyle = { width: 220, margin: "10px", display: "block" }
@@ -71,10 +69,6 @@ export default function HomeMenu(props) {
           </Box>
         </main>
       </Container>
-      <Footer
-        title="Footer"
-        description="Something here to give the footer a purpose!"
-      />
     </ThemeProvider>
   );
 }

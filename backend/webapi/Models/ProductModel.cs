@@ -155,7 +155,7 @@ namespace chiffon_back.Models
                             Composition = p.Composition
                         };
 
-            if (filter.VendorId > 0)
+            if (filter.VendorId > 2)
             {
                 query = query.Where(x => x.VendorId == filter.VendorId);
             }
