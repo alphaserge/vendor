@@ -17,7 +17,7 @@ import axios from 'axios'
 import config from "../../config.json"
 import Footer from './footer';
 import { APPEARANCE as ap} from '../../appearance';
-import { appBarClasses, colors } from "@mui/material";
+import { appBarClasses, Button, colors } from "@mui/material";
 
 import PageHeader from '../../components/pageheader';
 import Header from '../../components/header';
@@ -27,10 +27,17 @@ import StyledButton from '../../components/styledbutton';
 
 const defaultTheme = createTheme()
 
+const linkStyle = { textDecoration: 'none', color: ap.COLOR }
+
 export default function Orders(props) {
 
   const navigate = useNavigate();
   const [orders, setOrders] = useState([])
+  const [view, setView] = useState("order")  // "order" or "items"
+
+  const viewItems = () => {
+    setView("items")
+  }
 
     const loadOrders = async (e) => {
 
@@ -39,11 +46,7 @@ export default function Orders(props) {
         return
       }
 
-      let filter = { type: "client", value: props.data.user.email }
       let id = idFromUrl()
-      if (!!id) {
-        filter.id = id
-      }
 
       let api = config.api + '/Orders'
       console.log('api:')
@@ -71,16 +74,21 @@ export default function Orders(props) {
                 changes : false,
                 items   : ( !!d.items ? d.items.map((it) => { return {
                   id        : it.id,
+                  productId : it.productId,
                   imagePath : it.imagePath,
-                  product   : it.itemName,
+                  itemName  : it.itemName,
+                  artNo     : it.artNo,
+                  refNo     : it.refNo,
+                  design    : it.design,
+                  colorNo   : it.colorNo,
                   spec      : it.composition,
                   price     : it.price,
-                  owner    : it.vendorName,
+                  owner     : it.vendorName,
                   quantity  : it.quantity,
-                  unit: it.unit,
+                  unit      : it.unit,
                   colorNames: it.colorNames,
-                  details : it.details,
-                  changes : false,
+                  details   : it.details,
+                  changes   : false,
                   confirmByVendor: it.confirmByVendor,
                   status: it.confirmByVendor != null ? "confirmed" : (it.confirmByVendor != null ? "shipped" : (it.inStock != null ? "in stock" : (it.shippedToClient != null ? "shipped to client" : (it.recievedByClient != null ? "recieved" : "ordered"))))
                   }}) : [])
@@ -89,13 +97,12 @@ export default function Orders(props) {
 
           result = result.filter((i)=> { return i.items.length > 0})
 
-          /*if (entity == 'delivered orders'){
-            result = result.filter((i)=> { return i.items.length > 0})
-          }*/
-          
+          if (!!id) {
+            setView("items")
+            result = result.filter((i)=> { return i.id == id})
+          }
+
           setOrders(result)
-          //setFilter(false)
-          //setModified(false)
       })
       .catch (error => {
         console.log(error)
@@ -124,13 +131,30 @@ export default function Orders(props) {
       console.log(value)
     }
         
+    /* useEffect(() => {
+      let id = idFromUrl()
+      if (!!id) {
+        setView("items")
+      } else {
+        setView("order")
+      }
+    loadOrders()
+    }, [view])// [entity, toggle]); */
+
     useEffect(() => {
-      loadOrders()
+      let id = idFromUrl()
+      if (!!id) {
+        setView("items")
+      } else {
+        setView("order")
+      }
+    loadOrders()
     }, [])// [entity, toggle]);
 
   if (!props.data.user || props.data.user.Id === 0) {
     navigate("/login")
   }
+  
 
   console.log("orders: ")
   console.log(orders)
@@ -144,7 +168,7 @@ export default function Orders(props) {
         //searchProducts={searchProducts}
         data={props.data}/>
 
-        <Box className="center-content" sx={{minHeight: "300px", padding: "0px 100px"}}>
+        { (view == "order") && <Box className="center-content" sx={{minHeight: "300px", padding: "0px 100px"}}>
         <PageHeader value="Your orders list"></PageHeader>
         <Box sx={{ 
           display: "grid", 
@@ -163,17 +187,53 @@ export default function Orders(props) {
             
                 { orders.map((data, index) => ( 
               <React.Fragment>
-                <Link to={"/order?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}} >{data.number.toString().padStart(4, '0')}</Grid></Link>
-                <Link to={"/order?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}} >{formattedDate(data.created)}</Grid></Link>
-                <Link to={"/order?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}}>{data.items.length}</Grid></Link>
-                <Link to={"/order?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}}>{data.items.reduce((n, currentItem) => n + currentItem.quantity*currentItem.price, 0)} $</Grid></Link>
-                <Link to={"/order?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}}>{"active"}</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={viewItems} ><Grid item sx={{textAlign: "center"}} >{data.number.toString().padStart(4, '0')}</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}} >{formattedDate(data.created)}</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}}>{data.items.length}</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}}>{data.items.reduce((n, currentItem) => n + currentItem.quantity*currentItem.price, 0)} $</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}}>{"active"}</Grid></Link>
                 <Grid item sx={{textAlign: "center"}}>
                   <IconButton size="small" aria-label="pay" sx={{backgroundColor: "#222", color: "#fff"}} onClick={(e)=> { navigate("/pay?id=" + data.id)}}><AttachMoneyIcon sx={{color: "#fff"}} /></IconButton>
                 </Grid>
               </React.Fragment> ))}
         </Box>
+        </Box> }
+
+        { view == "items" && orders.length > 0 && <Box className="center-content" sx={{minHeight: "300px", padding: "0px 100px"}}>
+        <Box sx={{display: "flex", alignItems: "center"}}><PageHeader value={"Order no. " + orders[0].number + " / " + formattedDate(orders[0].created)}></PageHeader><Button sx={{ height: "32px", ml: 2, textTransform: "none", color: "#222", border: "1px solid #888"}} onClick={(e)=>{setView("order")}}>Back to list</Button> </Box> 
+        <Box sx={{ 
+          display: "grid", 
+          gridTemplateColumns: "1fr 1fr 1fr 1fr 100px 1fr 90px 90px",
+          columnGap: "10px",
+          rowGap: "20px",
+          fontFamily: ap.FONTFAMILY,
+          fontSize: "16px",
+          alignItems: "center" }}>
+                  <Grid item><Header text="Item name"></Header></Grid>
+                  <Grid item><Header text="Art/Ref No."></Header></Grid>
+                  <Grid item><Header text="Colors"></Header></Grid>
+                  <Grid item><Header text="Design"></Header></Grid>
+                  <Grid item><Header text="Quantity"></Header></Grid>
+                  <Grid item><Header text="Details"></Header></Grid>
+                  <Grid item><Header text="Price"></Header></Grid>
+                  <Grid item><Header text="Status"></Header></Grid>
+            
+                { orders[0].items.map((data, index) => ( 
+              <React.Fragment>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.itemName}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.artNo + " / " + data.refNo}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.colorNo + " / " + data.colorNames}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.design}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.quantity + " " + data.unit}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.details}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.price}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.status}</Grid></Link>
+              </React.Fragment> ))}
+
+                  <IconButton size="small" aria-label="pay" sx={{backgroundColor: "#222", color: "#fff"}} onClick={(e)=> { navigate("/pay?id=" + orders[0].id)}}><AttachMoneyIcon sx={{color: "#fff"}} /></IconButton>
         </Box>
+        </Box> }
+
         <br/><br/>
 
       <Footer sx={{ mt: 2, mb: 2 }} />
