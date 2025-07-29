@@ -40,8 +40,8 @@ export default function MyGridRow(props) {
       }
     }
 
-    console.log('props.show.details')
-    console.log(props.show)
+    console.log('props.item.paid')
+    console.log(props.item.paid)
 
 
 //e.target.id === "valuequantity2-0"  nodeName: "INPUT"

@@ -19,7 +19,7 @@ import { colors } from "@mui/material";
 import MyGrid from '../../components/mygrid';
 
 const defaultTheme = createTheme()
-const outboxStyle = { maxWidth: "744px", margin: "80px auto 20px auto", padding: "0 10px" }
+const outboxStyle = { maxWidth: "900px", margin: "80px auto 20px auto", padding: "0 10px" }
 const entities = ['active orders', 'delivered orders']
 const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, color: APPEARANCE.WHITE, m: 1 }
 const disableStyle = { width: 90, height: 40, backgroundColor: "#ccc", color: APPEARANCE.WHITE, m: 1 }
@@ -65,7 +65,7 @@ export default function ListOrder(props) {
                 client  : d.clientName,
                 phone   : d.clientPhone,
                 changes : false,
-                paid    : d.paid,
+                paid    : d.paid > 0,
                 shippedByVendor : d.shippedByVendor,
                 items   : ( !!d.items ? d.items.map((it) => { return {
                   id        : it.id,
@@ -80,6 +80,7 @@ export default function ListOrder(props) {
                   details : it.details,
                   changes : false,
                   confirmByVendor: it.confirmByVendor,
+                  paid    : it.paid > 0,
                   status: it.confirmByVendor != null ? "confirmed" : (it.confirmByVendor != null ? "shipped" : (it.inStock != null ? "in stock" : (it.shippedToClient != null ? "shipped to client" : (it.recievedByClient != null ? "recieved" : "ordered"))))
                   }}) : [])
               }
@@ -135,7 +136,8 @@ export default function ListOrder(props) {
   }
 
   const changes = orders.map(e => e.changes).indexOf(true) != -1
-  console.log("changes: " + changes)
+  console.log("orders: ")
+   console.log( orders)
 
   return (
     <ThemeProvider theme={defaultTheme}>

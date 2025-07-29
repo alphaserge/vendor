@@ -29,7 +29,7 @@ console.log(props.data.items)
 
     { props.show.number && <Box sx={{ width: "auto", color: "#000", backgroundColor: "#a8ddff", padding: "4px 12px", borderRadius: "4px", fontSize: "15px", fontWeight: "400" }}>
        Order No.  {props.data.number + " / " + formattedDate(props.data.created)}
-        &nbsp; { "  from " + props.data.client + " " + props.data.phone}
+        &nbsp; { "  from " + props.data.client + " (" + props.data.phone + ")"}
     </Box>}
 
     <table spacing={0} class="my-grid-table" >

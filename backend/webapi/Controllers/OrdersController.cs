@@ -225,6 +225,7 @@ namespace chiffon_back.Controllers
                         VendorId = item.j.VendorId,
                         VendorName = vendorList.FirstOrDefault(x=>x.Id==item.j.VendorId)?.VendorName,
                         ConfirmByVendor = item.oi.ConfirmByVendor,
+                        Paid = (ctx.Payments.FirstOrDefault(x => x.Amount > 0m && x.What == "order" && x.WhatId == item.oi.OrderId)) != null,
                     };
 
                     string imagePath = string.Empty;
@@ -634,7 +635,7 @@ namespace chiffon_back.Controllers
                 if (oi != null)
                 {
                     oi.ConfirmByVendor = DateTime.Now;
-                    if (oi.Details.IsNullOrEmpty())
+                    if (false && oi.Details.IsNullOrEmpty()) //!!!!!
                     {
                         oi.Details = $"{oi.Quantity} {oi.Unit.Replace("rolls", "r").Replace("meters","m")}";
                         var q = oi.Quantity;
