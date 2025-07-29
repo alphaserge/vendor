@@ -19,7 +19,6 @@ export default function Logout(props) {
 
   const navigate = useNavigate();
 
-  
   let d = {...props.data}
   d.loggedIn = false;
   d.user = {

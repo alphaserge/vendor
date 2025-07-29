@@ -38,10 +38,12 @@ ul.mainmenu li {
   transition: background 0.2s;
 }
 ul.mainmenu li a {
-  color: #fff;
+  color: #222;
   text-decoration: none;
-  /* text-transform: uppercase; */
+  /* text-transform: uppercase;  */
   transition: color 0.2s;
+  font-size: 15px; 
+  font-weight: 600;
 }
 ul.mainmenu li ul {
   visibility: hidden;

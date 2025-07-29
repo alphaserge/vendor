@@ -41,7 +41,7 @@ export const cartSlice = createSlice({
 
     updateUnit: (state, item) => {
       if (item.payload.index > -1 && item.payload.index <= state.items.length) {
-          state.items[item.payload.index].unit = parseFloat(item.payload.unit);
+          state.items[item.payload.index].unit = item.payload.unit;
           localStorage.setItem($LOCALSTORAGE_CART_KEY, JSON.stringify(state.items));
       }
     },

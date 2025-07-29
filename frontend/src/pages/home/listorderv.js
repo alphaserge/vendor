@@ -16,9 +16,10 @@ import MyGrid from './../../components/mygrid';
 import MyOrders from '../../components/myorders';
 import { APPEARANCE } from '../../appearance';
 import { colors } from "@mui/material";
+import { Paid } from "@mui/icons-material";
 
 const defaultTheme = createTheme()
-const outboxStyle = { maxWidth: "744px", margin: "80px auto 20px auto", padding: "0 10px" }
+const outboxStyle = { maxWidth: "900px", margin: "80px auto 20px auto", padding: "0 10px" }
 const entities = ['active orders', 'delivered orders']
 const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, color: APPEARANCE.WHITE, m: 1 }
 const disableStyle = { width: 90, height: 40, backgroundColor: "#ccc", color: APPEARANCE.WHITE, m: 1 }
@@ -36,7 +37,7 @@ export default function ListOrderV(props) {
 
   const changeDetails = async (id, details) => {
 
-  await axios.post(config.api + '/Orders/ChangeDetails', 
+  await axios.post(config.api + '/ChangeDetails', 
     {
       id: id,
       details: details,
@@ -51,9 +52,9 @@ export default function ListOrderV(props) {
     })
   };
 
-  const setAccept = async (itemId) => {
+  const postAccept = async (itemId) => {
 
-  await axios.post(config.api + '/Orders/Accept', 
+  await axios.post(config.api + '/Accept', 
     {
       itemId: itemId,
     })
@@ -67,67 +68,47 @@ export default function ListOrderV(props) {
     })
   };
 
-    const handleAccept = (itemId) => {
-      let d = itemId;
-      setAccept(itemId)
-      /*let ords = [...orders]
-          for (let i=0; i< ords[i].items.length; i++) {
-            if (ords[i].items[i].id == itemId) {
-              ords[i].items[i].confirmByVendor = Date.now()
-              if (ords[i].items[i].details==null && 
-                  ords[i].items[i].rollLength != null &&
-                  ords[i].items[i].quantity != null) {
-                let q = ords[i].items[i].quantity
-                let r = ords[i].items[i].rollLength
-                let n = Math.floor(q / r)
-                let details = "";
-                if (n > 0) {
-                  details = n + "r"
-                }
-                q -= r*n
-                details += "+"+q
-              }
+    const handleAccept = (id) => {
+
+      handleSave()
+
+      postAccept(id)
+
+      let ords = [...orders]
+      for (let j=0; j< ords.length; j++) {
+        if (ords[j].id == id) {
+              ords[j].confirmByVendor = true;
+              setOrders(ords)
               break
             }
-          
-        }
-        setOrders(ords)*/
+          }
+
+
         setToggle(!toggle)
     }
 
 
-    const handleSave = (event) => {
+    const handleSave = () => {
       
       for (let j=0; j< orders.length; j++) {
-          for (let i=0; i< orders[j].items.length; i++) {
-            if (orders[j].items[i].changes) {
-              changeDetails(orders[j].items[i].id, orders[j].items[i].details)
+            if (orders[j].changes) {
+              changeDetails(orders[j].id, orders[j].details)
             }
           }
-        }
 
          loadOrders()
     }
 
     const loadOrders = async (e) => {
 
-      let api = config.api + '/Orders/OrderItems?id=3'// config.api + '/Orders' //'/VendorOrders?vendorId=' + props.user.vendorId
-      /*if (viewAs == 'incoming orders') {
-        api += '&status=incoming'
-      }
-      if (viewAs == 'sent orders') {
-        api += '&status=sent'
-      }
-      if (viewAs == 'recieved orders') {
-        api += '&status=recieved'
-      }*/
-
-      axios.get(api, /* { params: { name: itemName, artno: artNo, search: search }}*/)
-      .then(function (res) {
+      axios.get(config.api + '/OrderItems?vendorId=' + props.user.vendorId 
+        //,{ params: { type: "vendorId", value: props.user.vendorId, id: null }}
+      ).then(function (res) {
           var result = res.data.map((d) => 
           {
               return {
                   id        : d.id,
+                  orderId   : d.orderId,
                   imagePath : d.imagePath,
                   product   : d.itemName,
                   spec      : d.composition,
@@ -139,8 +120,9 @@ export default function ListOrderV(props) {
                   colorNames: d.colorNames,
                   colorNo   : d.colorNo,
                   details   : d.details,
+                  paid      : d.paid,
                   changes   : false,
-                  confirmByVendor: d.confirmByVendor
+                  confirmByVendor: d.confirmByVendor,
                   }
               })
           setOrders(result)
@@ -156,19 +138,14 @@ export default function ListOrderV(props) {
 
       let ords = [...orders]
       for (let j=0; j< ords.length; j++) {
-        if (ords[j].id == orderId) {
-          for (let i=0; i< ords[j].items.length; i++) {
-            if (ords[j].items[i].id == id) {
-              ords[j].items[i].details = value
-              ords[j].items[i].changes = true;
+        if (ords[j].orderId == orderId && ords[j].id == id) {
+              ords[j].details = value
               ords[j].changes = true;
               setOrders(ords)
               setModified(true)
               break
             }
           }
-        }
-      }
 
       console.log('set details')
       console.log(id)
@@ -188,7 +165,8 @@ export default function ListOrderV(props) {
   }
 
   const changes = orders.map(e => e.changes).indexOf(true) != -1
-  console.log("changes: " + changes)
+  //console.log("orders")
+  //console.log(orders)
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -202,8 +180,9 @@ export default function ListOrderV(props) {
         
         <Box component="form" noValidate style={outboxStyle}>
 
-        <Box gutterBottom  mr={1} sx={{flexGrow: 1, fontWeight: "500", fontSize: "18px", pt: 6 }} >Order list</Box>
-          { entity !== "dummy" &&
+        {/* <Box gutterBottom/> */}
+        <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pr: 6, textAlign: "center" }} > {"Orders list of " + props.user.vendorName}</Box> 
+          
           <MyGrid 
               key={"orders-grid"}
               show = {{
@@ -215,7 +194,9 @@ export default function ListOrderV(props) {
                 price: true, 
                 quantity: true, 
                 details: false, 
-                client: false
+                client: false,
+                number: false,
+                paid: true,
               }}
               edit = {{ details: true }}
               button = {{ confirm: true }}
@@ -226,7 +207,6 @@ export default function ListOrderV(props) {
               changeEntity = {changeEntity}
               title = "Order list"
               data={{items: orders}} />
-          }
 
             <Button 
               variant="contained"

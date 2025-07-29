@@ -22,6 +22,7 @@ namespace chiffon_back.Context
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<OverWorkType> OverWorkTypes { get; set; }
+        public DbSet<Payment> Payments { get; set; }
         public DbSet<PlainDyedType> PlainDyedTypes { get; set; }
         public DbSet<PrintType> PrintTypes { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -50,6 +51,7 @@ namespace chiffon_back.Context
             modelBuilder.Entity<Order>().ToTable("Orders");
             modelBuilder.Entity<OrderItem>().ToTable("OrderItems");
             modelBuilder.Entity<OverWorkType>().ToTable("OverWorkTypes");
+            modelBuilder.Entity<Payment>().ToTable("Payments");
             modelBuilder.Entity<PlainDyedType>().ToTable("PlainDyedTypes");
             modelBuilder.Entity<PrintType>().ToTable("PrintTypes");
             modelBuilder.Entity<Product>().ToTable("Products");

@@ -13,6 +13,7 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import { Button, FormControl, Typography } from "@mui/material";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
+import ShopIcon from '@mui/icons-material/Shop';
 import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/material"
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import MenuItem from '@mui/material/MenuItem';
@@ -178,6 +179,10 @@ export default function Product(props) {
       setCartHelp(help)
     }
   
+    const handleBuySample = (event) => {
+      navigate("/buysample")
+    };
+
     const handleAddToCart = (event) => {
       if (colorVarId ==- 1) 
       {
@@ -343,8 +348,6 @@ export default function Product(props) {
       loadProductStyles()
     }, []);
 
-
-      
     /*useEffect(() => {
     var filtered = product && product.colors.length ? product.colors.map((it, ix) => { return { 
                   label: "Picture " + ix, 
@@ -355,11 +358,14 @@ export default function Product(props) {
                   }}}) : []
                   setFilteredImages(filtered)
                 }, [])*/
-    const productInCart = shopCart ? shopCart.map((x) => { return x.product.id }).indexOf(product.id) >= 0 : false;
 
-    //console.log(filtered)
-    //console.log(cartColor)
+  const searchProducts = (param) => {
+    //if (param.length > 2) {
+      navigate("/?q=" + encodeURIComponent(param))
+    //}
+  }
 
+const productInCart = shopCart ? shopCart.map((x) => { return x.product.id }).indexOf(product.id) >= 0 : false;
 console.log('colorVarId:')
 console.log(colorVarId)
 
@@ -380,8 +386,7 @@ console.log(colorVarId)
       </Container>
 
       <MainSection
-        user={props.user}
-        //searchProducts={searchProducts}
+        searchProducts={searchProducts}
         data={props.data}/>
 
     {/* <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" > */}
@@ -457,12 +462,12 @@ console.log(colorVarId)
                   //label="color"
                   sx={{width: "250px", borderRadius: "0px"}}
                   displayEmpty
-        renderValue={(value) => {
-          if (!value) {
-            return <Typography color="gray">your label here</Typography>;
-          }
-          return <>{value.colorNames}</>;
-        }}
+                  renderValue={(value) => {
+                    if (!value) {
+                      return <Typography color="gray">your label here</Typography>;
+                    }
+                    return <>{value.colorNames}</>;
+                  }}
                   onChange={handleColorVarChange} >
                   { selectColors.map((it, ix) => (
                       <MenuItem key={"sh_"+ix}  value={it}>{it.colorNames}</MenuItem> )) }
@@ -475,6 +480,12 @@ console.log(colorVarId)
                   onClick={handleAddToCart}
                   disabled={colorVarId==-1}
                   sx={{ mt: 3 }} >Add to cart</StyledButton>
+                <StyledButton
+                  startIcon={<ShopIcon sx={{ color: "#fff"}} />}
+                  onClick={handleBuySample}
+                  disabled={colorVarId==-1}
+                  sx={{ mt: 3, ml: 2 }} >Buy a sample</StyledButton> 
+
               </>)}
 
               {(productInCart===true && 

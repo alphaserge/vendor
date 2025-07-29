@@ -17,32 +17,31 @@ export default function MyGrid(props) {
 
   useEffect(() => {  }, []);
 
+console.log("props.data.items")
+console.log(props.data.items)
+
+
   return (
   <FormControl error={ false } required sx={{ ...props.itemStyle,  ...{width: "100%",  display: "flex" } }} > 
 
-  <Card sx={{ maxWidth: 740, mt: 4, boxShadow: "none", borderTop: "1px solid #bbb", borderRadius: 0 }}>
+  <Card sx={{ maxWidth: 1100, mt: 0, boxShadow: "none" }}>
   <CardContent sx={{ pb: 0 }}>
 
-    <Box sx={{ display: "flex", color: "#000", fontSize: "13px", fontWeight: "400", pt: 1, pb: 2 }}>
-      {/* <Typography gutterBottom variant="h7" component="div" mr={10} className="order-header"> */}
-      { props.show.number && ( props.data.number + " / " + formattedDate(props.data.created))}
-      &nbsp;&nbsp;&nbsp;&nbsp;
-      {/* </Typography>
-      <Typography gutterBottom variant="h7" component="div" className="order-header"> */}
-      { props.show.client && (props.data.client + " " + props.data.phone)}
-      {/* </Typography> */}
-    </Box>
+    { props.show.number && <Box sx={{ width: "auto", color: "#000", backgroundColor: "#a8ddff", padding: "4px 12px", borderRadius: "4px", fontSize: "15px", fontWeight: "400" }}>
+       Order No.  {props.data.number + " / " + formattedDate(props.data.created)}
+        &nbsp; { "  from " + props.data.client + " " + props.data.phone}
+    </Box>}
 
-    <table spacing={0} sx={{ padding: "10px 0" }} >
+    <table spacing={0} class="my-grid-table" >
     { props.data.items.map((item, index) => (
           <MyGridRow 
-            st={{ padding: "0 10px"}}
+            st={{ padding: "6px 10px"}}
             show={props.show}
             edit={props.edit}
             button={props.button}
             item={item} 
             index={index}
-            orderId={props.orderId} 
+            orderId={item.orderId} 
             setDetails={props.setDetails}
             handleAccept={props.handleAccept}
             sx={{ alignItems: "center" }}

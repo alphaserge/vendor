@@ -9,12 +9,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material/styles';
 import { Button, Typography } from "@mui/material";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
-import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/material"
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -35,10 +31,6 @@ import MainSection from './mainsection';
 import Footer from './footer';
 
 import { addToCart, removeFromCart, updateQuantity, updateUnit, flushCart } from './../../store/cartSlice' 
-import PropertyQuantity from "../../components/propertyquantity";
-import PropertyItem from '../../components/propertyitem';
-import Price from '../../components/price';
-import ItemName from '../../components/itemname';
 import PageHeader from '../../components/pageheader';
 import Amount from '../../components/amount';
 import Selector from '../../components/selector';
@@ -339,19 +331,21 @@ const makeOrder = async (event) => {
     }
   }
 
-  console.log('fieldsValid:')
-  console.log(fieldsValid)
+  const searchProducts = (param) => {
+    //if (param.length > 2) {
+      navigate("/?q=" + encodeURIComponent(param))
+    //}
+  }
+
+  console.log('shopcart')
+  console.log(shopCart)
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
 
-      <Container sx={{padding: 0 }} className="header-container" >
-      </Container>
-
       <MainSection
-        user={props.user}
-        //searchProducts={searchProducts}
+        searchProducts={searchProducts}
         data={props.data}/>
 
     {(step == "cart" &&       
@@ -377,9 +371,9 @@ const makeOrder = async (event) => {
       <React.Fragment>
         <Link to={"/product?id=" + data.product.id } style={{ textDecoration: 'none' }} >
           <Grid item>
-                {( data.product.colors && data.product.colors.length>0 && 
+                {( data.colorVar && data.colorVar.imagePath.length>0  && 
                   <img 
-                    src={config.api + "/" + data.product.colors[0].imagePath[0]}
+                    src={config.api + "/" + data.colorVar.imagePath[0]}
                     sx={{padding: "0 10px"}}
                     width={65}
                     height={65}

@@ -23,6 +23,8 @@ import CheckboxList from '../../components/checkboxlist';
 import QuickView from '../../components/quickview';
 import Info from '../../components/info';
 import { postProduct } from '../../api/products'
+import { fromUrl } from '../../functions/helper';
+
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -55,7 +57,6 @@ export default function Home(props) {
 
     const [products, setProducts] = useState([])
     const [search, setSearch] = useState("")
-    const [addProduct, setAddProduct] = useState(false)
 
     const [productStyle, setProductStyle] = useState("")
     const [productType, setProductType] = useState("")
@@ -109,7 +110,7 @@ export default function Home(props) {
     const searchProducts = async (e) => {
 
       setSearch(e)
-      axios.get(config.api + '/Products/Products?id='+props.user.id,
+      axios.get(config.api + '/Products/Products?id='+props.data.user.id,
         { params:
             {
               search: e
@@ -160,11 +161,19 @@ export default function Home(props) {
     }
 
     useEffect(() => {
-      loadProducts()
 
-      if (getFromUrl("new")==1) {
-        setAddProduct(true)
+      let search = fromUrl("q")
+      if (!!search) {
+        let decoded = decodeURIComponent(search)
+        setSearch(decoded)
+        searchProducts(decoded)
       }
+
+    }, []);
+
+    useEffect(() => {
+
+      loadProducts()
 
     }, [quickViewProduct, quickViewRef, selectedSeason, selectedColor, selectedDesignType, selectedPrintType, selectedProductType, selectedTextileType]);
 

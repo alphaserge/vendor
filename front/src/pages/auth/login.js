@@ -15,10 +15,17 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import styled from "styled-components";
 
-import Copyright from '../copyright';
+import MainSection from '../../pages/home/mainsection';
+import Footer from '../../pages/home/footer';
+import PageHeader from '../../components/pageheader';
+import StyledTextField from '../../components/styledtextfield';
+import StyledButton from '../../components/styledbutton';
+
 import { stringToHash } from '../../functions/hash'
 import config from "../../config.json"
+import { fromUrl } from "../../functions/helper";
 
 import { APPEARANCE } from '../../appearance';
 
@@ -26,7 +33,6 @@ import { APPEARANCE } from '../../appearance';
 const defaultTheme = createTheme();
 
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
-const buttonStyle = { width: 100, m: 2, backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "0 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
 
 export default function Login(props) {
 
@@ -115,51 +121,39 @@ export default function Login(props) {
               d.user = r;
               props.setData(d)
               localStorage.setItem("user", JSON.stringify(r));
-              navigate("/")
+              const ret = fromUrl("return")
+              navigate("/" + ret)
           } else {
               window.alert("Wrong email or password")
           }
       })
       .catch((error) => {
           window.alert("Wrong email or password")
-        })
+      })
   }
 
-  /*useEffect(() => {
-      fetch(config.api + '/Vendors')
-        .then(response => response.json())
-        .then(json => setVendors(json))
-        .catch(error => console.error(error));
-    }, []);
-
-  useEffect(() => {
-      VendorsData()
-    }, []);*/
+  const searchProducts = (param) => {
+    //if (param.length > 2) {
+      navigate("/?q=" + encodeURIComponent(param))
+    //}
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }} >
-            <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, display: "flex", flexDirection: "row", alignItems: "center" }}>
-          {/* <Avatar sx={{ m: 1, bgcolor: '#000', mr: 2 }}>
-            <LockOutlinedIcon />
-          </Avatar> */}
-          <Typography component="h1" variant="h5">
-            Log in
-          </Typography>
-          </Box>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1, display: "flex", flexDirection: "column", alignItems: "center" }}>
+
+      <MainSection
+        searchProducts={searchProducts}
+        data={props.data}/>
+
+    <Box id="id0" sx={{ display: "flex", alignItems: "center", flexDirection: "column", pt: 4 }} className="center-content" >
+    <Box sx={{ justifyContent: "flex-start", alignItems: "center", minHeight: 440 }} >
+    <PageHeader value={"Welcome to the site"} textAlign="center"/>
+          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             <FormControl 
              fullWidth 
              sx={{display: 'flex'}} > 
-            <TextField
+            <StyledTextField
               margin="normal"
               required
               fullWidth
@@ -173,7 +167,7 @@ export default function Login(props) {
               autoFocus
             />
             <FormHelperText>{emailError}</FormHelperText>
-            <TextField
+            <StyledTextField
               margin="normal"
               required
               fullWidth
@@ -192,16 +186,14 @@ export default function Login(props) {
               label="Remember me"
             />
             </FormControl>
-            <Button
+            <StyledButton
               type="submit"
               fullWidth
               variant="contained"
-              style={buttonStyle}
-              sx={{margin: "5px 10px 5px 30px", height: 50}}
-              onClick={onButtonClick}
-            >
+              sx={{mt: 2, width: "80px"}}
+              onClick={onButtonClick} >
               Log In
-            </Button>
+            </StyledButton>
             {/* <Grid container>
               <Grid item xs>
                 <Link href="#" variant="body2">
@@ -216,8 +208,10 @@ export default function Login(props) {
             </Grid> */}
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
+       </Box>
+
+    <Footer sx={{ mt: 2, mb: 2 }} />
+
     </ThemeProvider>
   );
 }

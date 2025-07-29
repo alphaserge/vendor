@@ -66,7 +66,7 @@ export default function Header(props) {
     }
 
     if (value == "Orders") { 
-      if (props.user.vendorId==1) {
+      if (props.user.vendorId==2) {
         navigate("/listorder"); 
       } else {
         navigate("/listorderv"); 

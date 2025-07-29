@@ -16,6 +16,8 @@ import MyOrders from '../../components/myorders';
 import { APPEARANCE } from '../../appearance';
 import { colors } from "@mui/material";
 
+import MyGrid from '../../components/mygrid';
+
 const defaultTheme = createTheme()
 const outboxStyle = { maxWidth: "744px", margin: "80px auto 20px auto", padding: "0 10px" }
 const entities = ['active orders', 'delivered orders']
@@ -32,63 +34,13 @@ export default function ListOrder(props) {
     const [entity, setEntity] = useState('active orders');
     const [modified, setModified] = useState(false)
 
-
-  const changeDetails = async (id, details) => {
-
-  await axios.post(config.api + '/Orders/ChangeDetails', 
-    {
-      id: id,
-      details: details,
-    })
-    .then(function (response) {
-      console.log(response);
-      return true;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return false;
-    })
-  };
-
-  const setAccept = async (itemId) => {
-
-  await axios.post(config.api + '/Orders/Accept', 
-    {
-      itemId: itemId,
-    })
-    .then(function (response) {
-      console.log(response);
-      return true;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return false;
-    })
-  };
-
-    const handleAccept = (itemId) => {
-      let d = itemId;
-      setAccept(itemId)
-      let ords = [...orders]
-      for (let j=0; j< ords.length; j++) {
-          for (let i=0; i< ords[j].items.length; i++) {
-            if (ords[j].items[i].id == itemId) {
-              ords[j].items[i].confirmByVendor = Date.now()
-              break
-            }
-          }
-        }
-        setOrders(ords)
-    }
-
-
     const handleSave = (event) => {
       
       let ords = [...orders]
       for (let j=0; j< ords.length; j++) {
           for (let i=0; i< ords[j].items.length; i++) {
             if (ords[j].items[i].changes) {
-              changeDetails(ords[j].items[i].id, ords[j].items[i].details)
+              //changeDetails(ords[j].items[i].id, ords[j].items[i].details)
             }
           }
         }
@@ -100,29 +52,21 @@ export default function ListOrder(props) {
     const loadOrders = async (e) => {
 
       let api = config.api + '/Orders'// config.api + '/Orders' //'/VendorOrders?vendorId=' + props.user.vendorId
-      /*if (viewAs == 'incoming orders') {
-        api += '&status=incoming'
-      }
-      if (viewAs == 'sent orders') {
-        api += '&status=sent'
-      }
-      if (viewAs == 'recieved orders') {
-        api += '&status=recieved'
-      }*/
 
       axios.get(api, /* { params: { name: itemName, artno: artNo, search: search }}*/)
       .then(function (res) {
           var result = res.data.map((d) => 
           {
               return {
-                id: d.id,
+                id      : d.id,
                 created : d.created,
                 number  : d.number,
                 vendor  : d.vendorName,
                 client  : d.clientName,
                 phone   : d.clientPhone,
-                shippedByVendor : d.shippedByVendor,
                 changes : false,
+                paid    : d.paid,
+                shippedByVendor : d.shippedByVendor,
                 items   : ( !!d.items ? d.items.map((it) => { return {
                   id        : it.id,
                   imagePath : it.imagePath,
@@ -141,11 +85,11 @@ export default function ListOrder(props) {
               }
           });
 
-          result = result.filter((i)=> { return i.items.length > 0})
+          //result = result.filter((i)=> { return i.items.length > 0})
 
-          if (entity == 'delivered orders'){
-            result = result.filter((i)=> { return i.items.length > 0})
-          }
+          // if (entity == 'delivered orders'){
+          //   result = result.filter((i)=> { return i.items.length > 0})
+          // }
           
           setOrders(result)
           setFilter(false)
@@ -204,14 +148,12 @@ export default function ListOrder(props) {
         <div>
         
         <Box component="form" noValidate style={outboxStyle}>
+        <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pr: 6, textAlign: "center" }} > {"Orders list of " + props.user.vendorName}</Box> 
 
-          { entity !== "dummy" &&
-          <MyOrders 
-            data={orders} 
-            entity = {entity}
-            entities = {entities}
-            changeEntity = {changeEntity}
-            title = "Order list"
+          { orders.map((item, index) => (
+          <MyGrid 
+            className={"orders-grid"}
+            key={"orders-grid-"+index}
             show = {{
               image: true,
               product: true, 
@@ -225,24 +167,18 @@ export default function ListOrder(props) {
               details: true,
               vendor: true,
               status: true,
-              number: true
+              number: true,
+              paid: true,
             }}
             edit = {{ details: false }}
             button = {{ confirm: false }}
-            setDetails={setDetails} 
-            handleAccept={handleAccept} 
-            /> }
-
-            <Button 
-              variant="contained"
-              style={changes ? buttonStyle : disableStyle}
-              //sx= {changes ? buttonStyle : disableStyle}
-              disabled={!changes}
-              onClick={handleSave} >
-                  Save
-            </Button>
-
-          </Box>
+            data={item} 
+            index={index} 
+            orderId={item.id}
+            setDetails={props.setDetails}
+            handleAccept={props.handleAccept} />
+          ))}
+        </Box>
           <br/>
           <br/>
         </div>

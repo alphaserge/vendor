@@ -40,8 +40,8 @@ export default function MyGridRow(props) {
       }
     }
 
-    console.log('props.item.confirmByVendor')
-    console.log(props.item.confirmByVendor)
+    console.log('props.show.details')
+    console.log(props.show)
 
 
 //e.target.id === "valuequantity2-0"  nodeName: "INPUT"
@@ -54,10 +54,10 @@ export default function MyGridRow(props) {
         <tr style={{ alignItems: "center", padding: 0, cursor: "pointer" }} >
           { props.show.image && <td><img key={"grid-image-" + props.index} 
                 src={config.api + "/" + props.item.imagePath} 
-                style={{width: "50px", height: "50px", mr: 2}}
+                style={{width: "66px", height: "66px", mr: 2}}
                 alt={"photo"+(props.index + 1)} /></td> }
 
-            { props.show.product && <td key={"grid-valuename-" + props.index} style={props.st} >
+            { props.show.product && <td key={"grid-valuename-" + props.index} style={{ ...props.st, ...{ minWidth: "140px"}}} >
                 {props.item.product}
             </td> }
 
@@ -78,11 +78,16 @@ export default function MyGridRow(props) {
             </td> }
 
             { props.show.quantity && <td key={"grid-valuequantity-" + props.index} style={{...props.st, ...{textAlign: "right"}}} >
-                {props.item.quantity}&nbsp;{props.item.unit.replace('rolls','r.').replace('meters','m.')}
+                {props.item.quantity}&nbsp;{ props.item.unit /* ? props.item.unit.replace('rolls','r.').replace('meters','m.'):" - "*/}
             </td> }
 
             { props.show.details && <td key={"grid-valuedetails-" + props.index} style={props.st} >
                 {props.item.details}
+            </td> }
+
+            { props.show.paid && <td key={"grid-valuepaid-" + props.index} style={props.st} >
+              {  props.item.paid && <div style={{backgroundColor: "#cfc", textAlign:"center", borderRadius: 6, padding: "4px 8px"}}>paid </div> }
+              { !props.item.paid && <div style={{backgroundColor: "#fcc", textAlign:"center", borderRadius: 6, padding: "4px 8px"}}>wait payment </div> }
             </td> }
 
             { props.show.status && <td key={"grid-valuestatus-" + props.index} style={props.st} >
@@ -92,15 +97,14 @@ export default function MyGridRow(props) {
 {/* <FormControl><InputLabel id={"label_details_"+props.index} size="small" sx={labelStyle1} >Details:</InputLabel>  */}
             { props.edit.details && <td key={"grid-valueeditdetails-" + props.index} style={props.st} > 
                 <TextField labelId={"label_details_"+props.index}
-                  disabled={props.item.confirmByVendor!=null}
+                  //disabled={props.item.confirmByVendor!=null}
                   margin="normal"
                   size="small" 
-                  //label="details"
                   id={"valuedetails-" + props.index}
                   name={"valuedetails-" + props.index}
                   sx = {{ width: 120, mt: '-3px', ml: 2, mr: 0, mb: '-3px' }}
                   value={props.item.details}
-                  onChange={ev => props.setDetails(props.orderId, props.item.id, ev.target.value)}
+                  onChange={ev => { props.setDetails(props.orderId, props.item.id, ev.target.value)}}
                   inputProps={{
                     style: {
                       height: "10px",
@@ -112,9 +116,8 @@ export default function MyGridRow(props) {
             { props.button.confirm && <td key={"grid-valuedetails-" + props.index} sx={{ width: "60px", pl:1 }} >
                 <Button 
                               variant="contained"
-                              style={props.item.confirmByVendor!=null ? disableStyle : buttonStyle}
-                              sx={props.item.confirmByVendor!=null ? disableStyle : buttonStyle}
-                              disabled={props.item.confirmByVendor!=null}
+                              sx={!props.item.details || !!props.item.confirmByVendor ? disableStyle : buttonStyle}
+                              disabled={!props.item.details || !!props.item.confirmByVendor }
                               onClick={(e) => { props.handleAccept(props.item.id) }} >
                                   Accept
                             </Button>

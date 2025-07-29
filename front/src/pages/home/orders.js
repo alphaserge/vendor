@@ -1,29 +1,32 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-import { useSelector } from 'react-redux'
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
-import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import Checkbox from '@mui/material/Checkbox';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import axios from 'axios'
 
 import config from "../../config.json"
 import Footer from './footer';
 import { APPEARANCE as ap} from '../../appearance';
-import { appBarClasses, Button, colors } from "@mui/material";
+import { Button  } from "@mui/material";
 
 import PageHeader from '../../components/pageheader';
 import Header from '../../components/header';
 import MainSection from './mainsection';
-import { idFromUrl, formattedDate } from "../../functions/helper";
+import { idFromUrl, formattedDate, toFixed2 } from "../../functions/helper";
 import StyledButton from '../../components/styledbutton';
+import StyledButtonWhite from '../../components/styledbuttonwhite';
+import StyledIconButton from '../../components/stylediconbutton';
+import Styledbutton from "../../components/styledbutton";
 
 const defaultTheme = createTheme()
 
@@ -33,25 +36,46 @@ export default function Orders(props) {
 
   const navigate = useNavigate();
   const [orders, setOrders] = useState([])
-  const [view, setView] = useState("order")  // "order" or "items"
+  const [orderIndex, setOrderIndex] = useState(-1)
+  const [agree, setAgree] = useState(false)
 
-  const viewItems = () => {
-    setView("items")
+  const handleAgree = (event) => {
+    setAgree(event.target.checked);
+  };
+
+  const logout = () => {
+  
+    props.data.logOut()
+
   }
+  
+  const pay = async (id, total) => {
+    window.open("https://show.cloudpayments.ru/widget/");
+    await axios.post(config.api + '/Payments/Pay', 
+    { 
+        what: "order", 
+        whatId: id,
+        amount: total,
+        currency: "usd"
+    })
+    .then(function (response) {
+      console.log(response)
+    })
+    .catch(function (error) {
+      console.log(error);
+    })    
+  };
+  
+  const loadOrders = async (e) => {
 
-    const loadOrders = async (e) => {
-
-      if (!props.data.user) {
-        navigate("/login")
+      if (!props.data.user || props.data.user.email=="") {
+        navigate("/login?return=orders")
         return
       }
 
       let id = idFromUrl()
 
       let api = config.api + '/Orders'
-      console.log('api:')
-      console.log(api)
-      console.log(props.data.user.email)
       axios.get(api, { 
         params: { type: "client", value: props.data.user.email, id: id }})
       .then(function (res) {
@@ -70,8 +94,10 @@ export default function Orders(props) {
                 phone   : d.clientPhone,
                 email   : d.clientEmail,
                 address : d.clientAddress,
-                shippedByVendor : d.shippedByVendor,
+                total   : d.items.reduce((n, it) => n + it.quantity*it.price, 0),
+                paid     : d.paid,
                 changes : false,
+                canPay  : d.items.findIndex(it => it.confirmByVendor==null)==-1,
                 items   : ( !!d.items ? d.items.map((it) => { return {
                   id        : it.id,
                   productId : it.productId,
@@ -89,7 +115,8 @@ export default function Orders(props) {
                   colorNames: it.colorNames,
                   details   : it.details,
                   changes   : false,
-                  confirmByVendor: it.confirmByVendor,
+                  confirmByVendor : it.confirmByVendor,
+                  shippedByVendor : it.shippedByVendor,
                   status: it.confirmByVendor != null ? "confirmed" : (it.confirmByVendor != null ? "shipped" : (it.inStock != null ? "in stock" : (it.shippedToClient != null ? "shipped to client" : (it.recievedByClient != null ? "recieved" : "ordered"))))
                   }}) : [])
               }
@@ -98,11 +125,17 @@ export default function Orders(props) {
           result = result.filter((i)=> { return i.items.length > 0})
 
           if (!!id) {
-            setView("items")
-            result = result.filter((i)=> { return i.id == id})
+            let ix = result.findIndex(x => x.id == id)
+            setOrderIndex(ix)
+            //result = result.filter((i)=> { return i.id == id})
+          } else {
+            setOrderIndex(-1)
           }
 
           setOrders(result)
+
+      console.log(result)
+
       })
       .catch (error => {
         console.log(error)
@@ -142,34 +175,37 @@ export default function Orders(props) {
     }, [view])// [entity, toggle]); */
 
     useEffect(() => {
-      let id = idFromUrl()
-      if (!!id) {
-        setView("items")
-      } else {
-        setView("order")
-      }
-    loadOrders()
-    }, [])// [entity, toggle]);
+      loadOrders()
+    }, [])
 
   if (!props.data.user || props.data.user.Id === 0) {
     navigate("/login")
   }
   
+  const searchProducts = (param) => {
+    //if (param.length > 2) {
+      navigate("/?q=" + encodeURIComponent(param))
+    //}
+  }
+
 
   console.log("orders: ")
   console.log(orders)
+  console.log(orderIndex)
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
 
       <MainSection
-        user={props.user}
-        //searchProducts={searchProducts}
+        searchProducts={searchProducts}
         data={props.data}/>
 
-        { (view == "order") && <Box className="center-content" sx={{minHeight: "300px", padding: "0px 100px"}}>
-        <PageHeader value="Your orders list"></PageHeader>
+        { orderIndex == -1 && <Box className="center-content" sx={{minHeight: "300px", padding: "0 0 0 135px"}}>
+        <Box sx={{display: "flex", alignItems: "center", maxWidth: 650}}>
+          <PageHeader value="Your orders list"></PageHeader>
+          <StyledButtonWhite sx={{ marginLeft: "auto" }} onClick={(e)=>{logout(); navigate("/")}}>Log out</StyledButtonWhite>
+        </Box>
         <Box sx={{ 
           display: "grid", 
           gridTemplateColumns: "100px 100px 100px 100px 100px 100px",
@@ -183,45 +219,63 @@ export default function Orders(props) {
                   <Grid item><Header text="Items"></Header></Grid>
                   <Grid item><Header text="Cost"></Header></Grid>
                   <Grid item><Header text="Status"></Header></Grid>
-                  <Grid item><Header text="Pay"></Header></Grid>
+                  <Grid item><Header text="Paid"></Header></Grid>
             
                 { orders.map((data, index) => ( 
               <React.Fragment>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={viewItems} ><Grid item sx={{textAlign: "center"}} >{data.number.toString().padStart(4, '0')}</Grid></Link>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}} >{formattedDate(data.created)}</Grid></Link>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}}>{data.items.length}</Grid></Link>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}}>{data.items.reduce((n, currentItem) => n + currentItem.quantity*currentItem.price, 0)} $</Grid></Link>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} ><Grid item sx={{textAlign: "center"}}>{"active"}</Grid></Link>
-                <Grid item sx={{textAlign: "center"}}>
-                  <IconButton size="small" aria-label="pay" sx={{backgroundColor: "#222", color: "#fff"}} onClick={(e)=> { navigate("/pay?id=" + data.id)}}><AttachMoneyIcon sx={{color: "#fff"}} /></IconButton>
-                </Grid>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}} >{data.number.toString().padStart(4, '0')}</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}} >{formattedDate(data.created)}</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{data.items.length}</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{toFixed2(data.total)} $</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{"active"}</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{data.paid + " $"}</Grid></Link>
+                {/* <Grid item sx={{textAlign: "center"}}>
+                  <IconButton size="small" aria-label="pay" sx={{backgroundColor: "#333", color: "#fff"}} onClick={(e)=> { window.open("https://show.cloudpayments.ru/widget/") }}><AttachMoneyIcon sx={{color: "#fff"}} /></IconButton>
+                </Grid> */}
               </React.Fragment> ))}
         </Box>
         </Box> }
 
-        { view == "items" && orders.length > 0 && <Box className="center-content" sx={{minHeight: "300px", padding: "0px 100px"}}>
-        <Box sx={{display: "flex", alignItems: "center"}}><PageHeader value={"Order no. " + orders[0].number + " / " + formattedDate(orders[0].created)}></PageHeader><Button sx={{ height: "32px", ml: 2, textTransform: "none", color: "#222", border: "1px solid #888"}} onClick={(e)=>{setView("order")}}>Back to list</Button> </Box> 
+        { orderIndex != -1 && orders.length > 0 && <Box className="center-content" sx={{minHeight: "300px", padding: "0px 100px"}}>
+        <Box sx={{display: "flex", alignItems: "center"}}>
+          <PageHeader value={"Order no. " + orders[orderIndex].number + " / " + formattedDate(orders[orderIndex].created)}></PageHeader>
+            <StyledButtonWhite sx={{ marginLeft: 'auto', p: 0}} onClick={(e)=>{setOrderIndex(-1); navigate("/orders")}}>Back to list</StyledButtonWhite>
+            <StyledButtonWhite sx={{ ml: 2 }} onClick={(e)=>{logout(); navigate("/")}}>Log out</StyledButtonWhite>
+        </Box> 
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "1fr 1fr 1fr 1fr 100px 1fr 90px 90px",
-          columnGap: "10px",
-          rowGap: "20px",
+          gridTemplateColumns: "70px 2fr 1fr 2fr 1fr 100px 1fr 90px 90px",
+          columnGap: "8px",
+          rowGap: "6px",
           fontFamily: ap.FONTFAMILY,
           fontSize: "16px",
           alignItems: "center" }}>
+                  <Grid item><Header text="Photo"></Header></Grid>
                   <Grid item><Header text="Item name"></Header></Grid>
-                  <Grid item><Header text="Art/Ref No."></Header></Grid>
+                  <Grid item><Header text="Art No."></Header></Grid>
                   <Grid item><Header text="Colors"></Header></Grid>
                   <Grid item><Header text="Design"></Header></Grid>
                   <Grid item><Header text="Quantity"></Header></Grid>
                   <Grid item><Header text="Details"></Header></Grid>
                   <Grid item><Header text="Price"></Header></Grid>
                   <Grid item><Header text="Status"></Header></Grid>
+                  
             
-                { orders[0].items.map((data, index) => ( 
+                { orders[orderIndex].items.map((data, index) => ( 
               <React.Fragment>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}} >
+                  {( !!data.imagePath  && 
+                                    <img 
+                                      src={config.api + "/" + data.imagePath}
+                                      sx={{padding: "5px 5px 0 5px"}}
+                                      width={60}
+                                      height={55}
+                                      alt={data.itemName}
+                                  /> )}
+                </Grid>
+                </Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.itemName}</Grid></Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.artNo + " / " + data.refNo}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.artNo}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.colorNo + " / " + data.colorNames}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.design}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.quantity + " " + data.unit}</Grid></Link>
@@ -230,8 +284,20 @@ export default function Orders(props) {
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.status}</Grid></Link>
               </React.Fragment> ))}
 
-                  <IconButton size="small" aria-label="pay" sx={{backgroundColor: "#222", color: "#fff"}} onClick={(e)=> { navigate("/pay?id=" + orders[0].id)}}><AttachMoneyIcon sx={{color: "#fff"}} /></IconButton>
         </Box>
+        { orders[orderIndex].canPay && <Box sx={{display: "flex", alignContent: "center", mt: 4}} >
+                  <StyledIconButton 
+                    size="small" 
+                    aria-label="pay" 
+                    sx={{backgroundColor: "#222", color: "#fff", width: "80px"}} 
+                    disabled={!agree}
+                    onClick={(e)=> { pay(orders[orderIndex].id, orders[orderIndex].total) }} >
+                    <AttachMoneyIcon sx={{color: "#fff"}} />
+                    Pay
+                  </StyledIconButton>
+                  <FormControlLabel required control={<Checkbox checked={agree} onChange={handleAgree} />} label="I confirm that the order composition meets my requirements" sx={{pl: 2 }} />
+        </Box>}
+
         </Box> }
 
         <br/><br/>

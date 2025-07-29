@@ -1,7 +1,37 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
-.App {
-  background-color: #fbfbfb;
+.App, html {
+  background-color: #333;
+}
+
+.MuiAccordionSummary-content {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.MuiSvgIcon-root {
+  color: #333;
+  /* font-weight: normal; */
+}
+
+.MuiTypography-root {
+ font-family: "Chiron Sung HK", "Open-Sans", Arial!important;  
+}
+
+input.MuiInputBase-input, 
+label.MuiFormLabel-root, 
+label.MuiInputLabel-root,
+button.MuiButtonBase-root,
+button.MuiButton-root {
+  font-family: "Chiron Sung HK", "Open-Sans", Arial, "Inter", "sans-serif"!important;
+}
+
+/* for remove blue background in TextField, input: */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #ffffff inset !important; /* Change #ffffff to your desired background color */
 }
 
 .errorLabel {
@@ -225,14 +255,6 @@ table.shopping-cart th {
 
 table.shopping-cart  td img {
   max-width: 80px;
-}
-
-input.MuiInputBase-input, 
-label.MuiFormLabel-root, 
-label.MuiInputLabel-root,
-button.MuiButtonBase-root,
-button.MuiButton-root {
-  font-family: "Chiron Sung HK", "Open-Sans", Arial, "Inter", "sans-serif"!important;
 }
 
 span.item-label  {
@@ -497,16 +519,6 @@ a.no-link {
 
 .suggestions-list li:hover {
   background-color: #e9e9e9;
-}
-
-.MuiAccordionSummary-content {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-}
-
-.MuiSvgIcon-root {
-  color: #333;
-  /* font-weight: normal; */
 }
 
 .underline {

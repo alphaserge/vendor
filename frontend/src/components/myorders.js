@@ -38,6 +38,7 @@ return (
     { props.data.map((item, index) => (
          // <Grid item xs={12} md={12} key={"itemprod-"+index} > */}
           <MyGrid 
+            className={"orders-grid"}
             key={"orders-grid-"+index}
             show={props.show}
             edit={props.edit}

@@ -27,7 +27,7 @@ useEffect(() => {
   }, []);
 
   return (
-    <AppBar position="static" sx={{backgroundColor: "#333", pb: 2, pt: 3}} >
+    <AppBar position="static" sx={{backgroundColor: "#333", pb: 2, pt: 3, boxShadow: "none"}} >
     <Box className="center-content">
     <Box className="main-section" sx={{ 
       fontSize: "15px",

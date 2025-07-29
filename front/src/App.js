@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/home/home';
 import UpdateProduct from './pages/home/updateproduct';
 import Product from './pages/home/product';
+import BuySample from './pages/home/buysample';
 import AddProduct from './pages/home/addproduct';
 import ListProduct from './pages/home/listproduct';
 import Orders from './pages/home/orders';
@@ -26,8 +27,7 @@ import './App.css';
 import './components/menu.css';
 import { useEffect, useState } from 'react';
 
-const userInitialValue = () => {
-  return JSON.parse(localStorage.getItem("user")) || {
+const emptyUser = {
     id: 0,
     firstName: "",
     lastName: "",
@@ -37,35 +37,24 @@ const userInitialValue = () => {
     isLocked: true,
     vendorId: 0,
     vendor: ""
-  };
-};
+}
 
+const userInitialValue = () => {
+  return JSON.parse(localStorage.getItem("user")) || emptyUser
+};
 
 function App() {
   
-  //const loadShoppingCart = useShoppingCartStore((state) => state.load);
-
-
   const [loggedIn, setLoggedIn] = useState(false)
   const [cart, setCart] = useState(getShoppingCart())
 
-  const [data, setData] = useState({user: userInitialValue()})
+    const logOut = () => {
+    setData({user: emptyUser, logOut: logOut})
+    setLoggedIn(false)
+    localStorage.setItem("user", JSON.stringify(emptyUser));
+  }
 
-  console.log("APP()")
-
-  /*useState({
-    id: 0,
-    firstName: "",
-    lastName: "",
-    email: "",
-    phones: "",
-    roles: [],
-    isLocked: true,
-    vendorId: 0,
-    vendor: ""
-  })*/
-
-  const [lastAction, setLastAction] = useState("")
+  const [data, setData] = useState({user: userInitialValue(), logOut: logOut})
 
   const addToCart = (item) => {
     cart.push(item)
@@ -210,6 +199,7 @@ function App() {
           <Route path="/clientorder" element={<ClientOrder data={data} />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/shoppingcart" element={<ShoppingCart data={data} />} />
+          <Route path="/buysample" element={<BuySample data={data} />} />
           {/* <Route path="/header" element={<PrimarySearchAppBar />} /> */}
         </Routes>
       </BrowserRouter>

@@ -147,7 +147,8 @@ useEffect(() => {
     // #eeede8  efa29a
     
     <Box className="main-section">
-    <Box sx={{ backgroundColor: "#222", color: "#fff", alignContent: "center", height: "40px" }} >
+      
+    <Box sx={{ backgroundColor: "#222", color: "#fff", alignContent: "center", height: "40px" }} > {/*  */}
       <Grid container spacing={2} className="center-content" >
       <Grid item display={{ xs: "none", md: "block" }} xs={12} md={3} key={"mainsect-left"} sx={{ justifyItems : "center", pt:"0!important" }} >
         {/* <p>-&nbsp;</p> */}
@@ -166,7 +167,7 @@ useEffect(() => {
       <Grid item xs={12} md={4} key={"mainsect-left"} textAlign={{ xs: "center", md: "center" }} sx={{ alignContent: "center" }} >
         <Box sx={{display: "flex", flexDirection: "row", justifyContent: "center" }}>
 
-        <Tooltip title={props.favorites != undefined ? props.favorites.amount : "Your favorite list is empty"}>
+        <Tooltip title={"Home page"}>
           <IconButton onClick={(e)=>{navigate("/")}} sx={{ p: 0, ml: 2, mr: "10px" }}>
             {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
             <HomeOutlinedIcon fontSize="large" sx={buttonStyle} />
@@ -242,7 +243,7 @@ useEffect(() => {
       </Grid>
     </Box>
 
-<Box sx={{backgroundColor: "#222", color: "#fff", fontSize: "15px"}}>
+<Box sx={{ color: "#222", fontSize: "15px"}}>
 <nav>
   <ul className="mainmenu">
     <li>

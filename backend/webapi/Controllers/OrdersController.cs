@@ -169,6 +169,12 @@ namespace chiffon_back.Controllers
                             ordersQuery = ordersQuery.Where(x => x.ClientEmail!.Trim().ToLower() == value.Trim().ToLower());
                         }
                         break;
+                    case "vendor":
+                        if (!value.IsNullOrEmpty())
+                        {
+                            ordersQuery = ordersQuery.Where(x => x.VendorId.ToString() == value);
+                        }
+                        break;
 
                 }
             }
@@ -179,6 +185,9 @@ namespace chiffon_back.Controllers
 
             foreach (var o in orders) {
                 o.VendorName = ctx.Vendors.FirstOrDefault(x => x.Id == o.VendorId)?.VendorName;
+
+                o.Paid = ctx.Payments.Where(x => x.What=="order" && x.WhatId==o.Id).Sum(x => x.Amount); //TODO: Course!!!!
+
                 var query = from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
                             join p in ctx.Products on oi.ProductId equals p.Id into jointable
                             from j in jointable.DefaultIfEmpty()
@@ -211,6 +220,7 @@ namespace chiffon_back.Controllers
                         VendorQuantity = item.oi.VendorQuantity,
                         OrderRolls = item.oi.OrderRolls,
                         Details = item.oi.Details,
+                        ColorNo = item.oi.ColorNo,
                         ColorNames = item.oi.ColorNames,
                         VendorId = item.j.VendorId,
                         VendorName = vendorList.FirstOrDefault(x=>x.Id==item.j.VendorId)?.VendorName,
@@ -236,7 +246,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpGet("OrderItems")]
-        public IEnumerable<Models.OrderItem> GetOrderItems([FromQuery] string id)
+        public IEnumerable<Models.OrderItem> GetOrderItems([FromQuery] string vendorId)
         {
             var query =
                 from oi in ctx.OrderItems join p in ctx.Products//.Where(x=>x.VendorId.ToString()==vendorId) 
@@ -249,12 +259,14 @@ namespace chiffon_back.Controllers
             List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
             foreach (var item in items)
             {
-                if (item.j.VendorId.ToString() != id)
+                if (item.j.VendorId.ToString() != vendorId)
                     continue;
+
+
 
                 Models.OrderItem orderItem = new Models.OrderItem()
                 {
-                    OrderId = item.oi.Id,
+                    OrderId = item.oi.OrderId,
                     ProductId = item.oi.ProductId,
                     Id = item.oi.Id,
                     ArtNo = item.j.ArtNo,
@@ -274,6 +286,7 @@ namespace chiffon_back.Controllers
                     VendorId = item.j.VendorId,
                     VendorName = ctx.Vendors.FirstOrDefault(x=>x.Id==item.j.VendorId).VendorName,
                     ConfirmByVendor = item.oi.ConfirmByVendor,
+                    Paid = ctx.Payments.FirstOrDefault(x=>x.Amount>0m && x.What=="order" && x.WhatId==item.oi.OrderId) != null
                 };
 
                 string imagePath = string.Empty;
@@ -587,7 +600,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost("ChangeDetails")]
-        public ActionResult ChangeDetails(Models.ChangeDetails cd)
+        public ActionResult ChangeDetails([FromBody] Models.ChangeDetails cd)
         {
             try
             {
@@ -613,7 +626,7 @@ namespace chiffon_back.Controllers
 
 
         [HttpPost("Accept")]
-        public ActionResult Accept(OrderItemAccept acpt)
+        public ActionResult Accept([FromBody] OrderItemAccept acpt)
         {
             try
             {

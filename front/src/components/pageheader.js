@@ -11,7 +11,9 @@ export default function PageHeader(props) {
     color: ap.PAGEHEADER.COLOR, 
     fontSize: ap.PAGEHEADER.FONTSIZE, 
     fontWeight: ap.PAGEHEADER.FONTWEIGHT,
-    padding: "30px 0" }}>{props.value}
+    padding: "30px 0" }}
+    textAlign={!!props.textAlign ? props.textAlign : "none" }
+    >{props.value}
     </Box>
          
 }
