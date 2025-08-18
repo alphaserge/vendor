@@ -191,7 +191,7 @@ export default function ListOrderV(props) {
                 spec: false, 
                 //owner: true, 
                 colorNames: true,
-                price: true, 
+                price: false, 
                 quantity: true, 
                 details: false, 
                 client: false,

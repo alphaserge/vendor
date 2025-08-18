@@ -69,6 +69,7 @@ export default function ListOrder(props) {
                 shippedByVendor : d.shippedByVendor,
                 items   : ( !!d.items ? d.items.map((it) => { return {
                   id        : it.id,
+                  productId : it.productId,
                   imagePath : it.imagePath,
                   product   : it.itemName,
                   spec      : it.composition,
@@ -150,7 +151,7 @@ export default function ListOrder(props) {
         <div>
         
         <Box component="form" noValidate style={outboxStyle}>
-        <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pr: 6, textAlign: "center" }} > {"Orders list of " + props.user.vendorName}</Box> 
+        <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pr: 6, pb: 1, textAlign: "center" }} > {"Orders of vendor " + props.user.vendorName}</Box> 
 
           { orders.map((item, index) => (
           <MyGrid 

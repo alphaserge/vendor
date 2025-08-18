@@ -14,6 +14,25 @@ const stringToHash = (string) => {
     return hash;
 }
 
+/* Our version - simple password */
+function generateSimplePassword() {
+
+    let password = '';
+    let characters = 'abcdefgmnpsxy';
+    for (let i = 0; i < 4; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        password += characters[randomIndex];
+    }
+
+    characters = '0123456789';
+    for (let i = 0; i < 4; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        password += characters[randomIndex];
+    }
+
+    return password;
+}
+
 
 function generatePassword(length = 8, options = {}) {
     const {
@@ -42,4 +61,4 @@ function generatePassword(length = 8, options = {}) {
     return password;
 }
 
-export { stringToHash, generatePassword }
+export { stringToHash, generatePassword, generateSimplePassword }

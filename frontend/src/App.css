@@ -338,4 +338,6 @@ a.no-link {
 
 .my-grid-table td, .my-grid-table th {
   padding: 5px;
+  vertical-align: middle;
+  color: #222;
 }

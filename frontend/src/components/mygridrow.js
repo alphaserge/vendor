@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
+import Link from '@mui/material/Link';
 
 import "swiper/css";
 import { sendToVendor } from '../api/orders'
@@ -50,11 +51,12 @@ export default function MyGridRow(props) {
     }, []);
 
   return (
-    
-        <tr style={{ alignItems: "center", padding: 0, cursor: "pointer" }} >
+
+        <Link href={"/updateproduct?id="+props.item.productId} style={{ textDecoration: 'none' }}>
+        <tr style={{ alignItems: "center", padding: 0, cursor: "pointer" }} className="my-grid-row" >
           { props.show.image && <td><img key={"grid-image-" + props.index} 
                 src={config.api + "/" + props.item.imagePath} 
-                style={{width: "66px", height: "66px", mr: 2}}
+                style={{width: "86px", height: "86px", mr: 2}}
                 alt={"photo"+(props.index + 1)} /></td> }
 
             { props.show.product && <td key={"grid-valuename-" + props.index} style={{ ...props.st, ...{ minWidth: "140px"}}} >
@@ -86,8 +88,8 @@ export default function MyGridRow(props) {
             </td> }
 
             { props.show.paid && <td key={"grid-valuepaid-" + props.index} style={props.st} >
-              {  props.item.paid && <div style={{backgroundColor: "#cfc", textAlign:"center", borderRadius: 6, padding: "4px 8px"}}>paid </div> }
-              { !props.item.paid && <div style={{backgroundColor: "#fcc", textAlign:"center", borderRadius: 6, padding: "4px 8px"}}>wait payment </div> }
+              {  props.item.paid && <div style={{backgroundColor: "#cfc", textAlign:"center", borderRadius: 2, padding: "4px 4px"}}>paid </div> }
+              { !props.item.paid && <div style={{backgroundColor: "#fcc", textAlign:"center", borderRadius: 2, padding: "4px 4px"}}>wait payment </div> }
             </td> }
 
             { props.show.status && <td key={"grid-valuestatus-" + props.index} style={props.st} >
@@ -124,6 +126,7 @@ export default function MyGridRow(props) {
             </td> }
 
           </tr> 
+          </Link>
 
 )
 

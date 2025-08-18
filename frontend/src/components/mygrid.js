@@ -27,7 +27,7 @@ console.log(props.data.items)
   <Card sx={{ maxWidth: 1100, mt: 0, boxShadow: "none" }}>
   <CardContent sx={{ pb: 0 }}>
 
-    { props.show.number && <Box sx={{ width: "auto", color: "#000", backgroundColor: "#a8ddff", padding: "4px 12px", borderRadius: "4px", fontSize: "15px", fontWeight: "400" }}>
+    { props.show.number && <Box sx={{ width: "auto", color: "#000", backgroundColor: "#dddddd", padding: "4px 12px", borderRadius: "2px", fontSize: "15px", fontWeight: "400" }}>
        Order No.  {props.data.number + " / " + formattedDate(props.data.created)}
         &nbsp; { "  from " + props.data.client + " (" + props.data.phone + ")"}
     </Box>}

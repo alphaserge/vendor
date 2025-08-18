@@ -23,7 +23,7 @@ import axios from 'axios'
 
 import config from "../../config.json"
 import { postOrder } from '../../api/orders'
-import { generatePassword, stringToHash } from '../../functions/hash'
+import { generateSimplePassword, stringToHash } from '../../functions/hash'
 
 
 import ImageMagnifier from '../../components/imagemagnifier';
@@ -290,7 +290,7 @@ const confirmOrder = async (event) => {
 
 const makeOrder = async (event) => {
 
-    const password = generatePassword()
+    const password = generateSimplePassword()
     const hash = stringToHash(password)
 
     let items = shopCart.map((it) => { return {
@@ -337,6 +337,7 @@ const makeOrder = async (event) => {
     //}
   }
 
+  console.log(generateSimplePassword())
   console.log('shopcart')
   console.log(shopCart)
 
