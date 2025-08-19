@@ -9,7 +9,7 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
-import Header from './header';
+import PageHeader from './pageheader';
 
 //import randomUUID from 'crypto';
 
@@ -42,7 +42,7 @@ export default function HomeMenu(props) {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Container maxWidth="lg">
-      <Header title="Blog" />
+      <PageHeader title="Blog" />
         <main>
           <Typography component="h1" variant="h5" sx={{mb:2}}>
              {props.lastAction}

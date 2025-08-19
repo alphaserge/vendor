@@ -4,19 +4,19 @@ import { useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import { colors } from "@mui/material";
+import { Paid } from "@mui/icons-material";
 
 import axios from 'axios'
 
 import config from "../../config.json"
-import Header from './header';
+import PageHeader from './pageheader';
 import Footer from './footer';
-import MyGrid from './../../components/mygrid';
-import MyOrders from '../../components/myorders';
+import Header from '../../components/header';
 import { APPEARANCE } from '../../appearance';
-import { colors } from "@mui/material";
-import { Paid } from "@mui/icons-material";
 
 const defaultTheme = createTheme()
 const outboxStyle = { maxWidth: "900px", margin: "80px auto 20px auto", padding: "0 10px" }
@@ -108,6 +108,7 @@ export default function ListOrderV(props) {
           {
               return {
                   id        : d.id,
+                  productId : d.productId,
                   orderId   : d.orderId,
                   imagePath : d.imagePath,
                   product   : d.itemName,
@@ -174,16 +175,31 @@ export default function ListOrderV(props) {
 
       
       <Container sx={{padding: 0 }} className="header-container" >
-        <Header user={props.user} title={props.title} />
+        <PageHeader user={props.user} title={props.title} />
         {/* <MainBanner user={props.user} title={props.title} /> */}
         <div>
         
         <Box component="form" noValidate style={outboxStyle}>
 
         {/* <Box gutterBottom/> */}
-        <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pr: 6, textAlign: "center" }} > {"Orders list of " + props.user.vendorName}</Box> 
+        <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pb: 2, pr: 6, textAlign: "center" }} > {"Orders list of " + props.user.vendorName}</Box> 
           
-          <MyGrid 
+        <Box sx={{ 
+          display: "grid", 
+          gridTemplateColumns: "70px 1fr 1fr 70px 100px 140px 60px",
+          columnGap: "4px",
+          rowGap: "20px",
+          alignItems: "center" }}>
+            <Grid item sx={{p:0, m:0}}><Header text="Photo"></Header></Grid>
+            <Grid item sx={{p:0, m:0}}><Header text="Item name"></Header></Grid>
+            <Grid item><Header text="Color"></Header></Grid>
+            <Grid item><Header text="Amount"></Header></Grid>
+            <Grid item><Header text="Status"></Header></Grid>
+            <Grid item><Header text="Details"></Header></Grid>
+            <Grid item></Grid>
+        </Box>
+
+          {/* <MyGrid 
               key={"orders-grid"}
               show = {{
                 image: true,
@@ -206,7 +222,7 @@ export default function ListOrderV(props) {
               entities = {entities}
               changeEntity = {changeEntity}
               title = "Order list"
-              data={{items: orders}} />
+              data={{items: orders}} /> */}
 
             <Button 
               variant="contained"

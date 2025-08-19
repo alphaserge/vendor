@@ -34,7 +34,7 @@ function FabricIcon(props) {
   );
   }
 
-export default function Header(props) {
+export default function PageHeader(props) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();

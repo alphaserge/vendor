@@ -35,7 +35,7 @@ import { getSeasons } from '../../api/seasons'
 import { getTextileTypes } from '../../api/textiletypes'
 import { postProduct } from '../../api/products'
 
-import Header from './header';
+import PageHeader from './pageheader';
 import Footer from './footer';
 
 import { APPEARANCE } from '../../appearance';
@@ -463,7 +463,7 @@ useEffect(() => {
       </Modal>
 
       <Container sx={{maxWidth: "100%", padding: 0 }} className="header-container" >
-        <Header user={props.user} title={props.title} />
+        <PageHeader user={props.user} title={props.title} />
         <main>
  
           <Typography component="h1" variant="h6" color={APPEARANCE.COLOR1}>

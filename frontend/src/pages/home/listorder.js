@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 import axios from 'axios'
 
 import config from "../../config.json"
-import Header from './header';
+import PageHeader from './pageheader';
 import Footer from './footer';
 import MyOrders from '../../components/myorders';
 import { APPEARANCE } from '../../appearance';
@@ -146,7 +146,7 @@ export default function ListOrder(props) {
 
       
       <Container sx={{padding: 0 }} className="header-container" >
-        <Header user={props.user} title={props.title} />
+        <PageHeader user={props.user} title={props.title} />
         {/* <MainBanner user={props.user} title={props.title} /> */}
         <div>
         

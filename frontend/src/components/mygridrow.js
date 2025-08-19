@@ -56,7 +56,7 @@ export default function MyGridRow(props) {
         <tr style={{ alignItems: "center", padding: 0, cursor: "pointer" }} className="my-grid-row" >
           { props.show.image && <td><img key={"grid-image-" + props.index} 
                 src={config.api + "/" + props.item.imagePath} 
-                style={{width: "86px", height: "86px", mr: 2}}
+                style={{width: "50px", height: "50px", mr: 2}}
                 alt={"photo"+(props.index + 1)} /></td> }
 
             { props.show.product && <td key={"grid-valuename-" + props.index} style={{ ...props.st, ...{ minWidth: "140px"}}} >

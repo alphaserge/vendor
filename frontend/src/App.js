@@ -16,7 +16,7 @@ import Confirm from './pages/auth/confirm';
 import Info from './pages/auth/info';
 import Error from './pages/auth/error';
 import Success from './pages/auth/success';
-import PrimarySearchAppBar from './pages/home/header';
+//import PrimarySearchAppBar from './pages/home/header';
 import Blog from './pages/home/blog/Blog';
 
 import './App.css';

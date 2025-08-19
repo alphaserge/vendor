@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Net;
 
 namespace chiffon_back.Controllers
@@ -26,13 +27,35 @@ namespace chiffon_back.Controllers
         }
 
         [HttpGet(Name = "Vendors")]
-        public IEnumerable<Models.Vendor> Get()
+        public IEnumerable<Models.Vendor> Get(string? type)
         {
-            return ctx.Vendors.OrderBy(x => x.VendorName)
-                .Select(x =>
-                    config.CreateMapper()
+            var query = ctx.Vendors.AsQueryable();
+
+            if (!type.IsNullOrEmpty())
+                query = query.Where(x => x.VendorType == type);
+
+            return query.Select(x => config.CreateMapper()
                         .Map<Models.Vendor>(x))
-                .ToList();
+                        .ToList();
+
+            /*return Enumerable.Range(1, 5).Select(index => new Vendor
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            })
+            .ToArray();*/
+        }
+
+
+        [HttpGet("Transports")]
+        public IEnumerable<Models.Vendor> Transports(int? vendorId)
+        {
+            var query = ctx.Vendors.Where(x => x.VendorType == "transport" || x.VendorType == "owner" || x.Id == vendorId);
+
+            return query.Select(x => config.CreateMapper()
+                        .Map<Models.Vendor>(x))
+                        .ToList();
 
             /*return Enumerable.Range(1, 5).Select(index => new Vendor
             {

@@ -7,7 +7,7 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 
 import Login from '../auth/login';
-import Header from './header';
+import PageHeader from './pageheader';
 import Footer from './footer';
 import { Height } from "@mui/icons-material";
 
@@ -32,7 +32,7 @@ export default function Home(props) {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
       <Container maxWidth="lg">
-        <Header user={props.user} title={props.title} />
+        <PageHeader user={props.user} title={props.title} />
         <main>
           <Box sx={{ height: "600px", alignItems: "center", alignContent: "center" }} >
           <Button href="login" variant="text" sx={{ color: "#000", backgroundColor: "#eee", p: 2}} > Please log in</Button> 
