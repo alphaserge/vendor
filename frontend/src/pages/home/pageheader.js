@@ -18,7 +18,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import { Icon } from '@mui/material';
 
 import { APPEARANCE } from '../../appearance';
-import { getFromUrl } from '../../functions/helper';
+import { fromUrl } from '../../functions/helper';
 
 import config from "../../config.json"
 
@@ -90,7 +90,7 @@ export default function PageHeader(props) {
 
   useEffect(() => {
 
-    /*if (getFromUrl('vendor')+'' == '1') {
+    /*if (fromUrl('vendor')+'' == '1') {
       var index = pages.indexOf('Vendor Orders');
       if (index !== -1) {
         pages.splice(index, 1);

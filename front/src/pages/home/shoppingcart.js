@@ -386,7 +386,7 @@ const makeOrder = async (event) => {
         <Grid item sx={{display: "flex", flexDirection: "column"}}>
           <Property value={fined(data.product.itemName)}  />
           {/* <Property value={data.product.colors.filter((e)=>{ return e.colorNames!="PRODUCT" && e.colorNames!=""}).map((e)=> { return e.colorNames }).join(", ")}  /> */}
-          <Property value={"Color: " + data.colorVar.colorNo + " - " + data.colorVar.colorNames} />
+          <Property value={"color no. " + data.colorVar.colorNo + " : " + data.colorVar.colorNames} />
         </Grid>
         </Link>
 

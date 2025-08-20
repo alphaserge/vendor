@@ -24,7 +24,7 @@ import { formattedDate, computePrice } from '../../functions/helper';
 import { sendToVendor } from '../../api/orders'
 
 import config from "../../config.json"
-import { getFromUrl } from '../../functions/helper';
+import { fromUrl } from '../../functions/helper';
 
 const defaultTheme = createTheme()
 const itemStyle = { width: 265 }
@@ -119,11 +119,11 @@ export default function VendorOrderRow(props) {
                 <td className="order-item-label">Ref No:</td>
                 <td>{item.refNo}</td>
                 <td className="order-item-value" colspan={3}><div style={{width: "240px"}}>{item.composition}</div></td>
-                { getFromUrl('vendor')!=1 && <td className="order-item-label">Price:</td> }
-                { getFromUrl('vendor')!=1 && <td className="order-item-value">{item.price}&nbsp;$</td> }
-                { getFromUrl('vendor')==1 && <td className="order-item-label">Available:</td> }
-                { getFromUrl('vendor')==1 && item.vendorQuantity && <td className="order-item-value">{item.vendorQuantity}&nbsp;$</td> }
-                { getFromUrl('vendor')==1 && !item.vendorQuantity && 
+                { fromUrl('vendor')!=1 && <td className="order-item-label">Price:</td> }
+                { fromUrl('vendor')!=1 && <td className="order-item-value">{item.price}&nbsp;$</td> }
+                { fromUrl('vendor')==1 && <td className="order-item-label">Available:</td> }
+                { fromUrl('vendor')==1 && item.vendorQuantity && <td className="order-item-value">{item.vendorQuantity}&nbsp;$</td> }
+                { fromUrl('vendor')==1 && !item.vendorQuantity && 
                 <td className="order-item-value">
               <TextField
                 margin="normal"
@@ -155,9 +155,9 @@ export default function VendorOrderRow(props) {
         </CardContent>
 
     <CardActions sx={{ justifyContent: "right", mr: 3}} >
-      {getFromUrl('vendor')!=1 && <Button size="medium" onClick={ (e) => { handleSendToVendor(props.data.vendorId) }}>Send to vendor</Button>}
-      {props.user.vendorId!=1 && getFromUrl('vendor')!=1 && <Button size="medium" onClick={ (e) => { handleSendToGeneral(props.data.vendorId) }}>Send to general vendor</Button>}
-      {getFromUrl('vendor')==1 && <Button size="medium" onClick={ (e) => { props.sendVendorQuantity(props.index) }}>Send to client</Button>}
+      {fromUrl('vendor')!=1 && <Button size="medium" onClick={ (e) => { handleSendToVendor(props.data.vendorId) }}>Send to vendor</Button>}
+      {props.user.vendorId!=1 && fromUrl('vendor')!=1 && <Button size="medium" onClick={ (e) => { handleSendToGeneral(props.data.vendorId) }}>Send to general vendor</Button>}
+      {fromUrl('vendor')==1 && <Button size="medium" onClick={ (e) => { props.sendVendorQuantity(props.index) }}>Send to client</Button>}
       
     </CardActions>
   </Card>

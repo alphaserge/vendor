@@ -65,7 +65,7 @@ const MenuProps = {
   },
 };
 
-const getFromUrl = (name) => {
+const fromUrl = (name) => {
   const search = window.location.search
   const params = new URLSearchParams(search)
   return params.get(name)

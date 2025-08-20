@@ -41,6 +41,23 @@ export const formattedDate = (value, empty='') => {
     return formattedToday
 }
 
+export const formattedPrice = (value, empty) => {
+    
+    let nullWord = '-'
+
+    if (empty) {
+        nullWord = empty
+    }
+
+    if (!value) {
+        return nullWord
+    }
+    
+    return value.toFixed(2);// + ' $'
+}
+
+
+
 
 export const isInteger = (x) => { return typeof x === "number" && isFinite(x) && Math.floor(x) === x; }
 export const isFloat = (x) => { return !!(x % 1); }

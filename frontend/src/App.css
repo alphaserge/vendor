@@ -341,3 +341,9 @@ a.no-link {
   vertical-align: middle;
   color: #222;
 }
+
+.my-link {
+  text-decoration: none;
+  color: #222;
+}
+

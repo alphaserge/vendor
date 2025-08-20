@@ -60,7 +60,7 @@ const MenuProps = {
   },
 };
 
-const getFromUrl = (name) => {
+const fromUrl = (name) => {
   const search = window.location.search
   const params = new URLSearchParams(search)
   return params.get(name)
@@ -310,7 +310,7 @@ export default function ListProduct(props) {
       loadProductTypes()
       loadProductStyles()
 
-      if (getFromUrl("new")==1) {
+      if (fromUrl("new")==1) {
         setAddProduct(true)
       }
   

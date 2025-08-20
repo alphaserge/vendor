@@ -7,6 +7,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
 import { colors } from "@mui/material";
 import { Paid } from "@mui/icons-material";
 
@@ -16,13 +17,18 @@ import config from "../../config.json"
 import PageHeader from './pageheader';
 import Footer from './footer';
 import Header from '../../components/header';
+import Property from '../../components/property';
 import { APPEARANCE } from '../../appearance';
+
+import { fined, status, computePrice } from "../../functions/helper"
 
 const defaultTheme = createTheme()
 const outboxStyle = { maxWidth: "900px", margin: "80px auto 20px auto", padding: "0 10px" }
 const entities = ['active orders', 'delivered orders']
-const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, color: APPEARANCE.WHITE, m: 1 }
-const disableStyle = { width: 90, height: 40, backgroundColor: "#ccc", color: APPEARANCE.WHITE, m: 1 }
+//const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, color: APPEARANCE.WHITE, m: 1 }
+//const disableStyle = { width: 90, height: 40, backgroundColor: "#ccc", color: APPEARANCE.WHITE, m: 1 }
+const buttonStyle = { height: 26, backgroundColor: "#222", color: APPEARANCE.WHITE, textTransform: "none" }
+const disableStyle = { height: 26, backgroundColor: "#ccc", color: APPEARANCE.WHITE, textTransform: "none" }
 
 export default function ListOrderV(props) {
 
@@ -111,7 +117,7 @@ export default function ListOrderV(props) {
                   productId : d.productId,
                   orderId   : d.orderId,
                   imagePath : d.imagePath,
-                  product   : d.itemName,
+                  itemName  : d.itemName,
                   spec      : d.composition,
                   price     : d.price,
                   owner     : d.vendorName,
@@ -166,8 +172,8 @@ export default function ListOrderV(props) {
   }
 
   const changes = orders.map(e => e.changes).indexOf(true) != -1
-  //console.log("orders")
-  //console.log(orders)
+  console.log("orders")
+  console.log(orders)
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -182,22 +188,79 @@ export default function ListOrderV(props) {
         <Box component="form" noValidate style={outboxStyle}>
 
         {/* <Box gutterBottom/> */}
-        <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pb: 2, pr: 6, textAlign: "center" }} > {"Orders list of " + props.user.vendorName}</Box> 
+        <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Orders list of " + props.user.vendorName}</Box> 
           
         <Box sx={{ 
           display: "grid", 
           gridTemplateColumns: "70px 1fr 1fr 70px 100px 140px 60px",
-          columnGap: "4px",
+          columnGap: "0px",
           rowGap: "20px",
           alignItems: "center" }}>
-            <Grid item sx={{p:0, m:0}}><Header text="Photo"></Header></Grid>
-            <Grid item sx={{p:0, m:0}}><Header text="Item name"></Header></Grid>
-            <Grid item><Header text="Color"></Header></Grid>
-            <Grid item><Header text="Amount"></Header></Grid>
-            <Grid item><Header text="Status"></Header></Grid>
-            <Grid item><Header text="Details"></Header></Grid>
-            <Grid item></Grid>
-        </Box>
+            <Grid item sx={{p:0, m:0}}><Header text="Photo"/></Grid>
+            <Grid item sx={{p:0, m:0}}><Header text="Item name"/></Grid>
+            <Grid item><Header text="Color"/></Grid>
+            <Grid item><Header text="Amount"/></Grid>
+            <Grid item><Header text="Status"/></Grid>
+            <Grid item><Header text="Details"/></Grid>
+            <Grid item><Header text="Action"/></Grid>
+
+    {orders.map((data, index) => (
+      <React.Fragment>
+        <Link to={"/updateproduct?id=" + data.productId } style={{ textDecoration: 'none' }} >
+          <Grid item>
+                
+                  <img 
+                    src={config.api + "/" + data.imagePath}
+                    sx={{padding: "0 10px"}}
+                    width={65}
+                    height={65}
+                    alt={data.itemName}
+                /> 
+                </Grid></Link>
+                
+        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        <Grid item sx={{display: "flex", flexDirection: "column"}}>
+          <Property value={fined(data.itemName, "-")}  />
+        </Grid>
+        </Link>
+
+        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        <Grid item sx={{display: "flex", flexDirection: "column"}}>
+          <Property value={data.colorNames} />
+        </Grid>
+        </Link>
+       
+        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        <Grid item sx={{display: "flex", flexDirection: "column"}}>
+          <Property value={data.quantity} />
+        </Grid>
+        </Link>
+
+        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        <Grid item sx={{display: "flex", flexDirection: "column"}}>
+          <Property value={status(data)} />
+        </Grid>
+        </Link>
+
+        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        <Grid item sx={{display: "flex", flexDirection: "column"}}>
+          <Property value={fined(data.details, "-")} />
+        </Grid>
+        </Link>
+
+        <Button 
+          variant="contained"
+          //sx={{buttonStyle}}
+          sx={!!data.details || !!data.confirmByVendor ? disableStyle : buttonStyle}
+          disabled={!!data.details || !!data.confirmByVendor }
+          onClick={(e) => { handleAccept(data.id) }} >
+              Accept
+        </Button>
+
+      </React.Fragment>
+    ))}
+
+    </Box>
 
           {/* <MyGrid 
               key={"orders-grid"}

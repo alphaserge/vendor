@@ -3,7 +3,19 @@ export const non = (s) => {
     return s ? s : "";
 }
 
-export const formattedDate = (value, empty) => {
+export const getYearsApproximate = (date1, date2) => {
+  const diffMilliseconds = Math.abs(date2 - date1);
+  const millisecondsInYear = 1000 * 60 * 60 * 24 * 365.25; // Average days in a year
+  return diffMilliseconds / millisecondsInYear;
+}
+
+export const  getYearsFull = (date1, date2) => {
+  const year1 = date1.getFullYear();
+  const year2 = date2.getFullYear();
+  return Math.abs(year2 - year1);
+}
+
+export const formattedDate = (value, empty='') => {
     
     let nullWord = ''
 
@@ -44,30 +56,86 @@ export const formattedPrice = (value, empty) => {
     return value.toFixed(2);// + ' $'
 }
 
-export const computePrice = (price, amount) => {
 
-    if (!price) {
+
+
+export const isInteger = (x) => { return typeof x === "number" && isFinite(x) && Math.floor(x) === x; }
+export const isFloat = (x) => { return !!(x % 1); }
+
+export const isNumber = (value) => {
+    if (typeof value === 'string') {
+        value = parseFloat(value)
+    }
+    
+    return typeof value === 'number' && isFinite(value);
+}
+
+export function toFixed2(value) {
+    
+    if (value === undefined || value === null) { return "-"}
+
+    return value.toFixed(2)
+}
+
+export const validDecimal = (value) => {
+    return isNumber(value)
+}
+
+export const computePrice = (product, quantity, isRolls) => {
+
+    if (!product.price) {
         return null
     }
 
-    if (!amount) {
-        return price*1.1
+    if (!quantity) {
+        return toFixed2(product.price*1.1)
     }
 
-    if (amount > 500) {
-        return price
+    if (isRolls == true) {
+        quantity *= product.rollLength
     }
 
-    if (amount > 300) {
-        return price*1.05
+    if (quantity > 500) {
+        return toFixed2(product.price)
     }
 
-    return price*1.1
+    if (quantity > 300) {
+        return toFixed2(product.price*1.05)
+    }
+
+    return toFixed2(product.price*1.1)
 }
 
-export const getFromUrl = (name) => {
+export const fromUrl = (paramName) => {
     const search = window.location.search
     const params = new URLSearchParams(search)
-    return params.get(name)
-  }
-  
+    return params.get(paramName)
+}
+
+export const idFromUrl = () => {
+    return fromUrl('id')
+}
+
+export const fined = (text, placeholder="") => {
+    return text ? text : placeholder
+}
+
+export const fined2 = (text) => {
+    return text ? text : ""
+}
+
+export const status = (item) => {
+    
+    console.log('status:')
+    console.log(item)
+    console.log(item.recievedByClient)
+    console.log(item.shippedToClient)
+    console.log(item.inStock)
+    console.log(item.shippedByVendor)
+
+    if (!!item.confirmByVendor ) return "accepted"
+    if (!!item.recievedByClient) return "delivered"
+    if (!!item.shippedToClient ) return "in transit"
+    if (!!item.inStock         ) return "in stock"
+    if (!!item.shippedByVendor ) return "shipped"
+}
