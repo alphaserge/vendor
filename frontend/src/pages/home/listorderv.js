@@ -7,9 +7,22 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
 import { colors } from "@mui/material";
 import { Paid } from "@mui/icons-material";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import HandshakeIcon from '@mui/icons-material/Handshake';
+import PaidIcon from '@mui/icons-material/Paid';
+import DoneIcon from '@mui/icons-material/Done';
+import RecommendIcon from '@mui/icons-material/Recommend';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
+import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
+import ViewInArIcon from '@mui/icons-material/ViewInAr';
+
 
 import axios from 'axios'
 
@@ -36,6 +49,7 @@ export default function ListOrderV(props) {
 
     const [toggle, setToggle] = useState(false)
     const [orders, setOrders] = useState([])
+    const [expand, setExpand] = useState([])
     const [filter, setFilter] = useState(false)
     const [entity, setEntity] = useState('active orders');
     const [modified, setModified] = useState(false)
@@ -93,6 +107,11 @@ export default function ListOrderV(props) {
         setToggle(!toggle)
     }
 
+    const toggleExpand = (index) => {
+      let exp = [...expand]
+      exp[index] = !exp[index]
+      setExpand(exp)
+    }
 
     const handleSave = () => {
       
@@ -135,6 +154,11 @@ export default function ListOrderV(props) {
           setOrders(result)
           setFilter(false)
           setModified(false)
+
+          const desiredLength = result.length;
+          const filledArray = new Array(desiredLength).fill(false);
+          const art = new Array(3).fill(false)
+          setExpand(new Array(desiredLength).fill(false))
           })      
       .catch (error => {
         console.log(error)
@@ -202,7 +226,7 @@ export default function ListOrderV(props) {
             <Grid item><Header text="Amount"/></Grid>
             <Grid item><Header text="Status"/></Grid>
             <Grid item><Header text="Details"/></Grid>
-            <Grid item><Header text="Action"/></Grid>
+            <Grid item><Header text="Expand"/></Grid>
 
     {orders.map((data, index) => (
       <React.Fragment>
@@ -248,14 +272,23 @@ export default function ListOrderV(props) {
         </Grid>
         </Link>
 
-        <Button 
-          variant="contained"
-          //sx={{buttonStyle}}
-          sx={!!data.details || !!data.confirmByVendor ? disableStyle : buttonStyle}
-          disabled={!!data.details || !!data.confirmByVendor }
-          onClick={(e) => { handleAccept(data.id) }} >
-              Accept
-        </Button>
+        <IconButton aria-label="expand" sx={{backgroundColor: "#fff", borderRadius: "8px", margin: "6px" }}>
+          <KeyboardArrowDownIcon
+            sx={{ color: "#888", fontSize: 26, transform: expand[index]==true ? "rotate(0.5turn)" : "none" }}
+            onClick={(e)=>{ toggleExpand(index) }} >
+          </KeyboardArrowDownIcon>
+        </IconButton>
+
+         <Box className="row-border" sx={{ display: expand[index]==true ? "flex" : "none", justifyContent: "end" }}  >
+          <Button 
+            variant="contained"
+            //sx={{buttonStyle}}
+            sx={!!data.details || !!data.confirmByVendor ? disableStyle : buttonStyle}
+            disabled={!!data.details || !!data.confirmByVendor }
+            onClick={(e) => { handleAccept(data.id) }} >
+                Accept
+          </Button>
+         </Box>
 
       </React.Fragment>
     ))}

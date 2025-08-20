@@ -347,3 +347,6 @@ a.no-link {
   color: #222;
 }
 
+.row-border {
+    grid-column: 1 / 8; /* this code makes the row stretch to entire width of the container */
+}
