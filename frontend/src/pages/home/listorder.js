@@ -66,7 +66,6 @@ export default function ListOrder(props) {
                 phone   : d.clientPhone,
                 changes : false,
                 paid    : d.paid > 0,
-                shippedByVendor : d.shippedByVendor,
                 items   : ( !!d.items ? d.items.map((it) => { return {
                   id        : it.id,
                   productId : it.productId,
@@ -74,15 +73,14 @@ export default function ListOrder(props) {
                   product   : it.itemName,
                   spec      : it.composition,
                   price     : it.price,
-                  owner    : it.vendorName,
+                  owner     : it.vendorName,
                   quantity  : it.quantity,
-                  unit: it.unit,
+                  unit      : it.unit,
                   colorNames: it.colorNames,
-                  details : it.details,
-                  changes : false,
-                  confirmByVendor: it.confirmByVendor,
-                  paid    : it.paid > 0,
-                  status: it.confirmByVendor != null ? "confirmed" : (it.confirmByVendor != null ? "shipped" : (it.inStock != null ? "in stock" : (it.shippedToClient != null ? "shipped to client" : (it.recievedByClient != null ? "recieved" : "ordered"))))
+                  details   : it.details,
+                  changes   : false,
+                  paid      : it.paid > 0,
+                  status    : it.detail != null ? "confirmed" : (it.shipped != null ? "shipped" : (it.delivered != null ? "delivered" : "waiting"))
                   }}) : [])
               }
           });

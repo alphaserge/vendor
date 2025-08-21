@@ -126,16 +126,11 @@ export const fined2 = (text) => {
 
 export const status = (item) => {
     
-    console.log('status:')
-    console.log(item)
-    console.log(item.recievedByClient)
-    console.log(item.shippedToClient)
-    console.log(item.inStock)
-    console.log(item.shippedByVendor)
-
-    if (!!item.confirmByVendor ) return "accepted"
-    if (!!item.recievedByClient) return "delivered"
-    if (!!item.shippedToClient ) return "in transit"
-    if (!!item.inStock         ) return "in stock"
-    if (!!item.shippedByVendor ) return "shipped"
+    if (!!item.details  ) return "confirmed"
+    if (!!item.delivered) return "delivered"
+    if (!!item.shipped  ) return "shipping"
+    //if (!!item.paidByClient    ) return "paid"
+    //if (!!item.shippedToClient ) return "delivered"
+    //if (!!item.inStock         ) return "in stock"
+    return "waiting"
 }

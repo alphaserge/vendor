@@ -9,7 +9,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
-import { colors } from "@mui/material";
+import { colors, FormControl, Icon } from "@mui/material";
 import { Paid } from "@mui/icons-material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
@@ -22,7 +22,10 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
 import ViewInArIcon from '@mui/icons-material/ViewInAr';
-
+import TextField from '@mui/material/TextField';
+import { InputLabel } from "@mui/material"
+import InputAdornment from '@mui/material/InputAdornment';
+import Tooltip from '@mui/material/Tooltip';
 
 import axios from 'axios'
 
@@ -42,6 +45,7 @@ const entities = ['active orders', 'delivered orders']
 //const disableStyle = { width: 90, height: 40, backgroundColor: "#ccc", color: APPEARANCE.WHITE, m: 1 }
 const buttonStyle = { height: 26, backgroundColor: "#222", color: APPEARANCE.WHITE, textTransform: "none" }
 const disableStyle = { height: 26, backgroundColor: "#ccc", color: APPEARANCE.WHITE, textTransform: "none" }
+const labelStyle = { m: 0, ml: 0, mr: 0 }
 
 export default function ListOrderV(props) {
 
@@ -50,6 +54,7 @@ export default function ListOrderV(props) {
     const [toggle, setToggle] = useState(false)
     const [orders, setOrders] = useState([])
     const [expand, setExpand] = useState([])
+    const [detail, setDetail] = useState([])
     const [filter, setFilter] = useState(false)
     const [entity, setEntity] = useState('active orders');
     const [modified, setModified] = useState(false)
@@ -87,25 +92,6 @@ export default function ListOrderV(props) {
       return false;
     })
   };
-
-    const handleAccept = (id) => {
-
-      handleSave()
-
-      postAccept(id)
-
-      let ords = [...orders]
-      for (let j=0; j< ords.length; j++) {
-        if (ords[j].id == id) {
-              ords[j].confirmByVendor = true;
-              setOrders(ords)
-              break
-            }
-          }
-
-
-        setToggle(!toggle)
-    }
 
     const toggleExpand = (index) => {
       let exp = [...expand]
@@ -148,12 +134,13 @@ export default function ListOrderV(props) {
                   details   : d.details,
                   paid      : d.paid,
                   changes   : false,
-                  confirmByVendor: d.confirmByVendor,
                   }
               })
           setOrders(result)
           setFilter(false)
           setModified(false)
+
+          setDetail(result.map((e)=> { return e.details }))
 
           const desiredLength = result.length;
           const filledArray = new Array(desiredLength).fill(false);
@@ -216,9 +203,9 @@ export default function ListOrderV(props) {
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "70px 1fr 1fr 70px 100px 140px 60px",
-          columnGap: "0px",
-          rowGap: "20px",
+          gridTemplateColumns: "70px 1fr 1fr 70px 55px 140px 60px",
+          columnGap: "4px",
+          rowGap: "0px",
           alignItems: "center" }}>
             <Grid item sx={{p:0, m:0}}><Header text="Photo"/></Grid>
             <Grid item sx={{p:0, m:0}}><Header text="Item name"/></Grid>
@@ -236,8 +223,8 @@ export default function ListOrderV(props) {
                   <img 
                     src={config.api + "/" + data.imagePath}
                     sx={{padding: "0 10px"}}
-                    width={65}
-                    height={65}
+                    width={35}
+                    height={35}
                     alt={data.itemName}
                 /> 
                 </Grid></Link>
@@ -255,14 +242,29 @@ export default function ListOrderV(props) {
         </Link>
        
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{display: "flex", flexDirection: "column"}}>
-          <Property value={data.quantity} />
+        <Grid item sx={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
+          <Property value={data.quantity} textAlign="center" />
         </Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{display: "flex", flexDirection: "column"}}>
-          <Property value={status(data)} />
+        <Grid item sx={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
+          <Tooltip title={status(data)}>
+            <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px"}} >
+            { status(data)=="waiting"    && <QueryBuilderIcon  sx={{ color: "#888", fontSize: 24 }} /> } {/* waiting vendor */}
+            { status(data)=="confirmed"  && <HandshakeIcon     sx={{ color: "#888", fontSize: 24 }} /> } {/* vendor accepted  */}
+            { status(data)=="paid"       && <PaidIcon          sx={{ color: "#888", fontSize: 24 }} /> } {/* paid by client */}
+            {/*{ status(data)=="in stock"   && <ViewInArIcon      sx={{ color: "#888", fontSize: 24 }} /> }*/} {/* in stock */}
+            { status(data)=="shipping"   && <LocalShippingIcon sx={{ color: "#888", fontSize: 24 }} /> } {/* shipping */}
+            { status(data)=="delivered"  && <RecommendIcon     sx={{ color: "#888", fontSize: 24 }} /> } {/* waiting vendor */}
+            </Box>
+          </Tooltip>
+            {/* <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px"}} >{status(data)}</Box> */}
+
+            {/* <EmojiPeopleIcon sx={{ color: "#888", fontSize: 26 }} />
+            <DoneIcon sx={{ color: "#888", fontSize: 26 }} />
+            <ThumbUpOffAltIcon sx={{ color: "#888", fontSize: 26 }} />
+            <SentimentSatisfiedAltIcon sx={{ color: "#888", fontSize: 26 }} /> */}
         </Grid>
         </Link>
 
@@ -280,14 +282,23 @@ export default function ListOrderV(props) {
         </IconButton>
 
          <Box className="row-border" sx={{ display: expand[index]==true ? "flex" : "none", justifyContent: "end" }}  >
-          <Button 
-            variant="contained"
-            //sx={{buttonStyle}}
-            sx={!!data.details || !!data.confirmByVendor ? disableStyle : buttonStyle}
-            disabled={!!data.details || !!data.confirmByVendor }
-            onClick={(e) => { handleAccept(data.id) }} >
-                Accept
-          </Button>
+          <Box sx={{width: 500}}>
+            <TextField label="Details"
+                              margin="normal"
+                              size="small" 
+                              id={"valuedetails-" + index}
+                              name={"valuedetails-" + index}
+                              sx = {{ width: 160, mt: '-3px', ml: 2, mr: 0, mb: '-3px' }}
+                              value={data.details}
+                              onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="end">
+                                    <Button onClick={(e)=>{}} edge="end" sx={{backgroundColor: "#777", color: "#fff", borderRadius: "2px", height: "26px", minWidth: "20px", fontSize: "14px", textTransform: "none"}}>set</Button>
+                                  </InputAdornment>
+                                ),
+                              }} />
+          </Box>
          </Box>
 
       </React.Fragment>

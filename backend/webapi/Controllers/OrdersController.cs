@@ -224,7 +224,6 @@ namespace chiffon_back.Controllers
                         ColorNames = item.oi.ColorNames,
                         VendorId = item.j.VendorId,
                         VendorName = vendorList.FirstOrDefault(x=>x.Id==item.j.VendorId)?.VendorName,
-                        ConfirmByVendor = item.oi.ConfirmByVendor,
                         Paid = (ctx.Payments.FirstOrDefault(x => x.Amount > 0m && x.What == "order" && x.WhatId == item.oi.OrderId)) != null,
                     };
 
@@ -286,7 +285,6 @@ namespace chiffon_back.Controllers
                     ColorNames = item.oi.ColorNames,
                     VendorId = item.j.VendorId,
                     VendorName = ctx.Vendors.FirstOrDefault(x=>x.Id==item.j.VendorId).VendorName,
-                    ConfirmByVendor = item.oi.ConfirmByVendor,
                     Paid = ctx.Payments.FirstOrDefault(x=>x.Amount>0m && x.What=="order" && x.WhatId==item.oi.OrderId) != null
                 };
 
@@ -360,7 +358,6 @@ namespace chiffon_back.Controllers
                     VendorQuantity = item.oi.VendorQuantity,
                     OrderRolls = item.oi.OrderRolls,
                     Details = item.oi.Details,
-                    ConfirmByVendor = item.oi.ConfirmByVendor,
                 };
 
                 orderItems.Add(orderItem);
@@ -629,12 +626,13 @@ namespace chiffon_back.Controllers
         [HttpPost("Accept")]
         public ActionResult Accept([FromBody] OrderItemAccept acpt)
         {
+            throw new Exception("Not supported now");
+
             try
             {
                 Context.OrderItem oi = ctx.OrderItems.FirstOrDefault(x => x.Id == acpt.ItemId);
                 if (oi != null)
                 {
-                    oi.ConfirmByVendor = DateTime.Now;
                     if (false && oi.Details.IsNullOrEmpty()) //!!!!!
                     {
                         oi.Details = $"{oi.Quantity} {oi.Unit.Replace("rolls", "r").Replace("meters","m")}";

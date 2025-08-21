@@ -117,12 +117,12 @@ export default function MyGridRow(props) {
 
             { props.button.confirm && <td key={"grid-valuedetails-" + props.index} sx={{ width: "60px", pl:1 }} >
                 <Button 
-                              variant="contained"
-                              sx={!props.item.details || !!props.item.confirmByVendor ? disableStyle : buttonStyle}
-                              disabled={!props.item.details || !!props.item.confirmByVendor }
-                              onClick={(e) => { props.handleAccept(props.item.id) }} >
-                                  Accept
-                            </Button>
+                  variant="contained"
+                  sx={!props.item.details ? disableStyle : buttonStyle}
+                  disabled={!props.item.details }
+                  onClick={(e) => { props.handleAccept(props.item.id) }} >
+                      Accept
+                </Button>
             </td> }
 
           </tr> 

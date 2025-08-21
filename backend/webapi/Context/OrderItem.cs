@@ -15,11 +15,8 @@
         public int? ColorNo { get; set; }
         public string? ColorNames { get; set; }
         public string? Unit { get; set; }
-        public DateTime? ConfirmByVendor { get; set; }
-        public DateTime? ShippedByVendor { get; set; }
-        public DateTime? InStock { get; set; }
-        public DateTime? ShippedToClient { get; set; }
-        public DateTime? RecievedByClient { get; set; }
+        public DateTime? Shipped { get; set; }
+        public DateTime? Delivered { get; set; }
 
 
         //public string? ImagePath { get; set; }
