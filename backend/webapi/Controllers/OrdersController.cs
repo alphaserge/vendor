@@ -220,6 +220,10 @@ namespace chiffon_back.Controllers
                         VendorQuantity = item.oi.VendorQuantity,
                         OrderRolls = item.oi.OrderRolls,
                         Details = item.oi.Details,
+                        Shipped = item.oi.Shipped,
+                        Delivered = item.oi.Delivered,
+                        DeliveryCompany = item.oi.DeliveryCompany,
+                        DeliveryNo = item.oi.DeliveryNo,
                         ColorNo = item.oi.ColorNo,
                         ColorNames = item.oi.ColorNames,
                         VendorId = item.j.VendorId,
@@ -281,6 +285,10 @@ namespace chiffon_back.Controllers
                     VendorQuantity = item.oi.VendorQuantity,
                     OrderRolls = item.oi.OrderRolls,
                     Details = item.oi.Details,
+                    Shipped = item.oi.Shipped,
+                    Delivered = item.oi.Delivered,
+                    DeliveryCompany = item.oi.DeliveryCompany,
+                    DeliveryNo = item.oi.DeliveryNo,
                     ColorNo = item.oi.ColorNo,
                     ColorNames = item.oi.ColorNames,
                     VendorId = item.j.VendorId,
@@ -358,6 +366,10 @@ namespace chiffon_back.Controllers
                     VendorQuantity = item.oi.VendorQuantity,
                     OrderRolls = item.oi.OrderRolls,
                     Details = item.oi.Details,
+                    Shipped = item.oi.Shipped,
+                    Delivered = item.oi.Delivered,
+                    DeliveryCompany = item.oi.DeliveryCompany,
+                    DeliveryNo = item.oi.DeliveryNo,
                 };
 
                 orderItems.Add(orderItem);
@@ -622,6 +634,31 @@ namespace chiffon_back.Controllers
             }
         }
 
+        [HttpPost("DeliveryInfo")]
+        public ActionResult DeliveryInfo([FromBody] Models.DeliveryInfo di)
+        {
+            try
+            {
+                Context.OrderItem oi = ctx.OrderItems.FirstOrDefault(x => x.Id == di.Id);
+                if (oi != null)
+                {
+                    oi.DeliveryNo = di.DeliveryNo;
+                    oi.DeliveryCompany = di.DeliveryCompany;
+                    ctx.SaveChanges();
+                }
+
+                return CreatedAtAction(nameof(Context.OrderItem), new { id = di.Id }, "");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/DeliveryInfo: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/DeliveryInfo: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+                return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
+            }
+        }
 
         [HttpPost("Accept")]
         public ActionResult Accept([FromBody] OrderItemAccept acpt)

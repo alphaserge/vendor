@@ -17,10 +17,8 @@
         public string? Unit { get; set; }
         public DateTime? Shipped { get; set; }
         public DateTime? Delivered { get; set; }
-
-
-        //public string? ImagePath { get; set; }
-
+        public string? DeliveryNo { get; set; }
+        public string? DeliveryCompany { get; set; }
 
     }
 }

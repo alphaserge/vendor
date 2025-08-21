@@ -23,12 +23,12 @@
         public int? ColorNo { get; set; }
         public string? ColorNames { get; set; }
         public string? Unit { get; set; }
-        public DateTime? Shipped{ get; set; }
-        public DateTime? Delivered { get; set; }
         public decimal? RollLength { get; set; }
         public bool Paid { get; set; }
-
-        //public string? ImagePath { get; set; }
+        public DateTime? Shipped { get; set; }
+        public DateTime? Delivered { get; set; }
+        public string? DeliveryNo { get; set; }
+        public string? DeliveryCompany { get; set; }
     }
 
     public class ChangeDetails
@@ -41,5 +41,13 @@
     {
         public int? ItemId { get; set; }
     }
+
+    public class DeliveryInfo
+    {
+        public int? Id { get; set; }
+        public string? DeliveryNo { get; set; }
+        public string? DeliveryCompany { get; set; }
+    }
+
 
 }

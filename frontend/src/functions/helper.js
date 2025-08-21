@@ -134,3 +134,8 @@ export const status = (item) => {
     //if (!!item.inStock         ) return "in stock"
     return "waiting"
 }
+
+export const quantityInfo = (item) => {
+    if (!item.unit) return item.quantity
+    return item.quantity + "(" + item.unit.replace('rolls','r').replace('meters','m') + ")"
+}

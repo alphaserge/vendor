@@ -36,7 +36,7 @@ import Header from '../../components/header';
 import Property from '../../components/property';
 import { APPEARANCE } from '../../appearance';
 
-import { fined, status, computePrice } from "../../functions/helper"
+import { fined, status, quantityInfo, computePrice } from "../../functions/helper"
 
 const defaultTheme = createTheme()
 const outboxStyle = { maxWidth: "900px", margin: "80px auto 20px auto", padding: "0 10px" }
@@ -60,12 +60,12 @@ export default function ListOrderV(props) {
     const [modified, setModified] = useState(false)
 
 
-  const changeDetails = async (id, details) => {
+  const changeDetails = async (index) => {
 
   await axios.post(config.api + '/ChangeDetails', 
     {
-      id: id,
-      details: details,
+      id: orders[index].id,
+      details: orders[index].details,
     })
     .then(function (response) {
       console.log(response);
@@ -203,30 +203,31 @@ export default function ListOrderV(props) {
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "70px 1fr 1fr 70px 55px 140px 60px",
+          gridTemplateColumns: "70px 1fr 1fr 70px 140px 60px 140px", // 60px",
           columnGap: "4px",
           rowGap: "0px",
           alignItems: "center" }}>
             <Grid item sx={{p:0, m:0}}><Header text="Photo"/></Grid>
             <Grid item sx={{p:0, m:0}}><Header text="Item name"/></Grid>
             <Grid item><Header text="Color"/></Grid>
-            <Grid item><Header text="Amount"/></Grid>
-            <Grid item><Header text="Status"/></Grid>
+            <Grid item><Header text="Ordered"/></Grid>
             <Grid item><Header text="Details"/></Grid>
-            <Grid item><Header text="Expand"/></Grid>
+            <Grid item><Header text="Status"/></Grid>
+            <Grid item><Header text="Delivery"/></Grid>
+            {/* <Grid item><Header text="Expand"/></Grid> */}
 
     {orders.map((data, index) => (
       <React.Fragment>
         <Link to={"/updateproduct?id=" + data.productId } style={{ textDecoration: 'none' }} >
           <Grid item>
-                
+                <Box sx={{padding: "8px 0 0 0" }}>
                   <img 
                     src={config.api + "/" + data.imagePath}
-                    sx={{padding: "0 10px"}}
-                    width={35}
-                    height={35}
+                    width={65}
+                    height={45}
                     alt={data.itemName}
                 /> 
+                </Box>
                 </Grid></Link>
                 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
@@ -243,16 +244,42 @@ export default function ListOrderV(props) {
        
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
         <Grid item sx={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-          <Property value={data.quantity} textAlign="center" />
+          <Property value={quantityInfo(data)} textAlign="center" />
         </Grid>
         </Link>
+
+        
+        <Grid item sx={{display: "flex", flexDirection: "column"}}>
+          {/* <Property value={fined(data.details, "-")} /> */}
+            <TextField //label="Details"
+                              margin="normal"
+                              size="small" 
+                              id={"valuedetails-" + index}
+                              name={"valuedetails-" + index}
+                              sx={{marginTop: "14px"}}
+                              value={data.details}
+                              onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}}
+                              InputProps={{
+                                
+                                endAdornment: (
+                                  <InputAdornment position="end">
+                                    <Button onClick={(e)=>{ 
+                                      console.log(e.target.value); 
+                                      //return; 
+                                      changeDetails(index) }} 
+                                      edge="end" sx={{backgroundColor: "#777", color: "#fff", borderRadius: "2px", height: "26px", minWidth: "20px", fontSize: "14px", textTransform: "none"}}>set</Button>
+                                  </InputAdornment>
+                                ),
+                              }} />
+        </Grid>
+        
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
         <Grid item sx={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
           <Tooltip title={status(data)}>
-            <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px"}} >
+            <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px", marginTop: "10px"}} >
             { status(data)=="waiting"    && <QueryBuilderIcon  sx={{ color: "#888", fontSize: 24 }} /> } {/* waiting vendor */}
-            { status(data)=="confirmed"  && <HandshakeIcon     sx={{ color: "#888", fontSize: 24 }} /> } {/* vendor accepted  */}
+            { status(data)=="confirmed"  && <HandshakeIcon     sx={{ color: "#393", fontSize: 24 }} /> } {/* vendor accepted  */}
             { status(data)=="paid"       && <PaidIcon          sx={{ color: "#888", fontSize: 24 }} /> } {/* paid by client */}
             {/*{ status(data)=="in stock"   && <ViewInArIcon      sx={{ color: "#888", fontSize: 24 }} /> }*/} {/* in stock */}
             { status(data)=="shipping"   && <LocalShippingIcon sx={{ color: "#888", fontSize: 24 }} /> } {/* shipping */}
@@ -274,7 +301,8 @@ export default function ListOrderV(props) {
         </Grid>
         </Link>
 
-        <IconButton aria-label="expand" sx={{backgroundColor: "#fff", borderRadius: "8px", margin: "6px" }}>
+        {/* Expand down area:
+         <IconButton aria-label="expand" sx={{backgroundColor: "#fff", borderRadius: "8px", margin: "6px" }}>
           <KeyboardArrowDownIcon
             sx={{ color: "#888", fontSize: 26, transform: expand[index]==true ? "rotate(0.5turn)" : "none" }}
             onClick={(e)=>{ toggleExpand(index) }} >
@@ -299,7 +327,7 @@ export default function ListOrderV(props) {
                                 ),
                               }} />
           </Box>
-         </Box>
+         </Box> */}
 
       </React.Fragment>
     ))}
