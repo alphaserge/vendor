@@ -138,16 +138,16 @@ export default function UpdateProduct(props) {
 
     const [uid, setUid] = useState(uuid())
     const [productId, setProductId] = useState(uuid())
-    const [dyeStaff, setDyeStaff] = useState("")
-    const [finishing, setFinishing] = useState("")
-    const [plainDyedType, setPlainDyedType] = useState("")
-    const [printType, setPrintType] = useState("")
-    const [productStyle, setProductStyle] = useState("")
-    const [productType, setProductType] = useState("")
+    const [dyeStaffId, setDyeStaffId] = useState(null)
+    const [finishingId, setFinishingId] = useState(null)
+    const [plainDyedTypeId, setPlainDyedTypeId] = useState(null)
+    const [printTypeId, setPrintTypeId] = useState(null)
+    const [productStyleId, setProductStyleId] = useState(null)
+    const [productTypeId, setProductTypeId] = useState(null)
     const [designType, setDesignType] = useState([])
     const [overworkType, setOverworkType] = useState([])
     const [season, setSeason] = useState([])
-    const [textileType, setTextileType] = useState("")
+    const [textileTypeId, setTextileTypeId] = useState(null)
 
     const [artNo, setArtNo] = useState("")
     const [design, setDesign] = useState("")
@@ -275,7 +275,7 @@ export default function UpdateProduct(props) {
 
     const productStyleChanged = (value) => {
       //setTimeout( function() { setProductStyle(value); }, 200 )
-      setProductStyle(value)
+      setProductStyleId(value)
 
       //setWeight(value)
       //wChanged(width, value)
@@ -394,7 +394,7 @@ export default function UpdateProduct(props) {
       price: price,
       stock: stock,
       refNo: refNo,
-      composition: textileType,
+      composition: textileTypeId,
       season: season,
       weight: weight,
       width: width,
@@ -409,12 +409,12 @@ export default function UpdateProduct(props) {
       uuid: uid,
       designType: designType,
       overworkType: overworkType,
-      productStyle: productStyle,
-      productType: productType,
-      printType: printType,
-      dyeStaff: dyeStaff,
-      finishing: finishing,
-      plainDyedType: plainDyedType,
+      productStyleId: productStyleId,
+      productTypeId: productTypeId,
+      printTypeId: printTypeId,
+      dyeStaffId: dyeStaffId,
+      finishingId: finishingId,
+      plainDyedTypeId: plainDyedTypeId,
       colorVariants: colorVariants.concat(colorVariantsAdd),
       globalPhotos: productColors.filter(it => !!it.SelectedFile)
     }
@@ -549,29 +549,6 @@ const addColorVariant = async (cv) => {
       console.log(error);
       return null;
     })
-
-  /*
-  fetch(config.api + '/Products/ProductAddCV', {
-    method: "POST",
-    headers: {
-        'Content-Type': 'application/json'
-      },
-    body: JSON.stringify({
-      Uuid: cv.uuid,
-      Num: cv.colorNo,
-      productId: cv.productId,
-      isProduct: false
-    })
-})
-//.then(r => r.json())
-.then(r => {
-  props.setLastAction("Color variant has been added")
-  return r.id
-})
-.catch (error => {
-  console.log(error)
-  return null
-}) */
 };
 
 const uploadProductColor = async (event, type) => {
@@ -691,16 +668,16 @@ const setProduct = (prod) => {
   setFabricShrinkage(non(prod.fabricShrinkage))
   setFindings(non(prod.findings))
   setHsCode(non(prod.hsCode))
-  setProductStyle(non(prod.productStyle))
-  setProductType(non(prod.productType))
-  setPrintType(non(prod.printType))
-  setPlainDyedType(non(prod.plainDyedType))
-  setDyeStaff(non(prod.dyeStaff))
-  setFinishing(non(prod.finishing))
+  setProductStyleId(prod.productStyleId)
+  setProductTypeId(non(prod.productTypeId))
+  setPrintTypeId(non(prod.printType))
+  setPlainDyedTypeId(non(prod.plainDyedType))
+  setDyeStaffId(non(prod.dyeStaff))
+  setFinishingId(non(prod.finishing))
   setSeason(non(prod.seasonIds))
   setOverworkType(non(prod.overWorkTypeIds))
   setDesignType(non(prod.designTypeIds))
-  setTextileType(non(prod.composition))
+  setTextileTypeId(non(prod.composition))
   setCompositionSamples(non(prod.compositionsSamples))
 
   setProductTextileTypes(prod.textileTypes)
@@ -1216,7 +1193,7 @@ useEffect(() => {
                   itemStyle = {halfItemStyle}
                   sx={itemStyle1}
                   MenuProps={MySelectProps1}
-                  valueVariable={productStyle}
+                  valueVariable={productStyleId}
                   setValueFn={productStyleChanged}
                   data={productStyles}
                 />
@@ -1389,8 +1366,8 @@ useEffect(() => {
                   labelStyle={labelStyle1}
                   itemStyle = {itemStyle1}
                   MenuProps={MySelectProps1}
-                  valueVariable={productType}
-                  setValueFn={setProductType}
+                  valueVariable={productTypeId}
+                  setValueFn={setProductTypeId}
                   addNewFn={(e) => { setNewValueEntity("product type"); setOpenedNewValue(true); }}
                   data={productTypes}
                 />
@@ -1411,7 +1388,7 @@ useEffect(() => {
                 />
                 </Grid>
 
-                { (productStyle != config.product.plain_dyed_type) && 
+                { (plainDyedTypeId != config.product.plain_dyed_type) && 
                 (<Grid item xs={12} md={6}  >
                 <MySelect 
                   id="addproduct-designtype"
@@ -1528,8 +1505,8 @@ useEffect(() => {
                   labelStyle={labelStyle}
                   itemStyle={itemStyle2}
                   MenuProps={MySelectProps}
-                  valueVariable={finishing}
-                  setValueFn={setFinishing}
+                  valueVariable={finishingId}
+                  setValueFn={setFinishingId}
                   addNewFn={(e) => { setNewValueEntity("finishing"); setOpenedNewValue(true); }}
                   data={finishings}
                 />
@@ -1560,8 +1537,8 @@ useEffect(() => {
                 labelStyle={labelStyle}
                 itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
-                valueVariable={printType}
-                setValueFn={setPrintType}
+                valueVariable={printTypeId}
+                setValueFn={setPrintTypeId}
                 addNewFn={(e) => { setNewValueEntity("print type"); setOpenedNewValue(true); }}
                 data={printTypes}
               />
@@ -1576,15 +1553,15 @@ useEffect(() => {
                 labelStyle={labelStyle}
                 itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
-                valueVariable={dyeStaff}
-                setValueFn={setDyeStaff}
+                valueVariable={dyeStaffId}
+                setValueFn={setDyeStaffId}
                 addNewFn={(e) => { setNewValueEntity("dye staff"); setOpenedNewValue(true); }}
                 data={dyeStaffs}
               />
               </FormControl> 
               </Grid>
 
-              { (productStyle == config.product.plain_dyed_type) && (
+              { (plainDyedTypeId == config.product.plain_dyed_type) && (
                 <Grid item xs={12} md={6} >
                 <MySelect 
                   id="addproduct-plaindyedtype"
@@ -1594,8 +1571,8 @@ useEffect(() => {
                   labelStyle={labelStyle}
                   itemStyle={halfItemStyle}
                   MenuProps={MySelectProps}
-                  valueVariable={plainDyedType}
-                  setValueFn={setPlainDyedType}
+                  valueVariable={plainDyedTypeId}
+                  setValueFn={setPlainDyedTypeId}
                   addNewFn={(e) => { setNewValueEntity("plain dyed type"); setOpenedNewValue(true); }}
                   data={plainDyedTypes}
                 /> </Grid> )}
@@ -1607,8 +1584,8 @@ useEffect(() => {
                   labelStyle={labelStyle}
                   itemStyle={itemStyle1}
                   MenuProps={MySelectProps}
-                  valueVariable={textileType}
-                  setValueFn={setTextileType}
+                  valueVariable={textileTypeId}
+                  setValueFn={setTextileTypeId}
                   addNewFn={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
                   data={ textileTypes.map((e) => { return e.value }) }
                 />

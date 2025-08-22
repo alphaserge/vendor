@@ -34,6 +34,7 @@ import PageHeader from './pageheader';
 import Footer from './footer';
 import Header from '../../components/header';
 import Property from '../../components/property';
+import MySelect from '../../components/myselect';
 import { APPEARANCE } from '../../appearance';
 
 import { fined, status, quantityInfo, computePrice } from "../../functions/helper"
@@ -46,6 +47,21 @@ const entities = ['active orders', 'delivered orders']
 const buttonStyle = { height: 26, backgroundColor: "#222", color: APPEARANCE.WHITE, textTransform: "none" }
 const disableStyle = { height: 26, backgroundColor: "#ccc", color: APPEARANCE.WHITE, textTransform: "none" }
 const labelStyle = { m: 0, ml: 0, mr: 0 }
+const itemStyle  = { width: "100%", mt: 3, ml: 0, mr: 0, mb: 0  }
+const itemStyle1 = { width: "calc( 100% - 0px )", mt: 0, ml: 0, mr: 0  }
+
+const ITEM_HEIGHT = 48
+const ITEM_PADDING_TOP = 8
+
+const MySelectProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+}
+
 
 export default function ListOrderV(props) {
 
@@ -132,8 +148,12 @@ export default function ListOrderV(props) {
                   colorNames: d.colorNames,
                   colorNo   : d.colorNo,
                   details   : d.details,
+                  delivered : d.delivered,
+                  shipped   : d.shipped,
                   paid      : d.paid,
                   changes   : false,
+                  deliveryNo: d.deliveryNo,
+                  deliveryCompany : d.deliveryCompany,
                   }
               })
           setOrders(result)
@@ -297,7 +317,23 @@ export default function ListOrderV(props) {
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
         <Grid item sx={{display: "flex", flexDirection: "column"}}>
-          <Property value={fined(data.details, "-")} />
+          <MySelect 
+                            id="addproduct-overworktype"
+                            url="OverWorkTypes"
+                            title="Overwork type"
+                            valueName="overWorkName"
+                            labelStyle={labelStyle}
+                            itemStyle={itemStyle1}
+                            MenuProps={MySelectProps}
+                            //valueVariable={overworkType}
+                            //setValueFn={setOverworkType}
+
+                              //value={data.details}
+                              //onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}}
+
+                            //addNewFn={(e) => { console.log('todo - add new track company') }}
+                            //data={overworkTypes}
+                          />
         </Grid>
         </Link>
 

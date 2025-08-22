@@ -99,7 +99,13 @@ namespace chiffon_back.Controllers
                         Quantity = item.oi.Quantity,
                         VendorQuantity = item.oi.VendorQuantity,
                         VendorId = item.j.VendorId,
-                        VendorName = item.jv.VendorName
+                        VendorName = item.jv.VendorName,
+                        Delivered = item.oi.Delivered,
+                        DeliveryCompany = item.oi.DeliveryCompany,
+                        DeliveryNo = item.oi.DeliveryNo,
+                        Shipped = item.oi.Shipped,
+                        Details = item.oi.Details,
+                        //Paid= item.oi.pa,
                     };
 
                     string imagePath = string.Empty;

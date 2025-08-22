@@ -4,6 +4,6 @@
     "api" : "https://localhost:3080",
     "company": "JSC Angelika",
     "product" : {
-        "plain_dyed_type" : "2"
+        "plain_dyed_type" : 2
     }
 }
