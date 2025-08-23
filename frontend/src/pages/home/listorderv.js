@@ -214,15 +214,12 @@ export default function ListOrderV(props) {
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
 
-      
       <Container sx={{padding: 0 }} className="header-container" >
         <PageHeader user={props.user} title={props.title} />
-        {/* <MainBanner user={props.user} title={props.title} /> */}
         <div>
-        
+
         <Box component="form" noValidate style={outboxStyle}>
 
-        {/* <Box gutterBottom/> */}
         <Box sx={{ fontWeight: "500", fontSize: "15px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Order list of " + props.user.vendorName}</Box> 
           
         <Box sx={{ 
@@ -279,7 +276,6 @@ export default function ListOrderV(props) {
         </Grid>
         
         <Grid item sx={{display: "flex", flexDirection: "column"}}>
-          {/* <Property value={fined(data.details, "-")} /> */}
             <TextField //label="Details"
                               margin="normal"
                               size="small" 
@@ -288,70 +284,46 @@ export default function ListOrderV(props) {
                               sx={{marginTop: "8px"}}
                               value={data.details}
                               onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}}
-                              // InputProps={{
-                              //   endAdornment: (
-                              //     <InputAdornment position="end">
-                              //       <Button onClick={(e)=>{ 
-                              //         console.log(e.target.value); 
-                              //         //return; 
-                              //         changeDetails(index) }} 
-                              //         edge="end" 
-                              //         sx={{
-                              //           backgroundColor: "#777", 
-                              //           color: "#fff", 
-                              //           borderRadius: "2px", 
-                              //           height: "26px", 
-                              //           minWidth: "20px", 
-                              //           fontSize: "14px", 
-                              //           textTransform: "none"}}>
-                              //             set
-                              //       </Button>
-                              //     </InputAdornment>
-                              //   ),
-                              // }}
                                />
         </Grid>
         
         <Grid item sx={{display: "flex", flexDirection: "column"}}>
             <div style={{marginTop: "3px"}}>
             <MySelect 
-                            id="transportCompanies"
-                            //url="TransportCompanies"
-                            title=""
-                            hideLabel={true}
-                            valueName="deliveryCompany"
-                            labelStyle={labelStyle}
-                            itemStyle={itemStyle1}
-                            MenuProps={MySelectProps}
-                            valueVariable={data.deliveryCompany}
-                            setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
-                            ////value={data.deliveryCompany}
-                            //onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}}
-                            //addNewFn={(e) => { console.log('todo - add new track company') }}
-                            data={transportCompanies}
-                          /></div>
-                          </Grid>
+              id="transportCompanies"
+              title=""
+              hideLabel={true}
+              valueName="deliveryCompany"
+              labelStyle={labelStyle}
+              itemStyle={itemStyle1}
+              MenuProps={MySelectProps}
+              valueVariable={data.deliveryCompany}
+              setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
+              data={transportCompanies}
+            />
+            </div>
+        </Grid>
+
         <Grid item sx={{display: "flex", flexDirection: "column"}}>
-          {/* <Property value={fined(data.details, "-")} /> */}
-            <TextField //label="Details"
-                              margin="normal"
-                              size="small" 
-                              id={"valueDeliveryNo-" + index}
-                              name={"valueDeliveryNo-" + index}
-                              sx={{marginTop: "8px"}}
-                              value={data.deliveryNo}
-                              onChange={ev => { setDeliveryNo(data.orderId, data.id, ev.target.value)}}/>
+           <TextField
+              margin="normal"
+              size="small" 
+              id={"valueDeliveryNo-" + index}
+              name={"valueDeliveryNo-" + index}
+              sx={{marginTop: "8px"}}
+              value={data.deliveryNo}
+              onChange={ev => { setDeliveryNo(data.orderId, data.id, ev.target.value)}}/>
         </Grid>
         
         <Grid item sx={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
           <Tooltip title={<span style={{ color: "#fff", fontSize: "13px", fontWeight: "300", padding: 0 }}>{status(data)}</span>} >
             <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px", marginTop: "10px"}} >
-            { status(data)=="waiting of vendor"    && <QueryBuilderIcon  sx={{ color: "#888", fontSize: 24 }} /> } {/* waiting vendor */}
-            { status(data)=="confirmed by vendor"  && <HandshakeIcon     sx={{ color: "#393", fontSize: 24 }} /> } {/* vendor accepted  */}
-            { status(data)=="paid"       && <PaidIcon          sx={{ color: "#888", fontSize: 24 }} /> } {/* paid by client */}
-            {/*{ status(data)=="in stock"   && <ViewInArIcon      sx={{ color: "#888", fontSize: 24 }} /> }*/} {/* in stock */}
-            { status(data)=="shipping to client"   && <LocalShippingIcon sx={{ color: "#888", fontSize: 24 }} /> } {/* shipping */}
-            { status(data)=="delivered to client"  && <RecommendIcon     sx={{ color: "#888", fontSize: 24 }} /> } {/* waiting vendor */}
+            { status(data)=="waiting of vendor"    && <QueryBuilderIcon  sx={{ color: "#888", fontSize: 30 }} /> } {/* waiting vendor */}
+            { status(data)=="confirmed by vendor"  && <HandshakeIcon     sx={{ color: "#393", fontSize: 30 }} /> } {/* vendor accepted  */}
+            { status(data)=="paid"       && <PaidIcon          sx={{ color: "#888", fontSize: 30 }} /> } {/* paid by client */}
+            {/*{ status(data)=="in stock"   && <ViewInArIcon      sx={{ color: "#888", fontSize: 30 }} /> }*/} {/* in stock */}
+            { status(data)=="shipping to client"   && <LocalShippingIcon sx={{ color: "#888", fontSize: 30 }} /> } {/* shipping */}
+            { status(data)=="delivered to client"  && <RecommendIcon     sx={{ color: "#888", fontSize: 30 }} /> } {/* waiting vendor */}
             </Box>
           </Tooltip>
             {/* <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px"}} >{status(data)}</Box> */}
@@ -364,8 +336,6 @@ export default function ListOrderV(props) {
         <Button 
             onClick={(e)=>{ saveOrderItem(index) }} 
             edge="end" 
-            
-            //disabled={!data.changes}
             sx={{
               visibility: !data.changes ? "hidden":"visible",
               backgroundColor: "#777", 

@@ -37,7 +37,7 @@ import Property from '../../components/property';
 import MySelect from '../../components/myselect';
 import { APPEARANCE } from '../../appearance';
 
-import { fined, status, quantityInfo, computePrice } from "../../functions/helper"
+import { non, fined, status, quantityInfo, computePrice } from "../../functions/helper"
 import { getTransportCompanies } from '../../api/vendors'
 
 const defaultTheme = createTheme()
@@ -199,7 +199,7 @@ export default function ListOrderV(props) {
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "60px 1fr 1fr 65px 55px 100px 116px 110px 55px 45px",
+          gridTemplateColumns: "60px 1fr 1fr 90px 100px 200px 55px 70px",
           columnGap: "4px",
           rowGap: "8px",
           alignItems: "center" }}>
@@ -208,11 +208,9 @@ export default function ListOrderV(props) {
             <Grid item><Header text="Color"/></Grid>
             <Grid item><Header text="Ordered"/></Grid>
             <Grid item><Header text="Actual"/></Grid>
-            <Grid item><Header text="Details"/></Grid>
-            <Grid item><Header text="Delivery comp."/></Grid>
-            <Grid item><Header text="Track No."/></Grid>
+            <Grid item><Header text="Delivery"/></Grid>
             <Grid item><Header text="Status"/></Grid>
-            <Grid item></Grid>
+            <Grid item><Header text="-"/></Grid>
 
     {orders.map((data, index) => (
       <React.Fragment>
@@ -247,58 +245,22 @@ export default function ListOrderV(props) {
         </Link>
 
         <Grid item sx={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-          <Property value={data.total} textAlign="center" />
+          <Property value={fined(data.total) + (data.total + data.details!="" ? " = ": "") + fined(data.details)} textAlign="center" />
         </Grid>
         
         <Grid item sx={{display: "flex", flexDirection: "column"}}>
-            <TextField //label="Details"
-                              margin="normal"
-                              size="small" 
-                              id={"valuedetails-" + index}
-                              name={"valuedetails-" + index}
-                              sx={{marginTop: "8px"}}
-                              value={data.details}
-                              onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}}
-                               />
-        </Grid>
-        
-        <Grid item sx={{display: "flex", flexDirection: "column"}}>
-            <div style={{marginTop: "3px"}}>
-            <MySelect 
-              id="transportCompanies"
-              title=""
-              hideLabel={true}
-              valueName="deliveryCompany"
-              labelStyle={labelStyle}
-              itemStyle={itemStyle1}
-              MenuProps={MySelectProps}
-              valueVariable={data.deliveryCompany}
-              setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
-              data={transportCompanies}
-            />
-            </div>
+          <Property value={ fined(data.deliveryCompany) + (data.deliveryCompany + data.deliveryNo!="" ? " / ": "") + fined(data.deliveryNo)} textAlign="center" />
         </Grid>
 
-        <Grid item sx={{display: "flex", flexDirection: "column"}}>
-           <TextField
-              margin="normal"
-              size="small" 
-              id={"valueDeliveryNo-" + index}
-              name={"valueDeliveryNo-" + index}
-              sx={{marginTop: "8px"}}
-              value={data.deliveryNo}
-              onChange={ev => { setDeliveryNo(data.orderId, data.id, ev.target.value)}}/>
-        </Grid>
-        
         <Grid item sx={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
           <Tooltip title={<span style={{ color: "#fff", fontSize: "13px", fontWeight: "300", padding: 0 }}>{status(data)}</span>} >
             <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px", marginTop: "10px"}} >
-            { status(data)=="waiting of vendor"    && <QueryBuilderIcon  sx={{ color: "#888", fontSize: 24 }} /> } {/* waiting vendor */}
-            { status(data)=="confirmed by vendor"  && <HandshakeIcon     sx={{ color: "#393", fontSize: 24 }} /> } {/* vendor accepted  */}
-            { status(data)=="paid"       && <PaidIcon          sx={{ color: "#888", fontSize: 24 }} /> } {/* paid by client */}
-            {/*{ status(data)=="in stock"   && <ViewInArIcon      sx={{ color: "#888", fontSize: 24 }} /> }*/} {/* in stock */}
-            { status(data)=="shipping to client"   && <LocalShippingIcon sx={{ color: "#888", fontSize: 24 }} /> } {/* shipping */}
-            { status(data)=="delivered to client"  && <RecommendIcon     sx={{ color: "#888", fontSize: 24 }} /> } {/* waiting vendor */}
+            { status(data)=="waiting of vendor"    && <QueryBuilderIcon  sx={{ color: "#888", fontSize: 30 }} /> } {/* waiting vendor */}
+            { status(data)=="confirmed by vendor"  && <HandshakeIcon     sx={{ color: "#393", fontSize: 30 }} /> } {/* vendor accepted  */}
+            { status(data)=="paid"       && <PaidIcon          sx={{ color: "#888", fontSize: 30 }} /> } {/* paid by client */}
+            {/*{ status(data)=="in stock"   && <ViewInArIcon      sx={{ color: "#888", fontSize: 30 }} /> }*/} {/* in stock */}
+            { status(data)=="shipping to client"   && <LocalShippingIcon sx={{ color: "#888", fontSize: 30 }} /> } {/* shipping */}
+            { status(data)=="delivered to client"  && <RecommendIcon     sx={{ color: "#888", fontSize: 30 }} /> } {/* waiting vendor */}
             </Box>
           </Tooltip>
             {/* <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px"}} >{status(data)}</Box> */}
@@ -312,15 +274,16 @@ export default function ListOrderV(props) {
             onClick={(e)=>{ saveOrderItem(index) }} 
             edge="end" 
             sx={{
-              visibility: !data.changes ? "hidden":"visible",
+              visibility: !data.details ? "hidden":"visible",
               backgroundColor: "#777", 
               color: "#fff", 
               borderRadius: "2px", 
               height: "26px", 
               minWidth: "20px", 
               fontSize: "14px", 
+              fontWeight: "333",
               textTransform: "none"}}>
-                Save
+                Payment
           </Button>
 
       </React.Fragment>

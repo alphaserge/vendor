@@ -391,7 +391,7 @@ const makeOrder = async (event) => {
         </Link>
 
         <Link to={"/product?id=" + data.product.id}  style={{ textDecoration: 'none' }} >
-        <Grid item>
+        <Grid item sx={{ display: "flex", textAlign: "center", justifyContent: "center"}}>
           <ShortPrice value={fined(data.product.price) + "$"} />
         </Grid>
         </Link>
