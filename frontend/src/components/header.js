@@ -11,12 +11,12 @@ export default function Header(props) {
               fontSize: "14px",
               fontFamily: ap.FONTFAMILY,
               fontWeight: 500,
-              backgroundColor: "#eee", 
+              backgroundColor: "#e8e8e8", 
               color: "#333", 
               borderBottom: "none", //"1px solid #aaa",
               //borderRadius: "6px", 
               margin: "0px", 
-              padding: "6px 8px", 
+              padding: "9px 8px", 
               textAlign: "left"}}>
             {props.text}
           </Typography>

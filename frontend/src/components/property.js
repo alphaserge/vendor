@@ -11,5 +11,6 @@ export default function Property(props) {
     justifyContent: (props.justifyContent ? props.justifyContent : "begin"), 
     textAlign: (props.textAlign ? props.textAlign : "left"),
     fontWeight: ap.FONTWEIGHT,
-    padding: "4px 10px" }}>{props.value}</Box>
+    padding: "4px 10px"}}
+    >{props.value}</Box>
 }

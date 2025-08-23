@@ -38,9 +38,10 @@ import MySelect from '../../components/myselect';
 import { APPEARANCE } from '../../appearance';
 
 import { fined, status, quantityInfo, computePrice } from "../../functions/helper"
+import { getTransportCompanies } from '../../api/vendors'
 
 const defaultTheme = createTheme()
-const outboxStyle = { maxWidth: "900px", margin: "80px auto 20px auto", padding: "0 10px" }
+const outboxStyle = { maxWidth: "940px", margin: "80px auto 20px auto", padding: "0 10px" }
 const entities = ['active orders', 'delivered orders']
 //const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, color: APPEARANCE.WHITE, m: 1 }
 //const disableStyle = { width: 90, height: 40, backgroundColor: "#ccc", color: APPEARANCE.WHITE, m: 1 }
@@ -65,26 +66,32 @@ const MySelectProps = {
 
 export default function ListOrderV(props) {
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [toggle, setToggle] = useState(false)
-    const [orders, setOrders] = useState([])
-    const [expand, setExpand] = useState([])
-    const [detail, setDetail] = useState([])
-    const [filter, setFilter] = useState(false)
-    const [entity, setEntity] = useState('active orders');
-    const [modified, setModified] = useState(false)
+  const [toggle, setToggle] = useState(false)
+  const [orders, setOrders] = useState([])
+  const [expand, setExpand] = useState([])
+  const [detail, setDetail] = useState([])
+  const [filter, setFilter] = useState(false)
+  const [transportCompanies, setTransportCompanies] = useState([])
+
+  const saveOrderItem = async (index) => {
 
 
-  const changeDetails = async (index) => {
-
-  await axios.post(config.api + '/ChangeDetails', 
-    {
+  let data = JSON.stringify({
       id: orders[index].id,
       details: orders[index].details,
+      deliveryCompany: orders[index].deliveryCompany,
+      deliveryNo: orders[index].deliveryNo,
     })
+
+  await axios.post(config.api + '/ChangeDetails', data, {headers:{"Content-Type" : "application/json"}})
     .then(function (response) {
+      console.log('response for ChangeDetails:');
       console.log(response);
+      let ords = [...orders]
+      ords[index].changes = false
+      setOrders(ords)
       return true;
     })
     .catch(function (error) {
@@ -109,22 +116,11 @@ export default function ListOrderV(props) {
     })
   };
 
-    const toggleExpand = (index) => {
-      let exp = [...expand]
-      exp[index] = !exp[index]
-      setExpand(exp)
-    }
-
-    const handleSave = () => {
-      
-      for (let j=0; j< orders.length; j++) {
-            if (orders[j].changes) {
-              changeDetails(orders[j].id, orders[j].details)
-            }
-          }
-
-         loadOrders()
-    }
+  const toggleExpand = (index) => {
+    let exp = [...expand]
+    exp[index] = !exp[index]
+    setExpand(exp)
+  }
 
     const loadOrders = async (e) => {
 
@@ -147,24 +143,20 @@ export default function ListOrderV(props) {
                   rollLength: d.rollLength,
                   colorNames: d.colorNames,
                   colorNo   : d.colorNo,
+                  total     : d.total,
                   details   : d.details,
                   delivered : d.delivered,
                   shipped   : d.shipped,
                   paid      : d.paid,
-                  changes   : false,
                   deliveryNo: d.deliveryNo,
                   deliveryCompany : d.deliveryCompany,
+                  changes: false,
                   }
               })
           setOrders(result)
           setFilter(false)
-          setModified(false)
-
           setDetail(result.map((e)=> { return e.details }))
-
           const desiredLength = result.length;
-          const filledArray = new Array(desiredLength).fill(false);
-          const art = new Array(3).fill(false)
           setExpand(new Array(desiredLength).fill(false))
           })      
       .catch (error => {
@@ -173,38 +165,50 @@ export default function ListOrderV(props) {
     }
 
     const setDetails = (orderId, id, value) => {
-
       let ords = [...orders]
       for (let j=0; j< ords.length; j++) {
         if (ords[j].orderId == orderId && ords[j].id == id) {
               ords[j].details = value
-              ords[j].changes = true;
+              ords[j].changes = true
+              try { ords[j].total = eval(value) } catch (e) { ords[j].total = 0 }
               setOrders(ords)
-              setModified(true)
               break
             }
           }
-
-      console.log('set details')
-      console.log(id)
-      console.log(value)
     }
 
-    const changeEntity = (e, index) => {
-      setEntity(e.target.value)
+    const setTransportCompany = (orderId, id, value) => {
+      let ords = [...orders]
+      for (let j=0; j< ords.length; j++) {
+        if (ords[j].orderId == orderId && ords[j].id == id) {
+              ords[j].deliveryCompany = value
+              ords[j].changes = true
+              setOrders(ords)
+              break
+            }
+          }
     }
-        
+
+    const setDeliveryNo = (orderId, id, value) => {
+      let ords = [...orders]
+      for (let j=0; j< ords.length; j++) {
+        if (ords[j].orderId == orderId && ords[j].id == id) {
+              ords[j].deliveryNo = value
+              ords[j].changes = true
+              setOrders(ords)
+              break
+            }
+          }
+    }
+
     useEffect(() => {
       loadOrders()
-    }, [entity,toggle]);
+      getTransportCompanies(props.user.vendorId, setTransportCompanies)
+    }, [toggle]);
 
   if (!props.user || props.user.Id === 0) {
     navigate("/")
   }
-
-  const changes = orders.map(e => e.changes).indexOf(true) != -1
-  console.log("orders")
-  console.log(orders)
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -219,22 +223,24 @@ export default function ListOrderV(props) {
         <Box component="form" noValidate style={outboxStyle}>
 
         {/* <Box gutterBottom/> */}
-        <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Orders list of " + props.user.vendorName}</Box> 
+        <Box sx={{ fontWeight: "500", fontSize: "15px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Order list of " + props.user.vendorName}</Box> 
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "70px 1fr 1fr 70px 140px 60px 140px", // 60px",
+          gridTemplateColumns: "60px 1fr 1fr 65px 55px 100px 116px 110px 55px 45px",
           columnGap: "4px",
-          rowGap: "0px",
+          rowGap: "8px",
           alignItems: "center" }}>
             <Grid item sx={{p:0, m:0}}><Header text="Photo"/></Grid>
             <Grid item sx={{p:0, m:0}}><Header text="Item name"/></Grid>
             <Grid item><Header text="Color"/></Grid>
             <Grid item><Header text="Ordered"/></Grid>
+            <Grid item><Header text="Actual"/></Grid>
             <Grid item><Header text="Details"/></Grid>
+            <Grid item><Header text="Delivery comp."/></Grid>
+            <Grid item><Header text="Track No."/></Grid>
             <Grid item><Header text="Status"/></Grid>
-            <Grid item><Header text="Delivery"/></Grid>
-            {/* <Grid item><Header text="Expand"/></Grid> */}
+            <Grid item></Grid>
 
     {orders.map((data, index) => (
       <React.Fragment>
@@ -243,7 +249,7 @@ export default function ListOrderV(props) {
                 <Box sx={{padding: "8px 0 0 0" }}>
                   <img 
                     src={config.api + "/" + data.imagePath}
-                    width={65}
+                    width={55}
                     height={45}
                     alt={data.itemName}
                 /> 
@@ -251,14 +257,14 @@ export default function ListOrderV(props) {
                 </Grid></Link>
                 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{display: "flex", flexDirection: "column"}}>
+        <Grid item sx={{display: "flex", flexDirection: "column", height: 50, wordBreak: "break-all" }}>
           <Property value={fined(data.itemName, "-")}  />
         </Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{display: "flex", flexDirection: "column"}}>
-          <Property value={data.colorNames} />
+        <Grid item sx={{display: "flex", flexDirection: "column", height: 50, wordBreak: "break-all"}}>
+          <Property value={fined(data.colorNames, "-")} />
         </Grid>
         </Link>
        
@@ -268,6 +274,9 @@ export default function ListOrderV(props) {
         </Grid>
         </Link>
 
+        <Grid item sx={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
+          <Property value={data.total} textAlign="center" />
+        </Grid>
         
         <Grid item sx={{display: "flex", flexDirection: "column"}}>
           {/* <Property value={fined(data.details, "-")} /> */}
@@ -276,140 +285,109 @@ export default function ListOrderV(props) {
                               size="small" 
                               id={"valuedetails-" + index}
                               name={"valuedetails-" + index}
-                              sx={{marginTop: "14px"}}
+                              sx={{marginTop: "8px"}}
                               value={data.details}
                               onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}}
-                              InputProps={{
-                                
-                                endAdornment: (
-                                  <InputAdornment position="end">
-                                    <Button onClick={(e)=>{ 
-                                      console.log(e.target.value); 
-                                      //return; 
-                                      changeDetails(index) }} 
-                                      edge="end" sx={{backgroundColor: "#777", color: "#fff", borderRadius: "2px", height: "26px", minWidth: "20px", fontSize: "14px", textTransform: "none"}}>set</Button>
-                                  </InputAdornment>
-                                ),
-                              }} />
+                              // InputProps={{
+                              //   endAdornment: (
+                              //     <InputAdornment position="end">
+                              //       <Button onClick={(e)=>{ 
+                              //         console.log(e.target.value); 
+                              //         //return; 
+                              //         changeDetails(index) }} 
+                              //         edge="end" 
+                              //         sx={{
+                              //           backgroundColor: "#777", 
+                              //           color: "#fff", 
+                              //           borderRadius: "2px", 
+                              //           height: "26px", 
+                              //           minWidth: "20px", 
+                              //           fontSize: "14px", 
+                              //           textTransform: "none"}}>
+                              //             set
+                              //       </Button>
+                              //     </InputAdornment>
+                              //   ),
+                              // }}
+                               />
         </Grid>
         
-
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        <Grid item sx={{display: "flex", flexDirection: "column"}}>
+            <div style={{marginTop: "3px"}}>
+            <MySelect 
+                            id="transportCompanies"
+                            //url="TransportCompanies"
+                            title=""
+                            hideLabel={true}
+                            valueName="deliveryCompany"
+                            labelStyle={labelStyle}
+                            itemStyle={itemStyle1}
+                            MenuProps={MySelectProps}
+                            valueVariable={data.deliveryCompany}
+                            setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
+                            ////value={data.deliveryCompany}
+                            //onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}}
+                            //addNewFn={(e) => { console.log('todo - add new track company') }}
+                            data={transportCompanies}
+                          /></div>
+                          </Grid>
+        <Grid item sx={{display: "flex", flexDirection: "column"}}>
+          {/* <Property value={fined(data.details, "-")} /> */}
+            <TextField //label="Details"
+                              margin="normal"
+                              size="small" 
+                              id={"valueDeliveryNo-" + index}
+                              name={"valueDeliveryNo-" + index}
+                              sx={{marginTop: "8px"}}
+                              value={data.deliveryNo}
+                              onChange={ev => { setDeliveryNo(data.orderId, data.id, ev.target.value)}}/>
+        </Grid>
+        
         <Grid item sx={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
-          <Tooltip title={status(data)}>
+          <Tooltip title={<span style={{ color: "#fff", fontSize: "13px", fontWeight: "300", padding: 0 }}>{status(data)}</span>} >
             <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px", marginTop: "10px"}} >
-            { status(data)=="waiting"    && <QueryBuilderIcon  sx={{ color: "#888", fontSize: 24 }} /> } {/* waiting vendor */}
-            { status(data)=="confirmed"  && <HandshakeIcon     sx={{ color: "#393", fontSize: 24 }} /> } {/* vendor accepted  */}
+            { status(data)=="waiting of vendor"    && <QueryBuilderIcon  sx={{ color: "#888", fontSize: 24 }} /> } {/* waiting vendor */}
+            { status(data)=="confirmed by vendor"  && <HandshakeIcon     sx={{ color: "#393", fontSize: 24 }} /> } {/* vendor accepted  */}
             { status(data)=="paid"       && <PaidIcon          sx={{ color: "#888", fontSize: 24 }} /> } {/* paid by client */}
             {/*{ status(data)=="in stock"   && <ViewInArIcon      sx={{ color: "#888", fontSize: 24 }} /> }*/} {/* in stock */}
-            { status(data)=="shipping"   && <LocalShippingIcon sx={{ color: "#888", fontSize: 24 }} /> } {/* shipping */}
-            { status(data)=="delivered"  && <RecommendIcon     sx={{ color: "#888", fontSize: 24 }} /> } {/* waiting vendor */}
+            { status(data)=="shipping to client"   && <LocalShippingIcon sx={{ color: "#888", fontSize: 24 }} /> } {/* shipping */}
+            { status(data)=="delivered to client"  && <RecommendIcon     sx={{ color: "#888", fontSize: 24 }} /> } {/* waiting vendor */}
             </Box>
           </Tooltip>
             {/* <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px"}} >{status(data)}</Box> */}
-
             {/* <EmojiPeopleIcon sx={{ color: "#888", fontSize: 26 }} />
             <DoneIcon sx={{ color: "#888", fontSize: 26 }} />
             <ThumbUpOffAltIcon sx={{ color: "#888", fontSize: 26 }} />
             <SentimentSatisfiedAltIcon sx={{ color: "#888", fontSize: 26 }} /> */}
         </Grid>
-        </Link>
 
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{display: "flex", flexDirection: "column"}}>
-          <MySelect 
-                            id="addproduct-overworktype"
-                            url="OverWorkTypes"
-                            title="Overwork type"
-                            valueName="overWorkName"
-                            labelStyle={labelStyle}
-                            itemStyle={itemStyle1}
-                            MenuProps={MySelectProps}
-                            //valueVariable={overworkType}
-                            //setValueFn={setOverworkType}
-
-                              //value={data.details}
-                              //onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}}
-
-                            //addNewFn={(e) => { console.log('todo - add new track company') }}
-                            //data={overworkTypes}
-                          />
-        </Grid>
-        </Link>
-
-        {/* Expand down area:
-         <IconButton aria-label="expand" sx={{backgroundColor: "#fff", borderRadius: "8px", margin: "6px" }}>
-          <KeyboardArrowDownIcon
-            sx={{ color: "#888", fontSize: 26, transform: expand[index]==true ? "rotate(0.5turn)" : "none" }}
-            onClick={(e)=>{ toggleExpand(index) }} >
-          </KeyboardArrowDownIcon>
-        </IconButton>
-
-         <Box className="row-border" sx={{ display: expand[index]==true ? "flex" : "none", justifyContent: "end" }}  >
-          <Box sx={{width: 500}}>
-            <TextField label="Details"
-                              margin="normal"
-                              size="small" 
-                              id={"valuedetails-" + index}
-                              name={"valuedetails-" + index}
-                              sx = {{ width: 160, mt: '-3px', ml: 2, mr: 0, mb: '-3px' }}
-                              value={data.details}
-                              onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}}
-                              InputProps={{
-                                endAdornment: (
-                                  <InputAdornment position="end">
-                                    <Button onClick={(e)=>{}} edge="end" sx={{backgroundColor: "#777", color: "#fff", borderRadius: "2px", height: "26px", minWidth: "20px", fontSize: "14px", textTransform: "none"}}>set</Button>
-                                  </InputAdornment>
-                                ),
-                              }} />
-          </Box>
-         </Box> */}
+        <Button 
+            onClick={(e)=>{ saveOrderItem(index) }} 
+            edge="end" 
+            
+            //disabled={!data.changes}
+            sx={{
+              visibility: !data.changes ? "hidden":"visible",
+              backgroundColor: "#777", 
+              color: "#fff", 
+              borderRadius: "2px", 
+              height: "26px", 
+              minWidth: "20px", 
+              fontSize: "14px", 
+              textTransform: "none"}}>
+                Save
+          </Button>
 
       </React.Fragment>
     ))}
 
     </Box>
-
-          {/* <MyGrid 
-              key={"orders-grid"}
-              show = {{
-                image: true,
-                product: true, 
-                spec: false, 
-                //owner: true, 
-                colorNames: true,
-                price: false, 
-                quantity: true, 
-                details: false, 
-                client: false,
-                number: false,
-                paid: true,
-              }}
-              edit = {{ details: true }}
-              button = {{ confirm: true }}
-              setDetails={setDetails} 
-              handleAccept={handleAccept} 
-              entity = {entity}
-              entities = {entities}
-              changeEntity = {changeEntity}
-              title = "Order list"
-              data={{items: orders}} /> */}
-
-            <Button 
-              variant="contained"
-              style={changes ? buttonStyle : disableStyle}
-              //sx= {changes ? buttonStyle : disableStyle}
-              //disabled={!changes}
-              onClick={handleSave} >
-                  Save
-            </Button>
-
-          </Box>
-          <br/>
-          <br/>
-        </div>
-        <Footer sx={{ mt: 2, mb: 2 }} />
-         </Container>
+    </Box>
+    <br/>
+    <br/>
+    </div>
+    <Footer />
+    </Container>
               
     </ThemeProvider>
   );

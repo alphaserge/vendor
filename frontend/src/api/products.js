@@ -53,12 +53,12 @@ const makeProduct = (prod)  => {
     OverWorkTypes: prod.overworkType,
     Seasons: prod.season,
 
-    ProductStyleId: getInt(prod.productStyle),
-    ProductTypeId: getInt(prod.productType),
-    DyeStaffId: getInt(prod.dyeStaff),
-    FinishingId: getInt(prod.finishing),
-    PlainDyedTypeId: getInt(prod.plainDyedType),
-    PrintTypeId: getInt(prod.printType),
+    ProductStyleId: getInt(prod.productStyleId),
+    ProductTypeId: getInt(prod.productTypeId),
+    DyeStaffId: getInt(prod.dyeStaffId),
+    FinishingId: getInt(prod.finishingId),
+    PlainDyedTypeId: getInt(prod.plainDyedTypeId),
+    PrintTypeId: getInt(prod.printTypeId),
     VendorId: getInt(prod.vendorId),
 
     ColorVariants: prod.colorVariants,

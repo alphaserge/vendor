@@ -385,7 +385,7 @@ export default function UpdateProduct(props) {
   const saveProduct = async (e) => {
     
     let prod = {
-      vendorId: 1, //!
+      vendorId: + props.user.vendorId, //!
       artNo: artNo,
       id: idFromUrl(),
       itemName: itemName,
@@ -670,10 +670,10 @@ const setProduct = (prod) => {
   setHsCode(non(prod.hsCode))
   setProductStyleId(prod.productStyleId)
   setProductTypeId(non(prod.productTypeId))
-  setPrintTypeId(non(prod.printType))
-  setPlainDyedTypeId(non(prod.plainDyedType))
-  setDyeStaffId(non(prod.dyeStaff))
-  setFinishingId(non(prod.finishing))
+  setPrintTypeId(non(prod.printTypeId))
+  setPlainDyedTypeId(non(prod.plainDyedTypeId))
+  setDyeStaffId(non(prod.dyeStaffId))
+  setFinishingId(non(prod.finishingId))
   setSeason(non(prod.seasonIds))
   setOverworkType(non(prod.overWorkTypeIds))
   setDesignType(non(prod.designTypeIds))
@@ -1596,12 +1596,13 @@ useEffect(() => {
           {/* </Box> */}
           </Accordion>
 
-          <FormControl sx = {{itemStyle}} > 
+          <FormControl sx = {itemStyle} > 
           { savingError && 
             <Box sx={{ textAlign: "center", marginTop: 2, fontSize: "12pt", color: "red" }}>
             An error has occurred. Please check that all fields are filled in correctly and completely and try saving again.
-            </Box> }
-                <Box sx={{ textAlign: "center", marginTop: 2 }}>
+            </Box> 
+          }
+                <Box sx={{ textAlign: "center", mt: 0, mb: 3 }}>
                   <Button 
                     variant="contained"
                     style={buttonStyle}
@@ -1621,7 +1622,7 @@ useEffect(() => {
         </main>
 
       </Container>
-      <Footer sx={{ mt: 2, mb: 2 }} />
+      <Footer />
     </ThemeProvider>
   );
 }

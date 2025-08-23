@@ -68,12 +68,12 @@ export default function MySelect(props) {
   
 return (
   <FormControl error={ false } required sx={{ ...props.itemStyle,  ...{width: "100%", height: "40px", display: "flex" } }} > 
-    <InputLabel 
+    {!props.hideLabel && <InputLabel 
         id={props.id + "-label"}
         size="small" 
         sx={props.labelStyle} >
         {props.title}
-    </InputLabel>
+    </InputLabel>}
     <Select
         labelId={props.id + "-label"}
         id={props.id}

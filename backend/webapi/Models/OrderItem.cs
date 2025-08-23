@@ -29,12 +29,15 @@
         public DateTime? Delivered { get; set; }
         public string? DeliveryNo { get; set; }
         public string? DeliveryCompany { get; set; }
+        public decimal? Total { get; set; }
     }
 
     public class ChangeDetails
     {
         public int? Id { get; set; }
         public string? Details { get; set; }
+        public string? DeliveryNo { get; set; }
+        public string? DeliveryCompany { get; set; }
     }
 
     public class OrderItemAccept

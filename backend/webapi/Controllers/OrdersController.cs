@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
@@ -156,6 +157,8 @@ namespace chiffon_back.Controllers
         [HttpGet("Orders")]
         public IEnumerable<Models.Order> Get(string type, string value, string id)
         {
+            DataTable dt = new DataTable();
+
             var mapper = config.CreateMapper();
             List <Models.Vendor> vendorList = ctx.Vendors.Select(x => mapper.Map<Models.Vendor>(x)).ToList();
 
@@ -248,6 +251,19 @@ namespace chiffon_back.Controllers
                         orderItem.imagePath = @"colors\nopicture.png";
                     }
                     orderItems.Add(orderItem);
+
+                    if (!String.IsNullOrEmpty(item.oi.Details))
+                    {
+                        try
+                        {
+                            orderItem.Total = Convert.ToDecimal(dt.Compute(item.oi.Details, ""));
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                    }
+
                 }
                 o.Items = orderItems.ToArray();
             }
@@ -258,21 +274,26 @@ namespace chiffon_back.Controllers
         [HttpGet("OrderItems")]
         public IEnumerable<Models.OrderItem> GetOrderItems([FromQuery] string vendorId)
         {
+            DataTable dt = new DataTable();
+
             var query =
                 from oi in ctx.OrderItems join p in ctx.Products//.Where(x=>x.VendorId.ToString()==vendorId) 
                     on oi.ProductId equals p.Id into jointable
                     from j in jointable.DefaultIfEmpty()
+                    orderby oi.OrderId, j.ItemName
                     select new { oi, j};
 
             var items = query.ToList();
 
+            bool acceptAllOrders = ctx.Vendors.FirstOrDefault(x => x.Id.ToString() == vendorId)?.VendorType == "owner";
+
             List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
             foreach (var item in items)
             {
-                if (item.j.VendorId.ToString() != vendorId)
+                if (!acceptAllOrders && item.j.VendorId.ToString() != vendorId)
+                {
                     continue;
-
-
+                }
 
                 Models.OrderItem orderItem = new Models.OrderItem()
                 {
@@ -326,6 +347,18 @@ namespace chiffon_back.Controllers
                             imagePath = imageFiles[0];
                             break;
                         }
+                    }
+                }
+
+                if (!String.IsNullOrEmpty(item.oi.Details))
+                {
+                    try
+                    {
+                        orderItem.Total = Convert.ToDecimal(dt.Compute(item.oi.Details, ""));
+                    } 
+                    catch (Exception ex)
+                    {
+
                     }
                 }
 
@@ -624,10 +657,12 @@ namespace chiffon_back.Controllers
                 if (oi != null)
                 {
                     oi.Details = cd.Details;
+                    oi.DeliveryCompany = cd.DeliveryCompany;
+                    oi.DeliveryNo = cd.DeliveryNo;
                     ctx.SaveChanges();
                 }
 
-                return CreatedAtAction(nameof(Context.OrderItem), new { id = cd.Id }, "");
+                return Ok();// CreatedAtAction(nameof(Context.OrderItem), new { id = cd.Id }, "");
             }
             catch (Exception ex)
             {
@@ -643,6 +678,8 @@ namespace chiffon_back.Controllers
         [HttpPost("DeliveryInfo")]
         public ActionResult DeliveryInfo([FromBody] Models.DeliveryInfo di)
         {
+            throw new Exception("Not supported since 23/08/2025");
+
             try
             {
                 Context.OrderItem oi = ctx.OrderItems.FirstOrDefault(x => x.Id == di.Id);

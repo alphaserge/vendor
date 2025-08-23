@@ -126,13 +126,13 @@ export const fined2 = (text) => {
 
 export const status = (item) => {
     
-    if (!!item.details  ) return "confirmed"
-    if (!!item.delivered) return "delivered"
-    if (!!item.shipped  ) return "shipping"
+    if (!!item.details  ) return "confirmed by vendor"
+    if (!!item.delivered) return "delivered to client"
+    if (!!item.shipped  ) return "shipping to client"
     //if (!!item.paidByClient    ) return "paid"
     //if (!!item.shippedToClient ) return "delivered"
     //if (!!item.inStock         ) return "in stock"
-    return "waiting"
+    return "waiting of vendor"
 }
 
 export const quantityInfo = (item) => {
