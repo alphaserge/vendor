@@ -11,21 +11,9 @@ import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
 import { colors, FormControl, Icon } from "@mui/material";
 import { Paid } from "@mui/icons-material";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import HandshakeIcon from '@mui/icons-material/Handshake';
-import PaidIcon from '@mui/icons-material/Paid';
-import DoneIcon from '@mui/icons-material/Done';
-import RecommendIcon from '@mui/icons-material/Recommend';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
-import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
-import ViewInArIcon from '@mui/icons-material/ViewInAr';
 import TextField from '@mui/material/TextField';
 import { InputLabel } from "@mui/material"
 import InputAdornment from '@mui/material/InputAdornment';
-import Tooltip from '@mui/material/Tooltip';
 
 import axios from 'axios'
 
@@ -35,6 +23,7 @@ import Footer from './footer';
 import Header from '../../components/header';
 import Property from '../../components/property';
 import MySelect from '../../components/myselect';
+import OrderItemStatus from '../../components/orderitemstatus';
 import { APPEARANCE } from '../../appearance';
 
 import { non, fined, status, quantityInfo, computePrice } from "../../functions/helper"
@@ -253,21 +242,7 @@ export default function ListOrderV(props) {
         </Grid>
 
         <Grid item sx={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
-          <Tooltip title={<span style={{ color: "#fff", fontSize: "13px", fontWeight: "300", padding: 0 }}>{status(data)}</span>} >
-            <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px", marginTop: "10px"}} >
-            { status(data)=="waiting of vendor"    && <QueryBuilderIcon  sx={{ color: "#888", fontSize: 30 }} /> } {/* waiting vendor */}
-            { status(data)=="confirmed by vendor"  && <HandshakeIcon     sx={{ color: "#393", fontSize: 30 }} /> } {/* vendor accepted  */}
-            { status(data)=="paid"       && <PaidIcon          sx={{ color: "#888", fontSize: 30 }} /> } {/* paid by client */}
-            {/*{ status(data)=="in stock"   && <ViewInArIcon      sx={{ color: "#888", fontSize: 30 }} /> }*/} {/* in stock */}
-            { status(data)=="shipping to client"   && <LocalShippingIcon sx={{ color: "#888", fontSize: 30 }} /> } {/* shipping */}
-            { status(data)=="delivered to client"  && <RecommendIcon     sx={{ color: "#888", fontSize: 30 }} /> } {/* waiting vendor */}
-            </Box>
-          </Tooltip>
-            {/* <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px"}} >{status(data)}</Box> */}
-            {/* <EmojiPeopleIcon sx={{ color: "#888", fontSize: 26 }} />
-            <DoneIcon sx={{ color: "#888", fontSize: 26 }} />
-            <ThumbUpOffAltIcon sx={{ color: "#888", fontSize: 26 }} />
-            <SentimentSatisfiedAltIcon sx={{ color: "#888", fontSize: 26 }} /> */}
+          <OrderItemStatus item={data} />
         </Grid>
 
         <Button 

@@ -124,17 +124,6 @@ export const fined2 = (text) => {
     return text ? text : ""
 }
 
-export const status = (item) => {
-    
-    if (!!item.details  ) return "confirmed by vendor"
-    if (!!item.delivered) return "delivered to client"
-    if (!!item.shipped  ) return "shipping to client"
-    //if (!!item.paidByClient    ) return "paid"
-    //if (!!item.shippedToClient ) return "delivered"
-    //if (!!item.inStock         ) return "in stock"
-    return "waiting of vendor"
-}
-
 export const quantityInfo = (item) => {
     if (!item.unit) return item.quantity
     return item.quantity + "(" + item.unit.replace('rolls','r').replace('meters','m') + ")"

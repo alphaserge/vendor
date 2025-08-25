@@ -27,6 +27,7 @@ import StyledButton from '../../components/styledbutton';
 import StyledButtonWhite from '../../components/styledbuttonwhite';
 import StyledIconButton from '../../components/stylediconbutton';
 import Styledbutton from "../../components/styledbutton";
+import OrderItemStatus from "../../components/orderitemstatus";
 
 const defaultTheme = createTheme()
 
@@ -97,7 +98,7 @@ export default function Orders(props) {
                 total   : d.items.reduce((n, it) => n + it.quantity*it.price, 0),
                 paid     : d.paid,
                 changes : false,
-                canPay  : d.items.findIndex(it => it.confirmByVendor==null)==-1,
+                canPay  : d.items.findIndex(it => !it.details)==-1,
                 items   : ( !!d.items ? d.items.map((it) => { return {
                   id        : it.id,
                   productId : it.productId,
@@ -115,8 +116,9 @@ export default function Orders(props) {
                   colorNames: it.colorNames,
                   details   : it.details,
                   changes   : false,
-                  confirmByVendor : it.confirmByVendor,
-                  shippedByVendor : it.shippedByVendor,
+                  details   : it.details,
+                  shipped   : it.shipped,
+                  delivered : it.delivered,
                   status: it.confirmByVendor != null ? "confirmed" : (it.confirmByVendor != null ? "shipped" : (it.inStock != null ? "in stock" : (it.shippedToClient != null ? "shipped to client" : (it.recievedByClient != null ? "recieved" : "ordered"))))
                   }}) : [])
               }
@@ -281,7 +283,7 @@ export default function Orders(props) {
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.quantity + " " + data.unit}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.details}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.price}</Grid></Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.status}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} ><OrderItemStatus item={data} /></Grid></Link>
               </React.Fragment> ))}
 
         </Box>

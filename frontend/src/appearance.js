@@ -1,4 +1,35 @@
 export const APPEARANCE = {
+
+    
+    FONTFAMILY: "'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif'",
+    FONTSIZE: "16px",
+    COLOR: "#222",
+
+    PRICE: {
+        COLOR: "#fd8bb5",
+        FONTSIZE: "18px",
+        FONTFAMILY: "'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif'",
+        FONTWEIGHT: "500"
+    },
+
+    BACKGROUND: {
+        COLOR: "#fff",
+    },
+
+    PAGEHEADER: {
+        COLOR: "#444",
+        FONTSIZE: "17px",
+        FONTWEIGHT: "700"
+    },
+
+    SUBTITLE: {
+        COLOR: "#333",
+        FONTSIZE: "16px",
+        FONTWEIGHT: "600"
+    },
+
+    // Older:
+
     NONE: "#fff",
     WHITE: "#fff",
     WHITE1: "#eee",
@@ -36,7 +67,4 @@ export const APPEARANCE = {
     RED3: "#8d0319",
     RED4: "#c6354b",
     RED5: "#c65b6c",
-
-
-
 }
