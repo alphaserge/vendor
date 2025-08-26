@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { makeStyles, withStyles } from '@mui/styles';
 
 import FormControlLabel from '@mui/material/FormControlLabel';
 
@@ -26,10 +27,24 @@ import { idFromUrl, formattedDate, toFixed2 } from "../../functions/helper";
 import StyledButton from '../../components/styledbutton';
 import StyledButtonWhite from '../../components/styledbuttonwhite';
 import StyledIconButton from '../../components/stylediconbutton';
-import Styledbutton from "../../components/styledbutton";
+import IconButtonWhite from "../../components/iconbuttonwhite";
 import OrderItemStatus from "../../components/orderitemstatus";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const defaultTheme = createTheme()
+
+const theme = createTheme({
+  overrides: {
+    MuiCheckbox: {
+      colorSecondary: {
+        color: '#custom color',
+        '&$checked': {
+          color: '#custom color',
+        },
+      },
+    },
+  },
+});
 
 const linkStyle = { textDecoration: 'none', color: ap.COLOR }
 
@@ -39,17 +54,16 @@ export default function Orders(props) {
   const [orders, setOrders] = useState([])
   const [orderIndex, setOrderIndex] = useState(-1)
   const [agree, setAgree] = useState(false)
+  const [expand, setExpand] = useState(false)
 
   const handleAgree = (event) => {
     setAgree(event.target.checked);
   };
 
   const logout = () => {
-  
     props.data.logOut()
-
   }
-  
+
   const pay = async (id, total) => {
     window.open("https://show.cloudpayments.ru/widget/");
     await axios.post(config.api + '/Payments/Pay', 
@@ -66,6 +80,16 @@ export default function Orders(props) {
       console.log(error);
     })    
   };
+
+  const toggleExpand = (e) => {
+    setExpand(!expand)
+  }
+
+  const checkItem = (orderIndex, index) => {
+      let ords = [...orders]
+      ords[orderIndex].items[index].checked = !ords[orderIndex].items[index].checked
+      setOrders(ords)
+  }
   
   const loadOrders = async (e) => {
 
@@ -100,6 +124,7 @@ export default function Orders(props) {
                 changes : false,
                 canPay  : d.items.findIndex(it => !it.details)==-1,
                 items   : ( !!d.items ? d.items.map((it) => { return {
+                  checked   : false,
                   id        : it.id,
                   productId : it.productId,
                   imagePath : it.imagePath,
@@ -246,7 +271,7 @@ export default function Orders(props) {
         </Box> 
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "70px 2fr 1fr 2fr 1fr 100px 1fr 90px 90px",
+          gridTemplateColumns: "90px 2fr 1fr 2fr 1fr 100px 1fr 90px 90px",
           columnGap: "8px",
           rowGap: "6px",
           fontFamily: ap.FONTFAMILY,
@@ -265,15 +290,36 @@ export default function Orders(props) {
             
                 { orders[orderIndex].items.map((data, index) => ( 
               <React.Fragment>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}} >
-                  {( !!data.imagePath  && 
-                                    <img 
-                                      src={config.api + "/" + data.imagePath}
-                                      sx={{padding: "5px 5px 0 5px"}}
-                                      width={60}
-                                      height={55}
-                                      alt={data.itemName}
-                                  /> )}
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} >
+                <Grid item sx={{textAlign: "center", display: "flex", flexDirection: "row", justifyContent: "center"}} >
+                  { expand && <Checkbox
+                    edge="start"
+                    checked={orders[orderIndex].items[index].checked}
+                    tabIndex={-1}
+                    disableRipple
+                    //color="secondary"
+                    //sx={{ color: "#999" }}
+                    inputProps={{ 'aria-labelledby': "cb-item-" + index }}
+                    //iconStyle={{color: '#888'}}
+                    //onChange={(e) => { alert('1'); checkItem(e.target.checked, orderIndex, index);} }
+                    onClick={(e) => { e.stopPropagation(); checkItem(orderIndex, index);} }
+                  />}
+                  {( !!data.imagePath && 
+                      <img 
+                        src={config.api + "/" + data.imagePath}
+                        sx={{padding: "5px 5px 0 5px"}}
+                        width={60}
+                        height={55}
+                        alt={data.itemName}
+                    /> )}
+                  {( !data.imagePath && 
+                      <img 
+                        src={config.api + "/public/noimage.jpg"}
+                        sx={{padding: "5px 5px 0 5px"}}
+                        width={60}
+                        height={55}
+                        alt={data.itemName}
+                    /> )}                              
                 </Grid>
                 </Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.itemName}</Grid></Link>
@@ -285,14 +331,22 @@ export default function Orders(props) {
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.price}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} ><OrderItemStatus item={data} /></Grid></Link>
               </React.Fragment> ))}
-
         </Box>
-        { orders[orderIndex].canPay && <Box sx={{display: "flex", alignContent: "center", mt: 4}} >
+
+        <Box sx={{display: "flex", alignItems: "flex-start"}}>
+          <IconButtonWhite aria-label="expand" onClick={toggleExpand} >
+          <KeyboardArrowDownIcon sx={{ color: "#3d694a", fontSize: 26 }} >
+          </KeyboardArrowDownIcon>
+            More actions
+          </IconButtonWhite>
+        </Box> 
+
+        { expand  && <Box sx={{display: "flex", alignContent: "center", mt: 4}} >
                   <StyledIconButton 
                     size="small" 
                     aria-label="pay" 
                     sx={{backgroundColor: "#222", color: "#fff", width: "80px"}} 
-                    disabled={!agree}
+                    disabled={!agree || !orders[orderIndex].canPay}
                     onClick={(e)=> { pay(orders[orderIndex].id, orders[orderIndex].total) }} >
                     <AttachMoneyIcon sx={{color: "#fff"}} />
                     Pay

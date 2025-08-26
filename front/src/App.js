@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import Home from './pages/home/home';
 import UpdateProduct from './pages/home/updateproduct';
@@ -42,6 +43,22 @@ const emptyUser = {
 const userInitialValue = () => {
   return JSON.parse(localStorage.getItem("user")) || emptyUser
 };
+
+const theme = createTheme({
+  overrides: {
+    MuiCheckbox: {
+      colorSecondary: {
+        color: '#aaa',
+        '&$checked': {
+          color: '#888',
+        },
+      },
+    },
+  },
+  typography: {
+      fontFamily: '"Chiron Sung HK", "Open-Sans", Arial!important;',
+  },  
+});
 
 function App() {
   
@@ -180,6 +197,7 @@ function App() {
   }, [])
 
   return (
+    <ThemeProvider theme={theme}>
     <div style={{ width: "100%" }} >
       <BrowserRouter>
         <Routes>
@@ -204,6 +222,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </div>
+    </ThemeProvider>
   );
 }
 
