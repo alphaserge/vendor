@@ -87,7 +87,11 @@ export default function Orders(props) {
 
   const checkItem = (orderIndex, index) => {
       let ords = [...orders]
+
       ords[orderIndex].items[index].checked = !ords[orderIndex].items[index].checked
+      
+      ords[orderIndex].checkedForPay = ords[orderIndex].items.filter((i)=>{ return i.checked}).length > 0
+      
       setOrders(ords)
   }
   
@@ -120,7 +124,7 @@ export default function Orders(props) {
                 email   : d.clientEmail,
                 address : d.clientAddress,
                 total   : d.items.reduce((n, it) => n + it.quantity*it.price, 0),
-                paid     : d.paid,
+                paid    : d.paid,
                 changes : false,
                 canPay  : d.items.findIndex(it => !it.details)==-1,
                 items   : ( !!d.items ? d.items.map((it) => { return {
@@ -150,6 +154,8 @@ export default function Orders(props) {
           });
 
           result = result.filter((i)=> { return i.items.length > 0})
+          //setCanPay(result.filter((i)=> { return i.checked}).length>0)
+
 
           if (!!id) {
             let ix = result.findIndex(x => x.id == id)
@@ -282,7 +288,7 @@ export default function Orders(props) {
                   <Grid item><Header text="Art No."></Header></Grid>
                   <Grid item><Header text="Colors"></Header></Grid>
                   <Grid item><Header text="Design"></Header></Grid>
-                  <Grid item><Header text="Quantity"></Header></Grid>
+                  <Grid item><Header text="Ordered"></Header></Grid>
                   <Grid item><Header text="Details"></Header></Grid>
                   <Grid item><Header text="Price"></Header></Grid>
                   <Grid item><Header text="Status"></Header></Grid>
@@ -333,7 +339,11 @@ export default function Orders(props) {
               </React.Fragment> ))}
         </Box>
 
-        <Box sx={{display: "flex", alignItems: "flex-start"}}>
+          <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}} >
+            <Box className="product-item">Total summ: 100</Box>
+          </Box>
+
+        <Box sx={{display: "flex", alignItems: "flex-start", mt: 3}}>
           <IconButtonWhite aria-label="expand" onClick={toggleExpand} >
           <KeyboardArrowDownIcon sx={{ color: "#3d694a", fontSize: 26 }} >
           </KeyboardArrowDownIcon>
@@ -341,17 +351,20 @@ export default function Orders(props) {
           </IconButtonWhite>
         </Box> 
 
-        { expand  && <Box sx={{display: "flex", alignContent: "center", mt: 4}} >
-                  <StyledIconButton 
-                    size="small" 
-                    aria-label="pay" 
-                    sx={{backgroundColor: "#222", color: "#fff", width: "80px"}} 
-                    disabled={!agree || !orders[orderIndex].canPay}
-                    onClick={(e)=> { pay(orders[orderIndex].id, orders[orderIndex].total) }} >
-                    <AttachMoneyIcon sx={{color: "#fff"}} />
-                    Pay
-                  </StyledIconButton>
-                  <FormControlLabel required control={<Checkbox checked={agree} onChange={handleAgree} />} label="I confirm that the order composition meets my requirements" sx={{pl: 2 }} />
+        { expand && 
+          <Box sx={{display: "flex", flexDirection: "column", alignItems: "left", mt: 4}} >
+            <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}} >
+              <StyledIconButton 
+                size="small" 
+                aria-label="pay" 
+                sx={{backgroundColor: "#222", color: "#fff", width: "80px"}} 
+                disabled={!agree || !orders[orderIndex].canPay  || !orders[orderIndex].checkedForPay}
+                onClick={(e)=> { pay(orders[orderIndex].id, orders[orderIndex].total) }} >
+                <AttachMoneyIcon sx={{color: "#fff"}} />
+                Pay
+              </StyledIconButton>
+              <FormControlLabel required control={<Checkbox checked={agree} onChange={handleAgree} />} label="I confirm that the order composition meets my requirements" sx={{pl: 2 }} />
+            </Box>  
         </Box>}
 
         </Box> }
