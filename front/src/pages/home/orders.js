@@ -73,11 +73,10 @@ export default function Orders(props) {
 
     let data = 
       { id: order.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phones: user.phones,
+        email: props.user.email,
+        firstName: props.user.firstName,
+        lastName: props.user.lastName,
+        phones: props.user.phones,
         items: 
           checkedItems.map((i) => ({ 
             id: i.id,

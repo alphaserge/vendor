@@ -54,32 +54,19 @@ namespace chiffon_back.Models
         public string CreateInvoice(Invoice inv, string path, string fileName, string language)
         {
             OXML.OXSimpleWORD report = new OXML.OXSimpleWORD();
-            /*
+            
             inv.Supplier = "ООО \"Текстильная компания Анжелика\"\"";
 
-            inv.SupplierFirmAccount = "";
-            inv.SupplierBankName;
-            inv.SupplierBankBIC;
-            inv.SupplierCorrAccount;
-            inv.SupplierINN;
-            inv.SupplierKPP;
-            inv.SupplierDetails;
-            public DateTime? Date;
-            public string? Customer;
-            public string? Currency;
-
-            Полное наименование организации: ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ "ТЕКСТИЛЬНАЯ КОМПАНИЯ "АНЖЕЛИКА"
-
-ИНН: 7706270562
-
-КПП: 770301001
-
-ОГРН: 1037700018806
-
-Место нахождения: 123242, г. Москва, ул. Большая Грузинская, д. 20, помещ. 3А/п
-
-Вид деятельности: Торговля оптовая текстильными изделиями (код по ОКВЭД 46.41) */
-
+            inv.SupplierFirmAccount = "40702810500000000066";
+            inv.SupplierBankName = "\"КОММЕРЧЕСКИЙ ИНДО БАНК\" ООО Г.МОСКВА";
+            inv.SupplierBankBIC = "044525500";
+            inv.SupplierCorrAccount = "30101810400000000500";
+            inv.SupplierINN = "7706270562";
+            inv.SupplierKPP = "770601001";
+            inv.SupplierDetails = "Общество с ограниченной ответственностью \"Текстильная компания \"АНЖЕЛИКА\", ИНН, 7706270562, КПП, 770601001, 119049,город Москва, улица Донская, дом 4, строение 2, 8 495 969 24 38";
+            inv.Date = DateTime.Now;
+            inv.Customer = "FIO";
+            inv.Currency = "RUR";
 
             report.SetParagraph(OXML.Aligment.CENTER, OXML.Interval.INT_POINT_10pt, 0);
 

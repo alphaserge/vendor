@@ -24,6 +24,7 @@ import QuickView from '../../components/quickview';
 import Info from '../../components/info';
 import { postProduct } from '../../api/products'
 import { fromUrl } from '../../functions/helper';
+import { stringToHash } from '../../functions/hash'
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -177,6 +178,10 @@ export default function Home(props) {
 
     }, [quickViewProduct, quickViewRef, selectedSeason, selectedColor, selectedDesignType, selectedPrintType, selectedProductType, selectedTextileType]);
 
+
+    let passwordhash1 = stringToHash('Aa123456')
+    console.log('passwhash')
+    console.log(passwordhash1)
 
   return (
     <ThemeProvider theme={defaultTheme}>
