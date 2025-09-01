@@ -66,8 +66,7 @@ export default function ListOrderV(props) {
 
   const saveOrderItem = async (index) => {
 
-
-  let data = JSON.stringify({
+    let data = JSON.stringify({
       id: orders[index].id,
       details: orders[index].details,
       deliveryCompany: orders[index].deliveryCompany,

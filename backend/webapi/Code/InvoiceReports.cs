@@ -12,27 +12,32 @@ namespace chiffon_back.Models
 {
     public class InvoiceItem
     {
-        public int? Amount;
+        public int? Id;
+        public int? Quantity;
         public int? DiscountedRate;
-        public int? Total;
-        public string? ProdName;
-        public string? UnitName;
+        public int? Price;
+        public string? ItemName;
+        public string? Unit;
     }
-
     public class Invoice
     {
+        public int? Id;
+        public int? Number;
+        public string? Email;
+        public string? FirstName;
+        public string? LastName;
+        public string? Phones;
+        public string? Supplier;
+        public string? SupplierFirmAccount;
         public string? SupplierBankName;
         public string? SupplierBankBIC;
         public string? SupplierCorrAccount;
         public string? SupplierINN;
         public string? SupplierKPP;
-        public int? Number;
-        public DateTime? Date;
         public string? SupplierDetails;
+        public DateTime? Date;
         public string? Customer;
         public string? Currency;
-        public string? Supplier;
-        public string? SupplierFirmAccount;
         public InvoiceItem[] Items;
     }
 
@@ -49,6 +54,32 @@ namespace chiffon_back.Models
         public string CreateInvoice(Invoice inv, string path, string fileName, string language)
         {
             OXML.OXSimpleWORD report = new OXML.OXSimpleWORD();
+            /*
+            inv.Supplier = "ООО \"Текстильная компания Анжелика\"\"";
+
+            inv.SupplierFirmAccount = "";
+            inv.SupplierBankName;
+            inv.SupplierBankBIC;
+            inv.SupplierCorrAccount;
+            inv.SupplierINN;
+            inv.SupplierKPP;
+            inv.SupplierDetails;
+            public DateTime? Date;
+            public string? Customer;
+            public string? Currency;
+
+            Полное наименование организации: ОБЩЕСТВО С ОГРАНИЧЕННОЙ ОТВЕТСТВЕННОСТЬЮ "ТЕКСТИЛЬНАЯ КОМПАНИЯ "АНЖЕЛИКА"
+
+ИНН: 7706270562
+
+КПП: 770301001
+
+ОГРН: 1037700018806
+
+Место нахождения: 123242, г. Москва, ул. Большая Грузинская, д. 20, помещ. 3А/п
+
+Вид деятельности: Торговля оптовая текстильными изделиями (код по ОКВЭД 46.41) */
+
 
             report.SetParagraph(OXML.Aligment.CENTER, OXML.Interval.INT_POINT_10pt, 0);
 
@@ -186,9 +217,9 @@ namespace chiffon_back.Models
             double summ = 0;
             foreach (var it in inv.Items)
             {
-                double a = it.Amount == null ? 0 : (double)it.Amount;
+                double a = it.Quantity == null ? 0 : (double)it.Quantity;
                 double d = it.DiscountedRate == null ? 0 : (double)it.DiscountedRate;
-                double t = it.Total == null ? 0 : (double)it.Total;
+                double t = it.Price == null ? 0 : (double)it.Price;
                 string rate = d == null ? string.Empty : d.ToString("F2");
                 string total = t == null ? string.Empty : t.ToString("F2");
                 string amount = a == null ? string.Empty : a.ToString("F2");
@@ -196,12 +227,12 @@ namespace chiffon_back.Models
                 oxRow = new OXSimpleWordTableRow();
                 oxRow.Cells.Add(new OXSimpleWordTableCell("&" + numpp.ToString() + "&", "700", JustificationValues.Right, "18", "240"));
                 //oxRow.Cells.Add(new OXSimpleWordTableCell("&" +  it.ArtNo + "&", "1300", JustificationValues.Left, "18", "240"));
-                oxRow.Cells.Add(new OXSimpleWordTableCell("&" + it.ProdName + "&", "4000", JustificationValues.Left, "18", "240"));
+                oxRow.Cells.Add(new OXSimpleWordTableCell("&" + it.ItemName + "&", "4000", JustificationValues.Left, "18", "240"));
                 oxRow.Cells.Add(new OXSimpleWordTableCell("&" + amount + "&", "1100", JustificationValues.Right, "18", "240"));
                 if (language == "English")
-                    oxRow.Cells.Add(new OXSimpleWordTableCell("&" + it.UnitName.Replace("MET", "пог.м.").Replace("YDS", "пог.м.") + "&", "900", JustificationValues.Left, "18", "240"));
+                    oxRow.Cells.Add(new OXSimpleWordTableCell("&" + it.Unit.Replace("MET", "пог.м.").Replace("YDS", "пог.м.") + "&", "900", JustificationValues.Left, "18", "240"));
                 else
-                    oxRow.Cells.Add(new OXSimpleWordTableCell("&" + it.UnitName.Replace("YDS", "MET") + "&", "900", JustificationValues.Left, "18", "240"));
+                    oxRow.Cells.Add(new OXSimpleWordTableCell("&" + it.Unit.Replace("YDS", "MET") + "&", "900", JustificationValues.Left, "18", "240"));
                 oxRow.Cells.Add(new OXSimpleWordTableCell("&" + rate + "&", "1500", JustificationValues.Right, "18", "240"));
                 oxRow.Cells.Add(new OXSimpleWordTableCell("&" + total + "&", "1500", JustificationValues.Right, "18", "240"));
                 oxTable.Rows.Add(oxRow);

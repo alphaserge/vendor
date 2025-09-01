@@ -64,6 +64,45 @@ export default function Orders(props) {
     props.data.logOut()
   }
 
+  const sendInvoice = async (order) => {
+
+    let checkedItems = 
+      order.filter((i) => { 
+          return i.checked 
+        })
+
+    let data = 
+      { id: order.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phones: user.phones,
+        items: 
+          checkedItems.map((i) => ({ 
+            id: i.id,
+            itemName: i.itemName,
+            amount: i.quantity,
+            price: i.price,
+            unit: i.unit}))
+      }
+
+    await axios.post(
+      config.api + '/SendInvoice', 
+      JSON.stringify(data), 
+      { headers: { "Content-Type" : "application/json" }})
+        .then(function (response) {
+          console.log('Response for SendInvoice:');
+          console.log(response);
+          return true;
+        })
+        .catch(function (error) {
+          console.log('Error for SendInvoice:');
+          console.log(error);
+          return false;
+        })
+  };
+
   const pay = async (id, total) => {
     window.open("https://show.cloudpayments.ru/widget/");
     await axios.post(config.api + '/Payments/Pay', 
@@ -359,7 +398,8 @@ export default function Orders(props) {
                 aria-label="pay" 
                 sx={{backgroundColor: "#222", color: "#fff", width: "80px"}} 
                 disabled={!agree || !orders[orderIndex].canPay  || !orders[orderIndex].checkedForPay}
-                onClick={(e)=> { pay(orders[orderIndex].id, orders[orderIndex].total) }} >
+                onClick={(e)=> { sendInvoice(orders[orderIndex]) }} >
+                {/*onClick={(e)=> { pay(orders[orderIndex].id, orders[orderIndex].total) }} >*/}
                 <AttachMoneyIcon sx={{color: "#fff"}} />
                 Pay
               </StyledIconButton>
