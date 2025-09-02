@@ -30,6 +30,8 @@ import StyledIconButton from '../../components/stylediconbutton';
 import IconButtonWhite from "../../components/iconbuttonwhite";
 import OrderItemStatus from "../../components/orderitemstatus";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import StyledTextField from '../../components/styledtextfield';
+import { formattedPrice } from '../../functions/helper';
 
 const defaultTheme = createTheme()
 
@@ -47,6 +49,7 @@ const theme = createTheme({
 });
 
 const linkStyle = { textDecoration: 'none', color: ap.COLOR }
+const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 
 export default function Orders(props) {
 
@@ -55,6 +58,7 @@ export default function Orders(props) {
   const [orderIndex, setOrderIndex] = useState(-1)
   const [agree, setAgree] = useState(false)
   const [expand, setExpand] = useState(false)
+  const [payerName, setPayerName] = useState("")
 
   const handleAgree = (event) => {
     setAgree(event.target.checked);
@@ -194,7 +198,6 @@ export default function Orders(props) {
           result = result.filter((i)=> { return i.items.length > 0})
           //setCanPay(result.filter((i)=> { return i.checked}).length>0)
 
-
           if (!!id) {
             let ix = result.findIndex(x => x.id == id)
             setOrderIndex(ix)
@@ -264,6 +267,16 @@ export default function Orders(props) {
   console.log(orders)
   console.log(orderIndex)
 
+  let total = 0;
+  let totalPay = 0;
+  if (orderIndex != -1) {
+    total = orders[orderIndex].items.reduce((n, {price}) => n + price, 0)
+    totalPay = (orders[orderIndex].items.findIndex(i => i.checked) != -1) ?
+      orders[orderIndex].items.filter((i)=> {return i.checked}).reduce((n, {price}) => n + price, 0) : total
+  }
+  console.log('totalPay:')
+  console.log(totalPay)
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -297,7 +310,7 @@ export default function Orders(props) {
                 <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}} >{data.number.toString().padStart(4, '0')}</Grid></Link>
                 <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}} >{formattedDate(data.created)}</Grid></Link>
                 <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{data.items.length}</Grid></Link>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{toFixed2(data.total)} $</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{toFixed2(data.totalPay)} $</Grid></Link>
                 <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{"active"}</Grid></Link>
                 <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{data.paid + " $"}</Grid></Link>
                 {/* <Grid item sx={{textAlign: "center"}}>
@@ -372,38 +385,53 @@ export default function Orders(props) {
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.design}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.quantity + " " + data.unit}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.details}</Grid></Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.price}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{formattedPrice(data.price)}&nbsp;$</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} ><OrderItemStatus item={data} /></Grid></Link>
               </React.Fragment> ))}
         </Box>
 
           <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}} >
-            <Box className="product-item">Total summ: 100</Box>
+            <Box className="product-item">Total summ: {formattedPrice(totalPay)}&nbsp;$</Box>
           </Box>
 
         <Box sx={{display: "flex", alignItems: "flex-start", mt: 3}}>
           <IconButtonWhite aria-label="expand" onClick={toggleExpand} >
           <KeyboardArrowDownIcon sx={{ color: "#3d694a", fontSize: 26 }} >
           </KeyboardArrowDownIcon>
-            More actions
+            Pay now
           </IconButtonWhite>
         </Box> 
 
         { expand && 
           <Box sx={{display: "flex", flexDirection: "column", alignItems: "left", mt: 4}} >
             <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}} >
-              <StyledIconButton 
-                size="small" 
-                aria-label="pay" 
-                sx={{backgroundColor: "#222", color: "#fff", width: "80px"}} 
-                disabled={!agree || !orders[orderIndex].canPay  || !orders[orderIndex].checkedForPay}
-                onClick={(e)=> { sendInvoice(orders[orderIndex]) }} >
-                {/*onClick={(e)=> { pay(orders[orderIndex].id, orders[orderIndex].total) }} >*/}
-                <AttachMoneyIcon sx={{color: "#fff"}} />
-                Pay
-              </StyledIconButton>
+              
               <FormControlLabel required control={<Checkbox checked={agree} onChange={handleAgree} />} label="I confirm that the order composition meets my requirements" sx={{pl: 2 }} />
             </Box>  
+            <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}} >
+                <StyledTextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="payerName"
+                            label="Payer name"
+                            name="payerName"
+                            value={payerName}
+                            onChange={ev => setPayerName(ev.target.value)}
+                            style={itemStyle}
+                            autoFocus
+                          />
+                <StyledIconButton 
+                  size="small" 
+                  aria-label="pay" 
+                  sx={{backgroundColor: "#222", color: "#fff", width: "80px", ml: 2}} 
+                  disabled={!agree || !orders[orderIndex].canPay  || !orders[orderIndex].checkedForPay || payerName.length < 6 }
+                  onClick={(e)=> { sendInvoice(orders[orderIndex]) }} >
+                  {/*onClick={(e)=> { pay(orders[orderIndex].id, orders[orderIndex].total) }} >*/}
+                  {/* <AttachMoneyIcon sx={{color: "#fff"}} /> */}
+                  Continue
+                </StyledIconButton>                          
+            </Box>
         </Box>}
 
         </Box> }

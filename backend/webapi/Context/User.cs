@@ -7,6 +7,7 @@
         public string? LastName { get; set; }
         public string? Email { get; set; }
         public string? Phones { get; set; }
+        public string? PayerName { get; set; }
         public string? PasswordHash { get; set; }
         public int? PasswordSalt { get; set; }
         public bool IsLocked { get; set; }
