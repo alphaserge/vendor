@@ -12,33 +12,32 @@ namespace chiffon_back.Models
 {
     public class InvoiceItem
     {
-        public int? Id;
-        public int? Quantity;
-        public int? DiscountedRate;
-        public int? Price;
-        public string? ItemName;
-        public string? Unit;
+        public int? Id { get; set; }
+        public int? Quantity { get; set; }
+        public string? ItemName { get; set; }
+        public string? Unit { get; set; }
+        public int? DiscountedRate { get; set; }
+        public decimal? Price { get; set; }
+         
     }
     public class Invoice
     {
-        public int? Id;
-        public int? Number;
-        public string? Email;
-        public string? FirstName;
-        public string? LastName;
-        public string? Phones;
-        public string? Supplier;
-        public string? SupplierFirmAccount;
-        public string? SupplierBankName;
-        public string? SupplierBankBIC;
-        public string? SupplierCorrAccount;
-        public string? SupplierINN;
-        public string? SupplierKPP;
-        public string? SupplierDetails;
-        public DateTime? Date;
-        public string? Customer;
-        public string? Currency;
-        public InvoiceItem[] Items;
+        public int? Id { get; set; }
+        public int? Number { get; set; }
+        public string? Email { get; set; }
+        public string? Phones { get; set; }
+        public string? Supplier { get; set; }
+        public string? SupplierFirmAccount { get; set; }
+        public string? SupplierBankName { get; set; }
+        public string? SupplierBankBIC { get; set; }
+        public string? SupplierCorrAccount { get; set; }
+        public string? SupplierINN { get; set; }
+        public string? SupplierKPP { get; set; }
+        public string? SupplierDetails { get; set; }
+        public DateTime? Date { get; set; }
+        public string? Customer { get; set; }
+        public string? Currency { get; set; }
+        public InvoiceItem[]? Items { get; set; }
     }
 
     public class InvoiceReports

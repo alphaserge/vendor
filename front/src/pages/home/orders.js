@@ -58,7 +58,7 @@ export default function Orders(props) {
   const [orderIndex, setOrderIndex] = useState(-1)
   const [agree, setAgree] = useState(false)
   const [expand, setExpand] = useState(false)
-  const [payerName, setPayerName] = useState("")
+  const [payerName, setPayerName] = useState( !props.data.user.payerName ? "" : props.data.user.payerName )
 
   const handleAgree = (event) => {
     setAgree(event.target.checked);
@@ -71,26 +71,44 @@ export default function Orders(props) {
   const sendInvoice = async (order) => {
 
     let checkedItems = 
-      order.filter((i) => { 
+      order.items.filter((i) => { 
           return i.checked 
         })
 
+
+    if ( order.items.findIndex(i => i.checked) != -1 ) { 
+      checkedItems = order.items.filter((i)=> { return i.checked })
+    }
+
     let data = 
       { id: order.id,
-        email: props.user.email,
-        firstName: props.user.firstName,
-        lastName: props.user.lastName,
-        phones: props.user.phones,
+        email: props.data.user.email,
+        phones: props.data.user.phones,
+        customer: payerName,
         items: 
           checkedItems.map((i) => ({ 
             id: i.id,
             itemName: i.itemName,
-            amount: i.quantity,
+            quantity: i.quantity,
             price: i.price,
-            unit: i.unit}))
+            unit: i.unit,
+            discountedRate: 0}))
       }
 
-    await axios.post(
+    const responce = await fetch(config.api + '/SendInvoice', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data), 
+    })
+
+    console.log(responce);
+
+    /*return {
+      ok: true,
+      message: "The new order has been added"
+    }*/
+
+    /*await axios.post(
       config.api + '/SendInvoice', 
       JSON.stringify(data), 
       { headers: { "Content-Type" : "application/json" }})
@@ -103,7 +121,7 @@ export default function Orders(props) {
           console.log('Error for SendInvoice:');
           console.log(error);
           return false;
-        })
+        })*/
   };
 
   const pay = async (id, total) => {
@@ -398,7 +416,7 @@ export default function Orders(props) {
           <IconButtonWhite aria-label="expand" onClick={toggleExpand} >
           <KeyboardArrowDownIcon sx={{ color: "#3d694a", fontSize: 26 }} >
           </KeyboardArrowDownIcon>
-            Pay now
+            &nbsp;Buy now
           </IconButtonWhite>
         </Box> 
 

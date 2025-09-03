@@ -842,11 +842,20 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost("SendInvoice")]
-        public ActionResult<Models.Order> SendInvoice([FromBody] Models.Order order)
+        public ActionResult<Models.Invoice> SendInvoice([FromBody]Models.Invoice inv)
         {
             int rc = 0;
             try
             {
+                //Invoice inv = new Invoice();
+                //string fileName = "invoice1.docx";
+                string language = "Russian";
+                string path = String.Format(@"files");
+                //img = @"colors\nopicture.png";
+                string fileName = String.Format("{0}-{1}.docx", inv.Number, DateTime.Now).Replace(':', '-');
+                string contentRootPath = _webHostEnvironment.ContentRootPath;
+                path = Path.Combine(contentRootPath, path);
+                new InvoiceReports().CreateInvoice(inv, path, fileName, language);
                 /*foreach (var it in ctx.OrderItems.Where(x => x.OrderId == order.Id))
                 {
                     var item = order.Items.FirstOrDefault(x => x.Id == it.Id);
@@ -858,7 +867,7 @@ namespace chiffon_back.Controllers
                 }
                 ctx.SaveChanges();*/
 
-                return CreatedAtAction(nameof(Get), new { id = order.Id }, rc);
+                return CreatedAtAction(nameof(Get), new { id = inv.Id }, rc);
             }
             catch (Exception ex)
             {
