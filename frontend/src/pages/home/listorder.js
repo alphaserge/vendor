@@ -64,21 +64,12 @@ export default function ListOrderV(props) {
   const [filter, setFilter] = useState(false)
   const [transportCompanies, setTransportCompanies] = useState([])
 
-  const saveOrderItem = async (index) => {
+  const paid = async (index) => {
 
-    let data = JSON.stringify({
-      id: orders[index].id,
-      details: orders[index].details,
-      deliveryCompany: orders[index].deliveryCompany,
-      deliveryNo: orders[index].deliveryNo,
-    })
-
-  await axios.post(config.api + '/ChangeDetails', data, {headers:{"Content-Type" : "application/json"}})
+  await axios.post(config.api + '/Paid', JSON.stringify({ id: orders[index].id }), {headers:{"Content-Type" : "application/json"}})
     .then(function (response) {
-      console.log('response for ChangeDetails:');
-      console.log(response);
       let ords = [...orders]
-      ords[index].changes = false
+      ords[index].paid = true
       setOrders(ords)
       return true;
     })
@@ -187,10 +178,11 @@ export default function ListOrderV(props) {
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "60px 1fr 1fr 90px 100px 200px 55px 70px",
+          gridTemplateColumns: "60px 1fr 1fr 90px 100px 200px 55px 50px",
           columnGap: "4px",
           rowGap: "8px",
-          alignItems: "center" }}>
+          alignItems: "center",
+          fontSize: "15px" }}>
             <Grid item sx={{p:0, m:0}}><Header text="Photo"/></Grid>
             <Grid item sx={{p:0, m:0}}><Header text="Item name"/></Grid>
             <Grid item><Header text="Color"/></Grid>
@@ -245,11 +237,12 @@ export default function ListOrderV(props) {
         </Grid>
 
         <Button 
-            onClick={(e)=>{ saveOrderItem(index) }} 
+            onClick={(e)=>{ paid(index) }} 
             edge="end" 
+            disabled={data.paid}
             sx={{
               visibility: !data.details ? "hidden":"visible",
-              backgroundColor: "#777", 
+              backgroundColor: "#222", 
               color: "#fff", 
               borderRadius: "2px", 
               height: "26px", 
@@ -257,7 +250,7 @@ export default function ListOrderV(props) {
               fontSize: "14px", 
               fontWeight: "333",
               textTransform: "none"}}>
-                Payment
+                Paid
           </Button>
 
       </React.Fragment>

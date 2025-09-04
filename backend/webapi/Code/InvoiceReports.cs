@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
+﻿using chiffon_back.Code;
+using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Vml;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -52,6 +53,8 @@ namespace chiffon_back.Models
 
         public string CreateInvoice(Invoice inv, string path, string fileName, string language)
         {
+            decimal courseUSD = Helper.GetCurrencyCourse("USD", DateTime.Now);
+
             OXML.OXSimpleWORD report = new OXML.OXSimpleWORD();
             
             inv.Supplier = "ООО \"Текстильная компания Анжелика\"\"";
@@ -200,12 +203,14 @@ namespace chiffon_back.Models
             //oxRow.Cells.Add(new OXSimpleWordTableCell("&Артикул", "1300", JustificationValues.Center, "18", "240"));
             oxTable.Rows.Add(oxRow);
             int numpp = 1;
-            double summ = 0;
+            decimal summ = 0;
             foreach (var it in inv.Items)
             {
-                double a = it.Quantity == null ? 0 : (double)it.Quantity;
-                double d = it.DiscountedRate == null ? 0 : (double)it.DiscountedRate;
-                double t = it.Price == null ? 0 : (double)it.Price;
+                int a = it.Quantity == null ? 0 : it.Quantity.Value;
+                int d = it.DiscountedRate == null ? 0 : it.DiscountedRate.Value;
+                decimal t = it.Price == null ? 0 : it.Price.Value;
+                t *= courseUSD;
+
                 string rate = d == null ? string.Empty : d.ToString("F2");
                 string total = t == null ? string.Empty : t.ToString("F2");
                 string amount = a == null ? string.Empty : a.ToString("F2");
@@ -237,7 +242,7 @@ namespace chiffon_back.Models
             {
                 oxRow = new OXSimpleWordTableRow();
                 oxRow.Cells.Add(new OXSimpleWordTableCell(language == "English" ? "Including VAT" : "В том числе НДС", "8200", JustificationValues.Right, "18", "280", gridspan: 5));
-                oxRow.Cells.Add(new OXSimpleWordTableCell((summ * 0.18 / 1.18).ToString("F2"), "1500", JustificationValues.Right, "18", "280"));
+                oxRow.Cells.Add(new OXSimpleWordTableCell((summ * 0.18m / 1.18m).ToString("F2"), "1500", JustificationValues.Right, "18", "280"));
                 oxTable.Rows.Add(oxRow);
             }
             else
@@ -267,7 +272,7 @@ namespace chiffon_back.Models
 
             if (language != "English")
             {
-                string s = RuDateAndMoneyConverter.CurrencyToTxtFull(summ, true);
+                string s = RuDateAndMoneyConverter.CurrencyToTxtFull(Convert.ToDouble(summ), true);
                 if (inv.Currency != "USD")
                 {
                     s = s.Replace("долларов", "рублей");

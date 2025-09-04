@@ -86,6 +86,10 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+
+// Register the CodePagesEncodingProvider
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -95,16 +99,26 @@ if (app.Environment.IsDevelopment())
 
 string dir = Path.Combine(Directory.GetCurrentDirectory(), @"images");
 chiffon_back.Code.DirectoryHelper.CreateDirectoryIfMissing(dir);
-dir = Path.Combine(Directory.GetCurrentDirectory(), @"colors");
-chiffon_back.Code.DirectoryHelper.CreateDirectoryIfMissing(dir);
+
+string colorsDir = Path.Combine(Directory.GetCurrentDirectory(), @"colors");
+chiffon_back.Code.DirectoryHelper.CreateDirectoryIfMissing(colorsDir);
+
+string filesDir = Path.Combine(Directory.GetCurrentDirectory(), @"files");
+chiffon_back.Code.DirectoryHelper.CreateDirectoryIfMissing(filesDir);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions()
 {
     
-    FileProvider = new PhysicalFileProvider(dir), //Path.Combine(Directory.GetCurrentDirectory(), @"images")),
+    FileProvider = new PhysicalFileProvider(colorsDir), //Path.Combine(Directory.GetCurrentDirectory(), @"images")),
     RequestPath = new PathString("/colors")
+});
+app.UseStaticFiles(new StaticFileOptions()
+{
+
+    FileProvider = new PhysicalFileProvider(filesDir), //Path.Combine(Directory.GetCurrentDirectory(), @"images")),
+    RequestPath = new PathString("/files")
 });
 
 app.UseDirectoryBrowser(new DirectoryBrowserOptions()

@@ -9,6 +9,7 @@
         public decimal? Quantity { get; set; }
         public decimal? VendorQuantity { get; set; }
         public bool? OrderRolls { get; set; }
+        public bool Paid { get; set; }
         public string? Details { get; set; }
         public decimal? Price { get; set; }
         public int? ColorVariantId { get; set; }

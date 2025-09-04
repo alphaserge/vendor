@@ -842,20 +842,20 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost("SendInvoice")]
-        public ActionResult<Models.Invoice> SendInvoice([FromBody]Models.Invoice inv)
+        public string SendInvoice([FromBody]Models.Invoice inv)
         {
             int rc = 0;
             try
             {
                 //Invoice inv = new Invoice();
                 //string fileName = "invoice1.docx";
-                string language = "Russian";
+                //string language = "Russian";
                 string path = String.Format(@"files");
                 //img = @"colors\nopicture.png";
-                string fileName = String.Format("{0}-{1}.docx", inv.Number, DateTime.Now).Replace(':', '-');
+                string fileName = String.Format("invoice_{0}.docx", inv.Number != null ? inv.Number.Value : "nonumber");
                 string contentRootPath = _webHostEnvironment.ContentRootPath;
-                path = Path.Combine(contentRootPath, path);
-                new InvoiceReports().CreateInvoice(inv, path, fileName, language);
+                path = Path.Combine(contentRootPath, "files");
+                new InvoiceReports().CreateInvoice(inv, path, fileName, "Russian");
                 /*foreach (var it in ctx.OrderItems.Where(x => x.OrderId == order.Id))
                 {
                     var item = order.Items.FirstOrDefault(x => x.Id == it.Id);
@@ -867,11 +867,13 @@ namespace chiffon_back.Controllers
                 }
                 ctx.SaveChanges();*/
 
-                return CreatedAtAction(nameof(Get), new { id = inv.Id }, rc);
+                //var message = new { FileName = Path.Combine(path, fileName) };
+                //return new OkObjectResult(message);
+                return Path.Combine(@"files", fileName);
             }
             catch (Exception ex)
             {
-                return CreatedAtAction(nameof(Get), new { id = -1 }, null);
+                return "error"; //BadRequest(ex.Message);
             }
         }
 

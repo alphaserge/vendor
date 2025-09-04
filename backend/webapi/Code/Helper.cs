@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 using System.Text;
+using System.Xml.Linq;
 
 namespace chiffon_back.Code
 {
@@ -66,5 +67,25 @@ namespace chiffon_back.Code
             return [firstName, lastName];
         }
 
+
+        public static decimal GetCurrencyCourse(string currShort, DateTime date)
+        {
+            decimal crs = 0m;
+
+            XElement xelement = XElement.Load("http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + date.ToString("dd/MM/yyyy"));
+            IEnumerable<XElement> employees = xelement.Elements();
+            XElement? value = (from nm in xelement.Elements("Valute")
+                            where (string)nm.Element("CharCode") == currShort.ToUpper()
+                            select nm).FirstOrDefault();
+
+            if (value != null)
+            {
+                string sCrs = value.Element("Value").Value;
+                decimal c = 0;
+                if (Decimal.TryParse(sCrs, out c))
+                    crs = c;
+            }
+            return crs;
+        }
     }
-    }
+}

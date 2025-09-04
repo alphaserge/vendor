@@ -57,6 +57,7 @@ export default function Orders(props) {
   const [orders, setOrders] = useState([])
   const [orderIndex, setOrderIndex] = useState(-1)
   const [agree, setAgree] = useState(false)
+  const [invoiceUrl, setInvoiceUrl] = useState("")
   const [expand, setExpand] = useState(false)
   const [payerName, setPayerName] = useState( !props.data.user.payerName ? "" : props.data.user.payerName )
 
@@ -82,6 +83,7 @@ export default function Orders(props) {
 
     let data = 
       { id: order.id,
+        number: order.number,
         email: props.data.user.email,
         phones: props.data.user.phones,
         customer: payerName,
@@ -95,33 +97,30 @@ export default function Orders(props) {
             discountedRate: 0}))
       }
 
-    const responce = await fetch(config.api + '/SendInvoice', {
+    /*const responce = await fetch(config.api + '/SendInvoice', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data), 
     })
-
-    console.log(responce);
+    console.log(responce);*/
 
     /*return {
       ok: true,
       message: "The new order has been added"
     }*/
 
-    /*await axios.post(
+    await axios.post(
       config.api + '/SendInvoice', 
       JSON.stringify(data), 
       { headers: { "Content-Type" : "application/json" }})
         .then(function (response) {
-          console.log('Response for SendInvoice:');
-          console.log(response);
+          setInvoiceUrl(config.api + "/" + response.data)
           return true;
         })
         .catch(function (error) {
-          console.log('Error for SendInvoice:');
-          console.log(error);
+          setInvoiceUrl("")
           return false;
-        })*/
+        })
   };
 
   const pay = async (id, total) => {
@@ -421,7 +420,8 @@ export default function Orders(props) {
         </Box> 
 
         { expand && 
-          <Box sx={{display: "flex", flexDirection: "column", alignItems: "left", mt: 4}} >
+          <React.Fragment>
+          { invoiceUrl.length == 0 && <Box sx={{display: "flex", flexDirection: "column", alignItems: "left", mt: 4}} >
             <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}} >
               
               <FormControlLabel required control={<Checkbox checked={agree} onChange={handleAgree} />} label="I confirm that the order composition meets my requirements" sx={{pl: 2 }} />
@@ -450,7 +450,27 @@ export default function Orders(props) {
                   Continue
                 </StyledIconButton>                          
             </Box>
-        </Box>}
+        </Box> }
+
+          { invoiceUrl.length > 0 && <Box sx={{display: "flex", flexDirection: "column", gap: "20px",  alignItems: "center", mt: 4 }} className="product-item" >
+            
+              <Box>Your invoice is ready</Box>
+              
+              <Box><Link to={invoiceUrl} sx={{pt: 2}} style={{ textDecoration: 'none' }} >
+                Please click this link to download document
+              </Link></Box>
+            
+                <StyledIconButton 
+                  size="small" 
+                  aria-label="pay" 
+                  sx={{backgroundColor: "#222", color: "#fff", width: "80px", mt: 2}} 
+                  onClick={(e)=> { setInvoiceUrl("") }} >
+                  Back
+                </StyledIconButton>                          
+        </Box> }
+
+        </React.Fragment>
+        }
 
         </Box> }
 
