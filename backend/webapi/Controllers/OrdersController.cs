@@ -237,7 +237,7 @@ namespace chiffon_back.Controllers
                         ColorNames = item.oi.ColorNames,
                         VendorId = item.j.VendorId,
                         VendorName = vendorList.FirstOrDefault(x=>x.Id==item.j.VendorId)?.VendorName,
-                        Paid = (ctx.Payments.FirstOrDefault(x => x.Amount > 0m && x.What == "order" && x.WhatId == item.oi.OrderId)) != null,
+                        Paid = item.oi.Paid // (ctx.Payments.FirstOrDefault(x => x.Amount > 0m && x.What == "order" && x.WhatId == item.oi.OrderId)) != null,
                     };
 
                     string imagePath = string.Empty;
@@ -320,7 +320,7 @@ namespace chiffon_back.Controllers
                     ColorNames = item.oi.ColorNames,
                     VendorId = item.j.VendorId,
                     VendorName = ctx.Vendors.FirstOrDefault(x=>x.Id==item.j.VendorId).VendorName,
-                    Paid = ctx.Payments.FirstOrDefault(x=>x.Amount>0m && x.What=="order" && x.WhatId==item.oi.OrderId) != null
+                    Paid = item.oi.Paid// ctx.Payments.FirstOrDefault(x=>x.Amount>0m && x.What=="order" && x.WhatId==item.oi.OrderId) != null
                 };
 
                 string imagePath = string.Empty;

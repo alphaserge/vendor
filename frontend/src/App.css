@@ -350,3 +350,18 @@ a.no-link {
 .row-border {
     grid-column: 1 / 8; /* this code makes the row stretch to entire width of the container */
 }
+
+.my-lab {
+  display: inline-block;
+  background-color: #ddd;
+  border-radius: 3px;
+  padding: 0px 2px;
+  margin: 3px 4px 0 0;
+  min-width: 62px;
+}
+
+.my-val {
+  display: inline-block;
+  font-weight: 500;  
+  min-width: 75px;
+}

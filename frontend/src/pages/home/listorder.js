@@ -113,6 +113,8 @@ export default function ListOrderV(props) {
                   orderId   : d.orderId,
                   imagePath : d.imagePath,
                   itemName  : d.itemName,
+                  artNo     : d.artNo,
+                  refNo     : d.refNo,
                   spec      : d.composition,
                   price     : d.price,
                   owner     : d.vendorName,
@@ -174,23 +176,23 @@ export default function ListOrderV(props) {
 
         <Box component="form" noValidate style={outboxStyle}>
 
-        <Box sx={{ fontWeight: "500", fontSize: "15px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Order list of " + props.user.vendorName}</Box> 
+        <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Order list of " + props.user.vendorName}</Box> 
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "60px 1fr 1fr 90px 100px 200px 55px 50px",
+          gridTemplateColumns: "80px 1fr 250px 75px",
           columnGap: "4px",
           rowGap: "8px",
           alignItems: "center",
           fontSize: "15px" }}>
             <Grid item sx={{p:0, m:0}}><Header text="Photo"/></Grid>
-            <Grid item sx={{p:0, m:0}}><Header text="Item name"/></Grid>
-            <Grid item><Header text="Color"/></Grid>
+            <Grid item sx={{p:0, m:0}}><Header text="Specification"/></Grid>
+            {/*<Grid item><Header text="Color"/></Grid>
             <Grid item><Header text="Ordered"/></Grid>
-            <Grid item><Header text="Actual"/></Grid>
-            <Grid item><Header text="Delivery"/></Grid>
+            <Grid item><Header text="Actual"/></Grid>*/}
             <Grid item><Header text="Status"/></Grid>
-            <Grid item><Header text="-"/></Grid>
+            {/* <Grid item><Header text="Status"/></Grid> */}
+            <Grid item><Header text="Actions"/></Grid>
 
     {orders.map((data, index) => (
       <React.Fragment>
@@ -199,40 +201,32 @@ export default function ListOrderV(props) {
                 <Box sx={{padding: "8px 0 0 0" }}>
                   <img 
                     src={config.api + "/" + data.imagePath}
-                    width={55}
-                    height={45}
+                    width={70}
+                    height={70}
                     alt={data.itemName}
                 /> 
                 </Box>
                 </Grid></Link>
                 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{display: "flex", flexDirection: "column", height: 50, wordBreak: "break-all" }}>
-          <Property value={fined(data.itemName, "-")}  />
-        </Grid>
-        </Link>
+        <Grid item sx={{display: "flex", flexDirection: "column"  }}>
+          <Property value={data.itemName + ". Color: " + data.colorNames} /> 
+          {/* <Property value={" Art.no: " + data.artNo + " Ref.no: " + data.refNo } />  */}
+          <div>
+          <span className="my-lab">Art.no:</span><span className="my-val">{data.artNo}</span>&nbsp;&nbsp;&nbsp;
+          <span className="my-lab">Ref.no:</span><span className="my-val">{data.refNo}</span>
+          </div>
 
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{display: "flex", flexDirection: "column", height: 50, wordBreak: "break-all"}}>
-          <Property value={fined(data.colorNames, "-")} />
+          <div>
+          <span className="my-lab">Ordered:</span><span className="my-val">{data.quantity}&nbsp;{data.unit}</span>&nbsp;&nbsp;&nbsp;
+          <span className="my-lab">Details:</span><span className="my-val">{data.details + " = " + data.total}</span>
+          </div>
         </Grid>
         </Link>
-       
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-          <Property value={quantityInfo(data)} textAlign="center" />
-        </Grid>
-        </Link>
-
-        <Grid item sx={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-          <Property value={fined(data.total) + (data.total + data.details!="" ? " = ": "") + fined(data.details)} textAlign="center" />
-        </Grid>
         
         <Grid item sx={{display: "flex", flexDirection: "column"}}>
-          <Property value={ fined(data.deliveryCompany) + (data.deliveryCompany + data.deliveryNo!="" ? " / ": "") + fined(data.deliveryNo)} textAlign="center" />
-        </Grid>
-
-        <Grid item sx={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
+          <Property value={ "Delivery:  " + fined(data.deliveryCompany) } />
+          <Property value={ "Track no: " + fined(data.deliveryNo)} />
           <OrderItemStatus item={data} />
         </Grid>
 
@@ -241,16 +235,16 @@ export default function ListOrderV(props) {
             edge="end" 
             disabled={data.paid}
             sx={{
-              visibility: !data.details ? "hidden":"visible",
-              backgroundColor: "#222", 
-              color: "#fff", 
+              // visibility: !data.details ? "hidden":"visible", 
+              backgroundColor: "#ccc", 
+              color: "#111", 
               borderRadius: "2px", 
               height: "26px", 
               minWidth: "20px", 
-              fontSize: "14px", 
+              fontSize: "15px", 
               fontWeight: "333",
               textTransform: "none"}}>
-                Paid
+                Set paid
           </Button>
 
       </React.Fragment>
