@@ -59,6 +59,7 @@ export default function Orders(props) {
   const [agree, setAgree] = useState(false)
   const [invoiceUrl, setInvoiceUrl] = useState("")
   const [expand, setExpand] = useState(false)
+  //const [checkedOk, setCheckedOk] = useState(false)
   const [payerName, setPayerName] = useState( !props.data.user.payerName ? "" : props.data.user.payerName )
 
   const handleAgree = (event) => {
@@ -147,9 +148,23 @@ export default function Orders(props) {
   const checkItem = (orderIndex, index) => {
       let ords = [...orders]
 
+      if (!ords[orderIndex].items[index].details) {
+        return
+      }
+      if (!!ords[orderIndex].items[index].deliveryCompany || 
+          !!ords[orderIndex].items[index].deliveryNo || 
+          !!ords[orderIndex].items[index].paid) {
+        return
+      }
+
       ords[orderIndex].items[index].checked = !ords[orderIndex].items[index].checked
       
       ords[orderIndex].checkedForPay = ords[orderIndex].items.filter((i)=>{ return i.checked}).length > 0
+
+      /*let checkOk = true;
+      ords[orderIndex].items.forEach(item => {
+        if (item.checked && item.details)
+      });*/
       
       setOrders(ords)
   }
@@ -185,11 +200,12 @@ export default function Orders(props) {
                 total   : d.items.reduce((n, it) => n + it.quantity*it.price, 0),
                 paid    : d.paid,
                 changes : false,
-                canPay  : d.items.findIndex(it => !it.details)==-1,
+                canPay  : false,
                 items   : ( !!d.items ? d.items.map((it) => { return {
                   checked   : false,
                   id        : it.id,
                   productId : it.productId,
+                  paid      : it.paid,
                   imagePath : it.imagePath,
                   itemName  : it.itemName,
                   artNo     : it.artNo,
@@ -207,6 +223,8 @@ export default function Orders(props) {
                   details   : it.details,
                   shipped   : it.shipped,
                   delivered : it.delivered,
+                  deliveryNo: it.deliveryNo,
+                  deliveryCompany : it.deliveryCompany,
                   status: it.confirmByVendor != null ? "confirmed" : (it.confirmByVendor != null ? "shipped" : (it.inStock != null ? "in stock" : (it.shippedToClient != null ? "shipped to client" : (it.recievedByClient != null ? "recieved" : "ordered"))))
                   }}) : [])
               }
@@ -345,17 +363,17 @@ export default function Orders(props) {
         </Box> 
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "90px 2fr 1fr 2fr 1fr 100px 1fr 90px 90px",
+          gridTemplateColumns: "90px 90px 2fr 2fr 100px 1fr 90px 150px",
           columnGap: "8px",
           rowGap: "6px",
           fontFamily: ap.FONTFAMILY,
           fontSize: "16px",
           alignItems: "center" }}>
                   <Grid item><Header text="Photo"></Header></Grid>
-                  <Grid item><Header text="Item name"></Header></Grid>
                   <Grid item><Header text="Art No."></Header></Grid>
+                  <Grid item><Header text="Item name, design"></Header></Grid>
                   <Grid item><Header text="Colors"></Header></Grid>
-                  <Grid item><Header text="Design"></Header></Grid>
+                  {/* <Grid item><Header text="Design"></Header></Grid> */}
                   <Grid item><Header text="Ordered"></Header></Grid>
                   <Grid item><Header text="Details"></Header></Grid>
                   <Grid item><Header text="Price"></Header></Grid>
@@ -396,10 +414,10 @@ export default function Orders(props) {
                     /> )}                              
                 </Grid>
                 </Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.itemName}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.artNo}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.itemName + " " + data.design}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.colorNo + " / " + data.colorNames}</Grid></Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.design}</Grid></Link>
+                {/* <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.design}</Grid></Link> */}
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.quantity + " " + data.unit}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.details}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{formattedPrice(data.price)}&nbsp;$</Grid></Link>
@@ -443,7 +461,8 @@ export default function Orders(props) {
                   size="small" 
                   aria-label="pay" 
                   sx={{backgroundColor: "#222", color: "#fff", width: "80px", ml: 2}} 
-                  disabled={!agree || !orders[orderIndex].canPay  || !orders[orderIndex].checkedForPay || payerName.length < 6 }
+                  // disabled={!agree || !orders[orderIndex].canPay  || !orders[orderIndex].checkedForPay || payerName.length < 6 }
+                  disabled={!agree || !orders[orderIndex].checkedForPay || payerName.length < 6 }
                   onClick={(e)=> { sendInvoice(orders[orderIndex]) }} >
                   {/*onClick={(e)=> { pay(orders[orderIndex].id, orders[orderIndex].total) }} >*/}
                   {/* <AttachMoneyIcon sx={{color: "#fff"}} /> */}

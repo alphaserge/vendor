@@ -39,7 +39,7 @@ const buttonStyle = { height: 26, backgroundColor: "#222", color: APPEARANCE.WHI
 const disableStyle = { height: 26, backgroundColor: "#ccc", color: APPEARANCE.WHITE, textTransform: "none" }
 const labelStyle = { m: 0, ml: 0, mr: 0 }
 const itemStyle  = { width: "100%", mt: 3, ml: 0, mr: 0, mb: 0  }
-const itemStyle1 = { width: "calc( 100% - 0px )", mt: 0, ml: 0, mr: 0  }
+const itemStyle1 = { width: "calc( 100% - 0px )", mt: 0, ml: 0, mr: 0, mb: 0 }
 
 const ITEM_HEIGHT = 48
 const ITEM_PADDING_TOP = 8
@@ -125,6 +125,8 @@ export default function ListOrderV(props) {
                   orderId   : d.orderId,
                   imagePath : d.imagePath,
                   itemName  : d.itemName,
+                  artNo     : d.artNo,
+                  refNo     : d.refNo,
                   spec      : d.composition,
                   price     : d.price,
                   owner     : d.vendorName,
@@ -210,24 +212,21 @@ export default function ListOrderV(props) {
 
         <Box component="form" noValidate style={outboxStyle}>
 
-        <Box sx={{ fontWeight: "500", fontSize: "15px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Order list of " + props.user.vendorName}</Box> 
+        {/* <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Order list of " + props.user.vendorName}</Box>  */}
+        <Header transparent={true} text={"Order list of " + props.user.vendorName} />
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "60px 1fr 1fr 65px 55px 100px 116px 110px 55px 45px",
+          gridTemplateColumns: "80px 1fr 80px 164px 75px",
           columnGap: "4px",
           rowGap: "8px",
-          alignItems: "center" }}>
+          alignItems: "center",
+          fontSize: "15px" }}>
             <Grid item sx={{p:0, m:0}}><Header text="Photo"/></Grid>
-            <Grid item sx={{p:0, m:0}}><Header text="Item name"/></Grid>
-            <Grid item><Header text="Color"/></Grid>
-            <Grid item><Header text="Ordered"/></Grid>
-            <Grid item><Header text="Actual"/></Grid>
+            <Grid item sx={{p:0, m:0}}><Header text="Specification"/></Grid>
             <Grid item><Header text="Details"/></Grid>
-            <Grid item><Header text="Delivery comp."/></Grid>
-            <Grid item><Header text="Track No."/></Grid>
-            <Grid item><Header text="Status"/></Grid>
-            <Grid item></Grid>
+            <Grid item><Header text="Delivery"/></Grid>
+            <Grid item><Header text="Actions"/></Grid>
 
     {orders.map((data, index) => (
       <React.Fragment>
@@ -236,94 +235,103 @@ export default function ListOrderV(props) {
                 <Box sx={{padding: "8px 0 0 0" }}>
                   <img 
                     src={config.api + "/" + data.imagePath}
-                    width={55}
-                    height={45}
+                    width={70}
+                    height={70}
                     alt={data.itemName}
                 /> 
                 </Box>
                 </Grid></Link>
                 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{display: "flex", flexDirection: "column", height: 50, wordBreak: "break-all" }}>
-          <Property value={fined(data.itemName, "-")}  />
+        <Grid item sx={{display: "flex", flexDirection: "column"  }}>
+          
+          <div>
+          <span className="my-val" style={{color:"#005ac1"}}>{data.itemName}</span>&nbsp;&nbsp;&nbsp; Color: {data.colorNames} 
+          </div>
+
+          <div>
+          <span className="my-lab">Art.no:</span><span className="my-val">{data.artNo}</span>&nbsp;&nbsp;&nbsp;
+          <span className="my-lab">Ref.no:</span><span className="my-val">{data.refNo}</span>
+          </div>
+
+          <div>
+          <span className="my-lab">Ordered:</span><span className="my-val">{data.quantity}&nbsp;{data.unit}</span>&nbsp;&nbsp;&nbsp;
+          <OrderItemStatus item={data} style={{display: "inline"}} />
+          </div>
         </Grid>
         </Link>
 
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{display: "flex", flexDirection: "column", height: 50, wordBreak: "break-all"}}>
-          <Property value={fined(data.colorNames, "-")} />
+        <Grid item sx={{display: "flex", flexDirection: "column"}}>
+          <div style={{height: "82px", textAlign: "center"}} >
+          <TextField //label="Details"
+              margin="normal"
+              size="small" 
+              id={"valuedetails-" + index}
+              name={"valuedetails-" + index}
+              label={!!data.details ? "" : "Details"}
+              sx={{marginTop: 0, backgroundColor: !!data.details ? "none" : "#fcc"}}
+              value={data.details}
+              onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}} />
+              { !!data.total && <span className="my-val" style={{fontSize: "14px"}}>{data.total + " m."}</span> }
+                </div>
         </Grid>
-        </Link>
-       
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-          <Property value={quantityInfo(data)} textAlign="center" />
-        </Grid>
-        </Link>
 
-        <Grid item sx={{display: "flex", flexDirection: "column", justifyContent: "center"}}>
-          <Property value={data.total} textAlign="center" />
-        </Grid>
-        
         <Grid item sx={{display: "flex", flexDirection: "column"}}>
-            <TextField //label="Details"
-                              margin="normal"
-                              size="small" 
-                              id={"valuedetails-" + index}
-                              name={"valuedetails-" + index}
-                              sx={{marginTop: "8px"}}
-                              value={data.details}
-                              onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}}
-                               />
-        </Grid>
-        
-        <Grid item sx={{display: "flex", flexDirection: "column"}}>
-            <div style={{marginTop: "3px"}}>
+          <div style={{marginTop: "3px"}}>
             <MySelect 
               id="transportCompanies"
-              title=""
-              hideLabel={true}
+              title="Delivery company"
+              hideLabel={!!data.deliveryCompany}
               valueName="deliveryCompany"
               labelStyle={labelStyle}
               itemStyle={itemStyle1}
+              disabled={!data.paid}
               MenuProps={MySelectProps}
               valueVariable={data.deliveryCompany}
               setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
               data={transportCompanies}
             />
             </div>
-        </Grid>
-
-        <Grid item sx={{display: "flex", flexDirection: "column"}}>
-           <TextField
+          <TextField
               margin="normal"
               size="small" 
+              disabled={!data.paid}
+              label={!!data.deliveryNo ? "" : "Delivery no."}
               id={"valueDeliveryNo-" + index}
               name={"valueDeliveryNo-" + index}
-              sx={{marginTop: "8px"}}
+              sx={{marginTop: "0px"}}
               value={data.deliveryNo}
               onChange={ev => { setDeliveryNo(data.orderId, data.id, ev.target.value)}}/>
-        </Grid>
-        
-        <Grid item sx={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
-          <OrderItemStatus item={data} />
+
+
+          {/* <Property value={ "Delivery:  " + fined(data.deliveryCompany) } />
+          <Property value={ "Track no: " + fined(data.deliveryNo)} /> */}
+          
         </Grid>
 
+<Grid item sx={{display: "flex", flexDirection: "column"}}>
+  <div style={{height: "82px", textAlign: "center"}}>
         <Button 
             onClick={(e)=>{ saveOrderItem(index) }} 
             edge="end" 
+            disabled={!data.changes}
             sx={{
-              visibility: !data.changes ? "hidden":"visible",
-              backgroundColor: "#777", 
-              color: "#fff", 
+              //visibility: !data.changes ? "hidden":"visible",
+              backgroundColor: !data.changes ? "#ccc" : "#222",
+              //border: !data.changes ? "none" : "1px solid #aaa",
+              borderRadius: "3px",
+              color: !data.changes ? "#fff" : "#fff", 
               borderRadius: "2px", 
               height: "26px", 
               minWidth: "20px", 
               fontSize: "14px", 
+              marginTop: "2px",
               textTransform: "none"}}>
                 Save
           </Button>
-
+          </div>
+          </Grid>
+          
       </React.Fragment>
     ))}
 

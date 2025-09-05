@@ -19,10 +19,10 @@ import {toFixed2} from "../functions/helper"
 
 const statusString = (item) => {
     
-    if (!!item.details  ) return "confirmed by vendor"
     if (!!item.delivered) return "delivered to client"
-    if (!!item.shipped  ) return "shipping to client"
-    //if (!!item.paidByClient    ) return "paid"
+    if (!!item.deliveryNo && !!item.deliveryCompany  ) return "shipping to client"
+    if (!!item.paid     ) return "paid"
+    if (!!item.details  ) return "confirmed by vendor"
     //if (!!item.shippedToClient ) return "delivered"
     //if (!!item.inStock         ) return "in stock"
     return "waiting of vendor"
@@ -34,15 +34,15 @@ export default function OrderItemStatus(props) {
 
   let color = "#222";
 
-  if (statusText=="waiting of vendor") {  color = "#bd0bb4ff"}
-  if (statusText=="confirmed by vendor") {  color = "#133ae4ff"}
-  if (statusText=="paid") {  color = "#135ce4ff"}
+  if (statusText=="waiting of vendor") {  color = "#d70c32ff"}
+  if (statusText=="confirmed by vendor") {  color = "#3256f4ff"}
+  if (statusText=="paid") {  color = "#01801aff"}
   if (statusText=="in stock") {  color = "#135ce4ff"}
   if (statusText=="shipping to client") {  color = "#00a2ffff"}
   if (statusText=="delivered to client") {  color = "#286d2cff"}
 
-  return <div>
-          <span>Status:</span>&nbsp;<span className="my-val" style={{ color: color, fontWeight: "400" }}>{statusText}</span>&nbsp;&nbsp;&nbsp;
+  return <div style={{display: "inline-block"}}>
+          <span>Status:</span>&nbsp;<span className="my-val" style={{ color: color, backgroundColor: "#ddd", fontWeight: "400", minWidth: "20px", borderRadius: "3px", padding: "0px 7px" }}>{statusText}</span>&nbsp;&nbsp;&nbsp;
          </div>
       // Status:<span style={{ color : color}}>{statusText}</span>
       

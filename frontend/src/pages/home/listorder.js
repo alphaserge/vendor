@@ -176,7 +176,8 @@ export default function ListOrderV(props) {
 
         <Box component="form" noValidate style={outboxStyle}>
 
-        <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Order list of " + props.user.vendorName}</Box> 
+        {/* <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Order list of " + props.user.vendorName}</Box>  */}
+        <Header transparent={true} text={"Order list of " + props.user.vendorName} />
           
         <Box sx={{ 
           display: "grid", 
@@ -210,8 +211,11 @@ export default function ListOrderV(props) {
                 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
         <Grid item sx={{display: "flex", flexDirection: "column"  }}>
-          <Property value={data.itemName + ". Color: " + data.colorNames} /> 
-          {/* <Property value={" Art.no: " + data.artNo + " Ref.no: " + data.refNo } />  */}
+          
+          <div>
+          <span className="my-val" style={{color:"#005ac1"}}>{data.itemName}</span>&nbsp;&nbsp;&nbsp; Color: {data.colorNames} 
+          </div>
+
           <div>
           <span className="my-lab">Art.no:</span><span className="my-val">{data.artNo}</span>&nbsp;&nbsp;&nbsp;
           <span className="my-lab">Ref.no:</span><span className="my-val">{data.refNo}</span>
@@ -219,7 +223,7 @@ export default function ListOrderV(props) {
 
           <div>
           <span className="my-lab">Ordered:</span><span className="my-val">{data.quantity}&nbsp;{data.unit}</span>&nbsp;&nbsp;&nbsp;
-          <span className="my-lab">Details:</span><span className="my-val">{data.details + " = " + data.total}</span>
+          <span className="my-lab">Details:</span><span className="my-val">{data.details + (!!data.total ? (" = " + data.total) : "")}</span>
           </div>
         </Grid>
         </Link>
@@ -233,18 +237,19 @@ export default function ListOrderV(props) {
         <Button 
             onClick={(e)=>{ paid(index) }} 
             edge="end" 
-            disabled={data.paid}
+            disabled={!!data.paid || !data.details}
             sx={{
               // visibility: !data.details ? "hidden":"visible", 
-              backgroundColor: "#ccc", 
-              color: "#111", 
+              backgroundColor: !!data.paid || !data.details ? "#ccc" : "#438ee4ff", 
+              color: "#fff", 
               borderRadius: "2px", 
-              height: "26px", 
+              height: "44px", 
               minWidth: "20px", 
-              fontSize: "15px", 
+              fontSize: "14px", 
               fontWeight: "333",
+              lineHeight: "16px",
               textTransform: "none"}}>
-                Set paid
+                Mark as paid
           </Button>
 
       </React.Fragment>

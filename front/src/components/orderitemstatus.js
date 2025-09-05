@@ -19,10 +19,10 @@ import {toFixed2} from "../functions/helper"
 
 const statusString = (item) => {
     
-    if (!!item.details  ) return "accepted"
     if (!!item.delivered) return "delivered"
-    if (!!item.shipped  ) return "shipping"
-    //if (!!item.paidByClient    ) return "paid"
+    if (!!item.deliveryNo && !!item.deliveryCompany) return "shipping"
+    if (!!item.paid     ) return "paid"
+    if (!!item.details  ) return "confirmed"
     //if (!!item.shippedToClient ) return "delivered"
     //if (!!item.inStock         ) return "in stock"
     return "processing"
@@ -40,15 +40,16 @@ export default function OrderItemStatus(props) {
       
     <Tooltip title={<span style={{ color: "#fff", fontSize: "13px", fontWeight: "300", padding: 0 }}>{statusText}</span>} >
           <Box sx={{color: "#888", fontSize: 14, padding: "0px 2px", marginTop: "10px"}} >
-          { statusText=="processing"    && <QueryBuilderIcon  sx={{ color: "#888", fontSize: 30 }} /> } {/* waiting vendor */}
-          { statusText=="accepted"  && <HandshakeIcon     sx={{ color: "#393", fontSize: 30 }} /> } {/* vendor accepted  */}
-          { statusText=="paid"       && <PaidIcon          sx={{ color: "#888", fontSize: 30 }} /> } {/* paid by client */}
+          { statusText=="processing"    && <QueryBuilderIcon  sx={{ color: "#888", fontSize: 30 }} /> }
+          { statusText=="confirmed"  && <HandshakeIcon     sx={{ color: "#393", fontSize: 30 }} /> } 
+          { statusText=="paid"       && <PaidIcon          sx={{ color: "#393", fontSize: 30 }} /> } 
           {/*{ statusText=="in stock"   && <ViewInArIcon      sx={{ color: "#888", fontSize: 30 }} /> }*/} {/* in stock */}
-          { statusText=="shipping"   && <LocalShippingIcon sx={{ color: "#888", fontSize: 30 }} /> } {/* shipping */}
+          { statusText=="shipping"   && <LocalShippingIcon sx={{ color: "#5781cfff", fontSize: 30 }} />} {/* shipping */}
           { statusText=="delivered"  && <RecommendIcon     sx={{ color: "#888", fontSize: 30 }} /> } {/* waiting vendor */}
           </Box>
           <Box sx={{color: "#888", fontSize: 14, padding: "0px 2px", marginTop: "0px"}}>
             {statusText}
+            {statusText=="shipping" && <span>&nbsp;by&nbsp;{props.item.deliveryCompany}<br/>Track no:&nbsp;{props.item.deliveryNo}</span> }
           </Box>
         </Tooltip>
           {/* <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px"}} >{statusText}</Box> */}

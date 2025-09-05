@@ -80,6 +80,7 @@ return (
         size="small" 
         label={props.title}
         multiple = {Array.isArray(props.valueVariable)}
+        disabled={props.disabled ? props.disabled : false}
         value={props.valueVariable ? props.valueVariable : ""}
         sx = {props.itemStyle}
         onChange={dataChange}

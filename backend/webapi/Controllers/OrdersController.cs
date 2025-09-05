@@ -323,21 +323,21 @@ namespace chiffon_back.Controllers
                     Paid = item.oi.Paid// ctx.Payments.FirstOrDefault(x=>x.Amount>0m && x.What=="order" && x.WhatId==item.oi.OrderId) != null
                 };
 
-                string imagePath = string.Empty;
-                if (!String.IsNullOrEmpty(item.j.PhotoUuids))
+                string imagePath = @"colors\nopicture.png";
+                if (item.oi.ColorVariantId!=null)
                 {
-                    foreach (string uuid in PhotoHelper.GetPhotoUuids(item.j.PhotoUuids))
+                    Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.oi.ColorVariantId);
+                    if (cv != null)
                     {
-                        var imageFiles = DirectoryHelper.GetImageFiles(uuid);
+                        var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
                         if (imageFiles.Count > 0)
                         {
                             imagePath = imageFiles[0];
-                            break;
                         }
-                    }
+                    } 
                 }
 
-                if (String.IsNullOrEmpty(imagePath))
+               /* if (String.IsNullOrEmpty(imagePath))
                 {
                     foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == item.j.Id).ToList())
                     {
@@ -348,7 +348,7 @@ namespace chiffon_back.Controllers
                             break;
                         }
                     }
-                }
+                }*/
 
                 if (!String.IsNullOrEmpty(item.oi.Details))
                 {
@@ -874,6 +874,31 @@ namespace chiffon_back.Controllers
             catch (Exception ex)
             {
                 return "error"; //BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("Paid")]
+        public ActionResult Paid([FromBody] IdValue val)
+        {
+            try
+            {
+                Context.OrderItem? oi = ctx.OrderItems.FirstOrDefault(x => x.Id == val.Id);
+                if (oi != null)
+                {
+                    oi.Paid = true;
+                    ctx.SaveChanges();
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/Paid: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/Paid: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+                return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
             }
         }
 

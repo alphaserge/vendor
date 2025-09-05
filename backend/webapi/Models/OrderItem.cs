@@ -12,7 +12,7 @@
         public bool? OrderRolls { get; set; }
         public string? Details { get; set; }
         public string? ItemName { get; set; }
-        public string? RefNo{ get; set; }
+        public string? RefNo { get; set; }
         public string? ArtNo { get; set; }
         public string? Design { get; set; }
         public decimal? Price { get; set; }
@@ -52,5 +52,8 @@
         public string? DeliveryCompany { get; set; }
     }
 
-
+    public class IdValue
+    {
+        public int? Id { get; set; }
+    }
 }

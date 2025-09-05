@@ -192,7 +192,8 @@ namespace chiffon_back.Models
             OXSimpleWordTableCell cell2 = new OXSimpleWordTableCell(language == "English" ? "&Goods (works, services)" : "&Товары (работы, услуги)", "4000", JustificationValues.Center, "18", "240"); cell2.Bold = 1;
             OXSimpleWordTableCell cell3 = new OXSimpleWordTableCell(language == "English" ? "&Amount" : "&Кол-во", "1100", JustificationValues.Center, "18", "240"); cell3.Bold = 1;
             OXSimpleWordTableCell cell4 = new OXSimpleWordTableCell(language == "English" ? "&Units" : "&Ед.", "900", JustificationValues.Center, "18", "240"); cell4.Bold = 1;
-            OXSimpleWordTableCell cell5 = new OXSimpleWordTableCell(language == "English" ? "&Price" : "&Цена", "1500", JustificationValues.Center, "18", "240"); cell5.Bold = 1;
+            //OXSimpleWordTableCell cell5 = new OXSimpleWordTableCell(language == "English" ? "&Price" : "&Цена", "1500", JustificationValues.Center, "18", "240"); cell5.Bold = 1;
+            OXSimpleWordTableCell cell5 = new OXSimpleWordTableCell(language == "English" ? "&Discount" : "&Скидка", "1500", JustificationValues.Center, "18", "240"); cell5.Bold = 1; //???
             OXSimpleWordTableCell cell6 = new OXSimpleWordTableCell(language == "English" ? "&Sum" : "&Сумма", "1500", JustificationValues.Center, "18", "240"); cell6.Bold = 1;
             oxRow.Cells.Add(cell1);
             oxRow.Cells.Add(cell2);
