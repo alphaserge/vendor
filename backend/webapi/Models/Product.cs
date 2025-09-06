@@ -57,10 +57,12 @@ namespace chiffon_back.Models
 
         public List<ProductColor> Colors { get; set; }
 
+        public int[]? TextileTypeIds { get; set; }
         public int[]? DesignTypeIds { get; set; }
         public int[]? OverWorkTypeIds { get; set; }
         public int[]? SeasonIds { get; set; }
 
+        public TextileType[]? TextileTypes { get; set; }
         public DesignType[]? DesignTypes { get; set; }
         public OverWorkType[]? OverWorkTypes { get; set; }
         public Season[]? Seasons { get; set; }
@@ -133,6 +135,7 @@ namespace chiffon_back.Models
         public int[]? DesignTypes { get; set; }
         public int[]? OverWorkTypes { get; set; }
         public int []? Seasons { get; set; }
+        public int[]? TextileTypes { get; set; }
         public PostColorVariant[]? ColorVariants { get; set; }
         public string? PhotoUuids { get; set; }
         public string? VideoUuids { get; set; }

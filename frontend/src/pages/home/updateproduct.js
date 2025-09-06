@@ -19,11 +19,7 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import MenuItem from '@mui/material/MenuItem';
 import { HexColorPicker } from "react-colorful";
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import InputMask from "react-input-mask";
 
 import { v4 as uuid } from 'uuid'
 
@@ -31,7 +27,7 @@ import config from "../../config.json"
 import ColorVariant from './colorvariant';
 import MySelect from '../../components/myselect';
 import MyAutocomplete from '../../components/myautocomplete';
-import ProductColor from './productcolor';
+import Composition from '../../components/composition';
 import { getColors, postColor } from '../../api/colors'
 import { getDesignTypes, postDesignType } from '../../api/designtypes'
 import { getDyeStaffs, postDyeStaff } from '../../api/dyestaffs'
@@ -442,7 +438,6 @@ export default function UpdateProduct(props) {
     }
   }
 
-
   const saveColor = async (e) => {
 
     let r = await postColor(newValue, newColorRgb)
@@ -529,7 +524,6 @@ export default function UpdateProduct(props) {
       setErrorNewValue(r.message)
     }
   };
-
 
 const addColorVariant = async (cv) => {
 
@@ -1578,7 +1572,7 @@ useEffect(() => {
                 /> </Grid> )}
 
 
-              <Grid item xs={12} md={6} >
+              {/* <Grid item xs={12} md={6} >
               <MyAutocomplete
                   title="Composition"
                   labelStyle={labelStyle}
@@ -1589,7 +1583,11 @@ useEffect(() => {
                   addNewFn={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
                   data={ textileTypes.map((e) => { return e.value }) }
                 />
-              </Grid>
+              </Grid> */}
+
+            <Grid item xs={12} md={6} >
+              <Composition/>
+            </Grid>
           </Grid>
           </AccordionDetails>
 

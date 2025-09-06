@@ -13,6 +13,17 @@
         //public virtual TextileType? TextileType { get; set; }
     }
 
+    public class CompositionValue
+    {
+        public int TextileTypeId { get; set; }
+        public int Value { get; set; }
+    }
+    public class ProductComposition
+    {
+        public required int ProductId { get; set; }
+        public required CompositionValue[] Composition { get; set; }
+    }
+
     public class ProductsAddComposition
     {
         public int? ProductId { get; set; }

@@ -152,11 +152,12 @@ namespace chiffon_back.Models
                             FabricConstruction = p.FabricConstruction,
                             FabricYarnCount = p.FabricYarnCount,
                             ColorFastness = p.ColorFastness,
+                            TextileTypes = p.ProductsInTextileTypes!.Select(x => new Models.TextileType { Id = x.TextileTypeId, TextileTypeName = x.TextileType.TextileTypeName, TextileTypeNameRu = x.TextileType.TextileTypeNameRu }).ToArray(),
                             DesignTypes = p.ProductsInDesignTypes!.Select(x => new Models.DesignType { Id = x.DesignTypeId, DesignName = x.DesignType.DesignName }).ToArray(),
                             OverWorkTypes = p.ProductsInOverWorkTypes!.Select(x => new Models.OverWorkType { Id = x.OverWorkTypeId, OverWorkName = x.OverWorkType.OverWorkName }).ToArray(),
                             Seasons = p.ProductsInSeasons!.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
                             Colors = new List<ProductColor>(),
-                            Composition = p.Composition
+                            //Composition = p.Composition
                         };
 
             if (filter.VendorId > 2)
@@ -345,7 +346,7 @@ namespace chiffon_back.Models
                             ArtNo = p.ArtNo,
                             ItemName = p.ItemName,
                             Design = p.Design,
-                            Composition = p.Composition,
+                            //Composition = p.Composition,
                             Price = p.Price,
                             Stock = p.Stock,
                             RollLength = p.RollLength,
@@ -369,6 +370,7 @@ namespace chiffon_back.Models
                             Finishing = ctx.Finishings.FirstOrDefault(x => x.Id == p.FinishingId).FinishingName,
                             PlainDyedType = ctx.PlainDyedTypes.FirstOrDefault(x => x.Id == p.PlainDyedTypeId).PlainDyedTypeName,
                             DesignTypeIds = p.ProductsInDesignTypes!.Select(x => x.DesignTypeId).ToArray(),
+                            TextileTypeIds = p.ProductsInTextileTypes!.Select(x => x.TextileTypeId).ToArray(),
                             OverWorkTypeIds = p.ProductsInOverWorkTypes!.Select(x => x.OverWorkTypeId).ToArray(),
                             SeasonIds = p.ProductsInSeasons!.Select(x => x.SeasonId).ToArray(),
                             Colors = new List<ProductColor>(),
@@ -575,7 +577,7 @@ namespace chiffon_back.Models
                     prod.PlainDyedTypeId = product.PlainDyedTypeId;
                     prod.DyeStaffId = product.DyeStaffId;
                     prod.FinishingId = product.FinishingId;
-                    prod.Composition = product.Composition != null ? product.Composition.ToLower() : null;
+                    //prod.Composition = product.Composition != null ? product.Composition.ToLower() : null;
                     ctx.SaveChanges();
 
                     if (product.ColorVariants != null)
@@ -657,6 +659,23 @@ namespace chiffon_back.Models
                             ctx.SaveChanges(true);
                         }
                     }
+
+                    ctx.ProductsInTextileTypes.RemoveRange(ctx.ProductsInTextileTypes.Where(x => x.ProductId == prod.Id));
+                    if (product.TextileTypes != null)
+                    {
+                        foreach (var item in product.TextileTypes)
+                        {
+                            Context.ProductsInTextileTypes cv = new Context.ProductsInTextileTypes()
+                            {
+                                ProductId = prod.Id,
+                                TextileTypeId = item
+                            };
+
+                            ctx.ProductsInTextileTypes.Add(cv);
+                            ctx.SaveChanges(true);
+                        }
+                    }
+
                 }
 
                 return product.Id;

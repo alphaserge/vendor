@@ -12,8 +12,6 @@
         public string? HSCode { get; set; }
         public string? ItemName { get; set; }
         public string? RefNo { get; set; }
-        public string? Composition { get; set; }
-
         public int? Weight { get; set; }
         public int? Width { get; set; }
         public int? GSM { get; set; }
@@ -50,6 +48,7 @@
         public virtual ICollection<ProductsInSeasons>? ProductsInSeasons { get; set; }
         public virtual ICollection<ProductsInOverWorkTypes>? ProductsInOverWorkTypes { get; set; }
         public virtual ICollection<ProductsInDesignTypes>? ProductsInDesignTypes { get; set; }
+        public virtual ICollection<ProductsInTextileTypes>? ProductsInTextileTypes { get; set; }
         public virtual ICollection<ProductsInColors>? ProductsInColors { get; set; }
     }
 }

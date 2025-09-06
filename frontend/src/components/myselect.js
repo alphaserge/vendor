@@ -59,7 +59,7 @@ export default function MySelect(props) {
         }
 
         setSelectedValue(value);
-        props.setValueFn(value);
+        props.setValueFn(value, props.option);
       };
 
     useEffect(() => {
