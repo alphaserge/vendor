@@ -370,7 +370,7 @@ namespace chiffon_back.Models
                             Finishing = ctx.Finishings.FirstOrDefault(x => x.Id == p.FinishingId).FinishingName,
                             PlainDyedType = ctx.PlainDyedTypes.FirstOrDefault(x => x.Id == p.PlainDyedTypeId).PlainDyedTypeName,
                             DesignTypeIds = p.ProductsInDesignTypes!.Select(x => x.DesignTypeId).ToArray(),
-                            TextileTypeIds = p.ProductsInTextileTypes!.Select(x => x.TextileTypeId).ToArray(),
+                            CompositionValues = p.ProductsInTextileTypes!.Select(x => new CompositionValue { TextileTypeId = x.TextileTypeId, Value = x.Value }).ToArray(),
                             OverWorkTypeIds = p.ProductsInOverWorkTypes!.Select(x => x.OverWorkTypeId).ToArray(),
                             SeasonIds = p.ProductsInSeasons!.Select(x => x.SeasonId).ToArray(),
                             Colors = new List<ProductColor>(),
@@ -661,18 +661,22 @@ namespace chiffon_back.Models
                     }
 
                     ctx.ProductsInTextileTypes.RemoveRange(ctx.ProductsInTextileTypes.Where(x => x.ProductId == prod.Id));
-                    if (product.TextileTypes != null)
+                    if (product.CompositionValues != null)
                     {
-                        foreach (var item in product.TextileTypes)
+                        foreach (var item in product.CompositionValues)
                         {
-                            Context.ProductsInTextileTypes cv = new Context.ProductsInTextileTypes()
+                            if (item.TextileTypeId != null && item.Value != null)
                             {
-                                ProductId = prod.Id,
-                                TextileTypeId = item
-                            };
+                                Context.ProductsInTextileTypes cv = new Context.ProductsInTextileTypes()
+                                {
+                                    ProductId = prod.Id,
+                                    TextileTypeId = item.TextileTypeId.Value,
+                                    Value = item.Value.Value
+                                };
 
-                            ctx.ProductsInTextileTypes.Add(cv);
-                            ctx.SaveChanges(true);
+                                ctx.ProductsInTextileTypes.Add(cv);
+                                ctx.SaveChanges(true);
+                            }
                         }
                     }
 

@@ -41,6 +41,9 @@ export default function Composition(props) {
     //vals[index].value = value
     vals[index].id = value
     setValues(vals)
+    if (props.setComposition) {
+      props.setComposition(vals)
+    }
   }
 
   const textChanged = (value, index) => {
@@ -48,10 +51,24 @@ export default function Composition(props) {
     vals[index].value = value
     //vals[option].id = value
     setValues(vals)
+    if (props.setComposition) {
+      props.setComposition(vals)
+    }
     //let s = e
   }
 
   useEffect(() => {
+    
+    if (!!props.composition) {
+      let vals = []
+      for(let i=0; i<5; i++) {
+        vals.push( i < props.composition.length ?
+             { id: props.composition[i].textileTypeId, value: props.composition[i].value } 
+           : { id: null, value: null} )
+      }
+      setValues(vals)
+    }
+
     getTextileTypes(setTextileTypes)
   }, [])
   

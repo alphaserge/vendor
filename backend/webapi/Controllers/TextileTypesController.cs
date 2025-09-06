@@ -88,13 +88,14 @@ namespace chiffon_back.Controllers
                 ctx.ProductsInTextileTypes.RemoveRange(ctx.ProductsInTextileTypes.Where(x => x.ProductId == comp.ProductId));
                 foreach (var c in comp.Composition)
                 {
-                    ctx.ProductsInTextileTypes.Add(
-                        new Context.ProductsInTextileTypes()
-                        {
-                            ProductId = comp.ProductId,
-                            TextileTypeId = c.TextileTypeId,
-                            Value = c.Value
-                        });
+                    if (c.TextileTypeId!=null && c.Value!=null)
+                        ctx.ProductsInTextileTypes.Add(
+                            new Context.ProductsInTextileTypes()
+                            {
+                                ProductId = comp.ProductId,
+                                TextileTypeId = c.TextileTypeId.Value,
+                                Value = c.Value.Value
+                            });
                 }
                 ctx.SaveChanges();
                 return CreatedAtAction(nameof(Get), new { Ok = true });

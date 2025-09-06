@@ -143,7 +143,7 @@ export default function UpdateProduct(props) {
     const [designType, setDesignType] = useState([])
     const [overworkType, setOverworkType] = useState([])
     const [season, setSeason] = useState([])
-    const [textileTypeId, setTextileTypeId] = useState(null)
+    const [compositionValues, setCompositionValues] = useState(null)
 
     const [artNo, setArtNo] = useState("")
     const [design, setDesign] = useState("")
@@ -208,6 +208,7 @@ export default function UpdateProduct(props) {
       const params = new URLSearchParams(search)
       return params.get('id')
     }
+
 
     const setColorVariantItem = (uuid, item) => {
       let cv = colorVariants.map(el=>el.uuid==uuid? item:el)
@@ -390,7 +391,7 @@ export default function UpdateProduct(props) {
       price: price,
       stock: stock,
       refNo: refNo,
-      composition: textileTypeId,
+      compositionValues: compositionValues.map((i) => { return {textileTypeId: i.id, value: parseInt(i.value)}}),
       season: season,
       weight: weight,
       width: width,
@@ -671,7 +672,7 @@ const setProduct = (prod) => {
   setSeason(non(prod.seasonIds))
   setOverworkType(non(prod.overWorkTypeIds))
   setDesignType(non(prod.designTypeIds))
-  setTextileTypeId(non(prod.composition))
+  setCompositionValues(prod.compositionValues)
   setCompositionSamples(non(prod.compositionsSamples))
 
   setProductTextileTypes(prod.textileTypes)
@@ -1586,7 +1587,7 @@ useEffect(() => {
               </Grid> */}
 
             <Grid item xs={12} md={6} >
-              <Composition/>
+              <Composition composition = {compositionValues} setComposition={setCompositionValues}/>
             </Grid>
           </Grid>
           </AccordionDetails>
