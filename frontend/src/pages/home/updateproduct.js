@@ -28,6 +28,8 @@ import ColorVariant from './colorvariant';
 import MySelect from '../../components/myselect';
 import MyAutocomplete from '../../components/myautocomplete';
 import Composition from '../../components/composition';
+import Header from '../../components/header';
+import {APPEARANCE as ap} from '../../appearance';
 import { getColors, postColor } from '../../api/colors'
 import { getDesignTypes, postDesignType } from '../../api/designtypes'
 import { getDyeStaffs, postDyeStaff } from '../../api/dyestaffs'
@@ -391,7 +393,7 @@ export default function UpdateProduct(props) {
       price: price,
       stock: stock,
       refNo: refNo,
-      compositionValues: compositionValues.map((i) => { return {textileTypeId: i.id, value: parseInt(i.value)}}),
+      compositionValues: compositionValues,//.map((i) => { return {textileTypeId: i.id, value: parseInt(i.value)}}),
       season: season,
       weight: weight,
       width: width,
@@ -672,9 +674,13 @@ const setProduct = (prod) => {
   setSeason(non(prod.seasonIds))
   setOverworkType(non(prod.overWorkTypeIds))
   setDesignType(non(prod.designTypeIds))
-  setCompositionValues(prod.compositionValues)
   setCompositionSamples(non(prod.compositionsSamples))
 
+  let vals = [...prod.compositionValues]
+  for (let i=prod.compositionValues.length; i<5; i++) {
+    vals.push({textileTypeId: null, value: null})
+  }
+  setCompositionValues(vals)
   setProductTextileTypes(prod.textileTypes)
 
   if (!prod.colors) {
@@ -691,6 +697,19 @@ const setProduct = (prod) => {
 
   wChanged(prod.width, prod.weight)
 }
+
+  const compositionIdChanged = (value, index) => {
+    let vals = [...compositionValues]
+    vals[index].textileTypeId = value
+    setCompositionValues(vals)
+  }
+
+  const compositionValueChanged = (value, index) => {
+    let vals = [...compositionValues]
+    vals[index].value = value
+    setCompositionValues(vals)
+  }
+
 
 useEffect(() => {
 
@@ -1587,7 +1606,47 @@ useEffect(() => {
               </Grid> */}
 
             <Grid item xs={12} md={6} >
-              <Composition composition = {compositionValues} setComposition={setCompositionValues}/>
+              {/* <Composition composition={compositionValues} setComposition={setCompositionValues}/> */}
+                <Box 
+                            sx={{ 
+                              display: "grid",
+                              gridTemplateColumns: "1fr 90px",
+                              columnGap: "5px",
+                              rowGap: "5px",
+                              color: "#222", 
+                              fontFamily: ap.FONTFAMILY,
+                              fontSize: ap.FONTSIZE
+                              }}>
+                              <div style={{gridColumn: "span 2"}}><Header text="Composition" /></div>
+                              { compositionValues.map((data, index) => (  
+                              <React.Fragment>
+                                 <MySelect 
+                                    id={"comps-" + index}
+                                    url="TextileTypes"
+                                    title="Textile type"
+                                    valueName="value"
+                                    labelStyle={labelStyle}
+                                    //itemStyle={halfItemStyle}
+                                    MenuProps={MySelectProps}
+                                    valueVariable={compositionValues[index].textileTypeId}
+                                    setValueFn={compositionIdChanged}
+                                    data={textileTypes}
+                                    option={index}
+                                    //addNewFn={props.addNewFn}
+                                  />
+                                  <TextField
+                                    margin="normal"
+                                    size="small" 
+                                    id={"compv-" + index}
+                                    label="%"
+                                    name={"compv-" + index}
+                                    value={compositionValues[index].value}
+                                    sx = {{ m: 0 }}
+                                    onChange={ev => compositionValueChanged(ev.target.value, index)}
+                                  />
+                               </React.Fragment>  ))} 
+                        </Box>
+
             </Grid>
           </Grid>
           </AccordionDetails>

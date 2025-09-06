@@ -26,15 +26,28 @@ const MySelectProps = {
 
 export default function Composition(props) {
 
+  const getComposition = () => {
+      if (!props.composition) {
+        return [
+          { id: null, value: null},
+          { id: null, value: null},
+          { id: null, value: null},
+          { id: null, value: null},
+          { id: null, value: null},
+        ]}
+      let vals = []
+      for(let i=0; i<5; i++) {
+        vals.push( i < props.composition.length ?
+             { id: props.composition[i].textileTypeId, value: props.composition[i].value } 
+           : { id: null, value: null} )
+      }
+      return vals;
+    }
+  
+
   const [textileTypes, setTextileTypes] = useState([])
   const [textileTypeIds, setTextileTypeIds] = useState([])
-  const [values, setValues] = useState([
-    { id: null, value: null},
-    { id: null, value: null},
-    { id: null, value: null},
-    { id: null, value: null},
-    { id: null, value: null},
-  ])
+  const [values, setValues] = useState(getComposition())
 
   const selectChanged = (value, index) => {
     let vals = [...values]
