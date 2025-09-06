@@ -143,7 +143,7 @@ export default function UpdateProduct(props) {
     const [designType, setDesignType] = useState([])
     const [overworkType, setOverworkType] = useState([])
     const [season, setSeason] = useState([])
-    const [compositionValues, setCompositionValues] = useState(null)
+    const [compositionValues, setCompositionValues] = useState([])
 
     const [artNo, setArtNo] = useState("")
     const [design, setDesign] = useState("")

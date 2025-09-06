@@ -61,6 +61,7 @@ const makeProduct = (prod)  => {
     PrintTypeId: getInt(prod.printTypeId),
     VendorId: getInt(prod.vendorId),
 
+    CompositionValues: prod.compositionValues,
     ColorVariants: prod.colorVariants,
     ColorVariantsPlus: prod.colorVariantsPlus
   }
