@@ -393,7 +393,7 @@ export default function UpdateProduct(props) {
       price: price,
       stock: stock,
       refNo: refNo,
-      compositionValues: compositionValues,//.map((i) => { return {textileTypeId: i.id, value: parseInt(i.value)}}),
+      compositionValues: compositionValues.map((i) => { return {textileTypeId: i.id, value: parseInt(i.value)}}),
       season: season,
       weight: weight,
       width: width,
@@ -677,8 +677,10 @@ const setProduct = (prod) => {
   setCompositionSamples(non(prod.compositionsSamples))
 
   let vals = [...prod.compositionValues]
-  for (let i=prod.compositionValues.length; i<5; i++) {
-    vals.push({textileTypeId: null, value: null})
+  vals = []
+  for (let i=0; i<5; i++) {
+    vals.push(i<prod.compositionValues.length ?
+        {id: prod.compositionValues[i].textileTypeId, value: prod.compositionValues[i].value} : {id: null, value: null})
   }
   setCompositionValues(vals)
   setProductTextileTypes(prod.textileTypes)
@@ -700,7 +702,7 @@ const setProduct = (prod) => {
 
   const compositionIdChanged = (value, index) => {
     let vals = [...compositionValues]
-    vals[index].textileTypeId = value
+    vals[index].id = value
     setCompositionValues(vals)
   }
 
@@ -710,6 +712,7 @@ const setProduct = (prod) => {
     setCompositionValues(vals)
   }
 
+  
 
 useEffect(() => {
 
@@ -1606,8 +1609,8 @@ useEffect(() => {
               </Grid> */}
 
             <Grid item xs={12} md={6} >
-              {/* <Composition composition={compositionValues} setComposition={setCompositionValues}/> */}
-                <Box 
+              <Composition values={compositionValues} idChanged={compositionIdChanged} valueChanged={compositionValueChanged}  setComposition={setCompositionValues} valueList={textileTypes}/>
+                {/* <Box 
                             sx={{ 
                               display: "grid",
                               gridTemplateColumns: "1fr 90px",
@@ -1645,7 +1648,7 @@ useEffect(() => {
                                     onChange={ev => compositionValueChanged(ev.target.value, index)}
                                   />
                                </React.Fragment>  ))} 
-                        </Box>
+                        </Box> */}
 
             </Grid>
           </Grid>

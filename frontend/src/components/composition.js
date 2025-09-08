@@ -4,11 +4,14 @@ import { useEffect, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import MySelect from '../components/myselect';
 import Header from '../components/header';
 import {APPEARANCE as ap} from '../appearance';
-import { getTextileTypes, postTextileType } from '../api/textiletypes'
+//import { getTextileTypes, postTextileType } from '../api/textiletypes'
 
 const labelStyle = { m: 0, ml: 0, mr: 4 }
 const itemStyle  = { width: "100%", mt: 3, ml: 0, mr: 0, mb: 0  }
@@ -26,103 +29,58 @@ const MySelectProps = {
 
 export default function Composition(props) {
 
-  const getComposition = () => {
-      if (!props.composition) {
-        return [
-          { id: null, value: null},
-          { id: null, value: null},
-          { id: null, value: null},
-          { id: null, value: null},
-          { id: null, value: null},
-        ]}
-      let vals = []
-      for(let i=0; i<5; i++) {
-        vals.push( i < props.composition.length ?
-             { id: props.composition[i].textileTypeId, value: props.composition[i].value } 
-           : { id: null, value: null} )
-      }
-      return vals;
-    }
+  /*const [textileTypes, setTextileTypes] = useState([])
   
-
-  const [textileTypes, setTextileTypes] = useState([])
-  const [textileTypeIds, setTextileTypeIds] = useState([])
-  const [values, setValues] = useState(getComposition())
-
-  const selectChanged = (value, index) => {
-    let vals = [...values]
-    //vals[index].value = value
-    vals[index].id = value
-    setValues(vals)
-    if (props.setComposition) {
-      props.setComposition(vals)
-    }
-  }
-
-  const textChanged = (value, index) => {
-    let vals = [...values]
-    vals[index].value = value
-    //vals[option].id = value
-    setValues(vals)
-    if (props.setComposition) {
-      props.setComposition(vals)
-    }
-    //let s = e
-  }
-
   useEffect(() => {
-    
-    if (!!props.composition) {
-      let vals = []
-      for(let i=0; i<5; i++) {
-        vals.push( i < props.composition.length ?
-             { id: props.composition[i].textileTypeId, value: props.composition[i].value } 
-           : { id: null, value: null} )
-      }
-      setValues(vals)
-    }
-
     getTextileTypes(setTextileTypes)
-  }, [])
+  }, [])*/
   
-  return <Box 
-            sx={{ 
-              display: "grid",
-              gridTemplateColumns: "1fr 90px",
-              columnGap: "5px",
-              rowGap: "5px",
-              color: "#222", 
-              fontFamily: ap.FONTFAMILY,
-              fontSize: ap.FONTSIZE
-              }}>
-              <div style={{gridColumn: "span 2"}}><Header text="Composition" /></div>
-              { values.map((data, index) => (  
-              <React.Fragment>
-                 <MySelect 
-                    id={"comps-" + index}
-                    url="TextileTypes"
-                    title="Textile type"
-                    valueName="value"
-                    labelStyle={labelStyle}
-                    //itemStyle={halfItemStyle}
-                    MenuProps={MySelectProps}
-                    valueVariable={values[index].id}
-                    setValueFn={selectChanged}
-                    data={textileTypes}
-                    option={index}
-                    //addNewFn={props.addNewFn}
-                  />
-                  <TextField
-                    margin="normal"
-                    size="small" 
-                    id={"compv-" + index}
-                    label="%"
-                    name={"compv-" + index}
-                    value={values[index].value}
-                    sx = {{ m: 0 }}
-                    onChange={ev => textChanged(ev.target.value, index)}
-                  />
-               </React.Fragment>  ))} 
-        </Box>
+  return                 <Box 
+                              sx={{ 
+                                display: "grid",
+                                gridTemplateColumns: "1fr 50px 32px",
+                                columnGap: "5px",
+                                rowGap: "10px",
+                                color: "#222", 
+                                fontFamily: ap.FONTFAMILY,
+                                fontSize: ap.FONTSIZE
+                                }}>
+                                <div style={{gridColumn: "span 3"}}> <Typography align="center" sx={{ width: "100%", fontWeight: "bold", fontSize: "11pt", backgroundColor: "#ddd", padding: "20px 20px" }}>Composition</Typography></div>
+                                { props.values.map((data, index) => (  
+                                <React.Fragment>
+                                   <MySelect 
+                                      id={"comps-" + index}
+                                      url="TextileTypes"
+                                      title="Textile type"
+                                      valueName="value"
+                                      labelStyle={labelStyle}
+                                      //itemStyle={halfItemStyle}
+                                      MenuProps={MySelectProps}
+                                      valueVariable={props.values[index].id}
+                                      setValueFn={props.idChanged}
+                                      data={props.valueList}
+                                      option={index}
+                                      //addNewFn={props.addNewFn}
+                                    />
+                                    <TextField
+                                      margin="normal"
+                                      size="small" 
+                                      id={"compv-" + index}
+                                      label="%"
+                                      name={"compv-" + index}
+                                      value={props.values[index].value}
+                                      sx = {{ m: 0, textAlign: "center" }}
+                                      onChange={ev => props.valueChanged(ev.target.value, index)}
+                                    />
+                                    <IconButton aria-label="delete" >
+                                    <DeleteIcon 
+                                      sx={{ color: "#222", fontSize: 26, mt: "-3px" }}
+                                      //onClick={(e)=>{deleteFromCart(index)}} 
+                                      >
+                                    </DeleteIcon>
+                                  </IconButton> 
+                                 </React.Fragment>  ))} 
+                          </Box>
+  
          
 }
