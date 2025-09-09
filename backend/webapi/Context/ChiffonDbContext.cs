@@ -35,6 +35,7 @@ namespace chiffon_back.Context
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<TextileType> TextileTypes { get; set; }
         public DbSet<Season> Seasons { get; set; }
+        public DbSet<Stock> Stocks { get; set; }
         public DbSet<VendorOrder> VendorOrders { get; set; }
         public DbSet<Vendor> Vendors { get; set; }
         public DbSet<User> Users { get; set; }
@@ -63,6 +64,7 @@ namespace chiffon_back.Context
             modelBuilder.Entity<ProductStyle>().ToTable("ProductStyles");
             modelBuilder.Entity<ProductType>().ToTable("ProductTypes");
             modelBuilder.Entity<Season>().ToTable("Seasons");
+            modelBuilder.Entity<Stock>().ToTable("Stocks");
             modelBuilder.Entity<VendorOrder>().ToTable("VendorOrders");
             modelBuilder.Entity<Vendor>().ToTable("Vendors");
             modelBuilder.Entity<User>().ToTable("Users");

@@ -712,7 +712,13 @@ const setProduct = (prod) => {
     setCompositionValues(vals)
   }
 
-  
+  const compositionDelete = (index) => {
+    let vals = [...compositionValues]
+    // Remove 1 element starting from index
+    const removedElements = vals.splice(index, 1);
+    setCompositionValues(vals)
+  }
+
 
 useEffect(() => {
 
@@ -1609,7 +1615,13 @@ useEffect(() => {
               </Grid> */}
 
             <Grid item xs={12} md={6} >
-              <Composition values={compositionValues} idChanged={compositionIdChanged} valueChanged={compositionValueChanged}  setComposition={setCompositionValues} valueList={textileTypes}/>
+              <Composition 
+                values={compositionValues} 
+                idChanged={compositionIdChanged} 
+                valueChanged={compositionValueChanged} 
+                setComposition={setCompositionValues} 
+                valueList={textileTypes}
+                delete={compositionDelete}/>
                 {/* <Box 
                             sx={{ 
                               display: "grid",

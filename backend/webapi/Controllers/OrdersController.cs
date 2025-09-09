@@ -101,6 +101,8 @@ namespace chiffon_back.Controllers
                         VendorQuantity = item.oi.VendorQuantity,
                         VendorId = item.j.VendorId,
                         VendorName = item.jv.VendorName,
+                        StockId = item.oi.StockId,
+                        StockName = ctx.Stocks.FirstOrDefault(x => x.Id == item.oi.StockId)?.StockName,
                         Delivered = item.oi.Delivered,
                         DeliveryCompany = item.oi.DeliveryCompany,
                         DeliveryNo = item.oi.DeliveryNo,
@@ -235,6 +237,8 @@ namespace chiffon_back.Controllers
                         DeliveryNo = item.oi.DeliveryNo,
                         ColorNo = item.oi.ColorNo,
                         ColorNames = item.oi.ColorNames,
+                        StockId = item.oi.StockId,
+                        StockName = ctx.Stocks.FirstOrDefault(x => x.Id == item.oi.StockId)?.StockName,
                         VendorId = item.j.VendorId,
                         VendorName = vendorList.FirstOrDefault(x=>x.Id==item.j.VendorId)?.VendorName,
                         Paid = item.oi.Paid // (ctx.Payments.FirstOrDefault(x => x.Amount > 0m && x.What == "order" && x.WhatId == item.oi.OrderId)) != null,
@@ -318,8 +322,10 @@ namespace chiffon_back.Controllers
                     DeliveryNo = item.oi.DeliveryNo,
                     ColorNo = item.oi.ColorNo,
                     ColorNames = item.oi.ColorNames,
+                    StockId = item.oi.StockId,
+                    StockName = ctx.Stocks.FirstOrDefault(x => x.Id == item.oi.StockId)?.StockName,
                     VendorId = item.j.VendorId,
-                    VendorName = ctx.Vendors.FirstOrDefault(x=>x.Id==item.j.VendorId).VendorName,
+                    VendorName = ctx.Vendors.FirstOrDefault(x=>x.Id==item.j.VendorId)?.VendorName,
                     Paid = item.oi.Paid// ctx.Payments.FirstOrDefault(x=>x.Amount>0m && x.What=="order" && x.WhatId==item.oi.OrderId) != null
                 };
 

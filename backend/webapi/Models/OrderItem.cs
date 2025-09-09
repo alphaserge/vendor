@@ -7,6 +7,7 @@
         public int? VendorOrderId { get; set; }
         public int ProductId { get; set; }
         public int? VendorId { get; set; }
+        public int? StockId { get; set; }
         public decimal? Quantity { get; set; }
         public decimal? VendorQuantity { get; set; }
         public bool? OrderRolls { get; set; }
@@ -18,6 +19,7 @@
         public decimal? Price { get; set; }
         public string? Composition { get; set; }
         public string? VendorName { get; set; }
+        public string? StockName { get; set; }
         public string? imagePath { get; set; }
         public int? ColorVariantId { get; set; }
         public int? ColorNo { get; set; }

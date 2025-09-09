@@ -12,7 +12,7 @@ export default function Header(props) {
               fontFamily: ap.FONTFAMILY,
               fontWeight: "500",
               backgroundColor: props.transparent ? "none": "#e8e8e8", 
-              color: "#5b1e1eff", 
+              color: "#222", 
               borderBottom: "none", //"1px solid #aaa",
               //borderRadius: "6px", 
               margin: "0px", 

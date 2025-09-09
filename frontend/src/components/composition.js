@@ -75,7 +75,7 @@ export default function Composition(props) {
                                     <IconButton aria-label="delete" >
                                     <DeleteIcon 
                                       sx={{ color: "#222", fontSize: 26, mt: "-3px" }}
-                                      //onClick={(e)=>{deleteFromCart(index)}} 
+                                      onClick={(e)=>{props.delete(index)}} 
                                       >
                                     </DeleteIcon>
                                   </IconButton> 

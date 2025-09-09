@@ -27,7 +27,7 @@ import MySelect from '../../components/myselect';
 import OrderItemStatus from '../../components/orderitemstatus';
 import { APPEARANCE } from '../../appearance';
 
-import { fined, status, quantityInfo, computePrice } from "../../functions/helper"
+import { orderStatusString, fined, status, quantityInfo, computePrice } from "../../functions/helper"
 import { getTransportCompanies } from '../../api/vendors'
 
 const defaultTheme = createTheme()
@@ -127,6 +127,7 @@ export default function ListOrderV(props) {
                   itemName  : d.itemName,
                   artNo     : d.artNo,
                   refNo     : d.refNo,
+                  design    : d.design,
                   spec      : d.composition,
                   price     : d.price,
                   owner     : d.vendorName,
@@ -246,17 +247,20 @@ export default function ListOrderV(props) {
         <Grid item sx={{display: "flex", flexDirection: "column"  }}>
           
           <div>
-          <span className="my-val" style={{color:"#005ac1"}}>{data.itemName}</span>&nbsp;&nbsp;&nbsp; Color: {data.colorNames} 
+          <span className="my-val" style={{color:"#555", fontWeight: "600", fontSize: "11pt"}}>{data.itemName}</span> &nbsp;&nbsp;&nbsp;
+          <span className="my-lab">Design:</span><span className="my-val">{data.design}</span>&nbsp;&nbsp;&nbsp;
           </div>
 
           <div>
           <span className="my-lab">Art.no:</span><span className="my-val">{data.artNo}</span>&nbsp;&nbsp;&nbsp;
           <span className="my-lab">Ref.no:</span><span className="my-val">{data.refNo}</span>
+          <span className="my-lab">Color:</span><span className="my-val">{data.colorNames}</span>
           </div>
 
           <div>
           <span className="my-lab">Ordered:</span><span className="my-val">{data.quantity}&nbsp;{data.unit}</span>&nbsp;&nbsp;&nbsp;
-          <OrderItemStatus item={data} style={{display: "inline"}} />
+          <span className="my-lab">Status: </span><span className="my-val">{orderStatusString(data)}</span>&nbsp;&nbsp;&nbsp;
+          {/* <OrderItemStatus item={data} style={{display: "inline"}} /> */}
           </div>
         </Grid>
         </Link>
