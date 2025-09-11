@@ -82,7 +82,7 @@ return (
         multiple = {Array.isArray(props.valueVariable)}
         disabled={props.disabled ? props.disabled : false}
         value={props.valueVariable ? props.valueVariable : ""}
-        sx = {props.itemStyle}
+        sx = {{height: "28px", padding: "0", margin: "0" }}
         onChange={dataChange}
         input={<OutlinedInput label={props.title} />}
         MenuProps={props.MenuProps}

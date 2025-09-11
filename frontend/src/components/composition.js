@@ -27,6 +27,7 @@ const MySelectProps = {
   },
 }
 
+
 export default function Composition(props) {
 
   /*const [textileTypes, setTextileTypes] = useState([])
@@ -34,6 +35,9 @@ export default function Composition(props) {
   useEffect(() => {
     getTextileTypes(setTextileTypes)
   }, [])*/
+
+console.log('comp.values')
+console.log(props.values)
   
   return                 <Box 
                               sx={{ 

@@ -353,20 +353,20 @@ a.no-link {
 
 .my-lab {
   display: inline-block;
-  background-color: #eee;
-  border-radius: 3px;
-  padding: 0px 2px;
+  /* background-color: #eee; */
+  /* border-radius: 3px; */
+  /* padding: 0px 2px; */
   margin: 3px 4px 0 0;
-  min-width: 65px;
-  font-size: 14px;
-  font-weight: 500;
+  /* min-width: 65px; */
+  font-size: 12px;
+  font-weight: 600;
   font-family: 'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif';
 }
 
 .my-val {
   display: inline-block;
   font-weight: 500;  
-  min-width: 70px;
-  font-size: 15px;
+  /* min-width: 70px; */
+  font-size: 13px;
   font-family: 'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif';
 }

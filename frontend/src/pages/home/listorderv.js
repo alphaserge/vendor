@@ -218,12 +218,13 @@ export default function ListOrderV(props) {
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "80px 1fr 80px 164px 75px",
+          gridTemplateColumns: "80px 170px 1fr 80px 164px 75px",
           columnGap: "4px",
           rowGap: "8px",
           alignItems: "center",
           fontSize: "15px" }}>
             <Grid item sx={{p:0, m:0}}><Header text="Photo"/></Grid>
+            <Grid item sx={{p:0, m:0}}><Header text="No."/></Grid>
             <Grid item sx={{p:0, m:0}}><Header text="Specification"/></Grid>
             <Grid item><Header text="Details"/></Grid>
             <Grid item><Header text="Delivery"/></Grid>
@@ -242,19 +243,23 @@ export default function ListOrderV(props) {
                 /> 
                 </Box>
                 </Grid></Link>
-                
+
+        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        <Grid item >
+          <div><span className="my-lab">Art.</span><span className="my-val">{data.artNo}</span></div>
+          <div><span className="my-lab">Ref.</span><span className="my-val">{data.refNo}</span></div>
+          <div><span className="my-lab">Design</span><span className="my-val">{data.design}</span></div>
+        </Grid>
+        </Link>
+
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
         <Grid item sx={{display: "flex", flexDirection: "column"  }}>
-          
           <div>
           <span className="my-val" style={{color:"#555", fontWeight: "600", fontSize: "11pt"}}>{data.itemName}</span> &nbsp;&nbsp;&nbsp;
-          <span className="my-lab">Design:</span><span className="my-val">{data.design}</span>&nbsp;&nbsp;&nbsp;
           </div>
 
           <div>
-          <span className="my-lab">Art.no:</span><span className="my-val">{data.artNo}</span>&nbsp;&nbsp;&nbsp;
-          <span className="my-lab">Ref.no:</span><span className="my-val">{data.refNo}</span>
-          <span className="my-lab">Color:</span><span className="my-val">{data.colorNames}</span>
+          <span className="my-lab">Color</span><span className="my-val">{data.colorNames}</span>
           </div>
 
           <div>

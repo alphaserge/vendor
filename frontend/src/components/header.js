@@ -8,15 +8,15 @@ export default function Header(props) {
   return <Typography 
             component={"div"} 
             sx={{ 
-              fontSize: "15px",
+              fontSize: "14px",
               fontFamily: ap.FONTFAMILY,
-              fontWeight: "500",
+              fontWeight: "600",
               backgroundColor: props.transparent ? "none": "#e8e8e8", 
               color: "#222", 
               borderBottom: "none", //"1px solid #aaa",
               //borderRadius: "6px", 
               margin: "0px", 
-              padding: "9px 8px", 
+              padding: "6px 8px", 
               textAlign: "center"}}>
             {props.text}
           </Typography>

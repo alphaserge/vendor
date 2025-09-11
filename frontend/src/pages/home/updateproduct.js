@@ -715,7 +715,9 @@ const setProduct = (prod) => {
   const compositionDelete = (index) => {
     let vals = [...compositionValues]
     // Remove 1 element starting from index
-    const removedElements = vals.splice(index, 1);
+    //const removedElements = vals.splice(index, 1);
+    vals[index].id = null
+    vals[index].value = ''
     setCompositionValues(vals)
   }
 
