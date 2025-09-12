@@ -218,17 +218,20 @@ export default function ListOrderV(props) {
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "80px 170px 1fr 80px 164px 75px",
-          columnGap: "4px",
+          gridTemplateColumns: "55px 65px 65px 70px 1fr 70px 70px 70px",
+          columnGap: "3px",
           rowGap: "8px",
           alignItems: "center",
           fontSize: "15px" }}>
-            <Grid item sx={{p:0, m:0}}><Header text="Photo"/></Grid>
-            <Grid item sx={{p:0, m:0}}><Header text="No."/></Grid>
-            <Grid item sx={{p:0, m:0}}><Header text="Specification"/></Grid>
+            <Grid item><Header text="Photo"/></Grid>
+            <Grid item><Header text="Art.no."/></Grid>
+            <Grid item><Header text="Ref.no."/></Grid>
+            <Grid item><Header text="Design"/></Grid>
+            <Grid item><Header text="Item name"/></Grid>
+            <Grid item><Header text="Amount"/></Grid>
             <Grid item><Header text="Details"/></Grid>
-            <Grid item><Header text="Delivery"/></Grid>
-            <Grid item><Header text="Actions"/></Grid>
+            <Grid item><Header text="Status"/></Grid>
+            
 
     {orders.map((data, index) => (
       <React.Fragment>
@@ -237,40 +240,43 @@ export default function ListOrderV(props) {
                 <Box sx={{padding: "8px 0 0 0" }}>
                   <img 
                     src={config.api + "/" + data.imagePath}
-                    width={70}
-                    height={70}
+                    width={50}
+                    height={40}
                     alt={data.itemName}
                 /> 
                 </Box>
                 </Grid></Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item >
-          <div><span className="my-lab">Art.</span><span className="my-val">{data.artNo}</span></div>
-          <div><span className="my-lab">Ref.</span><span className="my-val">{data.refNo}</span></div>
-          <div><span className="my-lab">Design</span><span className="my-val">{data.design}</span></div>
-        </Grid>
+        <Grid item ><span className="my-val">{data.artNo}</span></Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{display: "flex", flexDirection: "column"  }}>
-          <div>
-          <span className="my-val" style={{color:"#555", fontWeight: "600", fontSize: "11pt"}}>{data.itemName}</span> &nbsp;&nbsp;&nbsp;
-          </div>
-
-          <div>
-          <span className="my-lab">Color</span><span className="my-val">{data.colorNames}</span>
-          </div>
-
-          <div>
-          <span className="my-lab">Ordered:</span><span className="my-val">{data.quantity}&nbsp;{data.unit}</span>&nbsp;&nbsp;&nbsp;
-          <span className="my-lab">Status: </span><span className="my-val">{orderStatusString(data)}</span>&nbsp;&nbsp;&nbsp;
-          {/* <OrderItemStatus item={data} style={{display: "inline"}} /> */}
-          </div>
-        </Grid>
+        <Grid item ><span className="my-val">{data.refNo}</span></Grid>
         </Link>
 
-        <Grid item sx={{display: "flex", flexDirection: "column"}}>
+        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        <Grid item ><span className="my-val">{data.design}</span></Grid>
+        </Link>
+
+        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        <Grid item ><span className="my-val">{data.itemName}</span></Grid>
+        </Link>
+
+        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        <Grid item >{data.quantity}&nbsp;{data.unit}</Grid>
+        </Link>
+
+        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        <Grid item >{data.details}</Grid>
+        </Link>
+
+        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        <Grid item >{orderStatusString(data)}</Grid>
+        </Link>
+
+
+        {/* <Grid item sx={{display: "flex", flexDirection: "column"}}>
           <div style={{height: "82px", textAlign: "center"}} >
           <TextField //label="Details"
               margin="normal"
@@ -311,11 +317,8 @@ export default function ListOrderV(props) {
               sx={{marginTop: "0px"}}
               value={data.deliveryNo}
               onChange={ev => { setDeliveryNo(data.orderId, data.id, ev.target.value)}}/>
-
-
-          {/* <Property value={ "Delivery:  " + fined(data.deliveryCompany) } />
-          <Property value={ "Track no: " + fined(data.deliveryNo)} /> */}
-          
+          <Property value={ "Delivery:  " + fined(data.deliveryCompany) } />
+          <Property value={ "Track no: " + fined(data.deliveryNo)} /> 
         </Grid>
 
 <Grid item sx={{display: "flex", flexDirection: "column"}}>
@@ -339,7 +342,7 @@ export default function ListOrderV(props) {
                 Save
           </Button>
           </div>
-          </Grid>
+          </Grid> */}
           
       </React.Fragment>
     ))}

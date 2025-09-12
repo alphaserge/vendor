@@ -10,7 +10,7 @@ export default function Header(props) {
             sx={{ 
               fontSize: "14px",
               fontFamily: ap.FONTFAMILY,
-              fontWeight: "600",
+              fontWeight: "500",
               backgroundColor: props.transparent ? "none": "#e8e8e8", 
               color: "#222", 
               borderBottom: "none", //"1px solid #aaa",
