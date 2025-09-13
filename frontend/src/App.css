@@ -366,7 +366,8 @@ a.no-link {
 .my-val {
   display: inline-block;
   font-weight: 500;  
-  /* min-width: 70px; */
-  font-size: 13px;
+  font-size: 14px;
   font-family: 'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif';
+  padding: 2px 6px;
+    /* min-width: 70px; */
 }

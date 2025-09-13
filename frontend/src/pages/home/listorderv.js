@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { colors, FormControl, Icon } from "@mui/material";
 import { Paid } from "@mui/icons-material";
 import TextField from '@mui/material/TextField';
@@ -64,6 +65,7 @@ export default function ListOrderV(props) {
   const [detail, setDetail] = useState([])
   const [filter, setFilter] = useState(false)
   const [transportCompanies, setTransportCompanies] = useState([])
+  //const [expand, setExpand] = useState(new Set())
 
   const saveOrderItem = async (index) => {
 
@@ -107,9 +109,15 @@ export default function ListOrderV(props) {
   };
 
   const toggleExpand = (index) => {
-    let exp = [...expand]
+    let exp = expand
     exp[index] = !exp[index]
+    /*if (expand.has(index)) {
+      exp.delete(index)
+    } else {
+      exp.add(index)
+    }*/
     setExpand(exp)
+    setToggle(!toggle)
   }
 
     const loadOrders = async (e) => {
@@ -197,11 +205,18 @@ export default function ListOrderV(props) {
     useEffect(() => {
       loadOrders()
       getTransportCompanies(props.user.vendorId, setTransportCompanies)
-    }, [toggle]);
+    }, []);
+
+
+    useEffect(() => {
+    }, [expand]);
 
   if (!props.user || props.user.Id === 0) {
     navigate("/")
   }
+
+  console.log("expand");
+  console.log(expand);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -218,9 +233,9 @@ export default function ListOrderV(props) {
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "55px 65px 65px 70px 1fr 70px 70px 70px",
-          columnGap: "3px",
-          rowGap: "8px",
+          gridTemplateColumns: "55px 85px 65px 90px 1fr 70px 90px 150px 30px",
+          columnGap: "4px",
+          rowGap: "0px",
           alignItems: "center",
           fontSize: "15px" }}>
             <Grid item><Header text="Photo"/></Grid>
@@ -230,21 +245,23 @@ export default function ListOrderV(props) {
             <Grid item><Header text="Item name"/></Grid>
             <Grid item><Header text="Amount"/></Grid>
             <Grid item><Header text="Details"/></Grid>
-            <Grid item><Header text="Status"/></Grid>
+            <Grid item sx={{gridColumn: "8 / span 2"}}><Header text="Status"/></Grid>
+            
             
 
     {orders.map((data, index) => (
       <React.Fragment>
         <Link to={"/updateproduct?id=" + data.productId } style={{ textDecoration: 'none' }} >
           <Grid item>
-                <Box sx={{padding: "8px 0 0 0" }}>
+                
                   <img 
                     src={config.api + "/" + data.imagePath}
                     width={50}
                     height={40}
+                    style={{padding: "4px 0 0 0" }}
                     alt={data.itemName}
                 /> 
-                </Box>
+                
                 </Grid></Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
@@ -264,17 +281,33 @@ export default function ListOrderV(props) {
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item >{data.quantity}&nbsp;{data.unit}</Grid>
+        {/* <Grid item >{data.quantity}&nbsp;{data.unit}</Grid> */}
+        <Grid item sx={{textAlign: "center"}}><span className="my-val">{quantityInfo(data)}</span></Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item >{data.details}</Grid>
+        <Grid item sx={{textAlign: "center"}}><span className="my-val">{data.details+ ' m'}</span></Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item >{orderStatusString(data)}</Grid>
+        <Grid item ><span className="my-val">{orderStatusString(data)}</span></Grid>
         </Link>
 
+        <Grid item >
+          <IconButton aria-label="Expand" size="small" sx={{backgroundColor: "#f2f2f2", border: "none", borderRadius: "2px", margin: "0px", padding: "2px 4px" }}>
+          <KeyboardArrowDownIcon 
+            sx={{ color: "#666", fontSize: 22 }}
+            onClick={(e)=>{toggleExpand(index)}} >
+          </KeyboardArrowDownIcon>
+          </IconButton> 
+        </Grid>
+
+        { expand[index] && <Grid item sx={{ gridColumn: "1 / -1" }} visibility={"visible"} > 
+        <Box height={60} ><Button>Save</Button></Box>
+        </Grid> }
+        { !expand[index] && <Grid item sx={{ gridColumn: "1 / -1" }} visibility= {"collapse"} > 
+        <Box height={0} ></Box>
+        </Grid> }
 
         {/* <Grid item sx={{display: "flex", flexDirection: "column"}}>
           <div style={{height: "82px", textAlign: "center"}} >
