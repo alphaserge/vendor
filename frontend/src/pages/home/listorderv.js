@@ -25,11 +25,13 @@ import Footer from './footer';
 import Header from '../../components/header';
 import Property from '../../components/property';
 import MySelect from '../../components/myselect';
+import MyText from '../../components/mytext';
 import OrderItemStatus from '../../components/orderitemstatus';
 import { APPEARANCE } from '../../appearance';
 
 import { orderStatusString, fined, status, quantityInfo, computePrice } from "../../functions/helper"
 import { getTransportCompanies } from '../../api/vendors'
+import MySelectLab from "../../components/myselectlab";
 
 const defaultTheme = createTheme()
 const outboxStyle = { maxWidth: "940px", margin: "80px auto 20px auto", padding: "0 10px" }
@@ -53,7 +55,6 @@ const MySelectProps = {
     },
   },
 }
-
 
 export default function ListOrderV(props) {
 
@@ -238,15 +239,15 @@ export default function ListOrderV(props) {
           rowGap: "0px",
           alignItems: "center",
           fontSize: "15px" }}>
-            <Grid item><Header text="Photo"/></Grid>
-            <Grid item><Header text="Art.no."/></Grid>
-            <Grid item><Header text="Ref.no."/></Grid>
-            <Grid item><Header text="Design"/></Grid>
-            <Grid item><Header text="Item name"/></Grid>
-            <Grid item><Header text="Amount"/></Grid>
-            <Grid item><Header text="Details"/></Grid>
-            <Grid item sx={{gridColumn: "8 / span 2"}}><Header text="Status"/></Grid>
-            
+            <Grid item sx={{marginBottom: "4px"}}><Header text="Photo"/></Grid>
+            <Grid item sx={{marginBottom: "4px"}}><Header text="Art.no."/></Grid>
+            <Grid item sx={{marginBottom: "4px"}}><Header text="Ref.no."/></Grid>
+            <Grid item sx={{marginBottom: "4px"}}><Header text="Design"/></Grid>
+            <Grid item sx={{marginBottom: "4px"}}><Header text="Item name"/></Grid>
+            <Grid item sx={{marginBottom: "4px"}}><Header text="Amount"/></Grid>
+            <Grid item sx={{marginBottom: "4px"}}><Header text="Details"/></Grid>
+            <Grid item sx={{gridColumn: "8 / span 2", marginBottom: "4px"}}><Header text="Status"/></Grid>
+
             
 
     {orders.map((data, index) => (
@@ -303,7 +304,59 @@ export default function ListOrderV(props) {
         </Grid>
 
         { expand[index] && <Grid item sx={{ gridColumn: "1 / -1" }} visibility={"visible"} > 
-        <Box height={60} ><Button>Save</Button></Box>
+        <Box sx={{ 
+            display: "flex", 
+            flexDirection: "row", 
+            alignItems: "center",
+            columnGap: "10px", 
+            height: "85px", 
+            padding: "10px", 
+            backgroundColor: "#f4f4f4"}} >
+          <MyText 
+            label="Details" 
+            value={data.details}
+            onChange={value => { setDetails(data.orderId, data.id, value)}}
+          ></MyText>
+          <MySelectLab 
+              label="Delivery company"
+              valueName="deliveryCompany"
+              width="160px"
+              disabled={!data.paid}
+              valueVariable={data.deliveryCompany}
+              setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
+              data={transportCompanies}
+            />
+          <MyText label="Delivery No." value={data.deliveryNo}></MyText>
+          {/* <TextField //label="Details"
+              margin="normal"
+              size="small" 
+              id={"valuedetails-" + index}
+              name={"valuedetails-" + index}
+              label={!!data.details ? "" : "Details"}
+              sx={{marginTop: 0, backgroundColor: !!data.details ? "none" : "#fcc"}}
+              value={data.details}
+              onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}} /> */}
+          <Button 
+            onClick={(e)=>{ saveOrderItem(index) }} 
+            edge="end" 
+            disabled={!data.changes}
+            sx={{
+              // visibility: !data.details ? "hidden":"visible", 
+              backgroundColor: !data.changes ? "#ccc" : "#222",
+              //border: !data.changes ? "none" : "1px solid #aaa",
+              borderRadius: "3px",
+              color: !data.changes ? "#fff" : "#fff", 
+              borderRadius: "2px", 
+              height: "32px", 
+              minWidth: "20px", 
+              fontSize: "14px", 
+              marginTop: "15px",
+              padding: "6px 10px",
+              textTransform: "none"}}>
+                Save
+          </Button>
+
+          </Box>
         </Grid> }
         { !expand[index] && <Grid item sx={{ gridColumn: "1 / -1" }} visibility= {"collapse"} > 
         <Box height={0} ></Box>

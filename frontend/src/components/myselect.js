@@ -67,7 +67,7 @@ export default function MySelect(props) {
     }, []);
   
 return (
-  <FormControl error={ false } required sx={{ ...props.itemStyle,  ...{width: "100%", height: "40px", display: "flex" } }} > 
+  <FormControl error={ false } required sx={{ ...props.itemStyle,  ...{width: "100%", display: "flex" } }} > 
     {!props.hideLabel && <InputLabel 
         id={props.id + "-label"}
         size="small" 
@@ -82,7 +82,7 @@ return (
         multiple = {Array.isArray(props.valueVariable)}
         disabled={props.disabled ? props.disabled : false}
         value={props.valueVariable ? props.valueVariable : ""}
-        sx = {{height: "28px", padding: "0", margin: "0" }}
+        sx = {{height: "37px", padding: "0", margin: "0", backgroundColor: "white" }}
         onChange={dataChange}
         input={<OutlinedInput label={props.title} />}
         MenuProps={props.MenuProps}
