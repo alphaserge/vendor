@@ -28,30 +28,35 @@ const statusString = (item) => {
     return "processing"
 }
 
+
 export default function OrderItemStatus(props) {
 
   const statusText = statusString(props.item)
 
-  return <Box sx={{ ml: "2px",
-    color: (props.color ? props : ap.PRICE.COLOR), 
-    fontFamily: ap.PRICE.FONTFAMILY, 
-    fontSize: ap.PRICE.FONTSIZE, 
-    fontWeight: ap.PRICE.FONTWEIGHT }}>
+  let color = "#222";
+
+  if (statusText=="waiting of vendor") {  color = "#d70c32ff"}
+  if (statusText=="confirmed by vendor") {  color = "#3256f4ff"}
+  if (statusText=="paid") {  color = "#01801aff"}
+  if (statusText=="in stock") {  color = "#135ce4ff"}
+  if (statusText=="shipping to client") {  color = "#00a2ffff"}
+  if (statusText=="delivered to client") {  color = "#286d2cff"}
+
+  return <div style={{display: "inline-block"}}>
+          <span>Status:</span>&nbsp;<span className="my-val" style={{ color: color, backgroundColor: "#ddd", fontWeight: "400", minWidth: "20px", borderRadius: "3px", padding: "0px 7px" }}>{statusText}</span>&nbsp;&nbsp;&nbsp;
+         </div>
+      // Status:<span style={{ color : color}}>{statusText}</span>
       
-    <Tooltip title={<span style={{ color: "#fff", fontSize: "13px", fontWeight: "300", padding: 0 }}>{statusText}</span>} >
-          <Box sx={{color: "#888", fontSize: 14, padding: "0px 2px", marginTop: "10px"}} >
-          { statusText=="processing"    && <QueryBuilderIcon  sx={{ color: "#888", fontSize: 30 }} /> }
-          { statusText=="confirmed"  && <HandshakeIcon     sx={{ color: "#393", fontSize: 30 }} /> } 
-          { statusText=="paid"       && <PaidIcon          sx={{ color: "#393", fontSize: 30 }} /> } 
-          {/*{ statusText=="in stock"   && <ViewInArIcon      sx={{ color: "#888", fontSize: 30 }} /> }*/} {/* in stock */}
-          { statusText=="shipping"   && <LocalShippingIcon sx={{ color: "#5781cfff", fontSize: 30 }} />} {/* shipping */}
-          { statusText=="delivered"  && <RecommendIcon     sx={{ color: "#888", fontSize: 30 }} /> } {/* waiting vendor */}
+    {/* <Tooltip title={<span style={{ color: "#fff", fontSize: "13px", fontWeight: "300", padding: 0 }}>{statusText}</span>} >
+          <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px", marginTop: "10px"}} >
+          { statusText=="waiting of vendor"    && <QueryBuilderIcon  sx={{ color: "#888", fontSize: 30 }} /> }
+          { statusText=="confirmed by vendor"  && <HandshakeIcon     sx={{ color: "#393", fontSize: 30 }} /> }
+          { statusText=="paid"       && <PaidIcon          sx={{ color: "#888", fontSize: 30 }} /> }
+          { statusText=="in stock"   && <ViewInArIcon      sx={{ color: "#888", fontSize: 30 }} /> }
+          { statusText=="shipping to client"   && <LocalShippingIcon sx={{ color: "#888", fontSize: 30 }} /> } 
+          { statusText=="delivered to client"  && <RecommendIcon     sx={{ color: "#888", fontSize: 30 }} /> } 
           </Box>
-          <Box sx={{color: "#888", fontSize: 14, padding: "0px 2px", marginTop: "0px"}}>
-            {statusText}
-            {statusText=="shipping" && <span>&nbsp;by&nbsp;{props.item.deliveryCompany}<br/>Track no:&nbsp;{props.item.deliveryNo}</span> }
-          </Box>
-        </Tooltip>
+        </Tooltip> */}
           {/* <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px"}} >{statusText}</Box> */}
           {/* <EmojiPeopleIcon sx={{ color: "#888", fontSize: 26 }} />
           <DoneIcon sx={{ color: "#888", fontSize: 26 }} />
@@ -59,5 +64,5 @@ export default function OrderItemStatus(props) {
           <SentimentSatisfiedAltIcon sx={{ color: "#888", fontSize: 26 }} /> */}
 
       {/* <span style={{ color: "#444"}}>Price: </span> from $ {toFixed2(props.price)} per meter */}
-      </Box>
+      
 }

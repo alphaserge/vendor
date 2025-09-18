@@ -156,7 +156,7 @@ namespace chiffon_back.Controllers
             return new Models.Order();
         }
 
-        [HttpGet("Orders")]
+        [HttpGet("OrdersOld")]
         public IEnumerable<Models.Order> Get(string type, string value, string id)
         {
             DataTable dt = new DataTable();
@@ -197,7 +197,7 @@ namespace chiffon_back.Controllers
             foreach (var o in orders) {
                 o.VendorName = ctx.Vendors.FirstOrDefault(x => x.Id == o.VendorId)?.VendorName;
 
-                o.Paid = ctx.Payments.Where(x => x.What=="order" && x.WhatId==o.Id).Sum(x => x.Amount); //TODO: Course!!!!
+                o.PaySumm = ctx.Payments.Where(x => x.OrderId==o.Id).Sum(x => x.Amount); //TODO: Course!!!!
 
                 var query = from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
                             join p in ctx.Products on oi.ProductId equals p.Id into jointable
@@ -275,6 +275,7 @@ namespace chiffon_back.Controllers
             return orders.AsEnumerable();
         }
 
+        // method for Vendor managers
         [HttpGet("OrderItems")]
         public IEnumerable<Models.OrderItem> GetOrderItems([FromQuery] string vendorId)
         {
@@ -373,6 +374,115 @@ namespace chiffon_back.Controllers
             }
 
             return orderItems.AsEnumerable();
+        }
+
+        // method for Angelika managers
+        [HttpGet("Orders")]
+        public IEnumerable<Models.Order> GetOrders()
+        {
+            DataTable dt = new DataTable();
+
+            var ordersQuery = from o in ctx.Orders orderby o.Id descending select o;
+
+            List<Models.Order> orders = new List<Models.Order>();
+
+            foreach (var o in ordersQuery.ToList()) {
+                var query =
+                    from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
+                    join p in ctx.Products on oi.ProductId equals p.Id into jointable
+                    from j in jointable.DefaultIfEmpty()
+                    orderby oi.OrderId, j.ItemName
+                    select new { oi, j };
+
+                Models.Order order = new Models.Order();
+                order.Id = o.Id;
+                order.Created = o.Created;
+                order.ClientAddress = o.ClientAddress;
+                order.ClientPhone = o.ClientPhone;
+                order.Number = o.Number;
+                order.ClientEmail = o.ClientEmail;
+                order.ClientName = o.ClientName;
+                order.Uuid = o.Uuid;
+                order.PaySumm = ctx.Payments.Where(x => x.OrderId == o.Id).Sum(x => x.Amount);
+
+                List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
+                foreach (var item in query.ToList())
+                {
+                    Models.OrderItem orderItem = new Models.OrderItem()
+                    {
+                        OrderId = item.oi.OrderId,
+                        ProductId = item.oi.ProductId,
+                        Id = item.oi.Id,
+                        ArtNo = item.j.ArtNo,
+                        RefNo = item.j.RefNo,
+                        ItemName = item.j.ItemName,
+                        //Composition = item.j.Composition,
+                        Design = item.j.Design,
+                        Price = item.oi.Price,
+                        Quantity = item.oi.Quantity,
+                        Unit = item.oi.Unit,
+                        RollLength = item.j.RollLength,
+                        VendorQuantity = item.oi.VendorQuantity,
+                        OrderRolls = item.oi.OrderRolls,
+                        Details = item.oi.Details,
+                        Shipped = item.oi.Shipped,
+                        Delivered = item.oi.Delivered,
+                        DeliveryCompany = item.oi.DeliveryCompany,
+                        DeliveryNo = item.oi.DeliveryNo,
+                        ColorNo = item.oi.ColorNo,
+                        ColorNames = item.oi.ColorNames,
+                        StockId = item.oi.StockId,
+                        StockName = ctx.Stocks.FirstOrDefault(x => x.Id == item.oi.StockId)?.StockName,
+                        VendorId = item.j.VendorId,
+                        VendorName = ctx.Vendors.FirstOrDefault(x => x.Id == item.j.VendorId)?.VendorName,
+                    };
+
+                    string imagePath = @"colors\nopicture.png";
+                    if (item.oi.ColorVariantId != null)
+                    {
+                        Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.oi.ColorVariantId);
+                        if (cv != null)
+                        {
+                            var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                            if (imageFiles.Count > 0)
+                            {
+                                imagePath = imageFiles[0];
+                            }
+                        }
+                    }
+
+                    /* if (String.IsNullOrEmpty(imagePath))
+                     {
+                         foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == item.j.Id).ToList())
+                         {
+                             var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                             if (imageFiles.Count > 0)
+                             {
+                                 imagePath = imageFiles[0];
+                                 break;
+                             }
+                         }
+                     }*/
+
+                    if (!String.IsNullOrEmpty(item.oi.Details))
+                    {
+                        try
+                        {
+                            orderItem.Total = Convert.ToDecimal(dt.Compute(item.oi.Details, ""));
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                    }
+
+                    orderItem.imagePath = imagePath;
+                    orderItems.Add(orderItem);
+                }
+                order.Items = orderItems.ToArray();
+                orders.Add(order);
+            }
+            return orders.AsEnumerable();
         }
 
         [HttpGet("{id}")]

@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.Vml;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -193,7 +194,7 @@ namespace chiffon_back.Models
             OXSimpleWordTableCell cell3 = new OXSimpleWordTableCell(language == "English" ? "&Amount" : "&Кол-во", "1100", JustificationValues.Center, "18", "240"); cell3.Bold = 1;
             OXSimpleWordTableCell cell4 = new OXSimpleWordTableCell(language == "English" ? "&Units" : "&Ед.", "900", JustificationValues.Center, "18", "240"); cell4.Bold = 1;
             //OXSimpleWordTableCell cell5 = new OXSimpleWordTableCell(language == "English" ? "&Price" : "&Цена", "1500", JustificationValues.Center, "18", "240"); cell5.Bold = 1;
-            OXSimpleWordTableCell cell5 = new OXSimpleWordTableCell(language == "English" ? "&Discount" : "&Скидка", "1500", JustificationValues.Center, "18", "240"); cell5.Bold = 1; //???
+            OXSimpleWordTableCell cell5 = new OXSimpleWordTableCell(language == "English" ? "&Discount" : "&Цена", "1500", JustificationValues.Center, "18", "240"); cell5.Bold = 1; //???
             OXSimpleWordTableCell cell6 = new OXSimpleWordTableCell(language == "English" ? "&Sum" : "&Сумма", "1500", JustificationValues.Center, "18", "240"); cell6.Bold = 1;
             oxRow.Cells.Add(cell1);
             oxRow.Cells.Add(cell2);
@@ -205,27 +206,30 @@ namespace chiffon_back.Models
             oxTable.Rows.Add(oxRow);
             int numpp = 1;
             decimal summ = 0;
+            var f = new NumberFormatInfo { NumberGroupSeparator = " " };
+            
             foreach (var it in inv.Items)
             {
                 int a = it.Quantity == null ? 0 : it.Quantity.Value;
                 int d = it.DiscountedRate == null ? 0 : it.DiscountedRate.Value;
-                decimal t = it.Price == null ? 0 : it.Price.Value;
-                t *= courseUSD;
+                decimal p = it.Price == null ? 0 : it.Price.Value * courseUSD;
+                decimal t = p*courseUSD;
 
-                string rate = d == null ? string.Empty : d.ToString("F2");
-                string total = t == null ? string.Empty : t.ToString("F2");
-                string amount = a == null ? string.Empty : a.ToString("F2");
+                string price = p == null ? string.Empty : p.ToString("n", f) + " руб.";
+                string rate = d == null ? string.Empty : d.ToString("n", f) + " руб.";
+                string total = t == null ? string.Empty : t.ToString("n", f) + " руб.";
+                string amount = a == null ? string.Empty : a.ToString("n", f);
                 summ += t;
                 oxRow = new OXSimpleWordTableRow();
-                oxRow.Cells.Add(new OXSimpleWordTableCell("&" + numpp.ToString() + "&", "700", JustificationValues.Right, "18", "240"));
+                oxRow.Cells.Add(new OXSimpleWordTableCell("&" + numpp.ToString() + "&", "700", JustificationValues.Center, "18", "240"));
                 //oxRow.Cells.Add(new OXSimpleWordTableCell("&" +  it.ArtNo + "&", "1300", JustificationValues.Left, "18", "240"));
                 oxRow.Cells.Add(new OXSimpleWordTableCell("&" + it.ItemName + "&", "4000", JustificationValues.Left, "18", "240"));
-                oxRow.Cells.Add(new OXSimpleWordTableCell("&" + amount + "&", "1100", JustificationValues.Right, "18", "240"));
-                if (language == "English")
-                    oxRow.Cells.Add(new OXSimpleWordTableCell("&" + it.Unit.Replace("MET", "пог.м.").Replace("YDS", "пог.м.") + "&", "900", JustificationValues.Left, "18", "240"));
+                oxRow.Cells.Add(new OXSimpleWordTableCell("&" + amount + "&", "1100", JustificationValues.Center, "18", "240"));
+                if (language != "English")
+                    oxRow.Cells.Add(new OXSimpleWordTableCell("&" + it.Unit.Replace("rolls", "рул.").Replace("meters", "пог.м.").Replace("MET", "пог.м.").Replace("YDS", "пог.м.") + "&", "900", JustificationValues.Center, "18", "240"));
                 else
-                    oxRow.Cells.Add(new OXSimpleWordTableCell("&" + it.Unit.Replace("YDS", "MET") + "&", "900", JustificationValues.Left, "18", "240"));
-                oxRow.Cells.Add(new OXSimpleWordTableCell("&" + rate + "&", "1500", JustificationValues.Right, "18", "240"));
+                    oxRow.Cells.Add(new OXSimpleWordTableCell("&" + it.Unit.Replace("YDS", "MET") + "&", "900", JustificationValues.Center, "18", "240"));
+                oxRow.Cells.Add(new OXSimpleWordTableCell("&" + price + "&", "1500", JustificationValues.Right, "18", "240"));
                 oxRow.Cells.Add(new OXSimpleWordTableCell("&" + total + "&", "1500", JustificationValues.Right, "18", "240"));
                 oxTable.Rows.Add(oxRow);
                 numpp++;
@@ -237,13 +241,13 @@ namespace chiffon_back.Models
             oxTable.Border = 0;
             oxRow = new OXSimpleWordTableRow();
             oxRow.Cells.Add(new OXSimpleWordTableCell(language == "English" ? "Total" : "Итого", "8200", JustificationValues.Right, "18", "280", gridspan: 5));
-            oxRow.Cells.Add(new OXSimpleWordTableCell(summ.ToString("F2"), "1500", JustificationValues.Right, "18", "280"));
+            oxRow.Cells.Add(new OXSimpleWordTableCell(summ.ToString("n", f) + " руб.", "1500", JustificationValues.Right, "18", "280"));
             oxTable.Rows.Add(oxRow);
             if (inv.Supplier.ToLower().Contains("фэшн"))
             {
                 oxRow = new OXSimpleWordTableRow();
                 oxRow.Cells.Add(new OXSimpleWordTableCell(language == "English" ? "Including VAT" : "В том числе НДС", "8200", JustificationValues.Right, "18", "280", gridspan: 5));
-                oxRow.Cells.Add(new OXSimpleWordTableCell((summ * 0.18m / 1.18m).ToString("F2"), "1500", JustificationValues.Right, "18", "280"));
+                oxRow.Cells.Add(new OXSimpleWordTableCell((summ * 0.18m / 1.18m).ToString("n", f), "1500", JustificationValues.Right, "18", "280"));
                 oxTable.Rows.Add(oxRow);
             }
             else
@@ -256,7 +260,7 @@ namespace chiffon_back.Models
 
             oxRow = new OXSimpleWordTableRow();
             oxRow.Cells.Add(new OXSimpleWordTableCell(language == "English" ? "" : "Total to pay", "8200", JustificationValues.Right, "18", "280", gridspan: 5));
-            oxRow.Cells.Add(new OXSimpleWordTableCell(summ.ToString("F2"), "1500", JustificationValues.Right, "18", "280"));
+            oxRow.Cells.Add(new OXSimpleWordTableCell(summ.ToString("n", f) + " руб.", "1500", JustificationValues.Right, "18", "280"));
             oxTable.Rows.Add(oxRow);
             report.InsertTable(oxTable);
 
@@ -266,9 +270,9 @@ namespace chiffon_back.Models
 
             report.SetParagraph(OXML.Aligment.LEFT, OXML.Interval.INT_POINT_14pt, 0);
             if (inv.Currency == "USD")
-                report.AddText(string.Format(language == "English" ? "Total items {0} in the amount of {1:F2} USD" : "Всего наименований {0} на сумму {1:F2} USD", numpp - 1, summ), false, true, 20);
+                report.AddText(string.Format(language == "English" ? "Total items {0} in the amount of {1} USD" : "Всего наименований {0} на сумму {1} USD", numpp - 1, summ.ToString("n", f)), false, true, 20);
             else
-                report.AddText(string.Format(language == "English" ? "Total items {0} in the amount of {1:F2} RUR" : "Всего наименований {0} на сумму {1:F2} рублей", numpp - 1, summ), false, true, 20);
+                report.AddText(string.Format(language == "English" ? "Total items {0} in the amount of {1} RUR" : "Всего наименований {0} на сумму {1} рублей", numpp - 1, summ.ToString("n", f)), false, true, 20);
 
 
             if (language != "English")

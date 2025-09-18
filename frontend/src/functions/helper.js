@@ -124,6 +124,10 @@ export const fined2 = (text) => {
     return text ? text : ""
 }
 
+export const notNull = (text) => {
+    return fined2(text)
+}
+
 export const quantityInfo = (item) => {
     if (!item.unit) return item.quantity
     return item.quantity + ' ' + item.unit.replace('rolls','r').replace('meters','m')// + ")"

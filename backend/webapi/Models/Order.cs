@@ -14,7 +14,7 @@
         public string? ClientAddress { get; set; }
         public string? Password { get; set; }
         public int? Hash { get; set; }
-        public Decimal? Paid { get; set; }
+        public Decimal? PaySumm { get; set; }
         public OrderItem[]? Items { get; set; }
     }
     public class ConfirmCode

@@ -4,6 +4,14 @@
     {
         public int Id { get; set; }
         public int OrderId { get; set; }
+
+        public DateTime? Created { get; set; }
+        public int Number { get; set; }
+        public string? ClientName { get; set; }
+        public string? ClientPhone { get; set; }
+        public string? ClientEmail { get; set; }
+        public string? ClientAddress { get; set; }
+
         public int? VendorOrderId { get; set; }
         public int ProductId { get; set; }
         public int? VendorId { get; set; }

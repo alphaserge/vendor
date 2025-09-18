@@ -1,0 +1,8 @@
+If certificate error is appear, when run:
+
+C:\Users\user>dotnet dev-certs https --trust
+
+Trusting the HTTPS development certificate was requested. A confirmation prompt will be displayed if the certificate was not previously trusted. Click yes on the prompt to trust the certificate.
+Successfully created and trusted a new HTTPS certificate.
+
+C:\Users\user>

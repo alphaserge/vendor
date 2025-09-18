@@ -31,7 +31,7 @@ import IconButtonWhite from "../../components/iconbuttonwhite";
 import OrderItemStatus from "../../components/orderitemstatus";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import StyledTextField from '../../components/styledtextfield';
-import { formattedPrice } from '../../functions/helper';
+import { formattedPrice, orderStatusString } from '../../functions/helper';
 
 const defaultTheme = createTheme()
 
@@ -48,7 +48,7 @@ const theme = createTheme({
   },
 });
 
-const linkStyle = { textDecoration: 'none', color: ap.COLOR }
+const linkStyle = { textDecoration: 'none', color: ap.COLOR, height: "100%" }
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 
 export default function Orders(props) {
@@ -59,7 +59,6 @@ export default function Orders(props) {
   const [agree, setAgree] = useState(false)
   const [invoiceUrl, setInvoiceUrl] = useState("")
   const [expand, setExpand] = useState(false)
-  //const [checkedOk, setCheckedOk] = useState(false)
   const [payerName, setPayerName] = useState( !props.data.user.payerName ? "" : props.data.user.payerName )
 
   const handleAgree = (event) => {
@@ -72,16 +71,6 @@ export default function Orders(props) {
 
   const sendInvoice = async (order) => {
 
-    let checkedItems = 
-      order.items.filter((i) => { 
-          return i.checked 
-        })
-
-
-    if ( order.items.findIndex(i => i.checked) != -1 ) { 
-      checkedItems = order.items.filter((i)=> { return i.checked })
-    }
-
     let data = 
       { id: order.id,
         number: order.number,
@@ -89,7 +78,7 @@ export default function Orders(props) {
         phones: props.data.user.phones,
         customer: payerName,
         items: 
-          checkedItems.map((i) => ({ 
+          order.items.map((i) => ({ 
             id: i.id,
             itemName: i.itemName,
             quantity: i.quantity,
@@ -97,18 +86,6 @@ export default function Orders(props) {
             unit: i.unit,
             discountedRate: 0}))
       }
-
-    /*const responce = await fetch(config.api + '/SendInvoice', {
-      method: "POST",
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data), 
-    })
-    console.log(responce);*/
-
-    /*return {
-      ok: true,
-      message: "The new order has been added"
-    }*/
 
     await axios.post(
       config.api + '/SendInvoice', 
@@ -145,30 +122,6 @@ export default function Orders(props) {
     setExpand(!expand)
   }
 
-  const checkItem = (orderIndex, index) => {
-      let ords = [...orders]
-
-      if (!ords[orderIndex].items[index].details) {
-        return
-      }
-      if (!!ords[orderIndex].items[index].deliveryCompany || 
-          !!ords[orderIndex].items[index].deliveryNo || 
-          !!ords[orderIndex].items[index].paid) {
-        return
-      }
-
-      ords[orderIndex].items[index].checked = !ords[orderIndex].items[index].checked
-      
-      ords[orderIndex].checkedForPay = ords[orderIndex].items.filter((i)=>{ return i.checked}).length > 0
-
-      /*let checkOk = true;
-      ords[orderIndex].items.forEach(item => {
-        if (item.checked && item.details)
-      });*/
-      
-      setOrders(ords)
-  }
-  
   const loadOrders = async (e) => {
 
       if (!props.data.user || props.data.user.email=="") {
@@ -384,18 +337,6 @@ export default function Orders(props) {
               <React.Fragment>
                 <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} >
                 <Grid item sx={{textAlign: "center", display: "flex", flexDirection: "row", justifyContent: "center"}} >
-                  { expand && <Checkbox
-                    edge="start"
-                    checked={orders[orderIndex].items[index].checked}
-                    tabIndex={-1}
-                    disableRipple
-                    //color="secondary"
-                    //sx={{ color: "#999" }}
-                    inputProps={{ 'aria-labelledby': "cb-item-" + index }}
-                    //iconStyle={{color: '#888'}}
-                    //onChange={(e) => { alert('1'); checkItem(e.target.checked, orderIndex, index);} }
-                    onClick={(e) => { e.stopPropagation(); checkItem(orderIndex, index);} }
-                  />}
                   {( !!data.imagePath && 
                       <img 
                         src={config.api + "/" + data.imagePath}
@@ -414,14 +355,14 @@ export default function Orders(props) {
                     /> )}                              
                 </Grid>
                 </Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.artNo}</Grid></Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.itemName + " " + data.design}</Grid></Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.colorNo + " / " + data.colorNames}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center", verticalAlign:"top"}} >{data.artNo}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "left"}} >{data.itemName + " " + data.design}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "left"}} >{data.colorNo + " / " + data.colorNames}</Grid></Link>
                 {/* <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.design}</Grid></Link> */}
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.quantity + " " + data.unit}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.details}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{formattedPrice(data.price)}&nbsp;$</Grid></Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} ><OrderItemStatus item={data} /></Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "left"}} >{orderStatusString(data)}</Grid></Link>
               </React.Fragment> ))}
         </Box>
 
@@ -461,8 +402,7 @@ export default function Orders(props) {
                   size="small" 
                   aria-label="pay" 
                   sx={{backgroundColor: "#222", color: "#fff", width: "80px", ml: 2}} 
-                  // disabled={!agree || !orders[orderIndex].canPay  || !orders[orderIndex].checkedForPay || payerName.length < 6 }
-                  disabled={!agree || !orders[orderIndex].checkedForPay || payerName.length < 6 }
+                  disabled={!agree || payerName.length < 6 || orders[orderIndex].items.findIndex(x => !x.details) != -1}
                   onClick={(e)=> { sendInvoice(orders[orderIndex]) }} >
                   {/*onClick={(e)=> { pay(orders[orderIndex].id, orders[orderIndex].total) }} >*/}
                   {/* <AttachMoneyIcon sx={{color: "#fff"}} /> */}

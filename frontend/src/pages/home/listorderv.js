@@ -29,7 +29,7 @@ import MyText from '../../components/mytext';
 import OrderItemStatus from '../../components/orderitemstatus';
 import { APPEARANCE } from '../../appearance';
 
-import { orderStatusString, fined, status, quantityInfo, computePrice } from "../../functions/helper"
+import { orderStatusString, fined, status, quantityInfo, computePrice, notNull } from "../../functions/helper"
 import { getTransportCompanies } from '../../api/vendors'
 import MySelectLab from "../../components/myselectlab";
 
@@ -287,7 +287,7 @@ export default function ListOrderV(props) {
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{textAlign: "center"}}><span className="my-val">{data.details+ ' m'}</span></Grid>
+        <Grid item sx={{textAlign: "center"}}><span className="my-val">{!!data.details? data.details + ' m' : "-"}</span></Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
