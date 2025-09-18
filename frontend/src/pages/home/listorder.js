@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { colors, FormControl, Icon } from "@mui/material";
+import { colors, FormControl, Icon, Typography } from "@mui/material";
 import { Paid } from "@mui/icons-material";
 import TextField from '@mui/material/TextField';
 import { InputLabel } from "@mui/material"
@@ -29,7 +29,7 @@ import MyText from '../../components/mytext';
 import OrderItemStatus from '../../components/orderitemstatus';
 import { APPEARANCE } from '../../appearance';
 
-import { orderStatusString, fined, status, quantityInfo, computePrice, notNull } from "../../functions/helper"
+import { orderStatusString, formattedDate, quantityInfo, computePrice  } from "../../functions/helper"
 import { getTransportCompanies } from '../../api/vendors'
 import MySelectLab from "../../components/myselectlab";
 
@@ -123,37 +123,48 @@ export default function ListOrderV(props) {
 
     const loadOrders = async (e) => {
 
-      axios.get(config.api + '/OrderItems?vendorId=' + props.user.vendorId 
+      axios.get(config.api + '/Orders?vendorId=' + props.user.vendorId 
         //,{ params: { type: "vendorId", value: props.user.vendorId, id: null }}
       ).then(function (res) {
           var result = res.data.map((d) => 
           {
               return {
                   id        : d.id,
-                  productId : d.productId,
-                  orderId   : d.orderId,
-                  imagePath : d.imagePath,
-                  itemName  : d.itemName,
-                  artNo     : d.artNo,
-                  refNo     : d.refNo,
-                  design    : d.design,
-                  spec      : d.composition,
-                  price     : d.price,
-                  owner     : d.vendorName,
-                  quantity  : d.quantity,
-                  unit      : d.unit,
-                  rollLength: d.rollLength,
-                  colorNames: d.colorNames,
-                  colorNo   : d.colorNo,
-                  total     : d.total,
-                  details   : d.details,
-                  delivered : d.delivered,
-                  shipped   : d.shipped,
-                  paid      : d.paid,
-                  deliveryNo: d.deliveryNo,
-                  deliveryCompany : d.deliveryCompany,
-                  changes: false,
-                  }
+                  created   : d.created,
+                  vendorId  : d.vendorId,
+                  uuid      : d.uuid,
+                  number    : d.number,
+                  vendorName: d.vendorName,
+                  clientName: d.clientName,
+                  clientPhone: d.clientPhone,
+                  clientEmail: d.clientEmail,
+                  clientAddress: d.clientAddress,
+                  paySumm   : d.paySumm,
+                  items : d.items.map(i => { return {
+                  id        : i.id,
+                  productId : i.productId,
+                  orderId   : i.orderId,
+                  imagePath : i.imagePath,
+                  itemName  : i.itemName,
+                  artNo     : i.artNo,
+                  refNo     : i.refNo,
+                  design    : i.design,
+                  spec      : i.composition,
+                  price     : i.price,
+                  owner     : i.vendorName,
+                  quantity  : i.quantity,
+                  unit      : i.unit,
+                  rollLength: i.rollLength,
+                  colorNames: i.colorNames,
+                  colorNo   : i.colorNo,
+                  total     : i.total,
+                  details   : i.details,
+                  delivered : i.delivered,
+                  shipped   : i.shipped,
+                  paid      : i.paid,
+                  deliveryNo: i.deliveryNo,
+                  deliveryCompany : i.deliveryCompany,
+                  changes: false }}) }
               })
           setOrders(result)
           setFilter(false)
@@ -216,9 +227,6 @@ export default function ListOrderV(props) {
     navigate("/")
   }
 
-  console.log("expand");
-  console.log(expand);
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -250,8 +258,42 @@ export default function ListOrderV(props) {
 
             
 
-    {orders.map((data, index) => (
+    {orders.map((order, ind) => (
       <React.Fragment>
+        <Grid item sx={{ 
+          gridColumn: "1 / -1", 
+          backgroundColor: "#eee", 
+          display: "flex",
+          flexDirection: "row",
+          padding: "10px",
+          height: "80px" }} visibility={"visible"} > 
+        
+          <Typography> Order No. {order.number}&nbsp;dated&nbsp;{formattedDate(order.created)} </Typography>
+          <Button 
+            onClick={(e)=>{  }} 
+            edge="end" 
+            disabled={false}
+            sx={{
+              // visibility: !data.details ? "hidden":"visible", 
+              backgroundColor: false ? "#ccc" : "#222",
+              //border: !data.changes ? "none" : "1px solid #aaa",
+              borderRadius: "3px",
+              color: false ? "#fff" : "#fff", 
+              borderRadius: "2px", 
+              height: "32px", 
+              minWidth: "20px", 
+              fontSize: "14px", 
+              marginTop: "15px",
+              marginLeft: "auto",
+              padding: "6px 10px",
+              textTransform: "none"}}>
+                Save
+          </Button>
+        
+        </Grid>
+
+      {order.items.map((data, index) => (
+        <React.Fragment>
         <Link to={"/updateproduct?id=" + data.productId } style={{ textDecoration: 'none' }} >
           <Grid item>
                 
@@ -262,8 +304,8 @@ export default function ListOrderV(props) {
                     style={{padding: "4px 0 0 0" }}
                     alt={data.itemName}
                 /> 
-                
-                </Grid></Link>
+          </Grid>
+        </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
         <Grid item ><span className="my-val">{data.artNo}</span></Grid>
@@ -295,144 +337,20 @@ export default function ListOrderV(props) {
         </Link>
 
         <Grid item >
-          <IconButton aria-label="Expand" size="small" sx={{backgroundColor: "#f2f2f2", border: "none", borderRadius: "2px", margin: "0px", padding: "2px 4px" }}>
+          {/* <IconButton aria-label="Expand" size="small" sx={{backgroundColor: "#f2f2f2", border: "none", borderRadius: "2px", margin: "0px", padding: "2px 4px" }}>
           <KeyboardArrowDownIcon 
             sx={{ color: "#666", fontSize: 22 }}
             onClick={(e)=>{toggleExpand(index)}} >
           </KeyboardArrowDownIcon>
-          </IconButton> 
+          </IconButton>  */}
         </Grid>
 
-        { expand[index] && <Grid item sx={{ gridColumn: "1 / -1" }} visibility={"visible"} > 
-        <Box sx={{ 
-            display: "flex", 
-            flexDirection: "row", 
-            alignItems: "center",
-            columnGap: "10px", 
-            height: "85px", 
-            padding: "10px", 
-            backgroundColor: "#f4f4f4"}} >
-          <MyText 
-            label="Details" 
-            value={data.details}
-            onChange={value => { setDetails(data.orderId, data.id, value)}}
-          ></MyText>
-          <MySelectLab 
-              label="Delivery company"
-              valueName="deliveryCompany"
-              width="160px"
-              disabled={!data.paid}
-              valueVariable={data.deliveryCompany}
-              setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
-              data={transportCompanies}
-            />
-          <MyText label="Delivery No." value={data.deliveryNo}></MyText>
-          {/* <TextField //label="Details"
-              margin="normal"
-              size="small" 
-              id={"valuedetails-" + index}
-              name={"valuedetails-" + index}
-              label={!!data.details ? "" : "Details"}
-              sx={{marginTop: 0, backgroundColor: !!data.details ? "none" : "#fcc"}}
-              value={data.details}
-              onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}} /> */}
-          <Button 
-            onClick={(e)=>{ saveOrderItem(index) }} 
-            edge="end" 
-            disabled={!data.changes}
-            sx={{
-              // visibility: !data.details ? "hidden":"visible", 
-              backgroundColor: !data.changes ? "#ccc" : "#222",
-              //border: !data.changes ? "none" : "1px solid #aaa",
-              borderRadius: "3px",
-              color: !data.changes ? "#fff" : "#fff", 
-              borderRadius: "2px", 
-              height: "32px", 
-              minWidth: "20px", 
-              fontSize: "14px", 
-              marginTop: "15px",
-              padding: "6px 10px",
-              textTransform: "none"}}>
-                Save
-          </Button>
 
-          </Box>
-        </Grid> }
-        { !expand[index] && <Grid item sx={{ gridColumn: "1 / -1" }} visibility= {"collapse"} > 
-        <Box height={0} ></Box>
-        </Grid> }
+        </React.Fragment> 
+      ))}
 
-        {/* <Grid item sx={{display: "flex", flexDirection: "column"}}>
-          <div style={{height: "82px", textAlign: "center"}} >
-          <TextField //label="Details"
-              margin="normal"
-              size="small" 
-              id={"valuedetails-" + index}
-              name={"valuedetails-" + index}
-              label={!!data.details ? "" : "Details"}
-              sx={{marginTop: 0, backgroundColor: !!data.details ? "none" : "#fcc"}}
-              value={data.details}
-              onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}} />
-              { !!data.total && <span className="my-val" style={{fontSize: "14px"}}>{data.total + " m."}</span> }
-                </div>
-        </Grid>
-
-        <Grid item sx={{display: "flex", flexDirection: "column"}}>
-          <div style={{marginTop: "3px"}}>
-            <MySelect 
-              id="transportCompanies"
-              title="Delivery company"
-              hideLabel={!!data.deliveryCompany}
-              valueName="deliveryCompany"
-              labelStyle={labelStyle}
-              itemStyle={itemStyle1}
-              disabled={!data.paid}
-              MenuProps={MySelectProps}
-              valueVariable={data.deliveryCompany}
-              setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
-              data={transportCompanies}
-            />
-            </div>
-          <TextField
-              margin="normal"
-              size="small" 
-              disabled={!data.paid}
-              label={!!data.deliveryNo ? "" : "Delivery no."}
-              id={"valueDeliveryNo-" + index}
-              name={"valueDeliveryNo-" + index}
-              sx={{marginTop: "0px"}}
-              value={data.deliveryNo}
-              onChange={ev => { setDeliveryNo(data.orderId, data.id, ev.target.value)}}/>
-          <Property value={ "Delivery:  " + fined(data.deliveryCompany) } />
-          <Property value={ "Track no: " + fined(data.deliveryNo)} /> 
-        </Grid>
-
-<Grid item sx={{display: "flex", flexDirection: "column"}}>
-  <div style={{height: "82px", textAlign: "center"}}>
-        <Button 
-            onClick={(e)=>{ saveOrderItem(index) }} 
-            edge="end" 
-            disabled={!data.changes}
-            sx={{
-              //visibility: !data.changes ? "hidden":"visible",
-              backgroundColor: !data.changes ? "#ccc" : "#222",
-              //border: !data.changes ? "none" : "1px solid #aaa",
-              borderRadius: "3px",
-              color: !data.changes ? "#fff" : "#fff", 
-              borderRadius: "2px", 
-              height: "26px", 
-              minWidth: "20px", 
-              fontSize: "14px", 
-              marginTop: "2px",
-              textTransform: "none"}}>
-                Save
-          </Button>
-          </div>
-          </Grid> */}
-          
-      </React.Fragment>
+      </React.Fragment> 
     ))}
-
     </Box>
     </Box>
     <br/>

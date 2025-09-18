@@ -216,9 +216,6 @@ export default function ListOrderV(props) {
     navigate("/")
   }
 
-  console.log("expand");
-  console.log(expand);
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
