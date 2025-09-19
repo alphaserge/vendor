@@ -1,7 +1,6 @@
 USE [chiffon]
 GO
 
-/****** Object:  Table [dbo].[Currencies]    Script Date: 19.09.2025 17:11:50 ******/
 SET ANSI_NULLS ON
 GO
 
