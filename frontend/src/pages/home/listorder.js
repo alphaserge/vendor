@@ -141,6 +141,7 @@ export default function ListOrderV(props) {
                   clientEmail: d.clientEmail,
                   clientAddress: d.clientAddress,
                   paySumm   : d.paySumm,
+                  makePayment: false,
                   items : d.items.map(i => { return {
                   id        : i.id,
                   productId : i.productId,
@@ -202,6 +203,15 @@ export default function ListOrderV(props) {
               break
             }
           }
+    }
+
+    const makePayment = (orderIndex) => {
+      if (orders[orderIndex].makePayment) {
+        
+      }
+      let ords = [...orders]
+      ords[orderIndex].makePayment = !ords[orderIndex].makePayment;
+      setOrders(ords)
     }
 
     const setPay = (orderIndex, value) => {
@@ -271,7 +281,7 @@ export default function ListOrderV(props) {
           //border: "1px solid #ccc",
           borderRadius: "6px",
           display: "grid",
-          gridTemplateColumns: "70px 150px 70px 1fr 90px 90px 30px 130px",
+          gridTemplateColumns: "70px 150px 70px 1fr 80px 90px 30px 130px",
           columnGap: "4px",
           rowGap: "0px",
           flexDirection: "row",
@@ -282,15 +292,14 @@ export default function ListOrderV(props) {
             <Typography sx={{paddingLeft: "20px"}}>Client:</Typography>
             <Typography><span className="my-val-1">{order.clientName}&nbsp;{order.clientPhone}</span></Typography>
             <Typography sx={{ gridColumn: "5 / 5", gridRow: "1 / span 2"}}>
-               <MyText 
+               { order.makePayment && <MyText 
                 label="Pay summ" 
                 value={order.paySumm}
                 width="80px"
-                
-                onChange={value => { setPay(indexOrder, value)}}></MyText>
+                onChange={value => { setPay(indexOrder, value)}}></MyText> }
               </Typography> 
               <Typography sx={{ gridColumn: "6 / 6", gridRow: "1 / span 2"}}>
-              <MySelectLab 
+              { order.makePayment && <MySelectLab 
                             label="Currency"
                             valueName="shortName"
                             width="80px"
@@ -298,11 +307,11 @@ export default function ListOrderV(props) {
                             valueVariable={order.currency}
                             setValueFn={(value) => { setCurrency(indexOrder, value) }}
                             data={currencies}
-                          />
+                          /> }
                           </Typography>
                           <Typography></Typography>
             <Button 
-              onClick={(e)=>{  }} 
+              onClick={(e)=>{ makePayment(indexOrder); }} 
               //edge="end" 
               disabled={false}
               sx={{
@@ -320,7 +329,8 @@ export default function ListOrderV(props) {
                 marginLeft: "auto",
                 padding: "4px 8px",
                 textTransform: "none"}}>
-                  Make a payment 
+                  { order.makePayment && <React.Fragment>Save</React.Fragment> }
+                  { !order.makePayment && <React.Fragment>Make a payment</React.Fragment> }
             </Button>
             
           
