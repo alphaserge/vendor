@@ -30,7 +30,7 @@ import OrderItemStatus from '../../components/orderitemstatus';
 import { APPEARANCE } from '../../appearance';
 
 import { orderStatusString, formattedDate, quantityInfo, computePrice  } from "../../functions/helper"
-import { getTransportCompanies } from '../../api/vendors'
+import { getCurrencies } from '../../api/currencies'
 import MySelectLab from "../../components/myselectlab";
 
 const defaultTheme = createTheme()
@@ -65,7 +65,8 @@ export default function ListOrderV(props) {
   const [expand, setExpand] = useState([])
   const [detail, setDetail] = useState([])
   const [filter, setFilter] = useState(false)
-  const [transportCompanies, setTransportCompanies] = useState([])
+  const [paySumm, setPaySumm] = useState([])
+  const [currencies, setCurrencies] = useState([])
   //const [expand, setExpand] = useState(new Set())
 
   const saveOrderItem = async (index) => {
@@ -169,6 +170,7 @@ export default function ListOrderV(props) {
           setOrders(result)
           setFilter(false)
           setDetail(result.map((e)=> { return e.details }))
+          setPaySumm(result.map((e)=> { return "" }))
           const desiredLength = result.length;
           setExpand(new Array(desiredLength).fill(false))
           })      
@@ -202,21 +204,22 @@ export default function ListOrderV(props) {
           }
     }
 
-    const setDeliveryNo = (orderId, id, value) => {
+    const setPay = (orderIndex, value) => {
       let ords = [...orders]
-      for (let j=0; j< ords.length; j++) {
-        if (ords[j].orderId == orderId && ords[j].id == id) {
-              ords[j].deliveryNo = value
-              ords[j].changes = true
-              setOrders(ords)
-              break
-            }
-          }
+      ords[orderIndex].paySumm = value;
+      setOrders(ords)
     }
+
+    const setCurrency = (orderIndex, value) => {
+      let ords = [...orders]
+      ords[orderIndex].currency = value;
+      setOrders(ords)
+    }
+
 
     useEffect(() => {
       loadOrders()
-      getTransportCompanies(props.user.vendorId, setTransportCompanies)
+      getCurrencies(setCurrencies)
     }, []);
 
 
@@ -258,38 +261,78 @@ export default function ListOrderV(props) {
 
             
 
-    {orders.map((order, ind) => (
+    {orders.map((order, indexOrder) => (
       <React.Fragment>
         <Grid item sx={{ 
           gridColumn: "1 / -1", 
           backgroundColor: "#eee", 
-          display: "flex",
-          flexDirection: "row",
           padding: "10px",
+          margin: "10px 0",
+          //border: "1px solid #ccc",
+          borderRadius: "6px",
+          display: "grid",
+          gridTemplateColumns: "70px 150px 70px 1fr 90px 90px 30px 130px",
+          columnGap: "4px",
+          rowGap: "0px",
+          flexDirection: "row",
           height: "80px" }} visibility={"visible"} > 
         
-          <Typography> Order No. {order.number}&nbsp;dated&nbsp;{formattedDate(order.created)} </Typography>
-          <Button 
-            onClick={(e)=>{  }} 
-            edge="end" 
-            disabled={false}
-            sx={{
-              // visibility: !data.details ? "hidden":"visible", 
-              backgroundColor: false ? "#ccc" : "#222",
-              //border: !data.changes ? "none" : "1px solid #aaa",
-              borderRadius: "3px",
-              color: false ? "#fff" : "#fff", 
-              borderRadius: "2px", 
-              height: "32px", 
-              minWidth: "20px", 
-              fontSize: "14px", 
-              marginTop: "15px",
-              marginLeft: "auto",
-              padding: "6px 10px",
-              textTransform: "none"}}>
-                Save
-          </Button>
-        
+            <Typography>Order No.</Typography> 
+            <Typography><span className="my-val-1">{order.number}</span>&nbsp;dated&nbsp;<span className="my-val-1">{formattedDate(order.created)}</span></Typography>
+            <Typography sx={{paddingLeft: "20px"}}>Client:</Typography>
+            <Typography><span className="my-val-1">{order.clientName}&nbsp;{order.clientPhone}</span></Typography>
+            <Typography sx={{ gridColumn: "5 / 5", gridRow: "1 / span 2"}}>
+               <MyText 
+                label="Pay summ" 
+                value={order.paySumm}
+                width="80px"
+                
+                onChange={value => { setPay(indexOrder, value)}}></MyText>
+              </Typography> 
+              <Typography sx={{ gridColumn: "6 / 6", gridRow: "1 / span 2"}}>
+              <MySelectLab 
+                            label="Currency"
+                            valueName="shortName"
+                            width="80px"
+                            disabled={false}
+                            valueVariable={order.currency}
+                            setValueFn={(value) => { setCurrency(indexOrder, value) }}
+                            data={currencies}
+                          />
+                          </Typography>
+                          <Typography></Typography>
+            <Button 
+              onClick={(e)=>{  }} 
+              //edge="end" 
+              disabled={false}
+              sx={{
+                gridRow: "1 / span 2",
+                gridColumn: "8 / 8",
+                // visibility: !data.details ? "hidden":"visible", 
+                backgroundColor: false ? "#ccc" : "#222",
+                //border: !data.changes ? "none" : "1px solid #aaa",
+                borderRadius: "3px",
+                color: false ? "#fff" : "#fff", 
+                borderRadius: "2px", 
+                height: "30px", 
+                minWidth: "20px", 
+                fontSize: "14px", 
+                marginLeft: "auto",
+                padding: "4px 8px",
+                textTransform: "none"}}>
+                  Make a payment 
+            </Button>
+            
+          
+            <Typography>Paid:</Typography> 
+            <Typography><span className="my-val-1">{order.paySumm}&nbsp;$</span></Typography> 
+            <Typography></Typography>
+            <Typography></Typography>
+            <Typography></Typography>
+            <Typography></Typography>
+            <Typography></Typography>
+            <Typography></Typography>
+            
         </Grid>
 
       {order.items.map((data, index) => (

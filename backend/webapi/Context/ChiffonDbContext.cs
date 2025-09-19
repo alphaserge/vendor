@@ -15,6 +15,7 @@ namespace chiffon_back.Context
 
         public DbSet<Color> Colors { get; set; }
         public DbSet<ColorVariant> ColorVariants { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
         public DbSet<ColorVariantsInColors> ColorVariantsInColors { get; set; }
         public DbSet<DesignType> DesignTypes { get; set; }
         public DbSet<DyeStaff> DyeStaffs { get; set; }

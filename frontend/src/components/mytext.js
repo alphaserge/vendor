@@ -13,7 +13,7 @@ export default function MyText(props) {
       flexDirection: "column",
       color: "#222", 
       width: !props.width ? "100px" : props.width, 
-      marginTop: "7px",
+      //marginTop: "7px",
       fontFamily: ap.FONTFAMILY }}>
         <Typography sx={{ fontSize: "13px", fontWeight: "400" }}>{props.label}</Typography>
         <TextField //label="Details"
