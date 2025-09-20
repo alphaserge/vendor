@@ -71,16 +71,26 @@ namespace chiffon_back.Controllers
             return new Models.Payment();
         }
 
-        [HttpGet("Payments")]
-        public IEnumerable<Models.Payment> Get(string what, string whatId)
+        [HttpGet("OrderPayments")]
+        public IEnumerable<Models.Payment> OrderPayments([FromBody] int orderId)
         {
             var payments = ctx.Payments
-                .Where(x => x.What == what && x.WhatId.ToString() == whatId)
+                .Where(x => x.OrderId == orderId)
                 .Select(x => config.CreateMapper().Map<Models.Payment>(x)).ToList();
 
             return payments;
         }
 
+        [HttpGet("Payments")]
+        public IEnumerable<Models.Payment> Get(int Id)
+        {
+            var payments = ctx.Payments
+                .Where(x => x.OrderId == Id)
+                .Select(x => config.CreateMapper().Map<Models.Payment>(x)).ToList();
+
+            return payments;
+        }
+        
         [HttpPost("Pay")]
         public ActionResult<Models.Payment> Pay([FromBody]Models.Payment payment)
         {
@@ -96,17 +106,19 @@ namespace chiffon_back.Controllers
                 string clientName = "";
                 string clientEmail = ""; //todo - from payment!
                 string number = "";
+                string currency = ctx.Currencies.FirstOrDefault(x => x.Id == payment.CurrencyId).ShortName;
 
-                if (payment.What == "order")
-                {
-                    var order = ctx.Orders.FirstOrDefault(x => x.Id == payment.WhatId);
+                //if (payment.What == "order")
+                //{
+                //var order = ctx.Orders.FirstOrDefault(x => x.Id == payment.WhatId);
+                    var order = ctx.Orders.FirstOrDefault(x => x.Id == payment.OrderId);
                     if (order != null)
                     {
                         clientName = order.ClientName;
                         clientEmail = order.ClientEmail;
                         number = order.Number.ToString();
                     }
-                }
+                //}
 
                 string label = "'font-weight: normal; font-size: 100%; padding: 5px 12px;'";
                 string cell = "'padding: 10px 20px;'";
@@ -120,9 +132,9 @@ namespace chiffon_back.Controllers
                     string? frontendUrl = _configuration.GetValue<string>("Url:Website");
                     string? ordersManager = _configuration.GetValue<string>("Orders:Manager");
 
-                    string body = $"<p style={header}>Dear {clientName}!</p><p style={header}>You have successfully paid a {payment.What} with number " + number + "</p>";
-                    body += $"<p>Payment summ is {payment.Amount} {payment.Currency}</p>";
-                    body += $"<p>Your {payment.What} link <a href='{frontendUrl}/{payment.What}s?id={payment.WhatId}'>here</a> </p>";
+                    string body = $"<p style={header}>Dear {clientName}!</p><p style={header}>You have successfully paid a order with number " + number + "</p>";
+                    body += $"<p>Payment summ is {payment.Amount} {currency}</p>";
+                    body += $"<p>Your order link <a href='{frontendUrl}/orders?id={payment.OrderId}'>here</a> </p>";
                     body += $"<p style={header}>Best regards, textile company Angelika</p>";
                     body += $"<p style={headerBlack}>Our contacts:</p>";
                     body += "<p>Showroom address:<br/>Yaroslavskoe shosse, possession 1 building 1, Mytishchi, Moscow region, Russia.<br/>Postal code: 141009<br/>Phones: +7(926)018-01-25, +7(916)876-20-08";

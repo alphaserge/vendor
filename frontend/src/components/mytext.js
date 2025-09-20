@@ -20,7 +20,7 @@ export default function MyText(props) {
             margin="normal"
             size="small" 
             label={""}
-            sx={{marginTop: 0, backgroundColor: "white" }}
+            sx={{marginTop: 0 }}
             value={props.value}
             
             onChange={ev => { props.onChange(ev.target.value)}} />

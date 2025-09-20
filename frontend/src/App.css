@@ -378,9 +378,13 @@ a.no-link {
   font-size: 14px;
   font-family: 'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif';
   /* text-decoration: underline; */
-  background-color: #e4e4e4;
+  /*background-color: #e4e4e4;*/
   border-radius: 4px;
   padding: 0px 4px;
     /* min-width: 70px; */
 }
+
+.MuiSelect-nativeInput {
+  background-color: #fff;
+} 
 

@@ -82,9 +82,10 @@ return (
         multiple = {Array.isArray(props.valueVariable)}
         disabled={props.disabled ? props.disabled : false}
         value={props.valueVariable ? props.valueVariable : ""}
-        sx = {{height: "37px", padding: "0", margin: "0", backgroundColor: "white" }}
+        sx = {{height: "37px", padding: "0", margin: "0"  }}
         onChange={dataChange}
-        input={<OutlinedInput label={props.title} />}
+        /*inputProps={{ backgroundColor: "#fff"}}
+        input={<OutlinedInput label={props.title} sx={{ backgroundColor: "#fff" }} />}*/
         MenuProps={props.MenuProps}
     >
     { props.data && props.data.map((elem) => (

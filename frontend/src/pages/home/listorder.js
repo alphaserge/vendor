@@ -11,7 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { colors, FormControl, Icon, Typography } from "@mui/material";
-import { Paid } from "@mui/icons-material";
+import { Paid, Payments } from "@mui/icons-material";
 import TextField from '@mui/material/TextField';
 import { InputLabel } from "@mui/material"
 import InputAdornment from '@mui/material/InputAdornment';
@@ -31,6 +31,7 @@ import { APPEARANCE } from '../../appearance';
 
 import { orderStatusString, formattedDate, quantityInfo, computePrice  } from "../../functions/helper"
 import { getCurrencies } from '../../api/currencies'
+import { postPayment } from '../../api/payments'
 import MySelectLab from "../../components/myselectlab";
 
 const defaultTheme = createTheme()
@@ -141,6 +142,8 @@ export default function ListOrderV(props) {
                   clientEmail: d.clientEmail,
                   clientAddress: d.clientAddress,
                   paySumm   : d.paySumm,
+                  payments  : d.payments,
+                  total     : d.items.reduce((accumulator, value) => { return accumulator + value.price*value.quantity; }, 0),
                   makePayment: false,
                   items : d.items.map(i => { return {
                   id        : i.id,
@@ -206,10 +209,16 @@ export default function ListOrderV(props) {
     }
 
     const makePayment = (orderIndex) => {
-      if (orders[orderIndex].makePayment) {
-        
-      }
       let ords = [...orders]
+      if (ords[orderIndex].makePayment) {
+        let order = ords[orderIndex]
+        let currency = '';
+        currencies.forEach((c)=> { if (c.id == order.currency) { currency = c.value } })
+        let pay = {amount: parseFloat(order.paySumm), currencyId: order.currency,  orderId: order.id}
+        postPayment(pay)
+        pay.currency = currency
+        order.payments.push(pay)
+      }
       ords[orderIndex].makePayment = !ords[orderIndex].makePayment;
       setOrders(ords)
     }
@@ -275,74 +284,87 @@ export default function ListOrderV(props) {
       <React.Fragment>
         <Grid item sx={{ 
           gridColumn: "1 / -1", 
-          backgroundColor: "#eee", 
+          backgroundColor: "#d4d4d4", 
           padding: "10px",
           margin: "10px 0",
           //border: "1px solid #ccc",
           borderRadius: "6px",
           display: "grid",
-          gridTemplateColumns: "70px 150px 70px 1fr 80px 90px 30px 130px",
+          gridTemplateColumns: "1fr 20px 70px 180px 60px",
           columnGap: "4px",
           rowGap: "0px",
           flexDirection: "row",
-          height: "80px" }} visibility={"visible"} > 
+          alignItems: "flex-start",
+          minHeight: "70px" }} visibility={"visible"} > 
         
-            <Typography>Order No.</Typography> 
-            <Typography><span className="my-val-1">{order.number}</span>&nbsp;dated&nbsp;<span className="my-val-1">{formattedDate(order.created)}</span></Typography>
-            <Typography sx={{paddingLeft: "20px"}}>Client:</Typography>
-            <Typography><span className="my-val-1">{order.clientName}&nbsp;{order.clientPhone}</span></Typography>
-            <Typography sx={{ gridColumn: "5 / 5", gridRow: "1 / span 2"}}>
-               { order.makePayment && <MyText 
+            <Typography>Order No.&nbsp;<span className="my-val-1">{order.number}</span>dated<span className="my-val-1">{formattedDate(order.created)}</span>&nbsp;&nbsp;&nbsp;Total summ:<span className="my-val-1">{order.total}&nbsp;usd</span></Typography>
+            <Typography></Typography>
+            <Typography> { !order.makePayment && <span>Payments:</span> }</Typography>
+            { !order.makePayment && <Box sx={{ gridRow: "1 / span 2", gridColumn: "4 / 4", display: "grid", gridTemplateColumns: "80px 20px 100px"}}>
+              {order.payments.map((data, index) => (
+                <React.Fragment>
+                <span className="my-val-1">{formattedDate(data.date)}</span>
+                <span style={{textAlign: "center"}}>-</span>
+                <span className="my-val-1">{data.amount}&nbsp;{data.currency}</span>
+                </React.Fragment>
+              ))}
+              <span className="my-val-1">Paid total</span>
+              <span style={{textAlign: "center"}}>-</span>
+              <span className="my-val-1">{order.paySumm}&nbsp;usd</span>
+              {/* <span className="my-val-1">Order total</span>
+              <span style={{textAlign: "center"}}>-</span>
+              <span className="my-val-1">{order.total}&nbsp;usd</span> */}
+            </Box> }
+
+            { order.makePayment && <Box sx={{ gridRow: "1 / span 2", gridColumn: "4 / 4", display: "grid", gridTemplateColumns: "100px  100px"}}>
+               <Typography>
+               <MyText 
                 label="Pay summ" 
                 value={order.paySumm}
                 width="80px"
-                onChange={value => { setPay(indexOrder, value)}}></MyText> }
+                onChange={value => { setPay(indexOrder, value)}}></MyText>
               </Typography> 
-              <Typography sx={{ gridColumn: "6 / 6", gridRow: "1 / span 2"}}>
-              { order.makePayment && <MySelectLab 
-                            label="Currency"
-                            valueName="shortName"
-                            width="80px"
-                            disabled={false}
-                            valueVariable={order.currency}
-                            setValueFn={(value) => { setCurrency(indexOrder, value) }}
-                            data={currencies}
-                          /> }
-                          </Typography>
-                          <Typography></Typography>
+              <Typography >
+              <MySelectLab 
+                label="Currency"
+                valueName="shortName"
+                width="80px"
+                disabled={false}
+                valueVariable={order.currency}
+                setValueFn={(value) => { setCurrency(indexOrder, value) }}
+                data={currencies}
+              /> 
+              </Typography>
+            </Box> }
+
             <Button 
               onClick={(e)=>{ makePayment(indexOrder); }} 
               //edge="end" 
               disabled={false}
               sx={{
-                gridRow: "1 / span 2",
-                gridColumn: "8 / 8",
+                //gridRow: "1 / span 2",
+                //gridColumn: "8 / 8",
                 // visibility: !data.details ? "hidden":"visible", 
                 backgroundColor: false ? "#ccc" : "#222",
                 //border: !data.changes ? "none" : "1px solid #aaa",
                 borderRadius: "3px",
                 color: false ? "#fff" : "#fff", 
                 borderRadius: "2px", 
-                height: "30px", 
+                height: "26px",
                 minWidth: "20px", 
                 fontSize: "14px", 
                 marginLeft: "auto",
-                padding: "4px 8px",
+                padding: "0 10px",
                 textTransform: "none"}}>
                   { order.makePayment && <React.Fragment>Save</React.Fragment> }
-                  { !order.makePayment && <React.Fragment>Make a payment</React.Fragment> }
+                  { !order.makePayment && <React.Fragment>Add</React.Fragment> }
             </Button>
             
-          
-            <Typography>Paid:</Typography> 
-            <Typography><span className="my-val-1">{order.paySumm}&nbsp;$</span></Typography> 
+            <Typography>Client:&nbsp;<span className="my-val-1">{order.clientName},&nbsp;phone:&nbsp;{order.clientPhone}</span></Typography>
             <Typography></Typography>
             <Typography></Typography>
             <Typography></Typography>
             <Typography></Typography>
-            <Typography></Typography>
-            <Typography></Typography>
-            
         </Grid>
 
       {order.items.map((data, index) => (

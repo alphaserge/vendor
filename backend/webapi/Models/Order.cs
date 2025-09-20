@@ -16,6 +16,7 @@
         public int? Hash { get; set; }
         public Decimal? PaySumm { get; set; }
         public OrderItem[]? Items { get; set; }
+        public Payment[]? Payments { get; set; }
     }
     public class ConfirmCode
     {

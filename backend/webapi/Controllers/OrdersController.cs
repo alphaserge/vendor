@@ -47,6 +47,8 @@ namespace chiffon_back.Controllers
                 cfg.CreateMap<Context.OrderItem, Models.OrderItem>();
                 cfg.CreateMap<Models.Vendor, Context.Vendor>();
                 cfg.CreateMap<Context.Vendor, Models.Vendor>();
+                cfg.CreateMap<Models.Payment, Context.Payment>();
+                cfg.CreateMap<Context.Payment, Models.Payment>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
@@ -404,6 +406,16 @@ namespace chiffon_back.Controllers
                 order.ClientName = o.ClientName;
                 order.Uuid = o.Uuid;
                 order.PaySumm = ctx.Payments.Where(x => x.OrderId == o.Id).Sum(x => x.Amount);
+                var mapper = config.CreateMapper();
+                order.Payments = ctx.Payments.Where(x => x.OrderId == o.Id).Select(x => 
+                new Models.Payment
+                {
+                    OrderId = x.OrderId,
+                    CurrencyId = x.CurrencyId,
+                    Amount = x.Amount,
+                    Date = x.Date,
+                    Currency = ctx.Currencies.FirstOrDefault(c=>c.Id==x.CurrencyId).ShortName
+                }).ToArray();
 
                 List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
                 foreach (var item in query.ToList())
