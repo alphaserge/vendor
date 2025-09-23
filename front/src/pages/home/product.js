@@ -38,9 +38,11 @@ import Amount from '../../components/amount';
 import Selector from '../../components/selector';
 import Property from '../../components/property';
 import StyledButton from '../../components/styledbutton';
+import StyledTextField from '../../components/styledtextfield';
 import {APPEARANCE as ap} from '../../appearance';
 
 import { fined } from "../../functions/helper"
+import Styledtextfield from "../../components/styledtextfield";
 
 const useStyles = makeStyles((theme) => ({
   noexpand: {
@@ -146,6 +148,7 @@ export default function Product(props) {
   const [cartQuantity, setCartQuantity] = useState(1)
   const [cartUnit, setCartUnit] = useState("meters")
   const [cartColor, setCartColor] = useState({colorNames: "select color", colorVariantId: -1})
+  const [manualColor, setManualColor] = useState("")
   const [cartIsRolls, setCartIsRolls] = useState(false)
   const [cartHelp, setCartHelp] = useState(false)
   const [filteredImages, setFilteredImages] = useState(null)
@@ -204,9 +207,17 @@ export default function Product(props) {
       setColorVarId(e.target.value.colorVariantId)
     }
 
-    var selectColors = product.colors
-      .filter((it,ix) => { return it.colorNames != "PRODUCT"})
+    var selectColors = product.colors.filter((it,ix) => { return it.colorNames != "PRODUCT"})
 
+     //!! I'm change :
+    selectColors =  product.colors
+    // ?  product.colors.map((it) => { return it.colorNames == "PRODUCT" ? "select color" : it.colorNames } ) : []
+
+    selectColors.forEach((e) => {
+      if (e.colorNames == "PRODUCT") {
+        e.colorNames = "select color"
+      }
+    })
 
     const loadColors = () => {
       axios.get(config.api + '/Colors')
@@ -472,6 +483,18 @@ console.log(colorVarId)
                   { selectColors.map((it, ix) => (
                       <MenuItem key={"sh_"+ix}  value={it}>{it.colorNames}</MenuItem> )) }
                 </StyledSelect>
+                {!cartColor.colorNo && <Typography sx={{marginTop: "15px"}}>or enter the color number manually:</Typography> }
+                {!cartColor.colorNo && <StyledTextField margin="normal"
+                          required
+                          fullWidth
+                          id="manualColor"
+                          label="Your color"
+                          name="manualColor"
+                          value={manualColor}
+                          onChange={ev => setManualColor(ev.target.value)}
+                          //autoComplete="email"
+                          // style={itemStyle}
+                          autoFocus /> }
                 </FormControl>
               </Box>
 

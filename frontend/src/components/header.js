@@ -11,7 +11,7 @@ export default function Header(props) {
               fontSize: "14px",
               fontFamily: ap.FONTFAMILY,
               fontWeight: "400",
-              backgroundColor: props.transparent ? "none": "#bbb", 
+              backgroundColor: props.transparent ? "none": "#ddd", 
               color: "#333", 
               //borderRight: props.last?"1px dotted #aaa":"none", //"1px solid #aaa",
               //border: "1px dotted #aaa",

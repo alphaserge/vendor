@@ -329,7 +329,7 @@ export default function ListOrderV(props) {
             <td className="caption w100">Contacts:</td><td>{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
           </tr>
           <tr>
-            <td className="caption w100">Total summ:</td><td><b>{order.total}&nbsp;usd</b></td>
+            <td className="caption w100">Total summ:</td><td><b>{order.total.toFixed(2)}&nbsp;usd</b></td>
           </tr>
         </table>
             <Typography></Typography>
