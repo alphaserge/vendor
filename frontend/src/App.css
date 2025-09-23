@@ -373,7 +373,7 @@ a.no-link {
 }
 
 .my-val-1 {
-  display: inline-block;
+  /*display: inline-block;*/
   font-weight: 500;  
   font-size: 14px;
   font-family: 'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif';
@@ -382,6 +382,46 @@ a.no-link {
   border-radius: 4px;
   padding: 0px 4px;
     /* min-width: 70px; */
+}
+
+.caption {
+  font-weight: 500;  
+  font-size: 14px;
+  font-family: 'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif';
+  color: #777;
+  /* text-decoration: underline; */
+  /*background-color: #e4e4e4;
+  border-radius: 4px;*/
+  padding: 0px 4px;
+    /* min-width: 70px; */
+}
+
+.w40 {
+  width: 40px;
+}
+.w50 {
+  width: 50px;
+}
+.w60 {
+  width: 60px;
+}
+.w70 {
+  width: 70px;
+}
+.w80 {
+  width: 80px;
+}
+.w90 {
+  width: 90px;
+}
+.w100 {
+  width: 100px;
+}
+.w110 {
+  width: 110px;
+}
+.w120 {
+  width: 120px;
 }
 
 .MuiSelect-nativeInput {

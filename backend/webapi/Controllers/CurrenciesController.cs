@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using chiffon_back.Code;
 using chiffon_back.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,6 @@ namespace chiffon_back.Controllers
             return seasons.AsEnumerable();
         }
 
-
         [HttpPost(Name = "Currencies")]
         public ActionResult<Models.Currency> Post1(Models.Currency Currency)
         {
@@ -60,5 +60,25 @@ namespace chiffon_back.Controllers
                 return CreatedAtAction(nameof(Get), new { id = -1 }, null);
             }
         }
+
+        [HttpGet("Course")]
+        public Decimal? Course([FromQuery] string shortName)
+        {
+            bool save = false;
+            decimal courseUsd = Helper.GetCurrencyCourse("USD", DateTime.Now);
+            // todo decimal courseEur = Helper.GetCurrencyCourse("USD", DateTime.Now);
+
+            var rur = ctx.Currencies.FirstOrDefault(x => x.ShortName!.ToUpper() == "RUR");
+            if (courseUsd != rur!.Rate)
+            {
+                rur.Rate = courseUsd;
+                ctx.SaveChanges();
+            }
+
+            var curr = ctx.Currencies.FirstOrDefault(x => x.ShortName!.ToUpper() == shortName.ToUpper());
+            return curr != null ? curr.Rate : null;
+        }
+
+
     }
 }

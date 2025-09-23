@@ -30,7 +30,7 @@ import OrderItemStatus from '../../components/orderitemstatus';
 import { APPEARANCE } from '../../appearance';
 
 import { orderStatusString, formattedDate, quantityInfo, computePrice  } from "../../functions/helper"
-import { getCurrencies } from '../../api/currencies'
+import { getCurrencies, getCourse } from '../../api/currencies'
 import { postPayment } from '../../api/payments'
 import MySelectLab from "../../components/myselectlab";
 
@@ -68,6 +68,7 @@ export default function ListOrderV(props) {
   const [filter, setFilter] = useState(false)
   const [paySumm, setPaySumm] = useState([])
   const [currencies, setCurrencies] = useState([])
+  const [courseRur, setCourseRur] = useState(0)
   //const [expand, setExpand] = useState(new Set())
 
   const saveOrderItem = async (index) => {
@@ -156,7 +157,7 @@ export default function ListOrderV(props) {
                   design    : i.design,
                   spec      : i.composition,
                   price     : i.price,
-                  owner     : i.vendorName,
+                  vendorName: i.vendorName,
                   quantity  : i.quantity,
                   unit      : i.unit,
                   rollLength: i.rollLength,
@@ -177,6 +178,7 @@ export default function ListOrderV(props) {
           setPaySumm(result.map((e)=> { return "" }))
           const desiredLength = result.length;
           setExpand(new Array(desiredLength).fill(false))
+          const courseRur = getCourse(setCourseRur,'rur')
           })      
       .catch (error => {
         console.log(error)
@@ -210,28 +212,45 @@ export default function ListOrderV(props) {
 
     const makePayment = (orderIndex) => {
       let ords = [...orders]
+      let addSumm = 0
       if (ords[orderIndex].makePayment) {
         let order = ords[orderIndex]
-        let currency = '';
-        currencies.forEach((c)=> { if (c.id == order.currency) { currency = c.value } })
-        let pay = {amount: parseFloat(order.paySumm), currencyId: order.currency,  orderId: order.id}
+        let currency = ''
+        currencies.forEach((c)=> { if (c.id == order.currencyNew) { currency = c.value } })
+        let pay = { 
+          amount: parseFloat(order.paySummNew), 
+          currencyId: order.currencyNew, 
+          orderId: order.id, 
+          date: new Date() 
+        }
         postPayment(pay)
         pay.currency = currency
         order.payments.push(pay)
+        /* todo - courses cash 
+        let curShort = currencies.find(({ id }) => id == order.currencyNew);
+        if (!!curShort) {s
+          const crs = await getCourse(curShort.value)
+          addSumm = parseFloat(order.paySummNew)*crs
+          ords[orderIndex].paySumm += addSumm
+        }*/
+       //temp:
+        let course = order.currencyNew == 1 ? 1 : courseRur
+        addSumm = parseFloat(order.paySummNew) / (course > 0 ? course : 1e-9)
+        ords[orderIndex].paySumm += addSumm
       }
-      ords[orderIndex].makePayment = !ords[orderIndex].makePayment;
+      ords[orderIndex].makePayment = !ords[orderIndex].makePayment
       setOrders(ords)
     }
 
     const setPay = (orderIndex, value) => {
       let ords = [...orders]
-      ords[orderIndex].paySumm = value;
+      ords[orderIndex].paySummNew = value;
       setOrders(ords)
     }
 
     const setCurrency = (orderIndex, value) => {
       let ords = [...orders]
-      ords[orderIndex].currency = value;
+      ords[orderIndex].currencyNew = value;
       setOrders(ords)
     }
 
@@ -249,6 +268,9 @@ export default function ListOrderV(props) {
     navigate("/")
   }
 
+
+  console.log(orders);
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -260,11 +282,11 @@ export default function ListOrderV(props) {
         <Box component="form" noValidate style={outboxStyle}>
 
         {/* <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Order list of " + props.user.vendorName}</Box>  */}
-        <Header transparent={true} text={"Order list of " + props.user.vendorName} />
+        <Typography sx={{textAlign: "center", fontSize: "15px", padding: "10px 0"}} >{"Order list of " + props.user.vendorName} </Typography>
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "55px 85px 65px 90px 1fr 70px 90px 150px 30px",
+          gridTemplateColumns: "65px 85px 65px 90px 1fr 120px 70px 90px 120px 30px",
           columnGap: "4px",
           rowGap: "0px",
           alignItems: "center",
@@ -274,11 +296,10 @@ export default function ListOrderV(props) {
             <Grid item sx={{marginBottom: "4px"}}><Header text="Ref.no."/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Design"/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Item name"/></Grid>
+            <Grid item sx={{marginBottom: "4px"}}><Header text="Vendor"/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Amount"/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Details"/></Grid>
-            <Grid item sx={{gridColumn: "8 / span 2", marginBottom: "4px"}}><Header text="Status"/></Grid>
-
-            
+            <Grid item sx={{gridColumn: "9 / span 2", marginBottom: "4px"}}><Header text="Status"/></Grid>
 
     {orders.map((order, indexOrder) => (
       <React.Fragment>
@@ -297,20 +318,39 @@ export default function ListOrderV(props) {
           alignItems: "flex-start",
           minHeight: "70px" }} visibility={"visible"} > 
         
-            <Typography>Order No.&nbsp;<span className="my-val-1">{order.number}</span>dated<span className="my-val-1">{formattedDate(order.created)}</span>&nbsp;&nbsp;&nbsp;Total summ:<span className="my-val-1">{order.total}&nbsp;usd</span></Typography>
+        <table className="my-val-1" sx={{ gridRow: "1 / span 2", gridColumn: "1 / 1" }}>
+          <tr>
+            <td className="caption w100">Order No:</td><td><b>{order.number}</b>&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
+          </tr>
+          <tr>
+            <td className="caption w100">Client:</td><td>{order.clientName}</td>
+          </tr>
+          <tr>
+            <td className="caption w100">Contacts:</td><td>{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
+          </tr>
+          <tr>
+            <td className="caption w100">Total summ:</td><td><b>{order.total}&nbsp;usd</b></td>
+          </tr>
+        </table>
             <Typography></Typography>
-            <Typography> { !order.makePayment && <span>Payments:</span> }</Typography>
-            { !order.makePayment && <Box sx={{ gridRow: "1 / span 2", gridColumn: "4 / 4", display: "grid", gridTemplateColumns: "80px 20px 100px"}}>
+            <Typography> { !order.makePayment && order.payments.length > 0 && <span className="caption">Payments:</span> }</Typography>
+            { !order.makePayment && <Box sx={{ gridRow: "1 / span 2", gridColumn: "4 / 4" }}>
+            <table style={{marginTop: "-4px"}}>
               {order.payments.map((data, index) => (
-                <React.Fragment>
-                <span className="my-val-1">{formattedDate(data.date)}</span>
-                <span style={{textAlign: "center"}}>-</span>
-                <span className="my-val-1">{data.amount}&nbsp;{data.currency}</span>
-                </React.Fragment>
+                <tr>
+                <td className="my-val-1">{formattedDate(data.date)}</td>
+                <td style={{textAlign: "center"}}>-</td>
+                <td className="my-val-1" style={{textAlign: "right"}}>{data.amount.toFixed(2)}</td>
+                <td style={{textAlign: "center"}}>{data.currency}</td>
+                </tr>
               ))}
-              <span className="my-val-1">Paid total</span>
-              <span style={{textAlign: "center"}}>-</span>
-              <span className="my-val-1">{order.paySumm}&nbsp;usd</span>
+              <tr>
+              <td className="caption">Paid total</td>
+              <td style={{textAlign: "center"}}>-</td>
+              <td className="my-val-1" style={{textAlign: "right"}}><b>{order.paySumm.toFixed(2)}</b></td>
+              <td style={{textAlign: "center"}}><b>usd</b></td>
+              </tr>
+              </table>
               {/* <span className="my-val-1">Order total</span>
               <span style={{textAlign: "center"}}>-</span>
               <span className="my-val-1">{order.total}&nbsp;usd</span> */}
@@ -320,7 +360,7 @@ export default function ListOrderV(props) {
                <Typography>
                <MyText 
                 label="Pay summ" 
-                value={order.paySumm}
+                value={order.paySummNew}
                 width="80px"
                 onChange={value => { setPay(indexOrder, value)}}></MyText>
               </Typography> 
@@ -330,7 +370,7 @@ export default function ListOrderV(props) {
                 valueName="shortName"
                 width="80px"
                 disabled={false}
-                valueVariable={order.currency}
+                valueVariable={order.currencyNew}
                 setValueFn={(value) => { setCurrency(indexOrder, value) }}
                 data={currencies}
               /> 
@@ -360,7 +400,7 @@ export default function ListOrderV(props) {
                   { !order.makePayment && <React.Fragment>Add</React.Fragment> }
             </Button>
             
-            <Typography>Client:&nbsp;<span className="my-val-1">{order.clientName},&nbsp;phone:&nbsp;{order.clientPhone}</span></Typography>
+            <Typography></Typography>
             <Typography></Typography>
             <Typography></Typography>
             <Typography></Typography>
@@ -374,8 +414,8 @@ export default function ListOrderV(props) {
                 
                   <img 
                     src={config.api + "/" + data.imagePath}
-                    width={50}
-                    height={40}
+                    width={60}
+                    height={50}
                     style={{padding: "4px 0 0 0" }}
                     alt={data.itemName}
                 /> 
@@ -396,6 +436,10 @@ export default function ListOrderV(props) {
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
         <Grid item ><span className="my-val">{data.itemName}</span></Grid>
+        </Link>
+
+        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        <Grid item ><span className="my-val">{data.vendorName}</span></Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >

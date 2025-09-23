@@ -161,6 +161,21 @@ namespace chiffon_back.Controllers
         [HttpGet("OrdersOld")]
         public IEnumerable<Models.Order> Get(string type, string value, string id)
         {
+            bool save = false;
+            foreach(var c in ctx.Currencies)
+            {
+                decimal course = Helper.GetCurrencyCourse(c.ShortName!.ToUpper(), DateTime.Now);
+                if (course != c.Rate)
+                {
+                    c.Rate = course;
+                    save = true;
+                }
+            }
+            if (save)
+            {
+                ctx.SaveChanges();
+            }
+
             DataTable dt = new DataTable();
 
             var mapper = config.CreateMapper();
@@ -199,7 +214,13 @@ namespace chiffon_back.Controllers
             foreach (var o in orders) {
                 o.VendorName = ctx.Vendors.FirstOrDefault(x => x.Id == o.VendorId)?.VendorName;
 
-                o.PaySumm = ctx.Payments.Where(x => x.OrderId==o.Id).Sum(x => x.Amount); //TODO: Course!!!!
+                var payQuery = from p in ctx.Payments.Where(x => x.OrderId == o.Id)
+                               join c in ctx.Currencies on p.CurrencyId equals c.Id into jointable
+                               from j in jointable.DefaultIfEmpty()
+                               select new { j, p };
+
+                o.PaySumm = payQuery.Sum(x => x.j.Rate != null && x.j.Rate> 0m ? x.j.Rate * x.p.Amount : 0m);
+                //o.PaySumm = ctx.Payments.Where(x => x.OrderId == o.Id).Sum(x => x.Amount); //TODO: Course!!!!
 
                 var query = from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
                             join p in ctx.Products on oi.ProductId equals p.Id into jointable
@@ -384,6 +405,17 @@ namespace chiffon_back.Controllers
         {
             DataTable dt = new DataTable();
 
+            bool save = false;
+            decimal courseUsd = Helper.GetCurrencyCourse("USD", DateTime.Now);
+            // todo decimal courseEur = Helper.GetCurrencyCourse("USD", DateTime.Now);
+
+            var curr = ctx.Currencies.FirstOrDefault(x => x.ShortName!.ToUpper() == "RUR");
+            if (courseUsd != curr!.Rate)
+            { 
+                curr.Rate = courseUsd;
+                ctx.SaveChanges();
+            }
+
             var ordersQuery = from o in ctx.Orders orderby o.Id descending select o;
 
             List<Models.Order> orders = new List<Models.Order>();
@@ -405,14 +437,25 @@ namespace chiffon_back.Controllers
                 order.ClientEmail = o.ClientEmail;
                 order.ClientName = o.ClientName;
                 order.Uuid = o.Uuid;
-                order.PaySumm = ctx.Payments.Where(x => x.OrderId == o.Id).Sum(x => x.Amount);
+                //order.PaySumm = ctx.Payments.Where(x => x.OrderId == o.Id).Sum(x => x.Amount);
+
+                var payQuery = from p in ctx.Payments.Where(x => x.OrderId == o.Id)
+                               join c in ctx.Currencies on p.CurrencyId equals c.Id into jointable
+                               from j in jointable.DefaultIfEmpty()
+                               select new { j, p };
+                decimal? paySumm = payQuery.Sum(x => x.j.Rate != null && x.j.Rate > 0m ? x.p.Amount / x.j.Rate : 0m);
+                if (paySumm != null)
+                {
+                    order.PaySumm = Math.Round(paySumm.Value, 2);
+                }
+
                 var mapper = config.CreateMapper();
                 order.Payments = ctx.Payments.Where(x => x.OrderId == o.Id).Select(x => 
                 new Models.Payment
                 {
                     OrderId = x.OrderId,
                     CurrencyId = x.CurrencyId,
-                    Amount = x.Amount,
+                    Amount = Math.Round(x.Amount, 2),
                     Date = x.Date,
                     Currency = ctx.Currencies.FirstOrDefault(c=>c.Id==x.CurrencyId).ShortName
                 }).ToArray();

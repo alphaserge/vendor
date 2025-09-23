@@ -14,4 +14,15 @@ export const getCurrencies = (setFn) => {
     })
   }
   
+export const getCourse = (setFn, shortName) => {
+    axios.get(config.api + '/Currencies/Course?shortName=' + shortName)
+    .then(function (res) {
+        setFn(res.data)
+    })
+    .catch (error => {
+      console.log('getCurrencies error:' )
+      console.log(error)
+    })
+  }
   
+    

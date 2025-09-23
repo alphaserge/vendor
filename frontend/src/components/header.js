@@ -10,14 +10,14 @@ export default function Header(props) {
             sx={{ 
               fontSize: "14px",
               fontFamily: ap.FONTFAMILY,
-              fontWeight: "500",
-              backgroundColor: props.transparent ? "none": "#eee", 
-              color: "#2b6abdff", 
+              fontWeight: "400",
+              backgroundColor: props.transparent ? "none": "#bbb", 
+              color: "#333", 
               //borderRight: props.last?"1px dotted #aaa":"none", //"1px solid #aaa",
               //border: "1px dotted #aaa",
-              //borderRadius: "6px", 
+              borderRadius: "6px", 
               margin: "0px", 
-              padding: "6px 8px", 
+              padding: "8px 8px", 
               textAlign: "center"}}>
             {props.text}
           </Typography>
