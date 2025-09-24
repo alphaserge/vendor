@@ -233,14 +233,14 @@ export default function ListOrderV(props) {
           display: "grid", 
           gridTemplateColumns: "55px 85px 65px 90px 1fr 70px 90px 150px 30px",
           columnGap: "4px",
-          rowGap: "0px",
+          rowGap: "4px",
           alignItems: "center",
           fontSize: "15px" }}>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Photo"/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Art.no."/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Ref.no."/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Design"/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Item name"/></Grid>
+            <Grid item sx={{marginBottom: "4px"}}><Header text="Item name, color"/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Amount"/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Details"/></Grid>
             <Grid item sx={{gridColumn: "8 / span 2", marginBottom: "4px"}}><Header text="Status"/></Grid>
@@ -255,7 +255,7 @@ export default function ListOrderV(props) {
                   <img 
                     src={config.api + "/" + data.imagePath}
                     width={50}
-                    height={40}
+                    height={50}
                     style={{padding: "4px 0 0 0" }}
                     alt={data.itemName}
                 /> 
@@ -275,7 +275,7 @@ export default function ListOrderV(props) {
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item ><span className="my-val">{data.itemName}</span></Grid>
+        <Grid item ><span className="my-val">{data.itemName}.<br/>Color:&nbsp;{data.colorNo}&nbsp;{data.colorNames}</span></Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
@@ -309,11 +309,12 @@ export default function ListOrderV(props) {
             height: "85px", 
             padding: "10px", 
             backgroundColor: "#f4f4f4"}} >
-          <MyText 
-            label="Details" 
-            value={data.details}
-            onChange={value => { setDetails(data.orderId, data.id, value)}}
-          ></MyText>
+           <Box sx={{marginTop: "7px"}}>
+            <MyText 
+              label="Details" 
+              value={data.details}
+              onChange={value => { setDetails(data.orderId, data.id, value)}}></MyText>
+           </Box>
           <MySelectLab 
               label="Delivery company"
               valueName="deliveryCompany"
@@ -323,7 +324,9 @@ export default function ListOrderV(props) {
               setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
               data={transportCompanies}
             />
-          <MyText label="Delivery No." value={data.deliveryNo}></MyText>
+            <Box sx={{marginTop: "7px"}}>
+            <MyText label="Delivery No." value={data.deliveryNo}></MyText>
+            </Box>
           {/* <TextField //label="Details"
               margin="normal"
               size="small" 

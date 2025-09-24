@@ -354,7 +354,7 @@ namespace chiffon_back.Controllers
                 };
 
                 string imagePath = @"colors\nopicture.png";
-                if (item.oi.ColorVariantId!=null)
+                if (item.oi.ColorVariantId != null && item.oi.ColorVariantId != -1)
                 {
                     Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.oi.ColorVariantId);
                     if (cv != null)
@@ -364,21 +364,21 @@ namespace chiffon_back.Controllers
                         {
                             imagePath = imageFiles[0];
                         }
-                    } 
+                    }
                 }
-
-               /* if (String.IsNullOrEmpty(imagePath))
+                else
                 {
-                    foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == item.j.Id).ToList())
+                    var product = ctx.Products.FirstOrDefault(x => x.Id == item.j.Id);
+                    if (product != null)
                     {
-                        var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
-                        if (imageFiles.Count > 0)
+                        string[] uuids = PhotoHelper.GetPhotoUuids(product.PhotoUuids);
+                        if (uuids.Length > 0)
                         {
+                            var imageFiles = DirectoryHelper.GetImageFiles(uuids[0]);
                             imagePath = imageFiles[0];
-                            break;
                         }
                     }
-                }*/
+                }
 
                 if (!String.IsNullOrEmpty(item.oi.Details))
                 {
@@ -493,7 +493,7 @@ namespace chiffon_back.Controllers
                     };
 
                     string imagePath = @"colors\nopicture.png";
-                    if (item.oi.ColorVariantId != null)
+                    if (item.oi.ColorVariantId != null && item.oi.ColorVariantId != -1)
                     {
                         Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.oi.ColorVariantId);
                         if (cv != null)
@@ -512,7 +512,8 @@ namespace chiffon_back.Controllers
                             string[] uuids = PhotoHelper.GetPhotoUuids(product.PhotoUuids);
                             if (uuids.Length > 0)
                             {
-                                imagePath = uuids[0];
+                                var imageFiles = DirectoryHelper.GetImageFiles(uuids[0]);
+                                imagePath = imageFiles[0];
                             }
                         }
                     }
@@ -688,12 +689,26 @@ namespace chiffon_back.Controllers
                     {
                         string img = String.Empty;
                         Context.ColorVariant cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.ColorVariantId);
-                        
+
+                        if (cv != null)
+                        {
                             var imageFiles = DirectoryHelper.GetImageFiles(cv?.Uuid!);
                             if (imageFiles.Count > 0)
                             {
                                 img = imageFiles[0];
                             }
+                        } 
+                        else
+                        {
+                            string[] uuids = PhotoHelper.GetPhotoUuids(product.PhotoUuids);
+                            {
+                                if (uuids.Length > 0)
+                                {
+                                    var imageFiles = DirectoryHelper.GetImageFiles(uuids[0]);
+                                    img = imageFiles[0];
+                                }
+                            }
+                        }
 
                         if (String.IsNullOrEmpty(img))
                         {

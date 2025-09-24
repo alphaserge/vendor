@@ -322,16 +322,15 @@ export default function Orders(props) {
           fontFamily: ap.FONTFAMILY,
           fontSize: "16px",
           alignItems: "center" }}>
-                  <Grid item><Header text="Photo"></Header></Grid>
-                  <Grid item><Header text="Art No."></Header></Grid>
-                  <Grid item><Header text="Item name, design"></Header></Grid>
-                  <Grid item><Header text="Colors"></Header></Grid>
-                  {/* <Grid item><Header text="Design"></Header></Grid> */}
-                  <Grid item><Header text="Ordered"></Header></Grid>
-                  <Grid item><Header text="Details"></Header></Grid>
-                  <Grid item><Header text="Price"></Header></Grid>
-                  <Grid item><Header text="Status"></Header></Grid>
-                  
+                  <Grid item sx={{mb: 1}}><Header text="Photo"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Art No."></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Item name, design"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Colors"></Header></Grid>
+                  {/* <Grid item sx={{mb: 1}}><Header text="Design"></Header></Grid> */}
+                  <Grid item sx={{mb: 1}}><Header text="Ordered"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Details"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Price"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Status"></Header></Grid>
             
                 { orders[orderIndex].items.map((data, index) => ( 
               <React.Fragment>
@@ -367,7 +366,7 @@ export default function Orders(props) {
         </Box>
 
           <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}} >
-            <Box className="product-item">Total summ: {formattedPrice(totalPay)}&nbsp;$</Box>
+            <Box className="product-item" sx={{mt: 1}}>Total summ: {formattedPrice(totalPay)}&nbsp;$</Box>
           </Box>
 
         <Box sx={{display: "flex", alignItems: "flex-start", mt: 3}}>
