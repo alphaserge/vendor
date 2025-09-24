@@ -147,7 +147,7 @@ export default function Product(props) {
 
   const [cartQuantity, setCartQuantity] = useState(1)
   const [cartUnit, setCartUnit] = useState("meters")
-  const [cartColor, setCartColor] = useState({colorNames: "select color", colorVariantId: -1})
+  const [cartColor, setCartColor] = useState({colorNames: "custom color", colorVariantId: -1})
   const [manualColor, setManualColor] = useState("")
   const [cartIsRolls, setCartIsRolls] = useState(false)
   const [cartHelp, setCartHelp] = useState(false)
@@ -167,6 +167,9 @@ export default function Product(props) {
     const dispatch = useDispatch();
 
     const _addToCart = () => {
+      if (!cartColor.colorNo && !!manualColor) {
+        cartColor.colorNo = parseInt(manualColor)
+      }
       dispatch(addToCart({ product, cartColor, cartQuantity, cartUnit }));
     };
   
@@ -187,7 +190,7 @@ export default function Product(props) {
     };
 
     const handleAddToCart = (event) => {
-      if (colorVarId ==- 1) 
+      if (colorVarId ==- 1 && !manualColor) 
       {
         return 
       }
@@ -205,17 +208,20 @@ export default function Product(props) {
       //setCartColorVar({colorNames: e.target.value.colorNames, colorVariantId: e.target.value.colorVariantId})
       setCartColor(e.target.value)
       setColorVarId(e.target.value.colorVariantId)
+      if (!!e.target.value.colorNo) {
+        setManualColor("")
+      }
     }
 
     var selectColors = product.colors.filter((it,ix) => { return it.colorNames != "PRODUCT"})
 
      //!! I'm change :
     selectColors =  product.colors
-    // ?  product.colors.map((it) => { return it.colorNames == "PRODUCT" ? "select color" : it.colorNames } ) : []
+    // ?  product.colors.map((it) => { return it.colorNames == "PRODUCT" ? "custom color" : it.colorNames } ) : []
 
     selectColors.forEach((e) => {
       if (e.colorNames == "PRODUCT") {
-        e.colorNames = "select color"
+        e.colorNames = "custom color"
       }
     })
 
@@ -320,9 +326,12 @@ export default function Product(props) {
 
       axios.get(config.api + '/Products/Product?id=' + getFromUrl('id'))
       .then(function (result) {
-          setProduct(result.data)
-          //console.log('result.data:')
-          //console.log(result.data)
+        const _product = result.data
+        const colVar = _product.colors.find(x => !x.colorNo)
+        setProduct(_product)
+        if (colVar) {
+          setCartColor(colVar)
+        }
       })
       .catch (error => {
         console.log(error)
@@ -411,22 +420,23 @@ console.log(colorVarId)
               <ImageMagnifier 
                 //src={config.api + "/" + product.colors[0].imagePath[0]}
                 sx={{padding: "0 10px"}}
-                images={colorVarId == -1 ? product.colors.map((it, ix) => { return { 
-                  label: "Picture " + ix, 
-                  src: config.api + "/" + it.imagePath[0],
-                  colorVar: {
-                      colorNo: it.colorNo,
-                      colorNames: it.colorNames,
-                      colorVariantId: it.colorVariantId
-                  }}})
+                images={colorVarId == -1 ? 
+                  product.colors.map((it, ix) => { return { 
+                    label: "Picture " + ix, 
+                    src: config.api + "/" + it.imagePath[0],
+                    colorVar: {
+                        colorNo: it.colorNo,
+                        colorNames: it.colorNames,
+                        colorVariantId: it.colorVariantId
+                    }}})
                 : product.colors.filter((i)=> { return i.colorVariantId == colorVarId}).map((it, ix) => { return { 
-                  label: "Picture " + ix, 
-                  src: config.api + "/" + it.imagePath[0],
-                  colorVar: {
-                      colorNo: it.colorNo,
-                      colorNames: it.colorNames,
-                      colorVariantId: it.colorVariantId
-                  }}})
+                    label: "Picture " + ix, 
+                    src: config.api + "/" + it.imagePath[0],
+                    colorVar: {
+                        colorNo: it.colorNo,
+                        colorNames: it.colorNames,
+                        colorVariantId: it.colorVariantId
+                    }}})
                 }
                 colorVarId={colorVarId}
                 width={330}
@@ -483,7 +493,7 @@ console.log(colorVarId)
                   { selectColors.map((it, ix) => (
                       <MenuItem key={"sh_"+ix}  value={it}>{it.colorNames}</MenuItem> )) }
                 </StyledSelect>
-                {!cartColor.colorNo && <Typography sx={{marginTop: "15px"}}>or enter the color number manually:</Typography> }
+                {!cartColor.colorNo && <Typography sx={{marginTop: "15px"}}>please enter the color number:</Typography> }
                 {!cartColor.colorNo && <StyledTextField margin="normal"
                           required
                           fullWidth
@@ -501,7 +511,7 @@ console.log(colorVarId)
                 <StyledButton
                   startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
                   onClick={handleAddToCart}
-                  disabled={colorVarId==-1}
+                  disabled={colorVarId==-1 && !manualColor}
                   sx={{ mt: 3 }} >Add to cart</StyledButton>
                 <StyledButton
                   startIcon={<ShopIcon sx={{ color: "#fff"}} />}

@@ -372,7 +372,7 @@ const makeOrder = async (event) => {
       <React.Fragment>
         <Link to={"/product?id=" + data.product.id } style={{ textDecoration: 'none' }} >
           <Grid item>
-                {( data.colorVar && data.colorVar.imagePath.length>0  && 
+                {( data.colorVar && (data.colorVar.imagePath && data.colorVar.imagePath.length>0) && 
                   <img 
                     src={config.api + "/" + data.colorVar.imagePath[0]}
                     sx={{padding: "0 10px"}}

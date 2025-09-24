@@ -504,6 +504,17 @@ namespace chiffon_back.Controllers
                                 imagePath = imageFiles[0];
                             }
                         }
+                    } else
+                    {
+                        var product = ctx.Products.FirstOrDefault(x => x.Id == item.j.Id);
+                        if (product != null)
+                        {
+                            string[] uuids = PhotoHelper.GetPhotoUuids(product.PhotoUuids);
+                            if (uuids.Length > 0)
+                            {
+                                imagePath = uuids[0];
+                            }
+                        }
                     }
 
                     /* if (String.IsNullOrEmpty(imagePath))
