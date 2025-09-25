@@ -23,7 +23,7 @@ import { fromUrl } from '../../functions/helper';
 import config from "../../config.json"
 
 const pages = ['Fabrics', 'Accessories', 'Orders', 'Help', 'Contacts' ]; 
-const settings = ['Profile', 'Account', 'Dashboard', 'Login', 'Logout', 'Register'];
+const settings = ['Login', 'Logout', 'Register'];
 
 const menuPagesStyle = { fontSize: "14px", fontWeight: "normal", color: APPEARANCE.WHITE2, textTransform: "none" }
 
@@ -87,6 +87,7 @@ export default function PageHeader(props) {
     setAnchorElNav(null);
   };
 
+  const menuItems = !!props.user ? settings.filter(x => x != 'Register' ) : settings
 
   useEffect(() => {
 
@@ -225,12 +226,12 @@ export default function PageHeader(props) {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting,index) => (
+              {menuItems.map((item,index) => (
                 <MenuItem 
                   key={"key2-"+index} 
-                  data-menu-value={setting}
+                  data-menu-value={item}
                   onClick={handleMenuClick}>
-                  <Typography textAlign="center">{setting}</Typography>
+                  <Typography textAlign="center">{item}</Typography>
                 </MenuItem> 
               ))}
             </Menu>

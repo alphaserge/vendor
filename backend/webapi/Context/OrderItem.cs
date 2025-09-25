@@ -8,8 +8,6 @@
         public int ProductId { get; set; }
         public int? StockId { get; set; }
         public decimal? Quantity { get; set; }
-        public decimal? VendorQuantity { get; set; }
-        public bool? OrderRolls { get; set; }
         public bool? Paid { get; set; }
         public string? Details { get; set; }
         public decimal? Price { get; set; }
@@ -21,6 +19,7 @@
         public DateTime? Delivered { get; set; }
         public string? DeliveryNo { get; set; }
         public string? DeliveryCompany { get; set; }
-
+        public string? ClientDeliveryNo { get; set; }
+        public string? ClientDeliveryCompany { get; set; }
     }
 }
