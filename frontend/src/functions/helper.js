@@ -134,13 +134,35 @@ export const quantityInfo = (item) => {
 }
 
 
-export const orderStatusString = (item) => {
+export const orderStatusString = (item, order) => {
     
     if (!!item.delivered) return "delivered to client"
-    if (!!item.deliveryNo && !!item.deliveryCompany  ) return "shipping to client"
-    if (!!item.paid      ) return "paid"
+
+    if (!!item.deliveryNo && !!item.deliveryCompany  ) return "shipping to stock"
+
+    if (!!order && order.paySumm >= 0.0001) {
+        if (order.paySumm - order.total >=0) { return "paid" }
+        else { return "partially paid" }
+    }
+
     if (!!item.details   ) return "confirmed by vendor"
+
     if (!!item.stockName ) return "stock " + item.stockName
-    //if (!!item.shippedToClient ) return "delivered"
+
+    return "waiting of vendor"
+}
+
+export const orderStatusString2 = (item) => {
+    
+    if (!!item.delivered) return "delivered to client"
+
+    if (!!item.deliveryNo && !!item.deliveryCompany  ) return "shipping to stock"
+
+    if (!!item.paid) return "paid"
+
+    if (!!item.details   ) return "confirmed by vendor"
+
+    if (!!item.stockName ) return "stock " + item.stockName
+
     return "waiting of vendor"
 }

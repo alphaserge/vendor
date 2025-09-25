@@ -150,15 +150,16 @@ export default function Orders(props) {
                 phone   : d.clientPhone,
                 email   : d.clientEmail,
                 address : d.clientAddress,
-                total   : d.items.reduce((n, it) => n + it.quantity*it.price, 0),
-                paid    : d.paid,
+                total   : d.total, // d.items.reduce((n, it) => n + it.quantity*it.price, 0),
+                paySumm : d.paySumm,
                 changes : false,
                 canPay  : false,
+                status  : d.paySumm >= 0 && d.paySumm >= d.total ? "paid" : "-",
                 items   : ( !!d.items ? d.items.map((it) => { return {
                   checked   : false,
                   id        : it.id,
                   productId : it.productId,
-                  paid      : it.paid,
+                  //paid      : it.paid,
                   imagePath : it.imagePath,
                   itemName  : it.itemName,
                   artNo     : it.artNo,
@@ -178,7 +179,7 @@ export default function Orders(props) {
                   delivered : it.delivered,
                   deliveryNo: it.deliveryNo,
                   deliveryCompany : it.deliveryCompany,
-                  status: it.confirmByVendor != null ? "confirmed" : (it.confirmByVendor != null ? "shipped" : (it.inStock != null ? "in stock" : (it.shippedToClient != null ? "shipped to client" : (it.recievedByClient != null ? "recieved" : "ordered"))))
+                  status: orderStatusString(it,d) // it.confirmByVendor != null ? "confirmed" : (it.confirmByVendor != null ? "shipped" : (it.inStock != null ? "in stock" : (it.shippedToClient != null ? "shipped to client" : (it.recievedByClient != null ? "recieved" : "ordered"))))
                   }}) : [])
               }
           });
@@ -280,7 +281,7 @@ export default function Orders(props) {
         </Box>
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "100px 100px 100px 100px 100px 100px",
+          gridTemplateColumns: "120px 120px 120px 120px 120px",
           columnGap: "10px",
           rowGap: "20px",
           fontFamily: ap.FONTFAMILY,
@@ -289,18 +290,18 @@ export default function Orders(props) {
                   <Grid item><Header text="Number"></Header></Grid>
                   <Grid item><Header text="Date"></Header></Grid>
                   <Grid item><Header text="Items"></Header></Grid>
-                  <Grid item><Header text="Cost"></Header></Grid>
+                  <Grid item><Header text="Total summ"></Header></Grid>
                   <Grid item><Header text="Status"></Header></Grid>
-                  <Grid item><Header text="Paid"></Header></Grid>
+                  {/* <Grid item><Header text="Paid"></Header></Grid> */}
             
                 { orders.map((data, index) => ( 
               <React.Fragment>
                 <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}} >{data.number.toString().padStart(4, '0')}</Grid></Link>
                 <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}} >{formattedDate(data.created)}</Grid></Link>
                 <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{data.items.length}</Grid></Link>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{toFixed2(data.totalPay)} $</Grid></Link>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{"active"}</Grid></Link>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{data.paid + " $"}</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{toFixed2(data.total)} $</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{data.status}</Grid></Link>
+                {/* <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{data.paid + " $"}</Grid></Link> */}
                 {/* <Grid item sx={{textAlign: "center"}}>
                   <IconButton size="small" aria-label="pay" sx={{backgroundColor: "#333", color: "#fff"}} onClick={(e)=> { window.open("https://show.cloudpayments.ru/widget/") }}><AttachMoneyIcon sx={{color: "#fff"}} /></IconButton>
                 </Grid> */}
@@ -361,7 +362,7 @@ export default function Orders(props) {
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.quantity + " " + data.unit}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.details}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{formattedPrice(data.price)}&nbsp;$</Grid></Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "left"}} >{orderStatusString(data)}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{orderStatusString(data, orders[orderIndex])}</Grid></Link>
               </React.Fragment> ))}
         </Box>
 
@@ -369,15 +370,15 @@ export default function Orders(props) {
             <Box className="product-item" sx={{mt: 1}}>Total summ: {formattedPrice(totalPay)}&nbsp;$</Box>
           </Box>
 
-        <Box sx={{display: "flex", alignItems: "flex-start", mt: 3}}>
+        { orders[orderIndex].status != "paid" && <Box sx={{display: "flex", alignItems: "flex-start", mt: 3}}>
           <IconButtonWhite aria-label="expand" onClick={toggleExpand} >
           <KeyboardArrowDownIcon sx={{ color: "#3d694a", fontSize: 26 }} >
           </KeyboardArrowDownIcon>
             &nbsp;Buy now
           </IconButtonWhite>
-        </Box> 
+        </Box> }
 
-        { expand && 
+        { expand && orders[orderIndex].status != "paid" && 
           <React.Fragment>
           { invoiceUrl.length == 0 && <Box sx={{display: "flex", flexDirection: "column", alignItems: "left", mt: 4}} >
             <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}} >
@@ -409,6 +410,7 @@ export default function Orders(props) {
                 </StyledIconButton>                          
             </Box>
         </Box> }
+        
 
           { invoiceUrl.length > 0 && <Box sx={{display: "flex", flexDirection: "column", gap: "20px",  alignItems: "center", mt: 4 }} className="product-item" >
             
@@ -429,6 +431,7 @@ export default function Orders(props) {
 
         </React.Fragment>
         }
+        
 
         </Box> }
 

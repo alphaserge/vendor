@@ -34,12 +34,13 @@
         public string? ColorNames { get; set; }
         public string? Unit { get; set; }
         public decimal? RollLength { get; set; }
-        public bool? Paid { get; set; }
+        //public bool? Paid { get; set; }
         public DateTime? Shipped { get; set; }
         public DateTime? Delivered { get; set; }
         public string? DeliveryNo { get; set; }
         public string? DeliveryCompany { get; set; }
         public decimal? Total { get; set; }
+        public bool? Paid { get; set; }
     }
 
     public class ChangeDetails

@@ -29,7 +29,7 @@ import MyText from '../../components/mytext';
 import OrderItemStatus from '../../components/orderitemstatus';
 import { APPEARANCE } from '../../appearance';
 
-import { orderStatusString, fined, status, quantityInfo, computePrice, notNull } from "../../functions/helper"
+import { orderStatusString2, fined, status, quantityInfo, computePrice, notNull } from "../../functions/helper"
 import { getTransportCompanies } from '../../api/vendors'
 import MySelectLab from "../../components/myselectlab";
 
@@ -288,7 +288,7 @@ export default function ListOrderV(props) {
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item ><span className="my-val">{orderStatusString(data)}</span></Grid>
+        <Grid item ><span className="my-val">{orderStatusString2(data)}</span></Grid>
         </Link>
 
         <Grid item >
@@ -325,7 +325,7 @@ export default function ListOrderV(props) {
               data={transportCompanies}
             />
             <Box sx={{marginTop: "7px"}}>
-            <MyText label="Delivery No." value={data.deliveryNo}></MyText>
+            <MyText label="Delivery No." value={data.deliveryNo} onChange={value => { setDeliveryNo(data.orderId, data.id, value)}}></MyText>
             </Box>
           {/* <TextField //label="Details"
               margin="normal"

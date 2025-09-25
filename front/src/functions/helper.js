@@ -140,13 +140,20 @@ export const quantityInfo = (item) => {
     return item.quantity + "(" + item.unit.replace('rolls','r').replace('meters','m') + ")"
 }
 
-export const orderStatusString = (item) => {
+export const orderStatusString = (item, order) => {
     
     if (!!item.delivered) return "delivered to client"
-    if (!!item.deliveryNo && !!item.deliveryCompany  ) return "shipping to client"
-    if (!!item.paid      ) return "paid"
+
+    if (!!item.deliveryNo && !!item.deliveryCompany  ) return "shipping to stock"
+
+    if (!!order && order.paySumm >= 0) {
+        if (order.paySumm - order.total >=0) return "paid"
+        else return "partially paid"
+    }
+
     if (!!item.details   ) return "confirmed by vendor"
+
     if (!!item.stockName ) return "stock " + item.stockName
-    //if (!!item.shippedToClient ) return "delivered"
+
     return "waiting of vendor"
 }

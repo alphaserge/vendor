@@ -452,7 +452,7 @@ export default function ListOrderV(props) {
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item ><span className="my-val">{orderStatusString(data)}</span></Grid>
+        <Grid item ><span className="my-val">{orderStatusString(data, order)}</span></Grid>
         </Link>
 
         <Grid item >

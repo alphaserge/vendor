@@ -212,8 +212,8 @@ namespace chiffon_back.Models
             {
                 int a = it.Quantity == null ? 0 : it.Quantity.Value;
                 int d = it.DiscountedRate == null ? 0 : it.DiscountedRate.Value;
-                decimal p = it.Price == null ? 0 : it.Price.Value * courseUSD;
-                decimal t = p*courseUSD;
+                decimal p = it.Price == null ? 0 : Math.Round(it.Price.Value * courseUSD, 2, MidpointRounding.ToZero);
+                decimal t = p*a;
 
                 string price = p == null ? string.Empty : p.ToString("n", f) + " руб.";
                 string rate = d == null ? string.Empty : d.ToString("n", f) + " руб.";

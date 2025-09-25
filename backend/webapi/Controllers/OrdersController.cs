@@ -2,6 +2,7 @@
 using chiffon_back.Code;
 using chiffon_back.Context;
 using chiffon_back.Models;
+using DocumentFormat.OpenXml.Vml;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -234,9 +235,15 @@ namespace chiffon_back.Controllers
                 if (items.Count == 0) {
                     continue;
                 }
-                
+
+                decimal total = 0m;
                 List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
                 foreach (var item in items) {
+                    if (item.oi.Quantity != null && item.oi.Price != null)
+                    {
+                        total += item.oi.Quantity.Value * item.oi.Price.Value;
+                    }
+
                     Models.OrderItem orderItem = new Models.OrderItem()
                     {
                         OrderId = o.Id,
@@ -264,7 +271,7 @@ namespace chiffon_back.Controllers
                         StockName = ctx.Stocks.FirstOrDefault(x => x.Id == item.oi.StockId)?.StockName,
                         VendorId = item.j.VendorId,
                         VendorName = vendorList.FirstOrDefault(x=>x.Id==item.j.VendorId)?.VendorName,
-                        Paid = item.oi.Paid // (ctx.Payments.FirstOrDefault(x => x.Amount > 0m && x.What == "order" && x.WhatId == item.oi.OrderId)) != null,
+                        //Paid = item.oi.Paid // (ctx.Payments.FirstOrDefault(x => x.Amount > 0m && x.What == "order" && x.WhatId == item.oi.OrderId)) != null,
                     };
 
                     string imagePath = string.Empty;
@@ -292,6 +299,7 @@ namespace chiffon_back.Controllers
                     }
 
                 }
+                o.Total = total;
                 o.Items = orderItems.ToArray();
             }
 
@@ -323,6 +331,14 @@ namespace chiffon_back.Controllers
                     continue;
                 }
 
+                var order = ctx.Orders.FirstOrDefault(x => x.Id == item.oi.OrderId);
+                var payQuery = from p in ctx.Payments.Where(x => x.OrderId == item.oi.OrderId)
+                               join c in ctx.Currencies on p.CurrencyId equals c.Id into jointable
+                               from j in jointable.DefaultIfEmpty()
+                               select new { j, p };
+                decimal? paySumm = payQuery.Sum(x => x.j.Rate != null && x.j.Rate > 0m ? x.j.Rate * x.p.Amount : 0m);
+                decimal? totalSumm = ctx.OrderItems.Where(x => x.OrderId == item.oi.OrderId).Sum(x => x.Quantity* x.Price);
+
                 Models.OrderItem orderItem = new Models.OrderItem()
                 {
                     OrderId = item.oi.OrderId,
@@ -350,7 +366,7 @@ namespace chiffon_back.Controllers
                     StockName = ctx.Stocks.FirstOrDefault(x => x.Id == item.oi.StockId)?.StockName,
                     VendorId = item.j.VendorId,
                     VendorName = ctx.Vendors.FirstOrDefault(x=>x.Id==item.j.VendorId)?.VendorName,
-                    Paid = item.oi.Paid// ctx.Payments.FirstOrDefault(x=>x.Amount>0m && x.What=="order" && x.WhatId==item.oi.OrderId) != null
+                    Paid = paySumm != null && totalSumm != null && paySumm >= totalSumm // ctx.Payments.FirstOrDefault(x=>x.Amount>0m && x.What=="order" && x.WhatId==item.oi.OrderId) != null
                 };
 
                 string imagePath = @"colors\nopicture.png";
@@ -460,9 +476,14 @@ namespace chiffon_back.Controllers
                     Currency = ctx.Currencies.FirstOrDefault(c=>c.Id==x.CurrencyId).ShortName
                 }).ToArray();
 
+                decimal total = 0m;
                 List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
                 foreach (var item in query.ToList())
                 {
+                    if (item.oi.Quantity != null && item.oi.Price != null)
+                    {
+                        total += item.oi.Quantity.Value * item.oi.Price.Value;
+                    }
                     Models.OrderItem orderItem = new Models.OrderItem()
                     {
                         OrderId = item.oi.OrderId,
@@ -546,6 +567,7 @@ namespace chiffon_back.Controllers
                     orderItem.imagePath = imagePath;
                     orderItems.Add(orderItem);
                 }
+                order.Total = total;
                 order.Items = orderItems.ToArray();
                 orders.Add(order);
             }
@@ -717,9 +739,9 @@ namespace chiffon_back.Controllers
 
                         string webRootPath = _webHostEnvironment.WebRootPath;
                         string contentRootPath = _webHostEnvironment.ContentRootPath;
-                        string path = Path.Combine(contentRootPath, img);
+                        string path = System.IO.Path.Combine(contentRootPath, img);
                         string mediaType = MediaTypeNames.Image.Jpeg;
-                        switch (Path.GetExtension(path).ToLower())
+                        switch (System.IO.Path.GetExtension(path).ToLower())
                         {
                             case ".png": mediaType = MediaTypeNames.Image.Png; break;
                             case ".webp": mediaType = MediaTypeNames.Image.Webp; break;
@@ -1051,7 +1073,7 @@ namespace chiffon_back.Controllers
                 //img = @"colors\nopicture.png";
                 string fileName = String.Format("invoice_{0}.docx", inv.Number != null ? inv.Number.Value : "nonumber");
                 string contentRootPath = _webHostEnvironment.ContentRootPath;
-                path = Path.Combine(contentRootPath, "files");
+                path = System.IO.Path.Combine(contentRootPath, "files");
                 new InvoiceReports().CreateInvoice(inv, path, fileName, "Russian");
                 /*foreach (var it in ctx.OrderItems.Where(x => x.OrderId == order.Id))
                 {
@@ -1066,7 +1088,7 @@ namespace chiffon_back.Controllers
 
                 //var message = new { FileName = Path.Combine(path, fileName) };
                 //return new OkObjectResult(message);
-                return Path.Combine(@"files", fileName);
+                return System.IO.Path.Combine(@"files", fileName);
             }
             catch (Exception ex)
             {
