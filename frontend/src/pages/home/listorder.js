@@ -32,6 +32,8 @@ import { APPEARANCE } from '../../appearance';
 import { orderStatusString, formattedDate, quantityInfo, computePrice  } from "../../functions/helper"
 import { getCurrencies, getCourse } from '../../api/currencies'
 import { postPayment } from '../../api/payments'
+import { getTransportCompanies } from '../../api/vendors'
+import { getStocks } from '../../api/stocks'
 import MySelectLab from "../../components/myselectlab";
 
 const defaultTheme = createTheme()
@@ -69,6 +71,9 @@ export default function ListOrderV(props) {
   const [paySumm, setPaySumm] = useState([])
   const [currencies, setCurrencies] = useState([])
   const [courseRur, setCourseRur] = useState(0)
+  const [transportCompanies, setTransportCompanies] = useState([])
+  const [stocks, setStocks] = useState([])
+    
   //const [expand, setExpand] = useState(new Set())
 
   const saveOrderItem = async (index) => {
@@ -170,7 +175,8 @@ export default function ListOrderV(props) {
                   paid      : i.paid,
                   deliveryNo: i.deliveryNo,
                   deliveryCompany : i.deliveryCompany,
-                  changes: false }}) }
+                  changes: false,
+                  expand : true }}) }
               })
           setOrders(result)
           setFilter(false)
@@ -185,24 +191,23 @@ export default function ListOrderV(props) {
       })
     }
 
-    const setDetails = (orderId, id, value) => {
+    const setTransportCompany = (orderId, id, value) => {
       let ords = [...orders]
       for (let j=0; j< ords.length; j++) {
         if (ords[j].orderId == orderId && ords[j].id == id) {
-              ords[j].details = value
+              ords[j].deliveryCompany = value
               ords[j].changes = true
-              try { ords[j].total = eval(value) } catch (e) { ords[j].total = 0 }
               setOrders(ords)
               break
             }
           }
     }
 
-    const setTransportCompany = (orderId, id, value) => {
+    const setDeliveryNo = (orderId, id, value) => {
       let ords = [...orders]
       for (let j=0; j< ords.length; j++) {
         if (ords[j].orderId == orderId && ords[j].id == id) {
-              ords[j].deliveryCompany = value
+              ords[j].deliveryNo = value
               ords[j].changes = true
               setOrders(ords)
               break
@@ -258,6 +263,8 @@ export default function ListOrderV(props) {
     useEffect(() => {
       loadOrders()
       getCurrencies(setCurrencies)
+      getTransportCompanies(props.user.vendorId, setTransportCompanies)
+      getStocks(props.user.vendorId, setStocks)
     }, []);
 
 
@@ -464,6 +471,70 @@ export default function ListOrderV(props) {
           </IconButton>  */}
         </Grid>
 
+        { data.expand && <Grid item sx={{ gridColumn: "1 / -1" }} visibility={"visible"} > 
+        <Box sx={{ 
+            display: "flex", 
+            flexDirection: "row", 
+            alignItems: "center",
+            columnGap: "10px", 
+            height: "85px", 
+            padding: "10px", 
+            backgroundColor: "#f4f4f4"}} >
+          <MySelectLab 
+              label="Stock"
+              valueName="stock"
+              width="160px"
+              //disabled={!data.paid}
+              valueVariable={data.stock}
+              setValueFn={(value) => { setStocks(data.orderId, data.id, value) }}
+              data={stocks}
+            />
+          <MySelectLab 
+              label="Delivery company"
+              valueName="deliveryCompany"
+              width="160px"
+              disabled={!data.paid}
+              valueVariable={data.deliveryCompany}
+              setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
+              data={transportCompanies}
+            />
+            <Box sx={{marginTop: "7px"}}>
+            <MyText label="Delivery No." value={data.deliveryNo} onChange={value => { setDeliveryNo(data.orderId, data.id, value)}}></MyText>
+            </Box>
+          {/* <TextField //label="Details"
+              margin="normal"
+              size="small" 
+              id={"valuedetails-" + index}
+              name={"valuedetails-" + index}
+              label={!!data.details ? "" : "Details"}
+              sx={{marginTop: 0, backgroundColor: !!data.details ? "none" : "#fcc"}}
+              value={data.details}
+              onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}} /> */}
+          <Button 
+            onClick={(e)=>{ saveOrderItem(index) }} 
+            edge="end" 
+            disabled={!data.changes}
+            sx={{
+              // visibility: !data.details ? "hidden":"visible", 
+              backgroundColor: !data.changes ? "#ccc" : "#222",
+              //border: !data.changes ? "none" : "1px solid #aaa",
+              borderRadius: "3px",
+              color: !data.changes ? "#fff" : "#fff", 
+              borderRadius: "2px", 
+              height: "32px", 
+              minWidth: "20px", 
+              fontSize: "14px", 
+              marginTop: "15px",
+              padding: "6px 10px",
+              textTransform: "none"}}>
+                Save
+          </Button>
+
+          </Box>
+        </Grid> }
+        { !expand[index] && <Grid item sx={{ gridColumn: "1 / -1" }} visibility= {"collapse"} > 
+        <Box height={0} ></Box>
+        </Grid> }
 
         </React.Fragment> 
       ))}
