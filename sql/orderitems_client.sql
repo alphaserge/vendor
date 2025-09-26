@@ -14,7 +14,7 @@ drop table VendorOrders
 GO
 
 alter table OrderItems drop column VendorQuantity
-alter table OrderItems drop column [VendorOrderId]
+--alter table OrderItems drop column [VendorOrderId]
 alter table OrderItems drop column [Paid]
 alter table OrderItems drop column [OrderRolls]
 alter table OrderItems drop column [VendorOrderId]
