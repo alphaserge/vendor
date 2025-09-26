@@ -492,8 +492,15 @@ export default function ListOrderV(props) {
             alignItems: "center",
             columnGap: "10px", 
             height: "85px", 
-            padding: "10px", 
-            backgroundColor: "#f4f4f4"}} >
+            padding: "0 10px 0 0", 
+            backgroundColor: "#f2f2f2"}} >
+              <Box sx={{display: "flex", 
+                flexDirection: "column", 
+                alignItems: "flex-start", 
+                padding: "10px"}}>
+                  <Typography className="caption mb4">Vendor delivery:</Typography>
+                  <Typography>No.&nbsp;{data.deliveryNo}&nbsp;-&nbsp;{data.deliveryCompany}</Typography>
+              </Box>
           <MySelectLab 
               label="Stock"
               valueName="stock"
@@ -504,9 +511,9 @@ export default function ListOrderV(props) {
               data={stocks}
             />
           <MySelectLab 
-              label="Delivery company"
+              label="Delivery company for customer"
               valueName="deliveryCompany"
-              width="160px"
+              width="200px"
               disabled={!data.paid}
               valueVariable={data.deliveryCompany}
               setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}

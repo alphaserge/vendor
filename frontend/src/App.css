@@ -392,7 +392,7 @@ a.no-link {
   /* text-decoration: underline; */
   /*background-color: #e4e4e4;
   border-radius: 4px;*/
-  padding: 0px 4px;
+  padding: 0px 0px;
     /* min-width: 70px; */
 }
 
@@ -422,6 +422,38 @@ a.no-link {
 }
 .w120 {
   width: 120px;
+}
+
+.mb2 {
+  margin-bottom: 2px!important;
+}
+
+.mb4 {
+  margin-bottom: 4px!important;
+}
+
+.mb6 {
+  margin-bottom: 6px!important;
+}
+
+.mb8 {
+  margin-bottom: 8px!important;
+}
+
+.mt2 {
+  margin-top: 2px!important;
+}
+
+.mt4 {
+  margin-top: 4px!important;
+}
+
+.mt6 {
+  margin-top: 6px!important;
+}
+
+.mt8 {
+  margin-top: 8px!important;
 }
 
 .MuiSelect-nativeInput {
