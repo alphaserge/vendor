@@ -8,8 +8,8 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import { Link } from 'react-router-dom';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Link } from 'react-router-dom';
 import { colors, FormControl, Icon, Typography } from "@mui/material";
 import { Paid, Payments } from "@mui/icons-material";
 import TextField from '@mui/material/TextField';
@@ -118,14 +118,14 @@ export default function ListOrderV(props) {
   };
 
   const toggleExpand = (index) => {
-    let exp = expand
-    exp[index] = !exp[index]
+    let ords = orders
+    ords[index].expand = !ords[index].expand
     /*if (expand.has(index)) {
       exp.delete(index)
     } else {
       exp.add(index)
     }*/
-    setExpand(exp)
+    setOrders(ords)
     setToggle(!toggle)
   }
 
@@ -151,6 +151,7 @@ export default function ListOrderV(props) {
                   payments  : d.payments,
                   total     : d.items.reduce((accumulator, value) => { return accumulator + value.price*value.quantity; }, 0),
                   makePayment: false,
+                  expand: false,
                   items : d.items.map(i => { return {
                   id        : i.id,
                   productId : i.productId,
@@ -269,7 +270,7 @@ export default function ListOrderV(props) {
 
 
     useEffect(() => {
-    }, [expand]);
+    }, [toggle]);
 
   if (!props.user || props.user.Id === 0) {
     navigate("/")
@@ -384,7 +385,8 @@ export default function ListOrderV(props) {
               </Typography>
             </Box> }
 
-            <Button 
+<Box sx={{display: "flex", flexDirection: "column", height: "100%"}}>
+  <Button 
               onClick={(e)=>{ makePayment(indexOrder); }} 
               //edge="end" 
               disabled={false}
@@ -400,18 +402,30 @@ export default function ListOrderV(props) {
                 height: "26px",
                 minWidth: "20px", 
                 fontSize: "14px", 
-                marginLeft: "auto",
-                padding: "0 10px",
+                margin: "0px", padding: "2px 4px",
+                //padding: "0 10px",
                 textTransform: "none"}}>
                   { order.makePayment && <React.Fragment>Save</React.Fragment> }
                   { !order.makePayment && <React.Fragment>Add</React.Fragment> }
             </Button>
+  
+                      <IconButton aria-label="Expand" size="small" sx={{backgroundColor: "#f2f2f2", border: "none", borderRadius: "2px", margin: "0px", padding: "2px 4px", marginTop: "auto" }}>
+                      <KeyboardArrowDownIcon 
+                        sx={{ color: "#666", fontSize: 22 }}
+                        onClick={(e)=>{ toggleExpand(indexOrder)}} >
+                      </KeyboardArrowDownIcon>
+                      </IconButton> 
+                    
+  </Box>
+            
             
             <Typography></Typography>
             <Typography></Typography>
             <Typography></Typography>
             <Typography></Typography>
-            <Typography></Typography>
+            <Typography></Typography> 
+                    
+            
         </Grid>
 
       {order.items.map((data, index) => (
@@ -471,7 +485,7 @@ export default function ListOrderV(props) {
           </IconButton>  */}
         </Grid>
 
-        { data.expand && <Grid item sx={{ gridColumn: "1 / -1" }} visibility={"visible"} > 
+        { order.expand && <Grid item sx={{ gridColumn: "1 / -1" }} visibility={"visible"} > 
         <Box sx={{ 
             display: "flex", 
             flexDirection: "row", 
