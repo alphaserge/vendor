@@ -42,11 +42,11 @@ export default function CheckboxList(props) {
   };*/
 
   return (
-    <Box className="underline" sx={{ width: "100%", paddingBottom: "10px", backgroundColor: "transparent" }} >
+    <Box className="underline" sx={{ width: "100%", backgroundColor: "transparent", padding: !!props.padding ? props.padding : "0" }} >
     <Accordion className="header-menu" defaultExpanded={props.expanded? props.expanded : false} disableGutters sx={{ boxShadow: "none", backgroundColor: "transparent" }} >
 
     <AccordionSummary expandIcon={<ExpandMoreIcon sx={{margin: 0}} />} sx={{ maxWidth: "744px", margin: "0 auto !important", padding: "0 3px", flexDirection: "row-reverse" }} >
-      <Typography sx={{ width: "100%", margin: 0, fontWeight: "600" }} className="subtitle-2" > &nbsp;&nbsp;{props.title}</Typography>
+      <Typography sx={{ width: "100%", margin: 0, fontSize: "15px", fontWeight: "500" }} > &nbsp;&nbsp;{props.title}</Typography>
     </AccordionSummary>
 
     <AccordionDetails sx={{ maxWidth: "744px", margin: "0 auto", padding: "0 0px", overflowX: "hidden", overflowY: "auto"  }}>

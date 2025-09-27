@@ -536,7 +536,7 @@ console.log(colorVarId)
             classes={{ content: classes.noexpand, expanded: classes.noexpand }} 
             expandIcon={<ExpandMoreIcon sx={{marginLeft: "0"}} />} 
             sx={{ maxWidth: "744px", padding: "0 3px", flexGrow: 0, justifyContent: "flex-start" }} >
-            <Typography sx={{ margin: 0, fontWeight: "600", flexGrow: 0, paddingRight: "4px" }} className="subtitle-2" >More information</Typography>
+            <Typography sx={{ margin: 0, fontSize: "16px", fontWeight: "400", flexGrow: 0, paddingRight: "4px" }} >More information</Typography>
           </AccordionSummary>
 
           <AccordionDetails sx={{ maxWidth: "744px", margin: "0 auto", padding: "0 0px", overflowX: "hidden", overflowY: "auto"  }}>

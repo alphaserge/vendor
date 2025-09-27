@@ -229,6 +229,7 @@ export default function Home(props) {
               expanded={true}
               setValueFn={setSelectedDesignType}
               value={selectedDesignType}
+              padding="20px 0 0 0"
             />
             <CheckboxList
               list={!props.data.productTypes ? [] : props.data.productTypes.map((it) => ({ key: it.id, name: it.value }))}
@@ -237,6 +238,7 @@ export default function Home(props) {
               expanded={true}
               setValueFn={setSelectedProductType}
               value={selectedProductType}
+              padding="10px 0 0 0"
             />
             <CheckboxList
               list={!props.data.printTypes ? [] : props.data.printTypes.map((it) => ({ key: it.id, name: it.value }))}
@@ -244,6 +246,7 @@ export default function Home(props) {
               expanded={true}
               setValueFn={setSelectedPrintType}
               value={selectedPrintType}
+              padding="10px 0 0 0"
             />
             <CheckboxList
               list={!props.data.colors ? [] : props.data.colors.map((it) => ({ key: it.id, name: it.value }))}
@@ -252,6 +255,7 @@ export default function Home(props) {
               expanded={false}
               setValueFn={setSelectedColor}
               value={selectedColor}
+              padding="10px 0 0 0"
             />
             <CheckboxList
               list={!props.data.seasons ? [] : props.data.seasons.map((it) => ({ key: it.id, name: it.value }))}
@@ -260,6 +264,7 @@ export default function Home(props) {
               expanded={false}
               setValueFn={setSelectedSeason }
               value={selectedSeason}
+              padding="10px 0 0 0"
             />
           </Box>
 

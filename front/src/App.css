@@ -1,11 +1,11 @@
 
-/* :root {
---font: '"Poppins", "Noto Sans Japanese", Arial';
+ :root {
+--font: '"Poppins", "Noto Sans Japanese", Arial !important';
 }
 
 body {
   font-family: var(font);
-} */
+} 
 
 .App, html {
   background-color: #333;
@@ -17,7 +17,7 @@ body {
   padding: 0;
   margin: 0;
   font-family: 'Poppins', 'Noto Sans Japanese', 'Arial' !important;
-  font-size: 14px;
+  font-size: 15px;
   background-color: #fafafa;
   font-weight: 100;
 }
@@ -38,8 +38,12 @@ body {
   /* font-weight: normal; */
 }
 
-/* .MuiTypography-root {
- font-family: var(font);
+.MuiTypography-root {
+ font-family: 'Poppins', 'Noto Sans Japanese', 'Arial' !important;
+}
+
+.MuiListItemIcon-root {
+  min-width: 35px !important;
 }
 
 input.MuiInputBase-input, 
@@ -47,8 +51,8 @@ label.MuiFormLabel-root,
 label.MuiInputLabel-root,
 button.MuiButtonBase-root,
 button.MuiButton-root {
-  font-family: "Chiron Sung HK", "Open-Sans", Arial, "Inter", "sans-serif"!important;
-} */
+  font-family: 'Poppins', 'Noto Sans Japanese', 'Arial' !important;
+}
 
 /* for remove blue background in TextField, input: */
 /*input:-webkit-autofill,
@@ -186,8 +190,8 @@ div.product-img {
 }
 
 .price {
-  color: #fd8bbb;
-  font-size: 14px;
+  color: #80398d;
+  /* font-size: 14px; */
 }
 
 
@@ -277,9 +281,9 @@ table.shopping-cart  td img {
 }
 
 span.item-label  {
-  color: #444;
+  color: #777;
   display: inline-block;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
   padding-right: 10px;
   /* 
@@ -290,7 +294,7 @@ span.item-label  {
 span.item-value  {
   color: #222;
   display: inline-block;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
 }
 
@@ -548,7 +552,7 @@ a.no-link {
 }
 
 .subtitle-2 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 300;
   color: #333;
   flex-grow: 0;

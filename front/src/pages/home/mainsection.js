@@ -155,7 +155,7 @@ useEffect(() => {
       </Box>
     </Box> */}
 
-    <Box sx={{ color: "#222", alignContent: "center", justifyItems: "center", height: "60px" }} > 
+    <Box sx={{ color: "#222", alignContent: "center", justifyItems: "center", height: "90px" }} > 
       
         <Box 
           spacing={2} 
@@ -163,12 +163,48 @@ useEffect(() => {
             <Box 
           sx={{ 
             display: "grid", 
-            gridTemplateColumns: "1fr 1fr 1fr",
+            gridTemplateColumns: "1.1fr 1fr 1fr",
             columnGap: "8px",
             fontSize: "16px",
             alignItems: "center"  }}>
 
+
           <Grid item sx={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-start"}}>
+            <picture class="header-logo-picture" onClick={(e)=>{ navigate("/") }}>
+            <img src="/afm.png" alt="Вернуться на главную" style={{padding: "10px 0", height: "88px"}}>
+            </img>
+            </picture>
+          </Grid>
+
+
+          <Grid item sx={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-end"}}>
+
+            <TextField
+              margin="normal"
+              size="small" 
+              id="search-value"
+              placeholder="What are you looking for?"
+              name="search"
+              value={search}
+              sx={{ width: "280px", marginTop: "8px", borderRadius: "6px" }}
+              onChange={ev => { setSearch(ev.target.value); props.searchProducts(ev.target.value)}}
+              // variant="standard"
+              InputProps={{
+                disableUnderline: true,
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton>
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+                    
+          </Grid>
+
+
+          <Grid item sx={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-end"}}>
 
             <Tooltip title={"Home page"}>
               <IconButton onClick={(e)=>{navigate("/")}} sx={{ p: 0, ml: 2, mr: "10px" }}>
@@ -199,36 +235,6 @@ useEffect(() => {
             
           </Grid>
 
-          <Grid item sx={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center"}}>
-            &nbsp;
-          </Grid>
-          
-          <Grid item sx={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-end"}}>
-
-            <TextField
-              margin="normal"
-              size="small" 
-              id="search-value"
-              placeholder="What are you looking for?"
-              name="search"
-              value={search}
-              sx={{ width: "280px", marginTop: "8px", borderRadius: "6px" }}
-              onChange={ev => { setSearch(ev.target.value); props.searchProducts(ev.target.value)}}
-              // variant="standard"
-              InputProps={{
-                disableUnderline: true,
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton>
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                )
-              }}
-            />
-                    
-          </Grid>
-
         </Box>
         </Box>
 
@@ -242,8 +248,7 @@ useEffect(() => {
         
         <Grid display={{ xs: "none", md: "block" }} item xs={12} md={4} key={"mainsect-center"} sx={{ justifyItems : "center", alignContent: "center" }} >
             <picture class="header-logo-picture" onClick={(e)=>{ navigate("/") }}>
-            <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" 
-              style={{padding: "10px 0", height: "140px"}}>
+            <img src="/afm5.png" alt="Вернуться на главную" style={{padding: "10px 0", height: "56px"}}>
             </img>
             </picture>
         </Grid>
