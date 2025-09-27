@@ -17,7 +17,6 @@ import Box from '@mui/material/Box';
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
-import { APPEARANCE } from '../../appearance';
 import { Link } from "@mui/material";
 import { formattedDate, computePrice } from '../../functions/helper';
 import { sendToVendor } from '../../api/orders'

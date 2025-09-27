@@ -17,14 +17,12 @@ import ApiIcon from '@mui/icons-material/Api';
 import PersonIcon from '@mui/icons-material/Person';
 import { Icon } from '@mui/material';
 
-import { APPEARANCE } from '../../appearance';
-
 import config from "../../config.json"
 
 const pages = ['Fabrics', 'Accessories', 'Help', 'Contacts' ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Login', 'Logout', 'Register'];
 
-const menuPagesStyle = { fontSize: "14px", fontWeight: "normal", color: APPEARANCE.WHITE2 }
+const menuPagesStyle = { fontSize: "14px", fontWeight: "normal" }
 
 function FabricIcon(props) {
   return (
@@ -79,8 +77,8 @@ export default function Header(props) {
   
 
   return (
-    <AppBar position="fixed" sx={{backgroundColor: APPEARANCE.BLACK, boxShadow: "none" }}>
-      <Container className="header-menu" sx={{ backgroundColor: APPEARANCE.BLACK  }} maxWidth={false}  >
+    <AppBar position="fixed" sx={{backgroundColor: "linear-gradient(135deg, #733b89 0%, #6f4b93 17%, #6475af 50%, #52b8da 95%, #50c0df 100%)", boxShadow: "none" }}>
+      <Container className="header-menu" sx={{  }} maxWidth={false}  >
         <Toolbar disableGutters>
           {/* <ApiIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
@@ -105,7 +103,7 @@ export default function Header(props) {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              sx={{ color: APPEARANCE.WHITE2 }} 
+              sx={{  }} 
             >
               <MenuIcon />
             </IconButton>

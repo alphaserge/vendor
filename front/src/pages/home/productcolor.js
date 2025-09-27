@@ -12,7 +12,6 @@ import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import DoneIcon from '@mui/icons-material/Done';
 
 import MySelect from '../../components/myselect';
-import { APPEARANCE } from '../../appearance';
 import { green } from "@mui/material/colors";
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -81,7 +80,7 @@ export default function ProductColor(props) {
         <IconButton
           color="success"
           aria-label="upload picture"
-          sx={{color: APPEARANCE.BLACK2}}
+          sx={{}}
           component="span">
               {!props.cv.SelectedFile && <AddAPhotoIcon />}
               { props.cv.SelectedFile && <DoneIcon />}

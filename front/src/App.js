@@ -8,7 +8,6 @@ import BuySample from './pages/home/buysample';
 import AddProduct from './pages/home/addproduct';
 import ListProduct from './pages/home/listproduct';
 import Orders from './pages/home/orders';
-import ClientOrder from './pages/home/clientorder';
 import ShoppingCart from './pages/home/shoppingcart';
 import Menu from './pages/home/menu';
 import Login from './pages/auth/login';
@@ -56,7 +55,7 @@ const theme = createTheme({
     },
   },
   typography: {
-      fontFamily: '"Chiron Sung HK", "Open-Sans", Arial!important;',
+      fontFamily: ['Poppins', 'Noto Sans Japanese', 'Arial'].join(','),
   },  
 });
 
@@ -171,8 +170,6 @@ function App() {
 
   useEffect(() => {
 
-    document.body.style.backgroundColor = '#fbfbfb'
-
     loadData()
 
     const user = JSON.parse(localStorage.getItem("user"))
@@ -214,7 +211,6 @@ function App() {
           <Route path="/listproduct" element={<ListProduct data={data} />} />
           <Route path="/product" element={<Product data={data} />} />
           <Route path="/orders" element={<Orders data={data} />} />
-          <Route path="/clientorder" element={<ClientOrder data={data} />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/shoppingcart" element={<ShoppingCart data={data} />} />
           <Route path="/buysample" element={<BuySample data={data} />} />

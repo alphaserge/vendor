@@ -3,8 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
 import Box from '@mui/material/Box';
 import 'material-symbols';
 
-import { APPEARANCE as ap } from "../appearance"
-
 export default function Selector(props) {
 
   const [index, setIndex]  =  useState(props.list.findIndex((el)=> el == props.value))
@@ -22,7 +20,7 @@ export default function Selector(props) {
     }
   }
 
-  return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center", fontFamily: ap.FONTFAMILY, fontSize: ap.FONTSIZE, margin: "0 14px 0 0 ", padding: 0 }}> 
+  return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center", margin: "0 14px 0 0 ", padding: 0 }}> 
   {(props.label && <Box style={{
                 fontSize: "inherit",
                 fontFamily: "inherit",
@@ -44,7 +42,6 @@ export default function Selector(props) {
               value={props.list[index]}
               readOnly={true}              
               style={{
-                fontSize: ap.FONTSIZE,
                 fontFamily: "inherit",
                 fontWeight: "400",
                 lineHeight: 1.075,

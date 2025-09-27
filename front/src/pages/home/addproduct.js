@@ -38,8 +38,6 @@ import { postProduct } from '../../api/products'
 import Header from './header';
 import Footer from './footer';
 
-import { APPEARANCE } from '../../appearance';
-
 import Modal from '@mui/material/Modal';
 import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -54,7 +52,7 @@ const halfItemStyle1 = { width: "calc( 50% - 4px )", m: 0 }
 const thirdItemStyle = { width: "calc( 33% - 5px )", m: 0 }
 const labelStyle = { m: 0, ml: 0, mr: 4 }
 const labelStyle1 = { m: 0, ml: 0, mr: 4 }
-const buttonStyle = { width: 100, backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "5px 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
+const buttonStyle = { width: 100, margin: "5px 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
 const accordionStyle = { textAlign: "center", margin: "15px auto", justifyContent:"center", boxShadow: "none", border: "none", width: "100%" }
 const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto 20px auto", padding: "0 10px",  backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px" }
 const accordionDetailsStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 0px" }
@@ -466,10 +464,10 @@ useEffect(() => {
         <Header user={props.user} title={props.title} />
         <main>
  
-          <Typography component="h1" variant="h6" color={APPEARANCE.COLOR1}>
+          <Typography component="h1" variant="h6" >
             Adding a product form
           </Typography>
-          <Typography component="p" variant="subtitle1" sx={{mb:2}}  color={APPEARANCE.COLOR1}>
+          <Typography component="p" variant="subtitle1" sx={{mb:2}} >
           Please fill out all fields and click the Save button
           </Typography>
           

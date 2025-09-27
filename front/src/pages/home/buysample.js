@@ -34,7 +34,6 @@ import Amount from '../../components/amount';
 import Selector from '../../components/selector';
 import Property from '../../components/property';
 import StyledButton from '../../components/styledbutton';
-import {APPEARANCE as ap} from '../../appearance';
 
 import { fined } from "../../functions/helper"
 

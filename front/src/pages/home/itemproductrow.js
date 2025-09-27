@@ -14,7 +14,6 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
-import { APPEARANCE } from '../../appearance';
 import { Link } from "@mui/material";
 
 import config from "../../config.json"

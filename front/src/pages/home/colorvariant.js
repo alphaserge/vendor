@@ -13,7 +13,6 @@ import DoneIcon from '@mui/icons-material/Done';
 import InputAdornment from '@mui/material/InputAdornment';
 
 import MySelect from '../../components/myselect';
-import { APPEARANCE } from '../../appearance';
 
 const itemStyle = { width: "185px" }
 const labelStyle = {  }
@@ -136,7 +135,7 @@ export default function ColorVariant(props) {
       <IconButton
         color="success"
         aria-label="upload picture"
-        sx={{color: APPEARANCE.BLACK2, ml: 1}}
+        sx={{ml: 1}}
         component="span">
             {!props.cv.SelectedFile && <AddAPhotoIcon />}
             { props.cv.SelectedFile && <DoneIcon />}

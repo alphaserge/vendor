@@ -17,7 +17,6 @@ import axios from 'axios'
 
 import config from "../../config.json"
 import Footer from './footer';
-import { APPEARANCE as ap} from '../../appearance';
 import { Button  } from "@mui/material";
 
 import PageHeader from '../../components/pageheader';
@@ -28,7 +27,6 @@ import StyledButton from '../../components/styledbutton';
 import StyledButtonWhite from '../../components/styledbuttonwhite';
 import StyledIconButton from '../../components/stylediconbutton';
 import IconButtonWhite from "../../components/iconbuttonwhite";
-import OrderItemStatus from "../../components/orderitemstatus";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import StyledTextField from '../../components/styledtextfield';
 import { formattedPrice, orderStatusString } from '../../functions/helper';
@@ -48,7 +46,7 @@ const theme = createTheme({
   },
 });
 
-const linkStyle = { textDecoration: 'none', color: ap.COLOR, height: "100%" }
+const linkStyle = { textDecoration: 'none', height: "100%" }
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 
 export default function Orders(props) {
@@ -284,7 +282,6 @@ export default function Orders(props) {
           gridTemplateColumns: "120px 120px 120px 120px 120px",
           columnGap: "10px",
           rowGap: "20px",
-          fontFamily: ap.FONTFAMILY,
           fontSize: "16px",
           alignItems: "center" }}>
                   <Grid item><Header text="Number"></Header></Grid>
@@ -296,11 +293,11 @@ export default function Orders(props) {
             
                 { orders.map((data, index) => ( 
               <React.Fragment>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}} >{data.number.toString().padStart(4, '0')}</Grid></Link>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}} >{formattedDate(data.created)}</Grid></Link>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{data.items.length}</Grid></Link>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{toFixed2(data.total)} $</Grid></Link>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{data.status}</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{  }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}} >{data.number.toString().padStart(4, '0')}</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{  }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}} >{formattedDate(data.created)}</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{  }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{data.items.length}</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{  }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{toFixed2(data.total)} $</Grid></Link>
+                <Link to={"/orders?id=" + data.id } style={{  }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{data.status}</Grid></Link>
                 {/* <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} ><Grid item sx={{textAlign: "center"}}>{data.paid + " $"}</Grid></Link> */}
                 {/* <Grid item sx={{textAlign: "center"}}>
                   <IconButton size="small" aria-label="pay" sx={{backgroundColor: "#333", color: "#fff"}} onClick={(e)=> { window.open("https://show.cloudpayments.ru/widget/") }}><AttachMoneyIcon sx={{color: "#fff"}} /></IconButton>
@@ -320,7 +317,6 @@ export default function Orders(props) {
           gridTemplateColumns: "90px 90px 2fr 2fr 100px 1fr 90px 150px",
           columnGap: "8px",
           rowGap: "6px",
-          fontFamily: ap.FONTFAMILY,
           fontSize: "16px",
           alignItems: "center" }}>
                   <Grid item sx={{mb: 1}}><Header text="Photo"></Header></Grid>
@@ -335,7 +331,7 @@ export default function Orders(props) {
             
                 { orders[orderIndex].items.map((data, index) => ( 
               <React.Fragment>
-                <Link to={"/orders?id=" + data.id } style={{ textDecoration: 'none', color: ap.COLOR }} onClick={() => {setOrderIndex(index)}} >
+                <Link to={"/orders?id=" + data.id } style={{  }} onClick={() => {setOrderIndex(index)}} >
                 <Grid item sx={{textAlign: "center", display: "flex", flexDirection: "row", justifyContent: "center"}} >
                   {( !!data.imagePath && 
                       <img 

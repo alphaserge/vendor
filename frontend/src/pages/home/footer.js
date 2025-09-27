@@ -36,8 +36,17 @@ useEffect(() => {
   }, []);
 
   return (
-    <AppBar position="relative" sx={{backgroundColor: APPEARANCE.BLACK, position: "fixed", bottom: 0, width: "100%", height: "36px"  }} >
-      <Box sx={{ flexGrow: 0, mt: "8px" }}>
+    <AppBar position="static" sx={{
+      backgroundColor: APPEARANCE.BLACK, 
+      mt: 3, 
+      boxShadow: "none", 
+      width: "100%", 
+      height: "80px",
+      display:"flex",
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center" }} >
+      <Box sx={{ flexGrow: 0, mt: "0px" }}>
       <Typography variant="body2" color="#fff" align="center" {...props} >
         {'Copyright © JSC Angelka Moscow - '}
         {/* <Link href="#" color="#fff">JSC Angelka Moscow</Link>{' '} */}

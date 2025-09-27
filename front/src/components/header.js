@@ -2,14 +2,11 @@ import * as React from 'react';
 
 import Typography from '@mui/material/Typography';
 
-import {APPEARANCE as ap} from '../appearance';
-
 export default function Header(props) {
   return <Typography 
             component={"div"} 
             sx={{ 
               fontSize: "14px",
-              fontFamily: ap.FONTFAMILY,
               fontWeight: 400,
               backgroundColor: "#ccc", 
               color: "#333", 

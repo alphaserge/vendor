@@ -39,7 +39,6 @@ import Selector from '../../components/selector';
 import Property from '../../components/property';
 import StyledButton from '../../components/styledbutton';
 import StyledTextField from '../../components/styledtextfield';
-import {APPEARANCE as ap} from '../../appearance';
 
 import { fined } from "../../functions/helper"
 import Styledtextfield from "../../components/styledtextfield";
@@ -468,7 +467,7 @@ console.log(colorVarId)
                 </Box>
 
                 {product.rollLength && <Box sx={{ display: "flex", marginTop: "18px" }}>
-                  <Property fontSize={ap.FONTSIZE} color={ap.COLOR} value={product.rollLength + " meters in roll"} />
+                  <Property value={product.rollLength + " meters in roll"} />
                 </Box>}
 
                 <Box sx={{ display: "flex", marginTop: "18px" }}>
@@ -537,7 +536,7 @@ console.log(colorVarId)
             classes={{ content: classes.noexpand, expanded: classes.noexpand }} 
             expandIcon={<ExpandMoreIcon sx={{marginLeft: "0"}} />} 
             sx={{ maxWidth: "744px", padding: "0 3px", flexGrow: 0, justifyContent: "flex-start" }} >
-            <Typography sx={{ margin: 0, fontFamily: ap.FONTFAMILY, fontSize: ap.FONTSIZE, fontWeight: "600", flexGrow: 0, paddingRight: "4px" }} className="subtitle-2" >More information</Typography>
+            <Typography sx={{ margin: 0, fontWeight: "600", flexGrow: 0, paddingRight: "4px" }} className="subtitle-2" >More information</Typography>
           </AccordionSummary>
 
           <AccordionDetails sx={{ maxWidth: "744px", margin: "0 auto", padding: "0 0px", overflowX: "hidden", overflowY: "auto"  }}>

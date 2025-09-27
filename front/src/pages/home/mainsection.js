@@ -28,9 +28,10 @@ import config from "../../config.json"
 import { getYearsFull } from "../../functions/helper"
 
 import ExpandDown from './../../components/symbol/expanddown';
-import {APPEARANCE as ap} from '../../appearance';
 
-const buttonStyle = { color: "#222", backgroundColor: "#fff", border: "2px solid #333", borderRadius: "50%", padding: "3px" }  
+
+//const buttonStyle = { color: "#222", backgroundColor: "#fff", border: "2px solid #333", borderRadius: "50%", padding: "3px" }  
+const buttonStyle = { color: "#555", border: "none", padding: "3px", fontSize: "28px" }  
 
 export default function MainSection(props) {
 
@@ -146,104 +147,114 @@ useEffect(() => {
   return (
     // #eeede8  efa29a
     
-    <Box className="main-section">
+    <Box className="main-section" >
+
+    {/* <Box sx={{ background: "linear-gradient(135deg, #733b89 0%, #6f4b93 17%, #6475af 50%, #52b8da 95%, #50c0df 100%)", color: "#fff", alignContent: "center", justifyItems: "center", height: "70px" }} > 
+      <Box spacing={2} className="center-content" >
+        <Typography sx={{  }}>- {age} years of trading a wide range of high quality fabrics -</Typography>
+      </Box>
+    </Box> */}
+
+    <Box sx={{ color: "#222", alignContent: "center", justifyItems: "center", height: "60px" }} > 
       
-    <Box sx={{ backgroundColor: "#222", color: "#fff", alignContent: "center", height: "40px" }} > {/*  */}
-      <Grid container spacing={2} className="center-content" >
-      <Grid item display={{ xs: "none", md: "block" }} xs={12} md={3} key={"mainsect-left"} sx={{ justifyItems : "center", pt:"0!important" }} >
-        {/* <p>-&nbsp;</p> */}
-      </Grid>
-      <Grid item xs={12} md={6} key={"mainsect-center"} sx={{ justifyItems : "center", textAlign: "center", pt:"0!important" }}  >
-        <Typography sx={{ fontSize: ap.FONTSIZE, fontFamily: ap.FONTFAMILY }}>- {age} years of trading a wide range of high quality fabrics -</Typography>
-      </Grid>
-      <Grid item display={{ xs: "none", md: "block" }} xs={12} md={3} key={"mainsect-right"} sx={{ justifyItems : "center", pt:"0!important" }} >
-        {/* <p>-&nbsp;</p> */}
-      </Grid>
-      </Grid>
-    </Box>
+        <Box 
+          spacing={2} 
+          className="center-content">
+            <Box 
+          sx={{ 
+            display: "grid", 
+            gridTemplateColumns: "1fr 1fr 1fr",
+            columnGap: "8px",
+            fontSize: "16px",
+            alignItems: "center"  }}>
 
-    <Box sx={{ alignContent: "center", height: "170px", pt: 1 }}  >
-      <Grid container spacing={0} sx={{ textAlign: "center" }} className="center-content" >
-      <Grid item xs={12} md={4} key={"mainsect-left"} textAlign={{ xs: "center", md: "center" }} sx={{ alignContent: "center" }} >
-        <Box sx={{display: "flex", flexDirection: "row", justifyContent: "center" }}>
+          <Grid item sx={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-start"}}>
 
-        <Tooltip title={"Home page"}>
-          <IconButton onClick={(e)=>{navigate("/")}} sx={{ p: 0, ml: 2, mr: "10px" }}>
-            {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
-            <HomeOutlinedIcon fontSize="large" sx={buttonStyle} />
-          </IconButton>
-        </Tooltip>
+            <Tooltip title={"Home page"}>
+              <IconButton onClick={(e)=>{navigate("/")}} sx={{ p: 0, ml: 2, mr: "10px" }}>
+                <HomeOutlinedIcon fontSize="26px" sx={buttonStyle} />
+              </IconButton>
+            </Tooltip>
 
-
-      <Link to="/orders" style={{ textDecoration: 'none' }} >
-        <Tooltip title="Your orders"  >
-          <IconButton onClick={(e)=>{navigate("/orders")}} sx={{ p: 0, ml: 0, mr: "10px" }}>
-            {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
-            <PersonOutlineOutlinedIcon fontSize="large" sx={buttonStyle} />
-          </IconButton>
-        </Tooltip>
-        </Link>
+            <Link to="/orders" style={{ textDecoration: 'none' }} >
+              <Tooltip title="Your orders"  >
+                <IconButton onClick={(e)=>{navigate("/orders")}} sx={{ p: 0, ml: 0, mr: "10px" }}>
+                  <PersonOutlineOutlinedIcon fontSize="large" sx={buttonStyle} />
+              </IconButton>
+              </Tooltip>
+            </Link>
         
-        <Tooltip title={shopCart && shopCart.length>0  ? shopCart + " items" : "Shopping cart is empty"}>
-          <Box className="cart-label" onClick={(e)=>{ handleShowShoppingCart(true) }} >{shopCart && shopCart.length}</Box>
-          <IconButton onClick={(e)=>{ navigate("/shoppingcart") /*props.openShoppingCart(true)*/ }} sx={{ p: 0, ml: "-16px", mr: "10px" }}>
-            <ShoppingCartOutlinedIcon fontSize="large" sx={buttonStyle} />
-          </IconButton>
-        </Tooltip>
+            <Tooltip title={shopCart && shopCart.length>0  ? shopCart + " items" : "Shopping cart is empty"}>
+              <Box className="cart-label" onClick={(e)=>{ handleShowShoppingCart(true) }} >{shopCart && shopCart.length}</Box>
+                <IconButton onClick={(e)=>{ navigate("/shoppingcart") /*props.openShoppingCart(true)*/ }} sx={{ p: 0, ml: "-16px", mr: "10px" }}>
+                  <ShoppingCartOutlinedIcon fontSize="large" sx={buttonStyle} />
+                </IconButton>
+            </Tooltip>
 
-        <Tooltip title={props.favorites != undefined ? props.favorites.amount : "Your favorite list is empty"}>
-          <IconButton onClick={props.openFavorites} sx={{ p: 0, ml: 0, mr: "10px" }}>
-            {/* <Avatar alt="Account" src="/static/images/avatar/2.jpg" sx={{backgroundColor: APPEARANCE.BLACK}} /> */}
-            <FavoriteBorderOutlinedIcon fontSize="large" sx={buttonStyle} />
-          </IconButton>
-        </Tooltip>
+            <Tooltip title={props.favorites != undefined ? props.favorites.amount : "Your favorite list is empty"}>
+              <IconButton onClick={props.openFavorites} sx={{ p: 0, ml: 0, mr: "10px" }}>
+                <FavoriteBorderOutlinedIcon fontSize="large" sx={buttonStyle} />
+              </IconButton>
+            </Tooltip>
+            
+          </Grid>
+
+          <Grid item sx={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center"}}>
+            &nbsp;
+          </Grid>
+          
+          <Grid item sx={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-end"}}>
+
+            <TextField
+              margin="normal"
+              size="small" 
+              id="search-value"
+              placeholder="What are you looking for?"
+              name="search"
+              value={search}
+              sx={{ width: "280px", marginTop: "8px", borderRadius: "6px" }}
+              onChange={ev => { setSearch(ev.target.value); props.searchProducts(ev.target.value)}}
+              // variant="standard"
+              InputProps={{
+                disableUnderline: true,
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton>
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+                    
+          </Grid>
 
         </Box>
-      </Grid>
-      <Grid display={{ xs: "none", md: "block" }} item xs={12} md={4} key={"mainsect-center"} sx={{ justifyItems : "center", alignContent: "center" }} >
-        {/* <p className="site-logo">Angelica fabric market</p> */}
-        {/* <Box
-            component="img"
-            sx={{ width: 360, height: 60, display: { xs: 'block', sm: 'block' } }}
-            image="/afm.png"
-            alt={""}
-          /> */}
-          <picture class="header-logo-picture" onClick={(e)=>{ navigate("/") }}>
-          <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" 
-            style={{padding: "10px 0", height: "140px"}}>
-          </img>
-          </picture>
+        </Box>
+
+    </Box>
+      
+    <Box sx={{ alignContent: "center", height: "140px", pt: 1, background: "/fabrics.png" }} className="header-background"  >
+    
+      <Grid container spacing={0} sx={{ textAlign: "center" }} className="center-content" >
+      
+        <Grid item key={"mainsect-left"} sx={{ alignContent: "center" }} ><Box sx={{display: "flex", flexDirection: "row", justifyContent: "center" }}></Box></Grid>
+        
+        <Grid display={{ xs: "none", md: "block" }} item xs={12} md={4} key={"mainsect-center"} sx={{ justifyItems : "center", alignContent: "center" }} >
+            <picture class="header-logo-picture" onClick={(e)=>{ navigate("/") }}>
+            <img src="/afm.png" alt="Вернуться на главную" class="img-fluid header-logo-main-img" 
+              style={{padding: "10px 0", height: "140px"}}>
+            </img>
+            </picture>
+        </Grid>
+        
+        <Grid item xs={12} md={4} key={"mainsect-right"} textAlign={{ xs: "center", md: "center" }}  sx={{ alignContent: "center" }} ></Grid>
 
       </Grid>
-      <Grid item xs={12} md={4} key={"mainsect-right"} textAlign={{ xs: "center", md: "center" }}  sx={{ alignContent: "center" }} >
-      <Box>
-          <TextField
-                margin="normal"
-                size="small" 
-                id="search-value"
-                placeholder="What are you looking for?"
-                name="search"
-                value={search}
-                sx={{ width: "280px" }}
-                onChange={ev => { setSearch(ev.target.value); props.searchProducts(ev.target.value)}}
-                // variant="standard"
-                InputProps={{
-                  disableUnderline: true,
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton>
-                        <SearchIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-      </Box>
-      </Grid>
-      </Grid>
+
     </Box>
 
-<Box sx={{ color: "#222", fontSize: "15px"}}>
+<Box sx={{ background: "linear-gradient(135deg, #733b89 0%, #6f4b93 17%, #6475af 50%, #52b8da 95%, #50c0df 100%)", color: "#fff", fontSize: "15px", height: "60px"}}>
 <nav>
   <ul className="mainmenu">
     <li>

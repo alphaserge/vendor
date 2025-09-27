@@ -671,7 +671,7 @@ export default function ListProduct(props) {
 
           </Box>
         </div>
-        <Footer sx={{ mt: 2, mb: 2 }} />
+        <Footer/>
          </Container>
               
     </ThemeProvider>

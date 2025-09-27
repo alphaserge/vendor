@@ -27,8 +27,6 @@ import { stringToHash } from '../../functions/hash'
 import config from "../../config.json"
 import { fromUrl } from "../../functions/helper";
 
-import { APPEARANCE } from '../../appearance';
-
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 

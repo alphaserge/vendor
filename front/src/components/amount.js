@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 
 import Box from '@mui/material/Box';
 
-import { APPEARANCE as ap } from "../appearance"
-
 export default function Amount(props) {
 
   const [value, setValue] =  useState(props.value)
@@ -24,7 +22,7 @@ export default function Amount(props) {
     props.setValue(value)
   }
 
-  return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center", fontFamily: ap.FONTFAMILY, fontSize: ap.FONTSIZE, margin: "0 14px 0 0 ", padding: 0 }}> 
+  return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center", margin: "0 14px 0 0 ", padding: 0 }}> 
   {(props.label && <Box style={{
                 fontSize: "inherit",
                 fontFamily: "inherit",
@@ -46,7 +44,6 @@ export default function Amount(props) {
               value={props.value+""}
               onChange={inputChange}
               style={{
-                fontSize: ap.FONTSIZE,
                 fontFamily: "inherit",
                 fontWeight: "400",
                 lineHeight: 1.075,

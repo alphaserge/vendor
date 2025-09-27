@@ -3,8 +3,6 @@ import { withStyles } from '@mui/styles';
 
 import TextField from '@mui/material/TextField';
 
-import {APPEARANCE as ap} from '../appearance';
-
 export default withStyles({
   root: {
   '& label.Mui-focused': {

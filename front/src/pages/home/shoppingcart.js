@@ -40,7 +40,6 @@ import StyledButton from '../../components/styledbutton';
 import Header from '../../components/header';
 
 import { fined, computePrice } from "../../functions/helper"
-import {APPEARANCE as ap} from '../../appearance';
 
 const useStyles = makeStyles((theme) => ({
   noexpand: {
@@ -146,7 +145,7 @@ const getFromUrl = (name) => {
   return params.get(name)
 }
 
- const textStyle = { m: 0, mb: 2, backgroundColor: "#fff", fontFamily: ap.FONTFAMILY }
+ const textStyle = { m: 0, mb: 2, backgroundColor: "#fff" }
 
  function randomInt(min, max) { // min and max included 
   return Math.floor(Math.random() * (max - min + 1) + min);

@@ -3,8 +3,6 @@ import { makeStyles, withStyles } from '@mui/styles';
 
 import IconButton from '@mui/material/IconButton';
 
-import {APPEARANCE as ap} from '../appearance';
-
 export default withStyles({
   root: {
     borderRadius: '0!important',

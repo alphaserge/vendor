@@ -28,11 +28,9 @@ import Header from './header';
 import Footer from './footer';
 
 import ItemProduct from './itemproduct';
-import ItemProductRow from './itemproductrow';
 import MySelect from '../../components/myselect';
 import { postProduct } from '../../api/products'
 
-import { APPEARANCE } from '../../appearance';
 import { Button } from "@mui/material";
 import MainSection from "./mainsection";
 
@@ -41,7 +39,7 @@ const defaultTheme = createTheme()
 const itemStyle = { width: 330, m: 1, ml: 0 }
 const smallItemStyle = { width: 161, m: 1, ml: 0 }
 const labelStyle1 = { m: 0, mt: 1, ml: 0, mr: 4 }
-const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, m: 1 }
+const buttonStyle = { width: 90, height: 40, m: 1 }
 const outboxStyle = { maxWidth: "744px", margin: "80px auto 20px auto", padding: "0 10px" }
 const findBoxStyle = { width: "calc(100% - 80px)" }
 const findTextStyle = { width: "100%", border: "none" }
@@ -353,12 +351,12 @@ export default function ListProduct(props) {
           <Box style={headStyle} sx={{ display: "flex", justifyContent:"left", margin: "0", alignItems: "center" }}  >
             <Tooltip title="Rows interface">
             <IconButton onClick={ (e) => { setView("rows")} } style={toolButtonStyle} sx={{mr: 0}} >
-              <TableRowsIcon sx={{color: view=="grid" ? APPEARANCE.BLACK : APPEARANCE.GREY }} />
+              <TableRowsIcon sx={{color: view=="grid" ? "#222" : "#222" }} />
             </IconButton>
             </Tooltip>
             <Tooltip title="Grid interface">
             <IconButton onClick={ (e) => { setView("grid")} } style={toolButtonStyle} sx={{mr: 1}} >
-              <GridViewIcon sx={{color: view=="grid" ? APPEARANCE.GREY : APPEARANCE.BLACK }} />
+              <GridViewIcon sx={{color: view=="grid" ? "#222" : "#222" }} />
             </IconButton>
             </Tooltip>
             {/* <Box sx={{ display: "flex", alignItems:"center", justifyContent: "center", width: "100%", mt: 2, mb: 2}}>
@@ -391,14 +389,14 @@ export default function ListProduct(props) {
 
             <Tooltip title="Filters">
             <IconButton onClick={handleShowHideFilter} style={toolButtonStyle} sx={{mr: 1, ml: 1}} >
-              <TuneIcon  sx={{color: APPEARANCE.BLACK}} />
+              <TuneIcon  sx={{  }} />
             </IconButton>
             </Tooltip>
 
             <Button
               variant="text"
-               startIcon={<AddCircleOutlineIcon sx={{color: APPEARANCE.BLACK}} />}
-               sx={{ backgroundColor: "#fff", color: APPEARANCE.BLACK, textTransform: "none", width: "140px", height: "26px", marginTop: "5px" }}
+               startIcon={<AddCircleOutlineIcon sx={{ }} />}
+               sx={{ backgroundColor: "#fff", textTransform: "none", width: "140px", height: "26px", marginTop: "5px" }}
                onClick={handleAddProductShow}>
                Add product
             </Button>
@@ -572,11 +570,11 @@ export default function ListProduct(props) {
               <ItemProduct data={data} index={index} />
               </Grid>
             ))}
-            { view === "rows" && products.map((data, index) => (
+            {/* { view === "rows" && products.map((data, index) => (
             <Grid item xs={12} md={12} key={"itemprod-"+index} >
               <ItemProductRow data={data} index={index} />
               </Grid>
-            ))}
+            ))} */}
           </Grid>
 
           </Box>

@@ -9,7 +9,6 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import TelegramIcon from '@mui/icons-material/Telegram';
 
 import config from "../../config.json"
-import {APPEARANCE as ap} from '../../appearance';
 
 const pages = ['My Products', 'Add Product', 'Contacts' ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Login', 'Logout', 'Register'];
@@ -62,7 +61,7 @@ useEffect(() => {
     </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-      <Typography color="#fff" align="center" fontFamily={ap.FONTFAMILY} fontSize={"15px"} {...props} >
+      <Typography color="#fff" align="center"  fontSize={"15px"} {...props} >
         {'Copyright © JSC Textile Company Angelika, Moscow - '}
         {/* <Link href="#" color="#fff">JSC Angelka Moscow</Link>{' '} */}
         {new Date().getFullYear()}
