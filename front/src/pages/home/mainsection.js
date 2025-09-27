@@ -247,10 +247,7 @@ useEffect(() => {
         <Grid item key={"mainsect-left"} sx={{ alignContent: "center" }} ><Box sx={{display: "flex", flexDirection: "row", justifyContent: "center" }}></Box></Grid>
         
         <Grid display={{ xs: "none", md: "block" }} item xs={12} md={4} key={"mainsect-center"} sx={{ justifyItems : "center", alignContent: "center" }} >
-            <picture class="header-logo-picture" onClick={(e)=>{ navigate("/") }}>
-            <img src="/afm5.png" alt="Вернуться на главную" style={{padding: "10px 0", height: "56px"}}>
-            </img>
-            </picture>
+            &nbsp;
         </Grid>
         
         <Grid item xs={12} md={4} key={"mainsect-right"} textAlign={{ xs: "center", md: "center" }}  sx={{ alignContent: "center" }} ></Grid>
