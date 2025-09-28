@@ -37,7 +37,7 @@ useEffect(() => {
 
   return (
     <AppBar position="static" sx={{
-      backgroundColor: APPEARANCE.BLACK, 
+      backgroundColor: "#481c4d", 
       mt: 3, 
       boxShadow: "none", 
       width: "100%", 

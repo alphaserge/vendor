@@ -354,6 +354,8 @@ namespace chiffon_back.Controllers
                     Delivered = item.oi.Delivered,
                     DeliveryCompany = item.oi.DeliveryCompany,
                     DeliveryNo = item.oi.DeliveryNo,
+                    ClientDeliveryCompany = item.oi.ClientDeliveryCompany,
+                    ClientDeliveryNo = item.oi.ClientDeliveryNo,
                     ColorNo = item.oi.ColorNo,
                     ColorNames = item.oi.ColorNames,
                     StockId = item.oi.StockId,
@@ -496,6 +498,8 @@ namespace chiffon_back.Controllers
                         Delivered = item.oi.Delivered,
                         DeliveryCompany = item.oi.DeliveryCompany,
                         DeliveryNo = item.oi.DeliveryNo,
+                        ClientDeliveryCompany = item.oi.ClientDeliveryCompany,
+                        ClientDeliveryNo = item.oi.ClientDeliveryNo,
                         ColorNo = item.oi.ColorNo,
                         ColorNames = item.oi.ColorNames,
                         StockId = item.oi.StockId,
@@ -839,7 +843,7 @@ namespace chiffon_back.Controllers
             {
                 foreach (var it in ctx.OrderItems.Where(x => x.OrderId == order.Id))
                 {
-                    var item = order.Items.FirstOrDefault(x => x.Id == it.Id);
+                    Models.OrderItem? item = order.Items.FirstOrDefault(x => x.Id == it.Id);
                     if (item != null)
                     {
                         it.Details = item.Details;
@@ -861,7 +865,7 @@ namespace chiffon_back.Controllers
         {
             try
             {
-                Context.OrderItem oi = ctx.OrderItems.FirstOrDefault(x => x.Id == cd.Id);
+                Context.OrderItem? oi = ctx.OrderItems.FirstOrDefault(x => x.Id == cd.Id);
                 if (oi != null)
                 {
                     oi.Details = cd.Details;
@@ -882,6 +886,35 @@ namespace chiffon_back.Controllers
                 return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
             }
         }
+
+        [HttpPost("OrderItemUpdate")]
+        public ActionResult OrderItemUpdate([FromBody] Models.OrderItemUpdate data)
+        {
+            try
+            {
+                Context.OrderItem? oi = ctx.OrderItems.FirstOrDefault(x => x.Id == data.Id);
+                if (oi != null)
+                {
+                    oi.StockId = ctx.Stocks.FirstOrDefault(x => x.StockName == data.Stock).Id;
+                    oi.ClientDeliveryCompany = data.ClientDeliveryCompany;
+                    oi.ClientDeliveryNo = data.ClientDeliveryNo;
+                    ctx.SaveChanges();
+                }
+
+                return Ok();// CreatedAtAction(nameof(Context.OrderItem), new { id = cd.Id }, "");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/OrderItemUpdate: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/OrderItemUpdate: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+                return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
+            }
+        }
+
+
 
         [HttpPost("DeliveryInfo")]
         public ActionResult DeliveryInfo([FromBody] Models.DeliveryInfo di)

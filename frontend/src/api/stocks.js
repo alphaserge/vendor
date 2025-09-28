@@ -6,14 +6,11 @@ export const getStocks = (setFn) => {
     axios.get(config.api + '/Stocks')
     .then(function (res) {
         let items = res.data.map((item)=>({ 
-          id    : item.id, 
-          vendorName  : item.vendorName,
-          vendorType  : item.vendorType,
-          email       : item.email,
-          phone       : item.phone,
-          contacts    : item.contacts,
+          id    : item.stockName, //!
+          value    : item.stockName, //!
+          stockName  : item.stockName,
          }))
-        items.push({ id:-1, value:"All" })
+        //items.push({ id:-1, value:"All" })
         setFn(items)
         //return items;
     })

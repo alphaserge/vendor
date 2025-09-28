@@ -49,6 +49,15 @@
         public string? DeliveryCompany { get; set; }
     }
 
+    public class OrderItemUpdate
+    {
+        public int? Id { get; set; }
+        public string? Stock { get; set; }
+        public string? ClientDeliveryNo { get; set; }
+        public string? ClientDeliveryCompany { get; set; }
+    }
+        
+
     public class OrderItemAccept
     {
         public int? ItemId { get; set; }

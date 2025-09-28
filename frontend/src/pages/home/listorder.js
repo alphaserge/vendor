@@ -76,29 +76,39 @@ export default function ListOrderV(props) {
     
   //const [expand, setExpand] = useState(new Set())
 
-  const saveOrderItem = async (index) => {
+  const saveOrderItem = async (id) => {
 
+    var orderIndex = -1
+    var itemIndex = -1
+      for (let j=0; j< orders.length; j++) {
+      for (let i=0; i< orders[j].items.length; i++) {
+        if (orders[j].items[i].id == id) {
+            orderIndex = j
+            const data = JSON.stringify({
+                id: orders[j].items[i].id,
+                stock: orders[j].items[i].stockName,
+                clientDeliveryCompany: orders[j].items[i].clientDeliveryCompany,
+                clientDeliveryNo: orders[j].items[i].clientDeliveryNo,
+              })
 
-  let data = JSON.stringify({
-      id: orders[index].id,
-      details: orders[index].details,
-      deliveryCompany: orders[index].deliveryCompany,
-      deliveryNo: orders[index].deliveryNo,
-    })
+            await axios.post(config.api + '/OrderItemUpdate', data, {headers:{"Content-Type" : "application/json"}})
+              .then(function (response) {
+                console.log('response for OrderItemUpdate:');
+                console.log(response);
+                let ords = [...orders]
+                ords[orderIndex].items[itemIndex].changes = false
+                setOrders(ords)
+                return true;
+              })
+              .catch(function (error) {
+                console.log(error);
+                return false;
+              })
 
-  await axios.post(config.api + '/ChangeDetails', data, {headers:{"Content-Type" : "application/json"}})
-    .then(function (response) {
-      console.log('response for ChangeDetails:');
-      console.log(response);
-      let ords = [...orders]
-      ords[index].changes = false
-      setOrders(ords)
-      return true;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return false;
-    })
+            break
+            }
+          }
+        }
   };
 
   const postAccept = async (itemId) => {
@@ -176,6 +186,9 @@ export default function ListOrderV(props) {
                   paid      : i.paid,
                   deliveryNo: i.deliveryNo,
                   deliveryCompany : i.deliveryCompany,
+                  clientDeliveryNo: i.clientDeliveryNo,
+                  clientDeliveryCompany : i.clientDeliveryCompany,
+                  stockName : i.stockName,
                   changes: false,
                   expand : true }}) }
               })
@@ -195,25 +208,43 @@ export default function ListOrderV(props) {
     const setTransportCompany = (orderId, id, value) => {
       let ords = [...orders]
       for (let j=0; j< ords.length; j++) {
-        if (ords[j].orderId == orderId && ords[j].id == id) {
-              ords[j].deliveryCompany = value
-              ords[j].changes = true
+      for (let i=0; i< ords[j].items.length; i++) {
+        if (ords[j].id == orderId && ords[j].items[i].id == id) {
+              ords[j].items[i].clientDeliveryCompany = value
+              ords[j].items[i].changes = true
               setOrders(ords)
               break
             }
           }
+        }
     }
 
     const setDeliveryNo = (orderId, id, value) => {
       let ords = [...orders]
       for (let j=0; j< ords.length; j++) {
-        if (ords[j].orderId == orderId && ords[j].id == id) {
-              ords[j].deliveryNo = value
-              ords[j].changes = true
+      for (let i=0; i< ords[j].items.length; i++) {
+        if (ords[j].id == orderId && ords[j].items[i].id == id) {
+              ords[j].items[i].clientDeliveryNo = value
+              ords[j].items[i].changes = true
               setOrders(ords)
               break
             }
           }
+        }
+    }
+
+    const setStock = (orderId, id, value) => {
+      let ords = [...orders]
+      for (let j=0; j< ords.length; j++) {
+      for (let i=0; i< ords[j].items.length; i++) {
+        if (ords[j].id == orderId && ords[j].items[i].id == id) {
+              ords[j].items[i].stockName = value
+              ords[j].items[i].changes = true
+              setOrders(ords)
+              break
+            }
+          }
+        }
     }
 
     const makePayment = (orderIndex) => {
@@ -265,7 +296,7 @@ export default function ListOrderV(props) {
       loadOrders()
       getCurrencies(setCurrencies)
       getTransportCompanies(props.user.vendorId, setTransportCompanies)
-      getStocks(props.user.vendorId, setStocks)
+      getStocks(setStocks)
     }, []);
 
 
@@ -277,7 +308,7 @@ export default function ListOrderV(props) {
   }
 
 
-  console.log(orders);
+  console.log(stocks);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -290,7 +321,7 @@ export default function ListOrderV(props) {
         <Box component="form" noValidate style={outboxStyle}>
 
         {/* <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Order list of " + props.user.vendorName}</Box>  */}
-        <Typography sx={{textAlign: "center", fontSize: "15px", padding: "10px 0"}} >{"Order list of " + props.user.vendorName} </Typography>
+        <Typography sx={{textAlign: "center", fontSize: "16px", fontWeight: "500", padding: "10px 0", color: "#444"}} >{"Order list of " + props.user.vendorName} </Typography>
           
         <Box sx={{ 
           display: "grid", 
@@ -313,7 +344,7 @@ export default function ListOrderV(props) {
       <React.Fragment>
         <Grid item sx={{ 
           gridColumn: "1 / -1", 
-          backgroundColor: "#d4d4d4", 
+          backgroundColor: "#cfe1ed", 
           padding: "10px",
           margin: "10px 0",
           //border: "1px solid #ccc",
@@ -394,7 +425,7 @@ export default function ListOrderV(props) {
                 //gridRow: "1 / span 2",
                 //gridColumn: "8 / 8",
                 // visibility: !data.details ? "hidden":"visible", 
-                backgroundColor: false ? "#ccc" : "#222",
+                backgroundColor: false ? "#ccc" : "#627eb5",
                 //border: !data.changes ? "none" : "1px solid #aaa",
                 borderRadius: "3px",
                 color: false ? "#fff" : "#fff", 
@@ -498,29 +529,29 @@ export default function ListOrderV(props) {
                 flexDirection: "column", 
                 alignItems: "flex-start", 
                 padding: "10px"}}>
-                  <Typography className="caption mb4">Vendor delivery:</Typography>
+                  <Typography className="caption mb4" >Vendor delivery:</Typography>
                   <Typography>No.&nbsp;{data.deliveryNo}&nbsp;-&nbsp;{data.deliveryCompany}</Typography>
               </Box>
           <MySelectLab 
               label="Stock"
-              valueName="stock"
-              width="160px"
+              valueName="stockName"
+              width="130px"
               //disabled={!data.paid}
-              valueVariable={data.stock}
-              setValueFn={(value) => { setStocks(data.orderId, data.id, value) }}
+              valueVariable={data.stockName}
+              setValueFn={(value) => { setStock(data.orderId, data.id, value) }}
               data={stocks}
             />
           <MySelectLab 
-              label="Delivery company for customer"
-              valueName="deliveryCompany"
-              width="200px"
-              disabled={!data.paid}
-              valueVariable={data.deliveryCompany}
+              label="Customer delivery company"
+              valueName="clientDeliveryCompany"
+              width="180px"
+              //disabled={!data.paid}
+              valueVariable={data.clientDeliveryCompany}
               setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
               data={transportCompanies}
             />
             <Box sx={{marginTop: "7px"}}>
-            <MyText label="Delivery No." value={data.deliveryNo} onChange={value => { setDeliveryNo(data.orderId, data.id, value)}}></MyText>
+            <MyText label="Delivery No." value={data.clientDeliveryNo} onChange={value => { setDeliveryNo(data.orderId, data.id, value)}}></MyText>
             </Box>
           {/* <TextField //label="Details"
               margin="normal"
@@ -532,7 +563,7 @@ export default function ListOrderV(props) {
               value={data.details}
               onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}} /> */}
           <Button 
-            onClick={(e)=>{ saveOrderItem(index) }} 
+            onClick={(e)=>{ saveOrderItem(data.id) }} 
             edge="end" 
             disabled={!data.changes}
             sx={{

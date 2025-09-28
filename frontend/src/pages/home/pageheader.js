@@ -25,7 +25,7 @@ import config from "../../config.json"
 const pages = ['Fabrics', 'Accessories', 'Orders', 'Help', 'Contacts' ]; 
 const settings = ['Login', 'Logout', 'Register'];
 
-const menuPagesStyle = { fontSize: "14px", fontWeight: "normal", color: APPEARANCE.WHITE2, textTransform: "none" }
+const menuPagesStyle = { fontSize: "14px", fontWeight: "300", color: "#fff", textTransform: "none" }
 
 function FabricIcon(props) {
   return (
@@ -115,8 +115,9 @@ export default function PageHeader(props) {
   
 
   return (
-    <AppBar position="fixed" sx={{backgroundColor: APPEARANCE.BLACK, boxShadow: "none" }}>
-      <Container className="header-menu" sx={{ backgroundColor: APPEARANCE.BLACK  }} maxWidth={false}  >
+    
+    <AppBar position="fixed" sx={{background: "linear-gradient(135deg, #733b89 0%, #6f4b93 17%, #6475af 50%, #52b8da 95%, #50c0df 100%)", color: "#fff", fontSize: "15px", height: "70px", boxShadow: "none" }}>
+      <Container className="header-menu" sx={{  }} maxWidth={false}  >
         <Toolbar disableGutters>
           {/* <ApiIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
@@ -141,7 +142,7 @@ export default function PageHeader(props) {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              sx={{ color: APPEARANCE.WHITE2 }} 
+              sx={{ color: "#fff" }} 
             >
               <MenuIcon />
             </IconButton>
@@ -181,15 +182,14 @@ export default function PageHeader(props) {
                 key={"key1-"+index}
                 data-menu-value={page}
                 style={menuPagesStyle}
-                sx={{ ml: 1, mr: 1, display: 'block' }}
-                onClick={handleMenuClick}
-              >
-                {page /*.toUpperCase()*/ }
+                sx={{ ml: 1, mr: 1, mt: 1, display: 'block' }}
+                onClick={handleMenuClick} >
+                {page}
               </Button>
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0, display: "flex", flexDirection: "row", alignItems : "center" }}>
+          <Box sx={{ flexGrow: 0, display: "flex", flexDirection: "row", alignItems : "center", mt: 1 }}>
           <Box 
             onClick={handleOpenUserMenu}
             style={menuPagesStyle} >
