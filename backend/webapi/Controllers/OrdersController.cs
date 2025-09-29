@@ -428,7 +428,7 @@ namespace chiffon_back.Controllers
                 ctx.SaveChanges();
             }
 
-            var ordersQuery = from o in ctx.Orders orderby o.Id descending select o;
+            var ordersQuery = from o in ctx.Orders where o.IsSamples != true orderby o.Id descending select o;
 
             List<Models.Order> orders = new List<Models.Order>();
 
@@ -569,6 +569,162 @@ namespace chiffon_back.Controllers
             return orders.AsEnumerable();
         }
 
+        // method for Angelika managers
+        [HttpGet("SampleOrders")]
+        public IEnumerable<Models.Order> GetSampleOrders()
+        {
+            DataTable dt = new DataTable();
+
+            bool save = false;
+            decimal courseUsd = Helper.GetCurrencyCourse("USD", DateTime.Now);
+            // todo decimal courseEur = Helper.GetCurrencyCourse("USD", DateTime.Now);
+
+            var curr = ctx.Currencies.FirstOrDefault(x => x.ShortName!.ToUpper() == "RUR");
+            if (courseUsd != curr!.Rate)
+            {
+                curr.Rate = courseUsd;
+                ctx.SaveChanges();
+            }
+
+            var ordersQuery = from o in ctx.Orders where o.IsSamples == true orderby o.Id descending select o;
+
+            List<Models.Order> orders = new List<Models.Order>();
+
+            foreach (var o in ordersQuery.ToList())
+            {
+                var query =
+                    from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
+                    join p in ctx.Products on oi.ProductId equals p.Id into jointable
+                    from j in jointable.DefaultIfEmpty()
+                    orderby oi.OrderId, j.ItemName
+                    select new { oi, j };
+
+                Models.Order order = new Models.Order();
+                order.Id = o.Id;
+                order.Created = o.Created;
+                order.ClientAddress = o.ClientAddress;
+                order.ClientPhone = o.ClientPhone;
+                order.Number = o.Number;
+                order.ClientEmail = o.ClientEmail;
+                order.ClientName = o.ClientName;
+                order.Uuid = o.Uuid;
+                //order.PaySumm = ctx.Payments.Where(x => x.OrderId == o.Id).Sum(x => x.Amount);
+
+                var payQuery = from p in ctx.Payments.Where(x => x.OrderId == o.Id)
+                               join c in ctx.Currencies on p.CurrencyId equals c.Id into jointable
+                               from j in jointable.DefaultIfEmpty()
+                               select new { j, p };
+                decimal? paySumm = payQuery.Sum(x => x.j.Rate != null && x.j.Rate > 0m ? x.p.Amount / x.j.Rate : 0m);
+                if (paySumm != null)
+                {
+                    order.PaySumm = Math.Round(paySumm.Value, 2);
+                }
+
+                var mapper = config.CreateMapper();
+                order.Payments = ctx.Payments.Where(x => x.OrderId == o.Id).Select(x =>
+                new Models.Payment
+                {
+                    OrderId = x.OrderId,
+                    CurrencyId = x.CurrencyId,
+                    Amount = Math.Round(x.Amount, 2),
+                    Date = x.Date,
+                    Currency = ctx.Currencies.FirstOrDefault(c => c.Id == x.CurrencyId).ShortName
+                }).ToArray();
+
+                List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
+                foreach (var item in query.ToList())
+                {
+                    Models.OrderItem orderItem = new Models.OrderItem()
+                    {
+                        OrderId = item.oi.OrderId,
+                        ProductId = item.oi.ProductId,
+                        Id = item.oi.Id,
+                        ArtNo = item.j.ArtNo,
+                        RefNo = item.j.RefNo,
+                        ItemName = item.j.ItemName,
+                        //Composition = item.j.Composition,
+                        Design = item.j.Design,
+                        Price = item.oi.Price,
+                        Quantity = item.oi.Quantity,
+                        Unit = item.oi.Unit,
+                        Details = item.oi.Details,
+                        Shipped = item.oi.Shipped,
+                        Delivered = item.oi.Delivered,
+                        DeliveryCompany = item.oi.DeliveryCompany,
+                        DeliveryNo = item.oi.DeliveryNo,
+                        ClientDeliveryCompany = item.oi.ClientDeliveryCompany,
+                        ClientDeliveryNo = item.oi.ClientDeliveryNo,
+                        ColorNo = item.oi.ColorNo,
+                        ColorNames = item.oi.ColorNames,
+                        StockId = item.oi.StockId,
+                        StockName = ctx.Stocks.FirstOrDefault(x => x.Id == item.oi.StockId)?.StockName,
+                        VendorId = item.j.VendorId,
+                        VendorName = ctx.Vendors.FirstOrDefault(x => x.Id == item.j.VendorId)?.VendorName,
+                    };
+
+                    string imagePath = @"colors\nopicture.png";
+                    if (item.oi.ColorVariantId != null && item.oi.ColorVariantId != -1)
+                    {
+                        Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.oi.ColorVariantId);
+                        if (cv != null)
+                        {
+                            var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                            if (imageFiles.Count > 0)
+                            {
+                                imagePath = imageFiles[0];
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var product = ctx.Products.FirstOrDefault(x => x.Id == item.j.Id);
+                        if (product != null)
+                        {
+                            string[] uuids = PhotoHelper.GetPhotoUuids(product.PhotoUuids);
+                            if (uuids.Length > 0)
+                            {
+                                var imageFiles = DirectoryHelper.GetImageFiles(uuids[0]);
+                                imagePath = imageFiles[0];
+                            }
+                        }
+                    }
+
+                    /* if (String.IsNullOrEmpty(imagePath))
+                     {
+                         foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == item.j.Id).ToList())
+                         {
+                             var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                             if (imageFiles.Count > 0)
+                             {
+                                 imagePath = imageFiles[0];
+                                 break;
+                             }
+                         }
+                     }*/
+
+                    if (!String.IsNullOrEmpty(item.oi.Details))
+                    {
+                        try
+                        {
+                            orderItem.Total = Convert.ToDecimal(dt.Compute(item.oi.Details, ""));
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                    }
+
+                    orderItem.imagePath = imagePath;
+                    orderItems.Add(orderItem);
+                }
+                order.Total = 5m * orderItems.Count; //!!!!
+                order.Items = orderItems.ToArray();
+                orders.Add(order);
+            }
+            return orders.AsEnumerable();
+        }
+
+
         [HttpGet("{id}")]
         //public Models.Product? Product([FromQuery] string id)
         public Models.Order? GetOrder([FromQuery] string id)
@@ -668,6 +824,13 @@ namespace chiffon_back.Controllers
                     max = 0;
                 }
                 newOrder.Number = max.Value + 1;
+
+                //set is samples order:
+                order.IsSamples = false;
+                if (order.Items.Length>0 && order.Items[0].Quantity == -1)
+                {
+                    newOrder.IsSamples = true;
+                }
 
                 ctx.Orders.Add(newOrder);
 

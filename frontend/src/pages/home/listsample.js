@@ -29,7 +29,7 @@ import MyText from '../../components/mytext';
 import OrderItemStatus from '../../components/orderitemstatus';
 import { APPEARANCE } from '../../appearance';
 
-import { orderStatusString, formattedDate, quantityInfo, computePrice  } from "../../functions/helper"
+import { sampleStatusString, formattedDate, quantityInfo, computePrice  } from "../../functions/helper"
 import { getCurrencies, getCourse } from '../../api/currencies'
 import { postPayment } from '../../api/payments'
 import { getTransportCompanies } from '../../api/vendors'
@@ -59,7 +59,7 @@ const MySelectProps = {
   },
 }
 
-export default function ListOrder(props) {
+export default function ListSample(props) {
 
   const navigate = useNavigate();
 
@@ -141,7 +141,7 @@ export default function ListOrder(props) {
 
     const loadOrders = async (e) => {
 
-      axios.get(config.api + '/Orders?vendorId=' + props.user.vendorId 
+      axios.get(config.api + '/SampleOrders'//?vendorId=' + props.user.vendorId 
         //,{ params: { type: "vendorId", value: props.user.vendorId, id: null }}
       ).then(function (res) {
           var result = res.data.map((d) => 
@@ -325,7 +325,7 @@ export default function ListOrder(props) {
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "65px 85px 65px 90px 1fr 120px 70px 90px 120px 30px",
+          gridTemplateColumns: "65px 85px 65px 90px 1fr 120px 90px 30px",
           columnGap: "4px",
           rowGap: "0px",
           alignItems: "center",
@@ -335,10 +335,10 @@ export default function ListOrder(props) {
             <Grid item sx={{marginBottom: "4px"}}><Header text="Ref.no."/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Design"/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Item name"/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Vendor"/></Grid>
+            {/* <Grid item sx={{marginBottom: "4px"}}><Header text="Vendor"/></Grid> */}
             <Grid item sx={{marginBottom: "4px"}}><Header text="Amount"/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Details"/></Grid>
-            <Grid item sx={{gridColumn: "9 / span 2", marginBottom: "4px"}}><Header text="Status"/></Grid>
+            {/* <Grid item sx={{marginBottom: "4px"}}><Header text="Details"/></Grid> */}
+            <Grid item sx={{gridColumn: "7 / span 2", marginBottom: "4px"}}><Header text="Status"/></Grid>
 
     {orders.map((order, indexOrder) => (
       <React.Fragment>
@@ -368,7 +368,7 @@ export default function ListOrder(props) {
             <td className="caption w100">Contacts:</td><td>{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
           </tr>
           <tr>
-            <td className="caption w100">Total summ:</td><td><b>{order.total.toFixed(2)}&nbsp;usd</b></td>
+            <td className="caption w100">Total summ:</td><td><b>{(order.items.length*5.0).toFixed(2)}&nbsp;usd</b></td>
           </tr>
         </table>
             <Typography></Typography>
@@ -490,21 +490,21 @@ export default function ListOrder(props) {
         <Grid item ><span className="my-val">{data.itemName}</span></Grid>
         </Link>
 
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        {/* <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
         <Grid item ><span className="my-val">{data.vendorName}</span></Grid>
-        </Link>
+        </Link> */}
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
         {/* <Grid item >{data.quantity}&nbsp;{data.unit}</Grid> */}
-        <Grid item sx={{textAlign: "center"}}><span className="my-val">{quantityInfo(data)}</span></Grid>
+        <Grid item sx={{textAlign: "center"}}><span className="my-val">{1}</span></Grid>
         </Link>
 
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        {/* <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
         <Grid item sx={{textAlign: "center"}}><span className="my-val">{!!data.details? data.details + ' m' : "-"}</span></Grid>
-        </Link>
+        </Link> */}
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item ><span className="my-val">{orderStatusString(data, order)}</span></Grid>
+        <Grid item ><span className="my-val">{sampleStatusString(data, order)}</span></Grid>
         </Link>
 
         <Grid item >
@@ -525,7 +525,7 @@ export default function ListOrder(props) {
             height: "85px", 
             padding: "0 10px 0 0", 
             backgroundColor: "#f2f2f2"}} >
-              <Box sx={{display: "flex", 
+              {/* <Box sx={{display: "flex", 
                 flexDirection: "column", 
                 alignItems: "flex-start", 
                 padding: "10px"}}>
@@ -540,7 +540,7 @@ export default function ListOrder(props) {
               valueVariable={data.stockName}
               setValueFn={(value) => { setStock(data.orderId, data.id, value) }}
               data={stocks}
-            />
+            /> */}
           <MySelectLab 
               label="Customer delivery company"
               valueName="clientDeliveryCompany"

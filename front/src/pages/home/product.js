@@ -165,11 +165,12 @@ export default function Product(props) {
 
     const dispatch = useDispatch();
 
-    const _addToCart = () => {
+    const _addToCart = (is_sample) => {
       if (!cartColor.colorNo && !!manualColor) {
         cartColor.colorNo = parseInt(manualColor)
       }
-      dispatch(addToCart({ product, cartColor, cartQuantity, cartUnit }));
+      let qty = is_sample ? -1 : cartQuantity
+      dispatch(addToCart({ product, cartColor, cartQuantity: qty, cartUnit }));
     };
   
     const setQuantity = (index, quantity) => {
@@ -185,7 +186,8 @@ export default function Product(props) {
     }
   
     const handleBuySample = (event) => {
-      navigate("/buysample")
+      _addToCart(true);
+      //navigate("/buysample")
     };
 
     const handleAddToCart = (event) => {
@@ -194,13 +196,13 @@ export default function Product(props) {
         return 
       }
 
-      _addToCart();
+      _addToCart(false);
       setCartQuantity(1)
       setCartIsRolls(false)
     };
   
-    const handleOpenCart = (event) => {
-      navigate("/shoppingcart")
+    const handleOpenCart = (what) => {
+      navigate("/shoppingcart?what=" + what)
     }
 
     const handleColorVarChange = (e, it) => {
@@ -384,9 +386,12 @@ export default function Product(props) {
     //}
   }
 
-const productInCart = shopCart ? shopCart.map((x) => { return x.product.id }).indexOf(product.id) >= 0 : false;
-console.log('colorVarId:')
-console.log(colorVarId)
+const productInCart = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity != -1) >= 0 : false;
+const productInSamples = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity == -1) >= 0 : false;
+console.log('shopCart:')
+console.log(shopCart)
+console.log(productInCart)
+console.log(productInSamples)
 
 //new ImageZoom(document.getElementById("img-container"), options);
 
@@ -459,7 +464,7 @@ console.log(colorVarId)
           <Box sx={{
             pl: "20px",
             pr: "20px" }}>
-              {(productInCart!==true && 
+              {(productInCart!==true && productInSamples!==true && 
               <> 
                 <Box sx={{ display: "flex", marginTop: "20px", width: "930px" }} >
                   <Amount value={cartQuantity} setValue={(e)=>{setQuantity(0,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
@@ -494,10 +499,10 @@ console.log(colorVarId)
                 </StyledSelect>
                 {!cartColor.colorNo && <Typography sx={{marginTop: "15px"}}>please enter the color number:</Typography> }
                 {!cartColor.colorNo && <StyledTextField margin="normal"
-                          required
+                          //required
                           fullWidth
                           id="manualColor"
-                          label="Your color"
+                          label="Your color, e.g. 1, 2, 8.. :"
                           name="manualColor"
                           value={manualColor}
                           onChange={ev => setManualColor(ev.target.value)}
@@ -524,8 +529,16 @@ console.log(colorVarId)
               <Box sx={{ width: "930px" }}> 
                 {(productInCart===true && <StyledButton
                   startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
-                  onClick={handleOpenCart}
+                  onClick={e => handleOpenCart('cart')}
                   sx={{ mt: 3 }}>In cart</StyledButton> )}
+              </Box>)}
+
+              {(productInSamples===true && 
+              <Box sx={{ width: "930px" }}> 
+                {(productInSamples===true && <StyledButton
+                  startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
+                  onClick={e => handleOpenCart('samples')}
+                  sx={{ mt: 3 }}>In samples</StyledButton> )}
               </Box>)}
           </Box>
 

@@ -138,6 +138,8 @@ export const orderStatusString = (item, order) => {
     
     if (!!item.delivered) return "delivered to client"
 
+    if (!!item.clientDeliveryNo && !!item.clientDeliveryCompany  ) return "shipping to client"
+
     if (!!item.deliveryNo && !!item.deliveryCompany  ) return "shipping to stock"
 
     if (!!order && order.paySumm >= 0.0001) {
@@ -150,6 +152,20 @@ export const orderStatusString = (item, order) => {
     if (!!item.stockName ) return "stock " + item.stockName
 
     return "waiting of vendor"
+}
+
+export const sampleStatusString = (item, order) => {
+    
+    if (!!item.delivered) return "delivered to client"
+
+    if (!!item.clientDeliveryNo && !!item.clientDeliveryCompany  ) return "shipping to client"
+
+    if (!!order && order.paySumm >= 0.0001) {
+        if (order.paySumm - order.total >=0) { return "paid" }
+        else { return "partially paid" }
+    }
+
+    return "waiting"
 }
 
 export const orderStatusString2 = (item) => {

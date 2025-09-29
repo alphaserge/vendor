@@ -224,6 +224,14 @@ export default function Home(props) {
             {/* <Box className="subtitle" >Shopping options</Box> */}
             {/* <strong role="heading" aria-level="2" class="subtitle underline">Shopping Options</strong> */}
             <CheckboxList
+              list={!props.data.textileTypes ? [] : props.data.textileTypes.map((it) => ({ key: it.id, name: it.value }))}
+              title="Textile types"
+              expanded={true}
+              setValueFn={setSelectedTextileType}
+              value={selectedTextileType}
+              padding="20px 0 0 0"
+            />
+            <CheckboxList
               list={!props.data.designTypes ? [] : props.data.designTypes.map((it) => ({ key: it.id, name: it.value }))}
               title="Design types"
               expanded={true}

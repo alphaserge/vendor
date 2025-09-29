@@ -39,7 +39,7 @@ import ShortPrice from '../../components/shortprice';
 import StyledButton from '../../components/styledbutton';
 import Header from '../../components/header';
 
-import { fined, computePrice } from "../../functions/helper"
+import { fined, computePrice, fromUrl } from "../../functions/helper"
 
 const useStyles = makeStyles((theme) => ({
   noexpand: {
@@ -170,7 +170,14 @@ export default function ShoppingCart(props) {
 
     const [orderError, setOrderError] = useState(false)
 
-  const shopCart = useSelector((state) => state.cart.items)
+    const what = fromUrl('what')
+  
+    const cart = useSelector((state) => state.cart.items)
+  
+    const shopCart = what == 'samples' ? 
+      cart.filter(e => e.quantity == -1) :
+      cart.filter(e => e.quantity != -1)
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -234,37 +241,10 @@ export default function ShoppingCart(props) {
       console.log(error);
     })
 
-    /*const body = { code: code, clientName: clientName, email: clientEmail }
-    const response = await fetch(config.api + '/Confirm', {  //'/Orders/Confirm'
-      method: "POST",
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    })
-
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-      //const json = await response.json();    
-      //setEmailSended(true)
-      setInfo("Please check your email and enter the code from the letter and click Confirm button")
-      setCounter(-1)
-      setTimeout(() => {
-        setCounter(1)
-      }, 1000*30);
-      console.log(response)*/
-
   }
 
   const setUnit = (index, unit) => {
     changeUnit(index, unit)
-  }
-
-  const setHelp = (index, help) => {
-    shopCart[index].help = help
-  }
-
-  const handleShowShoppingCart = () => {
-    navigate("/")
   }
 
   const checkAddress = (address) => {
@@ -279,13 +259,6 @@ export default function ShoppingCart(props) {
   const checkPhone = (phone) => {
     setFieldsValid(!!phone && !!clientEmail && !!clientName && !!clientAddress)
   }
-
-
-const confirmOrder = async (event) => {
-
-        setStep("confirm")
-
-}
 
 const makeOrder = async (event) => {
 
@@ -348,7 +321,7 @@ const makeOrder = async (event) => {
         searchProducts={searchProducts}
         data={props.data}/>
 
-    {(step == "cart" &&       
+    {(step == "cart" && what == 'cart' && 
     <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column" }} className="center-content" >
     <Box sx={{ justifyContent: "flex-start", alignItems: "center" }}  >
     <PageHeader value={"Shopping cart: " + shopCart.length + " items"} />
@@ -404,17 +377,6 @@ const makeOrder = async (event) => {
             onClick={(e)=>{deleteFromCart(index)}} >
           </DeleteOutlineIcon>
         </IconButton>
-
-        {/* <PropertyQuantity 
-                        maxWidth={200} 
-                        label="Quantity" 
-                        index={index} 
-                        product={data.product} 
-                        quantity={data.quantity} 
-                        isRolls={data.isRolls} 
-                        setQuantity={setQuantity} 
-                        setRolls={setRolls} 
-                        setHelp={setHelp} /> */}
       </React.Fragment>
     ))}
 
@@ -427,6 +389,49 @@ const makeOrder = async (event) => {
         </Box>
     </Box>
     </Box> )}
+
+    {(step == "cart" && what == 'samples' && 
+    <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column" }} className="center-content" >
+    <Box sx={{ justifyContent: "flex-start", alignItems: "center" }}  >
+    <PageHeader value={"Delivery a samples: " + shopCart.length + " items"} />
+
+    <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "center", columnGap: 4, rowGap: 4 }}>
+
+    {shopCart.map((data, index) => (
+      <React.Fragment>
+        <Link to={"/product?id=" + data.product.id } style={{ textDecoration: 'none' }} >
+          <Box sx={{ display: "flex", flexDirection: "column", height: "300px" }}>
+                {( data.colorVar && (data.colorVar.imagePath && data.colorVar.imagePath.length>0) && 
+                  <img 
+                    src={config.api + "/" + data.colorVar.imagePath[0]}
+                    sx={{padding: "0 10px"}}
+                    width={165}
+                    height={165}
+                    alt={data.product.itemName}
+                /> )}
+                <Box sx={{ width: "165px", fontSize: "14px", mt: 2 }}>{ fined(data.product.itemName) }</Box>
+                <Box sx={{ width: "165px", fontSize: "14px" }}>{ "color no. " + data.colorVar.colorNo + " : " + data.colorVar.colorNames }</Box>
+                <IconButton aria-label="delete" sx={{backgroundColor: "#fff", borderRadius: "8px", margin: "6px", marginTop: "auto" }}>
+                  <DeleteOutlineIcon
+                    sx={{ color: "#888", fontSize: 26 }}
+                    onClick={(e)=>{deleteFromCart(index)}} >
+                  </DeleteOutlineIcon>
+                </IconButton>
+          </Box>
+        </Link>
+
+      </React.Fragment>
+    ))}
+
+    </Box>
+        <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "right"}}>
+          <StyledButton
+            startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
+            onClick={(e) => { setStep("delivery")} }
+            sx={{ mt: 4 }}>Create order</StyledButton>
+        </Box>
+    </Box>
+    </Box> )}    
 
     {(step == "delivery" &&  
 

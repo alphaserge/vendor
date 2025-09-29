@@ -311,7 +311,7 @@ export default function ListOrderV(props) {
             columnGap: "10px", 
             height: "85px", 
             padding: "10px", 
-            backgroundColor: "#f4f4f4"}} >
+            backgroundColor: "#cfe1ed"}} >
            <Box sx={{marginTop: "7px"}}>
             <MyText 
               label="Details" 

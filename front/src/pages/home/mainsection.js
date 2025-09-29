@@ -17,6 +17,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Menu from '@mui/material/Menu';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import ApiIcon from '@mui/icons-material/Api';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
@@ -28,6 +29,7 @@ import config from "../../config.json"
 import { getYearsFull } from "../../functions/helper"
 
 import ExpandDown from './../../components/symbol/expanddown';
+import { Api } from "@mui/icons-material";
 
 
 //const buttonStyle = { color: "#222", backgroundColor: "#fff", border: "2px solid #333", borderRadius: "50%", padding: "3px" }  
@@ -187,8 +189,15 @@ useEffect(() => {
         
             <Tooltip title={shopCart && shopCart.length>0  ? shopCart + " items" : "Shopping cart is empty"}>
               <Box className="cart-label" onClick={(e)=>{ handleShowShoppingCart(true) }} >{shopCart && shopCart.length}</Box>
-                <IconButton onClick={(e)=>{ navigate("/shoppingcart") /*props.openShoppingCart(true)*/ }} sx={{ p: 0, ml: "-16px", mr: "10px" }}>
+                <IconButton onClick={(e)=>{ navigate("/shoppingcart?what=cart") /*props.openShoppingCart(true)*/ }} sx={{ p: 0, ml: "-16px", mr: "10px" }}>
                   <ShoppingCartOutlinedIcon fontSize="large" sx={buttonStyle} />
+                </IconButton>
+            </Tooltip>
+
+            <Tooltip title={shopCart && shopCart.length>0  ? shopCart + " items" : "Shopping cart is empty"}>
+              <Box className="cart-label" onClick={(e)=>{ handleShowShoppingCart(true) }} >{shopCart && shopCart.length}</Box>
+                <IconButton onClick={(e)=>{ navigate("/shoppingcart?what=samples") /*props.openShoppingCart(true)*/ }} sx={{ p: 0, ml: "-16px", mr: "10px" }}>
+                  <ApiIcon fontSize="large" sx={buttonStyle} />
                 </IconButton>
             </Tooltip>
 
@@ -223,6 +232,7 @@ useEffect(() => {
               // variant="standard"
               InputProps={{
                 disableUnderline: true,
+                sx: { fontSize: "13px"},
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton>

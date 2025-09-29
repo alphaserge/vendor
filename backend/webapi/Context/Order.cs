@@ -6,6 +6,7 @@
         public DateTime? Created { get; set; }
         public int VendorId { get; set; }
         public string? Uuid { get; set; }
+        public bool? IsSamples { get; set; }
         public int Number { get; set; }
         public string? ClientName { get; set; }
         public string? ClientPhone { get; set; }

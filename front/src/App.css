@@ -40,6 +40,7 @@ body {
 
 .MuiTypography-root {
  font-family: 'Poppins', 'Noto Sans Japanese', 'Arial' !important;
+ /*font-size: 14px !important;*/
 }
 
 .MuiListItemIcon-root {
@@ -61,6 +62,13 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px #ffffff inset !important; 
 }*/  /* Change #ffffff to your desired background color */
+
+a, a:active, a:visited {
+  color: #6083b8;
+  color: #222;
+  text-decoration: none;
+  font-size: 15px;
+}
 
 .color_select_item {
   display: none;
@@ -559,7 +567,6 @@ a.no-link {
 }
 
 .list-item {
-  font-size: 16px;
   font-weight: 300;
   color: #333;
 }

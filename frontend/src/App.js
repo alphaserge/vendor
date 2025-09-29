@@ -5,6 +5,7 @@ import AddProduct from './pages/home/addproduct';
 import ListProduct from './pages/home/listproduct';
 import ListOrder from './pages/home/listorder';
 import ListOrderV from './pages/home/listorderv';
+import ListSample from './pages/home/listsample';
 import Menu from './pages/home/menu';
 import Login from './pages/auth/login';
 import Logout from './pages/auth/logout';
@@ -98,6 +99,7 @@ function App() {
           <Route path="/listproduct" element={<ListProduct user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/listorder" element={<ListOrder user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/listorderv" element={<ListOrderV user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
+          <Route path="/listsample" element={<ListSample user={user} lastAction={lastAction} setLastAction={setLastAction} />} />
           <Route path="/menu" element={<Menu lastAction={lastAction} setLastAction={setLastAction} />} />
           {/* <Route path="/header" element={<PrimarySearchAppBar />} /> */}
         </Routes>
