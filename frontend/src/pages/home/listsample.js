@@ -255,7 +255,7 @@ export default function ListSample(props) {
         let currency = ''
         currencies.forEach((c)=> { if (c.id == order.currencyNew) { currency = c.value } })
         let pay = { 
-          amount: parseFloat(order.paySummNew), 
+          currencyAmount: parseFloat(order.paySummNew), 
           currencyId: order.currencyNew, 
           orderId: order.id, 
           date: new Date() 

@@ -165,7 +165,7 @@ namespace chiffon_back.Controllers
             foreach(var c in ctx.Currencies)
             {
                 decimal course = Helper.GetCurrencyCourse(c.ShortName!.ToUpper(), DateTime.Now);
-                if (course != c.Rate)
+                if (course > 0 && course != c.Rate)
                 {
                     c.Rate = course;
                     save = true;
@@ -418,15 +418,26 @@ namespace chiffon_back.Controllers
             DataTable dt = new DataTable();
 
             bool save = false;
-            decimal courseUsd = Helper.GetCurrencyCourse("USD", DateTime.Now);
+            /*decimal courseUsd = Helper.GetCurrencyCourse("USD", DateTime.Now);
             // todo decimal courseEur = Helper.GetCurrencyCourse("USD", DateTime.Now);
 
-            var curr = ctx.Currencies.FirstOrDefault(x => x.ShortName!.ToUpper() == "RUR");
-            if (courseUsd != curr!.Rate)
-            { 
-                curr.Rate = courseUsd;
-                ctx.SaveChanges();
+            if (courseUsd < 0)
+            {
+                var curr = ctx.Currencies.FirstOrDefault(x => x.ShortName!.ToUpper() == "RUR");
+                if (curr != null && curr.Rate != null)
+                {
+                    courseUsd = curr.Rate.Value;
+                }
             }
+            else
+            {
+                var curr = ctx.Currencies.FirstOrDefault(x => x.ShortName!.ToUpper() == "RUR");
+                if (courseUsd != curr!.Rate)
+                {
+                    curr.Rate = courseUsd;
+                    ctx.SaveChanges();
+                }
+            }*/
 
             var ordersQuery = from o in ctx.Orders where o.IsSamples != true orderby o.Id descending select o;
 
@@ -576,15 +587,26 @@ namespace chiffon_back.Controllers
             DataTable dt = new DataTable();
 
             bool save = false;
-            decimal courseUsd = Helper.GetCurrencyCourse("USD", DateTime.Now);
+            /*decimal courseUsd = Helper.GetCurrencyCourse("USD", DateTime.Now);
             // todo decimal courseEur = Helper.GetCurrencyCourse("USD", DateTime.Now);
 
-            var curr = ctx.Currencies.FirstOrDefault(x => x.ShortName!.ToUpper() == "RUR");
-            if (courseUsd != curr!.Rate)
+            if (courseUsd < 0)
             {
-                curr.Rate = courseUsd;
-                ctx.SaveChanges();
+                var curr = ctx.Currencies.FirstOrDefault(x => x.ShortName!.ToUpper() == "RUR");
+                if (curr != null && curr.Rate != null)
+                {
+                    courseUsd = curr.Rate.Value;
+                }
             }
+            else
+            {
+                var curr = ctx.Currencies.FirstOrDefault(x => x.ShortName!.ToUpper() == "RUR");
+                if (courseUsd != curr!.Rate)
+                {
+                    curr.Rate = courseUsd;
+                    ctx.SaveChanges();
+                }
+            }*/
 
             var ordersQuery = from o in ctx.Orders where o.IsSamples == true orderby o.Id descending select o;
 

@@ -7,6 +7,13 @@
         public string? Currency { get; set; }
         public int OrderId { get; set; }
         public Decimal? Amount { get; set; }
+        public Decimal? CurrencyAmount { get; set; }
         public int CurrencyId { get; set; }
+    }
+
+    public class OrderPayments
+    {
+        public Payment[]? Payments { get; set; }
+        public Decimal? Total { get; set; }
     }
 }

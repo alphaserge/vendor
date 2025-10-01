@@ -29,9 +29,9 @@ import MyText from '../../components/mytext';
 import OrderItemStatus from '../../components/orderitemstatus';
 import { APPEARANCE } from '../../appearance';
 
-import { orderStatusString, formattedDate, quantityInfo, computePrice  } from "../../functions/helper"
+import { orderStatusString, formattedDate, quantityInfo, computePrice, safeFixed } from "../../functions/helper"
 import { getCurrencies, getCourse } from '../../api/currencies'
-import { postPayment } from '../../api/payments'
+import { postPayment, orderPayments } from '../../api/payments'
 import { getTransportCompanies } from '../../api/vendors'
 import { getStocks } from '../../api/stocks'
 import MySelectLab from "../../components/myselectlab";
@@ -247,7 +247,16 @@ export default function ListOrder(props) {
         }
     }
 
-    const makePayment = (orderIndex) => {
+    const updatePayment = (orderIndex) => {
+      orderPayments(orders[orderIndex].id, (payments, total) => { 
+        let ords = [...orders]  
+        ords[orderIndex].payments = payments
+        ords[orderIndex].paySumm = total
+        setOrders(ords)
+      } )
+    }
+
+    const makePayment = async (orderIndex) => {
       let ords = [...orders]
       let addSumm = 0
       if (ords[orderIndex].makePayment) {
@@ -256,13 +265,19 @@ export default function ListOrder(props) {
         currencies.forEach((c)=> { if (c.id == order.currencyNew) { currency = c.value } })
         let pay = { 
           amount: parseFloat(order.paySummNew), 
+          currencyAmount: parseFloat(order.paySummNew), 
           currencyId: order.currencyNew, 
           orderId: order.id, 
           date: new Date() 
         }
-        postPayment(pay)
-        pay.currency = currency
-        order.payments.push(pay)
+        await postPayment(pay)
+        //pay.currency = currency
+        //order.payments.push(pay)
+
+        setTimeout( () =>  { 
+          updatePayment(orderIndex) 
+        }, 500)
+
         /* todo - courses cash 
         let curShort = currencies.find(({ id }) => id == order.currencyNew);
         if (!!curShort) {s
@@ -271,9 +286,9 @@ export default function ListOrder(props) {
           ords[orderIndex].paySumm += addSumm
         }*/
        //temp:
-        let course = order.currencyNew == 1 ? 1 : courseRur
-        addSumm = parseFloat(order.paySummNew) / (course > 0 ? course : 1e-9)
-        ords[orderIndex].paySumm += addSumm
+        //let course = order.currencyNew == 1 ? 1 : courseRur
+        //addSumm = parseFloat(order.paySummNew) / (course > 0 ? course : 1e-9)
+        //ords[orderIndex].paySumm += addSumm
       }
       ords[orderIndex].makePayment = !ords[orderIndex].makePayment
       setOrders(ords)
@@ -325,20 +340,20 @@ export default function ListOrder(props) {
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "65px 85px 65px 90px 1fr 120px 70px 90px 120px 30px",
+          gridTemplateColumns: "65px 95px 90px 1fr 120px 70px 90px 120px 30px",
           columnGap: "4px",
           rowGap: "0px",
-          alignItems: "center",
+          alignItems: "flex-start",
           fontSize: "15px" }}>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Photo"/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Art.no."/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Ref.no."/></Grid>
+            <Grid item sx={{marginBottom: "4px"}}><Header text="Art / Ref no."/></Grid>
+            {/* <Grid item sx={{marginBottom: "4px"}}><Header text="Ref.no."/></Grid> */}
             <Grid item sx={{marginBottom: "4px"}}><Header text="Design"/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Item name"/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Vendor"/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Amount"/></Grid>
             <Grid item sx={{marginBottom: "4px"}}><Header text="Details"/></Grid>
-            <Grid item sx={{gridColumn: "9 / span 2", marginBottom: "4px"}}><Header text="Status"/></Grid>
+            <Grid item sx={{gridColumn: "8 / span 2", marginBottom: "4px"}}><Header text="Status"/></Grid>
 
     {orders.map((order, indexOrder) => (
       <React.Fragment>
@@ -368,7 +383,7 @@ export default function ListOrder(props) {
             <td className="caption w100">Contacts:</td><td>{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
           </tr>
           <tr>
-            <td className="caption w100">Total summ:</td><td><b>{order.total.toFixed(2)}&nbsp;usd</b></td>
+            <td className="caption w100">Total summ:</td><td><b>{ safeFixed(order.total, 2) }&nbsp;usd</b></td>
           </tr>
         </table>
             <Typography></Typography>
@@ -379,14 +394,14 @@ export default function ListOrder(props) {
                 <tr>
                 <td className="my-val-1">{formattedDate(data.date)}</td>
                 <td style={{textAlign: "center"}}>-</td>
-                <td className="my-val-1" style={{textAlign: "right"}}>{data.amount.toFixed(2)}</td>
+                <td className="my-val-1" style={{textAlign: "right"}}>{ safeFixed(data.amount,2) }</td>
                 <td style={{textAlign: "center"}}>{data.currency}</td>
                 </tr>
               ))}
               <tr>
               <td className="caption">Paid total</td>
               <td style={{textAlign: "center"}}>-</td>
-              <td className="my-val-1" style={{textAlign: "right"}}><b>{order.paySumm.toFixed(2)}</b></td>
+              <td className="my-val-1" style={{textAlign: "right"}}><b>{ safeFixed(order.paySumm, 2) }</b></td>
               <td style={{textAlign: "center"}}><b>usd</b></td>
               </tr>
               </table>
@@ -474,12 +489,12 @@ export default function ListOrder(props) {
           </Grid>
         </Link>
 
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        {/* <Link to={"/updateproduct?id=" + data.productId} >
         <Grid item ><span className="my-val">{data.artNo}</span></Grid>
-        </Link>
+        </Link> */}
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item ><span className="my-val">{data.refNo}</span></Grid>
+        <Grid item ><span className="my-val">{data.artNo}<br/>{data.refNo}</span></Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
@@ -500,7 +515,7 @@ export default function ListOrder(props) {
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{textAlign: "center"}}><span className="my-val">{!!data.details? data.details + ' m' : "-"}</span></Grid>
+        <Grid item sx={{textAlign: "center"}}><span className="my-val">{!!data.details? data.details : "-"}</span><br/><span className="my-val f12">({data.total + ' m'})</span></Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >

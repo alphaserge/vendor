@@ -77,6 +77,13 @@ export function toFixed2(value) {
     return value.toFixed(2)
 }
 
+export function safeFixed(value, digits) {
+    
+    if (value === undefined || value === null) { return ""}
+
+    return value.toFixed(digits)
+}
+
 export const validDecimal = (value) => {
     return isNumber(value)
 }
@@ -130,7 +137,7 @@ export const notNull = (text) => {
 
 export const quantityInfo = (item) => {
     if (!item.unit) return item.quantity
-    return item.quantity + ' ' + item.unit.replace('rolls','r').replace('meters','m')// + ")"
+    return item.quantity + ' ' + item.unit.replace('rolls','roll').replace('meters','mtr')// + ")"
 }
 
 

@@ -72,11 +72,19 @@ namespace chiffon_back.Controllers
         }
 
         [HttpGet("OrderPayments")]
-        public IEnumerable<Models.Payment> OrderPayments([FromBody] int orderId)
+        public OrderPayments GetOrderPayments([FromQuery] string id)
         {
-            var payments = ctx.Payments
-                .Where(x => x.OrderId == orderId)
-                .Select(x => config.CreateMapper().Map<Models.Payment>(x)).ToList();
+            OrderPayments payments = new Models.OrderPayments();
+            payments.Payments = ctx.Payments
+                .Where(x => x.OrderId == Convert.ToInt32(id))
+                .Select(x => config.CreateMapper().Map<Models.Payment>(x)).ToArray();
+
+            foreach(Models.Payment p in payments.Payments)
+            {
+                p.Currency = ctx.Currencies.FirstOrDefault(c => c.Id == p.CurrencyId).ShortName;
+            }
+
+            payments.Total = payments.Payments.Sum(x => x.Amount);
 
             return payments;
         }
@@ -98,31 +106,37 @@ namespace chiffon_back.Controllers
             {
                 if (payment.Date == null) { payment.Date = DateTime.Now; }
 
-                Context.Payment newPay = config.CreateMapper()
-                    .Map<Context.Payment>(payment);
+                Context.Currency currency = ctx.Currencies.FirstOrDefault(x => x.Id == payment.CurrencyId);
+
+                Context.Payment newPay = config.CreateMapper().Map<Context.Payment>(payment);
+                decimal course = 1m;
+                if (newPay.CurrencyId == 2) // "RUR"
+                {
+                    course = Helper.GetCurrencyCourse("USD", payment.Date.Value);
+                    if (course < 0)
+                    {
+                        course = currency.Rate.Value;
+                    }
+                }
+                if (course > 1e-4m)
+                {
+                    newPay.Amount = Math.Round(newPay.CurrencyAmount / course, 2);
+                }
                 ctx.Payments.Add(newPay);
                 ctx.SaveChanges();
 
                 string clientName = "";
                 string clientEmail = ""; //todo - from payment!
                 string number = "";
-                string currency = ctx.Currencies.FirstOrDefault(x => x.Id == payment.CurrencyId).ShortName;
 
-                //if (payment.What == "order")
-                //{
-                //var order = ctx.Orders.FirstOrDefault(x => x.Id == payment.WhatId);
-                    var order = ctx.Orders.FirstOrDefault(x => x.Id == payment.OrderId);
-                    if (order != null)
-                    {
-                        clientName = order.ClientName;
-                        clientEmail = order.ClientEmail;
-                        number = order.Number.ToString();
-                    }
-                //}
+                var order = ctx.Orders.FirstOrDefault(x => x.Id == payment.OrderId);
+                if (order != null)
+                {
+                    clientName = order.ClientName;
+                    clientEmail = order.ClientEmail;
+                    number = order.Number.ToString();
+                }
 
-                string label = "'font-weight: normal; font-size: 100%; padding: 5px 12px;'";
-                string cell = "'padding: 10px 20px;'";
-                string rightAlign = "'text-align: right;padding: 10px 20px;'";
                 string header = "'font-weight: #400; color: #66f;'";
                 string headerBlack = "'font-weight: bold; color: #000;'";
 
@@ -133,7 +147,7 @@ namespace chiffon_back.Controllers
                     string? ordersManager = _configuration.GetValue<string>("Orders:Manager");
 
                     string body = $"<p style={header}>Dear {clientName}!</p><p style={header}>You have successfully paid a order with number " + number + "</p>";
-                    body += $"<p>Payment summ is {payment.Amount} {currency}</p>";
+                    body += $"<p>Payment summ is {payment.Amount} {currency.ShortName}</p>";
                     body += $"<p>Your order link <a href='{frontendUrl}/orders?id={payment.OrderId}'>here</a> </p>";
                     body += $"<p style={header}>Best regards, textile company Angelika</p>";
                     body += $"<p style={headerBlack}>Our contacts:</p>";
@@ -150,7 +164,6 @@ namespace chiffon_back.Controllers
                         Timeout = 5000
                     };
                     
-
                     mess.From = new MailAddress("elizarov.sa@mail.ru");
                     mess.To.Add(new MailAddress(clientEmail));
                     mess.To.Add(new MailAddress(ordersManager));

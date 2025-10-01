@@ -3,6 +3,8 @@ import config from "../config.json"
 
 export const  postPayment = async (pay) => {
 
+  const ody = JSON.stringify(pay)
+
   let rc = await fetch(config.api + '/Payments/Pay', {
       method: "POST",
       headers: {
@@ -26,3 +28,18 @@ export const  postPayment = async (pay) => {
   return rc
 };
 
+export const orderPayments = (orderId, setFn) => {
+    axios.get(config.api + '/Payments/OrderPayments', {
+    params: {
+      id: orderId
+    }})
+    .then(function (res) {
+        const items = res.data.payments.map((item)=>({ date: item.date, currency : item.currency, amount : item.currencyAmount }))
+        const total = res.data.total
+         setFn(items,total)
+    })
+    .catch (error => {
+      console.log('orderPayments error:' )
+      console.log(error)
+    })
+  }

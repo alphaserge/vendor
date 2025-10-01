@@ -72,20 +72,27 @@ namespace chiffon_back.Code
         {
             decimal crs = 0m;
 
-            XElement xelement = XElement.Load("http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + date.ToString("dd/MM/yyyy"));
-            IEnumerable<XElement> employees = xelement.Elements();
-            XElement? value = (from nm in xelement.Elements("Valute")
-                            where (string)nm.Element("CharCode") == currShort.ToUpper()
-                            select nm).FirstOrDefault();
-
-            if (value != null)
+            try
             {
-                string sCrs = value.Element("Value").Value;
-                decimal c = 0;
-                if (Decimal.TryParse(sCrs, out c))
-                    crs = c;
+                XElement xelement = XElement.Load("http://www.cbr.ru/scripts/XML_daily.asp?date_req=" + date.ToString("dd/MM/yyyy"));
+                IEnumerable<XElement> employees = xelement.Elements();
+                XElement? value = (from nm in xelement.Elements("Valute")
+                                   where (string)nm.Element("CharCode") == currShort.ToUpper()
+                                   select nm).FirstOrDefault();
+
+                if (value != null)
+                {
+                    string sCrs = value.Element("Value").Value;
+                    decimal c = 0;
+                    if (Decimal.TryParse(sCrs, out c))
+                        crs = c;
+                }
+                return crs;
             }
-            return crs;
+            catch (Exception ex) 
+            {
+                return -1m;
+            }
         }
     }
 }

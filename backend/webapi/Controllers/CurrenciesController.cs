@@ -69,7 +69,7 @@ namespace chiffon_back.Controllers
             // todo decimal courseEur = Helper.GetCurrencyCourse("USD", DateTime.Now);
 
             var rur = ctx.Currencies.FirstOrDefault(x => x.ShortName!.ToUpper() == "RUR");
-            if (courseUsd != rur!.Rate)
+            if (courseUsd > 0 && courseUsd != rur!.Rate)
             {
                 rur.Rate = courseUsd;
                 ctx.SaveChanges();
