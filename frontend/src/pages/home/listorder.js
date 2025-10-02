@@ -212,6 +212,8 @@ export default function ListOrder(props) {
         if (ords[j].id == orderId && ords[j].items[i].id == id) {
               ords[j].items[i].clientDeliveryCompany = value
               ords[j].items[i].changes = true
+
+
               setOrders(ords)
               break
             }
@@ -336,11 +338,11 @@ export default function ListOrder(props) {
         <Box component="form" noValidate style={outboxStyle}>
 
         {/* <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Order list of " + props.user.vendorName}</Box>  */}
-        <Typography sx={{textAlign: "center", fontSize: "16px", fontWeight: "500", padding: "10px 0", color: "#444"}} >{"Order list of " + props.user.vendorName} </Typography>
+        <Typography sx={{textAlign: "center", fontSize: "16px", fontWeight: "500", padding: "10px 0 15px 0", color: "#444"}} >{"Order list of " + props.user.vendorName} </Typography>
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "65px 95px 90px 1fr 120px 70px 110px 120px 30px",
+          gridTemplateColumns: "65px 105px 100px 1fr 120px 70px 110px 120px 30px",
           columnGap: "0px",
           rowGap: "0px",
           alignItems: "flex-start",
@@ -360,7 +362,6 @@ export default function ListOrder(props) {
         <Grid item sx={{ 
           gridColumn: "1 / -1", 
           backgroundColor: "#eee", // "#cfe1ed", 
-
           padding: "10px",
           margin: "10px 0",
           //border: "1px solid #ccc",
@@ -376,7 +377,7 @@ export default function ListOrder(props) {
         
         <table className="my-val-1" sx={{ gridRow: "1 / span 2", gridColumn: "1 / 1" }}>
           <tr>
-            <td className="caption w100">Order No:</td><td><b>{order.number}</b>&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
+            <td className="caption w100">Order No:</td><td><span className="fw600">{order.number}</span>&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
           </tr>
           <tr>
             <td className="caption w100">Client:</td><td>{order.clientName}</td>
@@ -385,7 +386,7 @@ export default function ListOrder(props) {
             <td className="caption w100">Contacts:</td><td>{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
           </tr>
           <tr>
-            <td className="caption w100">Total summ:</td><td><b>{ safeFixed(order.total, 2) }&nbsp;usd</b></td>
+            <td className="caption w100">Total summ:</td><td><span className="fw600">{ safeFixed(order.total, 2) }&nbsp;usd</span></td>
           </tr>
         </table>
             <Typography></Typography>
@@ -403,8 +404,8 @@ export default function ListOrder(props) {
               <tr>
               <td className="caption">Paid total</td>
               <td style={{textAlign: "center"}}>-</td>
-              <td className="my-val-1" style={{textAlign: "right"}}><b>{ safeFixed(order.paySumm, 2) }</b></td>
-              <td style={{textAlign: "center"}}><b>usd</b></td>
+              <td className="my-val-1" style={{textAlign: "right"}}><span className="fw600">{ safeFixed(order.paySumm, 2) }</span></td>
+              <td style={{textAlign: "center"}}><span className="fw500">usd</span></td>
               </tr>
               </table>
               {/* <span className="my-val-1">Order total</span>

@@ -365,7 +365,7 @@ a.no-link {
 
 .my-val {
   display: inline-block;
-  font-weight: 500;  
+  font-weight: 400;  
   font-size: 14px;
   /* font-family: 'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif'; */
   padding: 2px 6px;
@@ -374,7 +374,7 @@ a.no-link {
 
 .my-val-1 {
   /*display: inline-block;*/
-  font-weight: 500;  
+  font-weight: 400;  
   font-size: 14px;
   /* font-family: 'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif'; */
   /* text-decoration: underline; */
@@ -385,10 +385,11 @@ a.no-link {
 }
 
 .caption {
-  font-weight: 500;  
-  font-size: 14px;
+  font-weight: 300;  
+  font-size: 13px;
   /* font-family: 'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif'; */
   color: #6083b8;
+  color: #222;
   /* text-decoration: underline; */
   /*background-color: #e4e4e4;
   border-radius: 4px;*/
@@ -477,6 +478,29 @@ a.no-link {
 .f20 {
   font-size: 20px;
 }
+
+.fw100 {
+  font-weight: 100;
+}
+.fw200 {
+  font-weight: 200;
+}
+.fw300 {
+  font-weight: 300;
+}
+.fw400 {
+  font-weight: 400;
+}
+.fw500 {
+  font-weight: 500;
+}
+.fw600 {
+  font-weight: 600;
+}
+.fw700 {
+  font-weight: 700;
+}
+
 
 .center {
   text-align: center;

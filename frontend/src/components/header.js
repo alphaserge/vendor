@@ -8,10 +8,10 @@ export default function Header(props) {
   return <Typography 
             component={"div"} 
             sx={{ 
-              fontSize: "14px",
+              fontSize: "13px",
               fontFamily: ap.FONTFAMILY,
-              fontWeight: "400",
-              backgroundColor: props.transparent ? "none": "#888", // "#8da0c7ff", 
+              fontWeight: "300",
+              backgroundColor: props.transparent ? "none": "#999", // "#8da0c7ff", 
               color: "#fff", 
               //borderRight: props.last?"1px dotted #aaa":"none", //"1px solid #aaa",
               //border: "1px dotted #aaa",

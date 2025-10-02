@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import { Link } from 'react-router-dom';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { colors, FormControl, Icon } from "@mui/material";
+import { Typography, colors, FormControl, Icon } from "@mui/material";
 import { Paid } from "@mui/icons-material";
 import TextField from '@mui/material/TextField';
 import { InputLabel } from "@mui/material"
@@ -185,6 +185,9 @@ export default function ListOrderV(props) {
         if (ords[j].orderId == orderId && ords[j].id == id) {
               ords[j].deliveryCompany = value
               ords[j].changes = true
+              if (value == 'Angelika Moscow') {
+                //todo - call api
+              }
               setOrders(ords)
               break
             }
@@ -229,24 +232,25 @@ export default function ListOrderV(props) {
 
         <Box component="form" noValidate style={outboxStyle}>
 
+        <Typography sx={{textAlign: "center", fontSize: "16px", fontWeight: "500", padding: "10px 0 15px 0", color: "#444"}} >{"Order list of " + props.user.vendorName} </Typography>
         {/* <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Order list of " + props.user.vendorName}</Box>  */}
-        <Header transparent={true} text={"Order list of " + props.user.vendorName} />
+        {/* <Header transparent={true} text={"Order list of " + props.user.vendorName} /> */}
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "55px 85px 65px 90px 1fr 70px 90px 150px 30px",
-          columnGap: "4px",
+          gridTemplateColumns: "55px 105px 105px 1fr 70px 90px 150px 30px",
+          columnGap: "0px",
           rowGap: "4px",
           alignItems: "center",
           fontSize: "15px" }}>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Photo"/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Art.no."/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Ref.no."/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Design"/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Item name, color"/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Amount"/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Details"/></Grid>
-            <Grid item sx={{gridColumn: "8 / span 2", marginBottom: "4px"}}><Header text="Status"/></Grid>
+            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10 }}><Header text="Photo"/></Grid>
+            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10 }}><Header text="Art / Ref no."/></Grid>
+            {/* <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10 }}><Header text="Ref.no."/></Grid> */}
+            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10 }}><Header text="Design"/></Grid>
+            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10 }}><Header text="Item name, color"/></Grid>
+            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10 }}><Header text="Amount"/></Grid>
+            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10 }}><Header text="Details"/></Grid>
+            <Grid item sx={{gridColumn: "7 / span 2", marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Status"/></Grid>
 
             
 
@@ -265,12 +269,12 @@ export default function ListOrderV(props) {
                 
                 </Grid></Link>
 
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+        {/* <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
         <Grid item ><span className="my-val">{data.artNo}</span></Grid>
-        </Link>
+        </Link> */}
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item ><span className="my-val">{data.refNo}</span></Grid>
+        <Grid item ><span className="my-val">{data.artNo}<br/>{data.refNo}</span></Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
@@ -311,7 +315,7 @@ export default function ListOrderV(props) {
             columnGap: "10px", 
             height: "85px", 
             padding: "10px", 
-            backgroundColor: "#cfe1ed"}} >
+            backgroundColor: "#eee" }} > {/*"#cfe1ed"}} >*/}
            <Box sx={{marginTop: "7px"}}>
             <MyText 
               label="Details" 
