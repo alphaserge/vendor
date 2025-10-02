@@ -340,32 +340,34 @@ export default function ListOrder(props) {
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "65px 95px 90px 1fr 120px 70px 90px 120px 30px",
-          columnGap: "4px",
+          gridTemplateColumns: "65px 95px 90px 1fr 120px 70px 110px 120px 30px",
+          columnGap: "0px",
           rowGap: "0px",
           alignItems: "flex-start",
           fontSize: "15px" }}>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Photo"/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Art / Ref no."/></Grid>
-            {/* <Grid item sx={{marginBottom: "4px"}}><Header text="Ref.no."/></Grid> */}
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Design"/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Item name"/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Vendor"/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Amount"/></Grid>
-            <Grid item sx={{marginBottom: "4px"}}><Header text="Details"/></Grid>
-            <Grid item sx={{gridColumn: "8 / span 2", marginBottom: "4px"}}><Header text="Status"/></Grid>
+            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Photo"/></Grid>
+            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Art / Ref no."/></Grid>
+            {/* <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Ref.no."/></Grid> */}
+            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Design"/></Grid>
+            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Item name"/></Grid>
+            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Vendor"/></Grid>
+            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Amount"/></Grid>
+            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Details"/></Grid>
+            <Grid item sx={{gridColumn: "8 / span 2", marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Status"/></Grid>
 
     {orders.map((order, indexOrder) => (
       <React.Fragment>
         <Grid item sx={{ 
           gridColumn: "1 / -1", 
-          backgroundColor: "#cfe1ed", 
+          backgroundColor: "#eee", // "#cfe1ed", 
+
           padding: "10px",
           margin: "10px 0",
           //border: "1px solid #ccc",
-          borderRadius: "6px",
+          //borderRadius: "6px",
           display: "grid",
           gridTemplateColumns: "1fr 20px 70px 190px 60px",
+          gridTemplateRows: "auto 1fr",
           columnGap: "4px",
           rowGap: "0px",
           flexDirection: "row",
@@ -494,19 +496,19 @@ export default function ListOrder(props) {
         </Link> */}
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item ><span className="my-val">{data.artNo}<br/>{data.refNo}</span></Grid>
+        <Grid item sx={{ textAlign: "center" }} ><span className="my-val">{data.artNo}<br/>{data.refNo}</span></Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item ><span className="my-val">{data.design}</span></Grid>
+        <Grid item sx={{ textAlign: "center" }} ><span className="my-val">{data.design}</span></Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item ><span className="my-val">{data.itemName}</span></Grid>
+        <Grid item sx={{ textAlign: "center" }} ><span className="my-val">{data.itemName}</span></Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item ><span className="my-val">{data.vendorName}</span></Grid>
+        <Grid item sx={{ textAlign: "center" }} ><span className="my-val">{data.vendorName}</span></Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
@@ -515,14 +517,14 @@ export default function ListOrder(props) {
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{textAlign: "center"}}><span className="my-val">{!!data.details? data.details : "-"}</span><br/><span className="my-val f12">({data.total + ' m'})</span></Grid>
+        <Grid item sx={{textAlign: "center"}}><span className="my-val">{!!data.details? data.details : "-"}</span><br/><span className="my-val">({data.total + ' m'})</span></Grid>
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item ><span className="my-val">{orderStatusString(data, order)}</span></Grid>
+        <Grid item sx={{ textAlign: "center" }} ><span className="my-val">{orderStatusString(data, order)}</span></Grid>
         </Link>
 
-        <Grid item >
+        <Grid item sx={{ textAlign: "center" }} >
           {/* <IconButton aria-label="Expand" size="small" sx={{backgroundColor: "#f2f2f2", border: "none", borderRadius: "2px", margin: "0px", padding: "2px 4px" }}>
           <KeyboardArrowDownIcon 
             sx={{ color: "#666", fontSize: 22 }}

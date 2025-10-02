@@ -1,14 +1,14 @@
 export const APPEARANCE = {
 
     
-    FONTFAMILY: "'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif'",
+    FONTFAMILY: '"Poppins", "Noto Sans Japanese", Arial !important',
     FONTSIZE: "16px",
     COLOR: "#222",
 
     PRICE: {
         COLOR: "#fd8bb5",
         FONTSIZE: "18px",
-        FONTFAMILY: "'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif'",
+        FONTFAMILY: '"Poppins", "Noto Sans Japanese", Arial !important',
         FONTWEIGHT: "500"
     },
 
