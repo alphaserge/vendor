@@ -1,67 +1,65 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import EmojiPeopleIcon from '@mui/icons-material/EmojiPeople';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ChecklistOutlinedIcon from '@mui/icons-material/ChecklistOutlined';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import HandshakeIcon from '@mui/icons-material/Handshake';
-import PaidIcon from '@mui/icons-material/Paid';
-import DoneIcon from '@mui/icons-material/Done';
-import RecommendIcon from '@mui/icons-material/Recommend';
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
-import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
-import ViewInArIcon from '@mui/icons-material/ViewInAr';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
+import AddHomeOutlinedIcon from '@mui/icons-material/AddHomeOutlined';
+import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
+import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
+import HourglassBottomOutlinedIcon from '@mui/icons-material/HourglassBottomOutlined';
+import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
+import BackHandOutlinedIcon from '@mui/icons-material/BackHandOutlined';
+import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 
-import {APPEARANCE as ap} from "../appearance"
-import {toFixed2} from "../functions/helper"
+export default function OrderItemStatus(data) {
 
-const statusString = (item) => {
+  const grey = "#777"
+  const red = "#f77"
+  const green = "#5c5"
+  const size = 26
     
-    if (!!item.delivered) return "delivered to client"
-    if (!!item.deliveryNo && !!item.deliveryCompany  ) return "shipping to client"
-    if (!!item.paid     ) return "paid"
-    if (!!item.details  ) return "confirmed by vendor"
-    //if (!!item.shippedToClient ) return "delivered"
-    //if (!!item.inStock         ) return "in stock"
-    return "waiting of vendor"
-}
+  if (!!data.delivered) {
+    return <Tooltip title={<Typography fontSize="12px">Delivered!</Typography>}>
+              <VerifiedOutlinedIcon sx={{ color: green, fontSize: size }} />
+            </Tooltip>
+  }
 
-export default function OrderItemStatus(props) {
+  if (!!data.clientDeliveryNo && !!data.clientDeliveryCompany) {
+    return <Tooltip title={<Typography fontSize="12px">Shipping to client</Typography>}>
+              <LocalShippingIcon sx={{ color: green, fontSize: size }} />
+            </Tooltip>
+  }
 
-  const statusText = statusString(props.item)
+  if (!!data.stockName) {
+    return <Tooltip title={<Typography fontSize="12px">On stock</Typography>}>
+              <AddHomeOutlinedIcon sx={{ color: grey, fontSize: size }} />
+            </Tooltip>
+  }
 
-  let color = "#222";
+  if (!!data.deliveryNo && !!data.deliveryCompany) {
+    return <Tooltip title={<Typography fontSize="12px">Shipping to stock</Typography>}>
+              <LocalShippingIcon sx={{ color: grey, fontSize: size }} />
+            </Tooltip>
+  }
 
-  if (statusText=="waiting of vendor") {  color = "#d70c32ff"}
-  if (statusText=="confirmed by vendor") {  color = "#3256f4ff"}
-  if (statusText=="paid") {  color = "#01801aff"}
-  if (statusText=="in stock") {  color = "#135ce4ff"}
-  if (statusText=="shipping to client") {  color = "#00a2ffff"}
-  if (statusText=="delivered to client") {  color = "#286d2cff"}
+  if (!!data.paid) {
+    return <Tooltip title={<Typography fontSize="12px">Paid</Typography>}>
+              <MonetizationOnOutlinedIcon sx={{ color: grey, fontSize: size }} />
+            </Tooltip>
 
-  return <div style={{display: "inline-block"}}>
-          <span>Status:</span>&nbsp;<span className="my-val" style={{ color: color, backgroundColor: "#ddd", fontWeight: "400", minWidth: "20px", borderRadius: "3px", padding: "0px 7px" }}>{statusText}</span>&nbsp;&nbsp;&nbsp;
-         </div>
-      // Status:<span style={{ color : color}}>{statusText}</span>
-      
-    {/* <Tooltip title={<span style={{ color: "#fff", fontSize: "13px", fontWeight: "300", padding: 0 }}>{statusText}</span>} >
-          <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px", marginTop: "10px"}} >
-          { statusText=="waiting of vendor"    && <QueryBuilderIcon  sx={{ color: "#888", fontSize: 30 }} /> }
-          { statusText=="confirmed by vendor"  && <HandshakeIcon     sx={{ color: "#393", fontSize: 30 }} /> }
-          { statusText=="paid"       && <PaidIcon          sx={{ color: "#888", fontSize: 30 }} /> }
-          { statusText=="in stock"   && <ViewInArIcon      sx={{ color: "#888", fontSize: 30 }} /> }
-          { statusText=="shipping to client"   && <LocalShippingIcon sx={{ color: "#888", fontSize: 30 }} /> } 
-          { statusText=="delivered to client"  && <RecommendIcon     sx={{ color: "#888", fontSize: 30 }} /> } 
-          </Box>
-        </Tooltip> */}
-          {/* <Box sx={{color: "#888", fontSize: 14, padding: "1px 2px"}} >{statusText}</Box> */}
-          {/* <EmojiPeopleIcon sx={{ color: "#888", fontSize: 26 }} />
-          <DoneIcon sx={{ color: "#888", fontSize: 26 }} />
-          <ThumbUpOffAltIcon sx={{ color: "#888", fontSize: 26 }} />
-          <SentimentSatisfiedAltIcon sx={{ color: "#888", fontSize: 26 }} /> */}
+  }
 
-      {/* <span style={{ color: "#444"}}>Price: </span> from $ {toFixed2(props.price)} per meter */}
+  if (!!data.details) {
+    return <Tooltip title={<Typography fontSize="12px">Confirmed by vendor</Typography>}>
+              <BackHandOutlinedIcon sx={{ color: grey, fontSize: size }} />
+            </Tooltip>
+  }
+
+  return <Tooltip title={<Typography fontSize="12px">Waiting of vendor</Typography>}>
+              <AccessTimeOutlinedIcon sx={{ color: red, fontSize: size }} />
+            </Tooltip>
       
 }

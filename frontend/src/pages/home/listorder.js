@@ -522,7 +522,7 @@ export default function ListOrder(props) {
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{ textAlign: "center" }} ><span className="my-val">{orderStatusString(data, order)}</span></Grid>
+        <Grid item sx={{ textAlign: "center" }} ><span className="my-val">{OrderItemStatus(data)}</span></Grid>
         </Link>
 
         <Grid item sx={{ textAlign: "center" }} >

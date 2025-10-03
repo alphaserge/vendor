@@ -153,6 +153,9 @@ export default function ListOrderV(props) {
                   paid      : d.paid,
                   deliveryNo: d.deliveryNo,
                   deliveryCompany : d.deliveryCompany,
+                  clientDeliveryNo: d.clientDeliveryNo,
+                  clientDeliveryCompany : d.clientDeliveryCompany,
+                  stockName : d.stockName,
                   changes: false,
                   }
               })
@@ -242,7 +245,7 @@ export default function ListOrderV(props) {
           
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "55px 105px 105px 1fr 70px 90px 150px 30px",
+          gridTemplateColumns: "55px 105px 105px 1fr 70px 90px 40px 30px",
           columnGap: "0px",
           rowGap: "4px",
           alignItems: "center",
@@ -299,7 +302,7 @@ export default function ListOrderV(props) {
         </Link>
 
         <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item ><span className="my-val">{orderStatusString2(data)}</span></Grid>
+        <Grid item ><span className="my-val">{OrderItemStatus(data)}</span></Grid>
         </Link>
 
         <Grid item >

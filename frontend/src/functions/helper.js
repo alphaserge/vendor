@@ -179,13 +179,15 @@ export const orderStatusString2 = (item) => {
     
     if (!!item.delivered) return "delivered to client"
 
-    if (!!item.deliveryNo && !!item.deliveryCompany  ) return "shipping to stock"
+    if (!!item.clientDeliveryNo && !!item.clientDeliveryCompany) return "shipping to client"
+
+    if (!!item.deliveryNo && !!item.deliveryCompany) return "shipping to stock"
 
     if (!!item.paid) return "paid"
 
-    if (!!item.details   ) return "confirmed by vendor"
+    if (!!item.details) return "confirmed by vendor"
 
-    if (!!item.stockName ) return "stock " + item.stockName
+    if (!!item.stockName) return "stock " + item.stockName
 
     return "waiting of vendor"
 }
