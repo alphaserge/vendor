@@ -380,11 +380,11 @@ export default function ListOrder(props) {
             <td className="caption w100">Order No:</td><td><span className="fw600">{order.number}</span>&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
           </tr>
           <tr>
-            <td className="caption w100">Client:</td><td>{order.clientName}</td>
+            <td className="caption w100">Client:</td><td>{order.clientName}&nbsp;&nbsp;{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
           </tr>
-          <tr>
+          {/* <tr>
             <td className="caption w100">Contacts:</td><td>{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
-          </tr>
+          </tr> */}
           <tr>
             <td className="caption w100">Total summ:</td><td><span className="fw600">{ safeFixed(order.total, 2) }&nbsp;usd</span></td>
           </tr>

@@ -149,11 +149,7 @@ namespace chiffon_back.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine();
-                Console.WriteLine("-----------------------------------------------------------");
-                Console.WriteLine();
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/Order: {1}", DateTime.Now, ex.Message));
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/Order: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+                Log("Order", ex);
             }
             return new Models.Order();
         }
@@ -1015,6 +1011,7 @@ namespace chiffon_back.Controllers
             }
             catch (Exception ex)
             {
+                Log("Post", ex);
                 return CreatedAtAction(nameof(Get), new { id = -1 }, null);
             }
         }
@@ -1063,11 +1060,7 @@ namespace chiffon_back.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine();
-                Console.WriteLine("-----------------------------------------------------------");
-                Console.WriteLine();
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/ChangeDetails: {1}", DateTime.Now, ex.Message));
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/ChangeDetails: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+                Log("ChangeDetails", ex);
                 return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
             }
         }
@@ -1090,11 +1083,7 @@ namespace chiffon_back.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine();
-                Console.WriteLine("-----------------------------------------------------------");
-                Console.WriteLine();
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/OrderItemUpdate: {1}", DateTime.Now, ex.Message));
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/OrderItemUpdate: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+                Log("OrderItemUpdate", ex);
                 return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
             }
         }
@@ -1120,12 +1109,7 @@ namespace chiffon_back.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine();
-                Console.WriteLine("-----------------------------------------------------------");
-                Console.WriteLine();
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/DeliveryInfo: {1}", DateTime.Now, ex.Message));
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/DeliveryInfo: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
-                return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
+                Log("DeliveryInfo", ex); return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
             }
         }
 
@@ -1165,11 +1149,7 @@ namespace chiffon_back.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine();
-                Console.WriteLine("-----------------------------------------------------------");
-                Console.WriteLine();
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/Accept: {1}", DateTime.Now, ex.Message));
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/Accept: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+                Log("Accept", ex);
                 return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
             }
         }
@@ -1299,10 +1279,53 @@ namespace chiffon_back.Controllers
             }
             catch (Exception ex)
             {
+                Log("SendInvoice", ex);
                 return "error"; //BadRequest(ex.Message);
             }
         }
 
+        [HttpGet("DeliveryNo")]
+        public string DeliveryNo([FromQuery] string deliveryCompany)
+        {
+            try
+            {
+                string year2d = DateTime.Now.Year.ToString().Substring(2);
+                string def = "0000-" + year2d;
+
+                var query = ctx.OrderItems.Where(x =>
+                    x.DeliveryCompany == deliveryCompany &&
+                    x.DeliveryNo != null &&
+                    //x.DeliveryNo.Length > 4 &&
+                    x.DeliveryNo.EndsWith(year2d))
+                    .Select(x => x.DeliveryNo);
+
+                int maxNo = 0;
+                try
+                {
+                    maxNo = query.Max(x => Convert.ToInt32(x.Substring(0, x.Length - 3)));
+                }
+                catch (Exception e)
+                {
+
+                }
+
+                return (maxNo + 1).ToString("D4") + "-" + year2d;
+            }
+            catch (Exception ex)
+            {
+                Log("DeliveryNo", ex);
+            }
+            return null;
+        }
+
+        public void Log(string method, Exception ex)
+        {
+            Console.WriteLine();
+            Console.WriteLine("-----------------------------------------------------------");
+            Console.WriteLine();
+            Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/{1}: {2}", DateTime.Now, method, ex.Message));
+            Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} OrdersController/{1}: {2}", DateTime.Now, method, ex.InnerException != null ? ex.InnerException.Message : ""));
+        }
 
     }
 }

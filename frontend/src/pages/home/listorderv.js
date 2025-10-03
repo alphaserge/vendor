@@ -31,6 +31,7 @@ import { APPEARANCE } from '../../appearance';
 
 import { orderStatusString2, fined, status, quantityInfo, computePrice, notNull } from "../../functions/helper"
 import { getTransportCompanies } from '../../api/vendors'
+import { getDeliveryNo } from '../../api/orders'
 import MySelectLab from "../../components/myselectlab";
 
 const defaultTheme = createTheme()
@@ -179,14 +180,17 @@ export default function ListOrderV(props) {
           }
     }
 
-    const setTransportCompany = (orderId, id, value) => {
+    const setTransportCompany = async (orderId, id, value) => {
       let ords = [...orders]
       for (let j=0; j< ords.length; j++) {
         if (ords[j].orderId == orderId && ords[j].id == id) {
               ords[j].deliveryCompany = value
               ords[j].changes = true
-              if (value == 'Angelika Moscow') {
-                //todo - call api
+              if (value == 'Angelika Moscow') { //todo!!
+                const no = await getDeliveryNo(value)
+                if (!!no) {
+                  ords[j].deliveryNo = no.toString().padStart(4, '0');
+                }
               }
               setOrders(ords)
               break
