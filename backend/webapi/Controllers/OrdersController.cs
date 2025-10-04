@@ -358,7 +358,7 @@ namespace chiffon_back.Controllers
                     StockName = ctx.Stocks.FirstOrDefault(x => x.Id == item.oi.StockId)?.StockName,
                     VendorId = item.j.VendorId,
                     VendorName = ctx.Vendors.FirstOrDefault(x=>x.Id==item.j.VendorId)?.VendorName,
-                    Paid = paySumm != null && totalSumm != null && paySumm >= totalSumm // ctx.Payments.FirstOrDefault(x=>x.Amount>0m && x.What=="order" && x.WhatId==item.oi.OrderId) != null
+                    ///!Paid = paySumm != null && totalSumm != null && paySumm >= totalSumm // ctx.Payments.FirstOrDefault(x=>x.Amount>0m && x.What=="order" && x.WhatId==item.oi.OrderId) != null
                 };
 
                 string imagePath = @"colors\nopicture.png";
@@ -570,6 +570,7 @@ namespace chiffon_back.Controllers
                     orderItems.Add(orderItem);
                 }
                 order.Total = total;
+                order.PaidLevel = total > 0m && order.PaySumm != null ? Math.Round(order.PaySumm.Value / total, 2) : 0m;
                 order.Items = orderItems.ToArray();
                 orders.Add(order);
             }

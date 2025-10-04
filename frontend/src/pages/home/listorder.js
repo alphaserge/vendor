@@ -339,10 +339,85 @@ export default function ListOrder(props) {
 
         {/* <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Order list of " + props.user.vendorName}</Box>  */}
         <Typography sx={{textAlign: "center", fontSize: "16px", fontWeight: "500", padding: "10px 0 15px 0", color: "#444"}} >{"Order list of " + props.user.vendorName} </Typography>
-          
+
+        <table className="orders">
+          <tr>
+            <th>Photo</th>
+            <th>Art / Ref no.</th>
+            <th>Design</th>
+            <th>Item name</th>
+            <th>Vendor</th>
+            <th>Amount</th>
+            <th>Details</th>
+            <th>Status</th>
+          </tr>
+
+          <tr></tr>
+
+            { orders.map((order, indexOrder) => (
+              <React.Fragment>
+                <tr className="orderrow">
+                  <td colSpan={2} className="no-border-right">No.&nbsp;<span className="fw600">{order.number}</span>&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
+                  <td colSpan={3} className="no-borders">{order.clientName}&nbsp;&nbsp;{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
+                  <td colSpan={3} className="no-border-left">Paid:</td>
+                </tr>
+
+                 {order.items.map((data, index) => (
+                    
+                      <tr>
+                        <td>
+                          <Link to={"/updateproduct?id=" + data.productId } style={{ textDecoration: 'none' }} >
+                            <img src={config.api + "/" + data.imagePath}
+                              width={60}
+                              height={50}
+                              style={{padding: "4px 0 0 0" }}
+                              alt={data.itemName} /> 
+                          </Link>
+                        </td>
+                        <td>
+                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+                            <span className="my-val">{data.artNo}<br/>{data.refNo}</span>
+                          </Link>
+                        </td>
+
+                        <td>
+                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+                          <span className="my-val">{data.design}</span>
+                          </Link>
+                        </td>        
+                        <td>
+                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+                          <span className="my-val">{data.itemName}</span>
+                          </Link>
+                        </td>        
+                        <td>
+                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+                          <span className="my-val">{data.vendorName}</span>
+                          </Link>
+                        </td>        
+                        <td>
+                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+                          <span className="my-val">{quantityInfo(data)}</span>
+                          </Link>
+                        </td>
+                        <td>
+                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+                          <span className="my-val">{!!data.details? data.details : "-"}</span><br/><span className="my-val">({data.total + ' m'})</span>
+                          </Link>
+                        </td>
+                        <td>
+                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+                          <span className="my-val">{OrderItemStatus(data)}</span>
+                          </Link>
+                        </td>        
+                      </tr>
+                ))}
+              </React.Fragment>
+              ))}
+        </table>   
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "65px 105px 100px 1fr 120px 70px 110px 120px 30px",
+          gridTemplateColumns: "65px 105px 100px 1fr 120px 70px 110px 100px",
           columnGap: "0px",
           rowGap: "0px",
           alignItems: "flex-start",
@@ -355,7 +430,7 @@ export default function ListOrder(props) {
             <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Vendor"/></Grid>
             <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Amount"/></Grid>
             <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Details"/></Grid>
-            <Grid item sx={{gridColumn: "8 / span 2", marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Status"/></Grid>
+            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Status"/></Grid>
 
     {orders.map((order, indexOrder) => (
       <React.Fragment>

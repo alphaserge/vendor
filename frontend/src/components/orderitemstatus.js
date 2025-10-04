@@ -8,9 +8,11 @@ import WarehouseIcon from '@mui/icons-material/Warehouse';
 import AddHomeOutlinedIcon from '@mui/icons-material/AddHomeOutlined';
 import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
 import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import HourglassBottomOutlinedIcon from '@mui/icons-material/HourglassBottomOutlined';
 import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
 import BackHandOutlinedIcon from '@mui/icons-material/BackHandOutlined';
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -18,48 +20,63 @@ export default function OrderItemStatus(data) {
 
   const grey = "#777"
   const red = "#f77"
-  const green = "#5c5"
-  const size = 26
+  const green = "#595"
+  const size = 28
     
   if (!!data.delivered) {
-    return <Tooltip title={<Typography fontSize="12px">Delivered!</Typography>}>
-              <VerifiedOutlinedIcon sx={{ color: green, fontSize: size }} />
-            </Tooltip>
-  }
+    return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+            <VerifiedOutlinedIcon sx={{ color: green, fontSize: size }} />
+            <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", ml: "3px", color: green}}>
+              <Typography fontSize="11px">Delivered!</Typography>
+            </Box>
+         </Box> }
 
   if (!!data.clientDeliveryNo && !!data.clientDeliveryCompany) {
-    return <Tooltip title={<Typography fontSize="12px">Shipping to client</Typography>}>
-              <LocalShippingIcon sx={{ color: green, fontSize: size }} />
-            </Tooltip>
-  }
+    return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+            <LocalShippingIcon sx={{ color: grey, fontSize: size }} />
+            <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", ml: "3px", color: grey}}>
+              <Typography fontSize="11px">delivering</Typography>
+            </Box>
+         </Box> }
 
   if (!!data.stockName) {
-    return <Tooltip title={<Typography fontSize="12px">On stock</Typography>}>
-              <AddHomeOutlinedIcon sx={{ color: grey, fontSize: size }} />
-            </Tooltip>
-  }
+    return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+            <AddHomeOutlinedIcon sx={{ color: grey, fontSize: size }} />
+            <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", ml: "3px", color: grey}}>
+              <Typography fontSize="11px">On stock</Typography>
+            </Box>
+         </Box> }
 
   if (!!data.deliveryNo && !!data.deliveryCompany) {
-    return <Tooltip title={<Typography fontSize="12px">Shipping to stock</Typography>}>
-              <LocalShippingIcon sx={{ color: grey, fontSize: size }} />
-            </Tooltip>
-  }
+    return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+            <LocalShippingIcon sx={{ color: grey, fontSize: size }} />
+            <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", ml: "3px", color: grey}}>
+              <Typography fontSize="11px">shipping</Typography>
+              <Typography fontSize="11px" mt="-5px">to stock</Typography>
+            </Box>
+         </Box> }
 
-  if (!!data.paid) {
+  /* if (!!data.paid) {
     return <Tooltip title={<Typography fontSize="12px">Paid</Typography>}>
               <MonetizationOnOutlinedIcon sx={{ color: grey, fontSize: size }} />
             </Tooltip>
-
-  }
+  }*/
 
   if (!!data.details) {
-    return <Tooltip title={<Typography fontSize="12px">Confirmed by vendor</Typography>}>
-              <BackHandOutlinedIcon sx={{ color: grey, fontSize: size }} />
-            </Tooltip>
-  }
+    return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+            <CheckCircleOutlineOutlinedIcon sx={{ color: grey, fontSize: size }} />
+            <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", ml: "3px", color: grey}}>
+              <Typography fontSize="11px">confirmed</Typography>
+              <Typography fontSize="11px" mt="-5px">by vendor</Typography>
+            </Box>
+         </Box> }
 
-  return <Tooltip title={<Typography fontSize="12px">Waiting of vendor</Typography>}>
-              <AccessTimeOutlinedIcon sx={{ color: red, fontSize: size }} />
-            </Tooltip>
+  return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
+            <AccessTimeOutlinedIcon sx={{ color: red, fontSize: size }} />
+            <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", ml: "3px", color: red}}>
+            <Typography fontSize="11px">waiting</Typography>
+            <Typography fontSize="11px" mt="-5px">vendor</Typography>
+            </Box>
+         </Box>
       
 }

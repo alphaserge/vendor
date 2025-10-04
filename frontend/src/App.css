@@ -514,3 +514,37 @@ a.no-link {
   background-color: #fff;
 } 
 
+table.orders {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.orders th {
+  font-size: 14px;
+  font-weight: 400;
+  height: 36px;
+}
+
+table.orders th, table.orders td {
+  border: 1px solid #ccc; /* Sets a 1px solid black border */
+  padding: 4px 6px;
+  background-color: #eaf0ff;
+}
+
+.no-border-right {
+  border-right: none !important;
+}
+
+.no-border-left {
+  border-left: none !important;
+}
+
+.no-borders {
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.orderrow {
+  height: 50px;
+  background-color: #eee;
+}

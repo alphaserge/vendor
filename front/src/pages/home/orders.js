@@ -413,7 +413,7 @@ export default function Orders(props) {
               <Box>Your invoice is ready</Box>
               
               <Box><Link to={invoiceUrl} sx={{pt: 2}} style={{ textDecoration: 'none' }} >
-                Please click this link to download document
+                Please <span style={{color: "#44f", backgroundColor: "#ddd", padding: "1px 8px", borderRadius: "12px"}}>click this link</span> to download document
               </Link></Box>
             
                 <StyledIconButton 

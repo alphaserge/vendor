@@ -1,14 +1,14 @@
 export const APPEARANCE = {
 
     
-    FONTFAMILY: '"Poppins", "Noto Sans Japanese", Arial !important',
+    FONTFAMILY: '"Noto Sans", "Poppins", "Noto Sans Japanese", Arial !important',
     FONTSIZE: "16px",
     COLOR: "#222",
 
     PRICE: {
         COLOR: "#fd8bb5",
         FONTSIZE: "18px",
-        FONTFAMILY: '"Poppins", "Noto Sans Japanese", Arial !important',
+        FONTFAMILY: '"Noto Sans", "Poppins", "Noto Sans Japanese", Arial !important',
         FONTWEIGHT: "500"
     },
 
