@@ -13,7 +13,10 @@
 
     public class OrderPayments
     {
+        public int Number { get; set; }
+        public DateTime? Created { get; set; }
         public Payment[]? Payments { get; set; }
         public Decimal? Total { get; set; }
+        public Decimal? PaySumm { get; set; }
     }
 }

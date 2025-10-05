@@ -113,6 +113,10 @@ export const computePrice = (product, quantity, isRolls) => {
     return toFixed2(product.price*1.1)
 }
 
+export const percent = (value1, value2) => {
+    return (!!value1!=null && value1!=undefined && value2!=null && value2!=undefined && (value2 > 0)) ? toFixed2(100*value1 / value2) : "?"
+}
+
 export const fromUrl = (paramName) => {
     const search = window.location.search
     const params = new URLSearchParams(search)
@@ -139,7 +143,6 @@ export const quantityInfo = (item) => {
     if (!item.unit) return item.quantity
     return item.quantity + ' ' + item.unit.replace('rolls','roll').replace('meters','mtr')// + ")"
 }
-
 
 export const orderStatusString = (item, order) => {
     

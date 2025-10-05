@@ -11,7 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Link } from 'react-router-dom';
 import { colors, FormControl, Icon, Typography } from "@mui/material";
-import { Paid, Payments } from "@mui/icons-material";
+//import { Paid, Payments } from "@mui/icons-material";
 import TextField from '@mui/material/TextField';
 import { InputLabel } from "@mui/material"
 import InputAdornment from '@mui/material/InputAdornment';
@@ -23,13 +23,13 @@ import config from "../../config.json"
 import PageHeader from './pageheader';
 import Footer from './footer';
 import Header from '../../components/header';
-import Property from '../../components/property';
+import Payments from '../../components/payments';
 import MySelect from '../../components/myselect';
 import MyText from '../../components/mytext';
 import OrderItemStatus from '../../components/orderitemstatus';
 import { APPEARANCE } from '../../appearance';
 
-import { orderStatusString, formattedDate, quantityInfo, computePrice, safeFixed } from "../../functions/helper"
+import { toFixed2, formattedDate, quantityInfo, computePrice, safeFixed, percent } from "../../functions/helper"
 import { getCurrencies, getCourse } from '../../api/currencies'
 import { postPayment, orderPayments } from '../../api/payments'
 import { getTransportCompanies } from '../../api/vendors'
@@ -341,7 +341,7 @@ export default function ListOrder(props) {
         <Typography sx={{textAlign: "center", fontSize: "16px", fontWeight: "500", padding: "10px 0 15px 0", color: "#444"}} >{"Order list of " + props.user.vendorName} </Typography>
 
         <table className="orders">
-          <tr>
+          <tr className="table-header sticky">
             <th>Photo</th>
             <th>Art / Ref no.</th>
             <th>Design</th>
@@ -357,15 +357,16 @@ export default function ListOrder(props) {
             { orders.map((order, indexOrder) => (
               <React.Fragment>
                 <tr className="orderrow">
-                  <td colSpan={2} className="no-border-right">No.&nbsp;<span className="fw600">{order.number}</span>&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
-                  <td colSpan={3} className="no-borders">{order.clientName}&nbsp;&nbsp;{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
-                  <td colSpan={3} className="no-border-left">Paid:</td>
+                  
+                  <td colSpan={2} className="order no-border-right fw200">No.&nbsp;{order.number}&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
+                  <td colSpan={3} className="order no-borders fw200">{order.clientName}&nbsp;&nbsp;{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
+                  <td colSpan={3} className="order no-border-left fw200"><Payments orderId={order.id}/></td>
                 </tr>
 
                  {order.items.map((data, index) => (
                     
                       <tr>
-                        <td>
+                        <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId } style={{ textDecoration: 'none' }} >
                             <img src={config.api + "/" + data.imagePath}
                               width={60}
@@ -374,38 +375,38 @@ export default function ListOrder(props) {
                               alt={data.itemName} /> 
                           </Link>
                         </td>
-                        <td>
+                        <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
                             <span className="my-val">{data.artNo}<br/>{data.refNo}</span>
                           </Link>
                         </td>
 
-                        <td>
+                        <td style={{textAlign: "center", minWidth: "100px"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
                           <span className="my-val">{data.design}</span>
                           </Link>
                         </td>        
-                        <td>
+                        <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
                           <span className="my-val">{data.itemName}</span>
                           </Link>
                         </td>        
-                        <td>
+                        <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
                           <span className="my-val">{data.vendorName}</span>
                           </Link>
                         </td>        
-                        <td>
+                        <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
                           <span className="my-val">{quantityInfo(data)}</span>
                           </Link>
                         </td>
-                        <td>
+                        <td style={{textAlign: "center", minWidth: "95px"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
                           <span className="my-val">{!!data.details? data.details : "-"}</span><br/><span className="my-val">({data.total + ' m'})</span>
                           </Link>
                         </td>
-                        <td>
+                        <td style={{textAlign: "left"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
                           <span className="my-val">{OrderItemStatus(data)}</span>
                           </Link>
@@ -454,60 +455,19 @@ export default function ListOrder(props) {
           <tr>
             <td className="caption w100">Order No:</td><td><span className="fw600">{order.number}</span>&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
           </tr>
-          <tr>
+          {/* <tr>
             <td className="caption w100">Client:</td><td>{order.clientName}&nbsp;&nbsp;{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
-          </tr>
+          </tr> */}
           {/* <tr>
             <td className="caption w100">Contacts:</td><td>{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
           </tr> */}
-          <tr>
+          {/* <tr>
             <td className="caption w100">Total summ:</td><td><span className="fw600">{ safeFixed(order.total, 2) }&nbsp;usd</span></td>
-          </tr>
+          </tr> */}
         </table>
             <Typography></Typography>
-            <Typography> { !order.makePayment && order.payments.length > 0 && <span className="caption">Payments:</span> }</Typography>
-            { !order.makePayment && <Box sx={{ gridRow: "1 / span 2", gridColumn: "4 / 4" }}>
-            <table style={{marginTop: "-4px"}}>
-              {order.payments.map((data, index) => (
-                <tr>
-                <td className="my-val-1">{formattedDate(data.date)}</td>
-                <td style={{textAlign: "center"}}>-</td>
-                <td className="my-val-1" style={{textAlign: "right"}}>{ safeFixed(data.amount,2) }</td>
-                <td style={{textAlign: "center"}}>{data.currency}</td>
-                </tr>
-              ))}
-              <tr>
-              <td className="caption">Paid total</td>
-              <td style={{textAlign: "center"}}>-</td>
-              <td className="my-val-1" style={{textAlign: "right"}}><span className="fw600">{ safeFixed(order.paySumm, 2) }</span></td>
-              <td style={{textAlign: "center"}}><span className="fw500">usd</span></td>
-              </tr>
-              </table>
-              {/* <span className="my-val-1">Order total</span>
-              <span style={{textAlign: "center"}}>-</span>
-              <span className="my-val-1">{order.total}&nbsp;usd</span> */}
-            </Box> }
-
-            { order.makePayment && <Box sx={{ gridRow: "1 / span 2", gridColumn: "4 / 4", display: "grid", gridTemplateColumns: "100px  100px"}}>
-               <Typography>
-               <MyText 
-                label="Pay summ" 
-                value={order.paySummNew}
-                width="80px"
-                onChange={value => { setPay(indexOrder, value)}}></MyText>
-              </Typography> 
-              <Typography >
-              <MySelectLab 
-                label="Currency"
-                valueName="shortName"
-                width="80px"
-                disabled={false}
-                valueVariable={order.currencyNew}
-                setValueFn={(value) => { setCurrency(indexOrder, value) }}
-                data={currencies}
-              /> 
-              </Typography>
-            </Box> }
+            
+            
 
 <Box sx={{display: "flex", flexDirection: "column", height: "100%"}}>
   <Button 

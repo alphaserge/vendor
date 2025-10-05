@@ -1,27 +1,16 @@
 ﻿using AutoMapper;
 using chiffon_back.Code;
-using chiffon_back.Context;
 using chiffon_back.Models;
-using DocumentFormat.OpenXml.Vml;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Http.HttpResults;
-
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 //using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
-using System.IO;
 using System.Net;
 using System.Net.Mail;
 using System.Net.Mime;
-using System.Reflection.PortableExecutable;
-using System.Security.Cryptography;
 using System.Text;
-using System.Web;
 //using System.Web.Http;
 using System.Web.Http.Cors; // пространство имен CORS
 
@@ -172,7 +161,7 @@ namespace chiffon_back.Controllers
                 ctx.SaveChanges();
             }
 
-            DataTable dt = new DataTable();
+            System.Data.DataTable dt = new System.Data.DataTable();
 
             var mapper = config.CreateMapper();
             List <Models.Vendor> vendorList = ctx.Vendors.Select(x => mapper.Map<Models.Vendor>(x)).ToList();
@@ -303,7 +292,7 @@ namespace chiffon_back.Controllers
         [HttpGet("OrderItems")]
         public IEnumerable<Models.OrderItem> GetOrderItems([FromQuery] string vendorId)
         {
-            DataTable dt = new DataTable();
+            System.Data.DataTable dt = new System.Data.DataTable();
 
             var query =
                 from oi in ctx.OrderItems join p in ctx.Products//.Where(x=>x.VendorId.ToString()==vendorId) 
@@ -411,7 +400,7 @@ namespace chiffon_back.Controllers
         [HttpGet("Orders")]
         public IEnumerable<Models.Order> GetOrders()
         {
-            DataTable dt = new DataTable();
+            System.Data.DataTable dt = new System.Data.DataTable();
 
             bool save = false;
             /*decimal courseUsd = Helper.GetCurrencyCourse("USD", DateTime.Now);
@@ -458,26 +447,6 @@ namespace chiffon_back.Controllers
                 order.Uuid = o.Uuid;
                 //order.PaySumm = ctx.Payments.Where(x => x.OrderId == o.Id).Sum(x => x.Amount);
 
-                var payQuery = from p in ctx.Payments.Where(x => x.OrderId == o.Id)
-                               join c in ctx.Currencies on p.CurrencyId equals c.Id into jointable
-                               from j in jointable.DefaultIfEmpty()
-                               select new { j, p };
-                decimal? paySumm = payQuery.Sum(x => x.j.Rate != null && x.j.Rate > 0m ? x.p.Amount / x.j.Rate : 0m);
-                if (paySumm != null)
-                {
-                    order.PaySumm = Math.Round(paySumm.Value, 2);
-                }
-
-                var mapper = config.CreateMapper();
-                order.Payments = ctx.Payments.Where(x => x.OrderId == o.Id).Select(x => 
-                new Models.Payment
-                {
-                    OrderId = x.OrderId,
-                    CurrencyId = x.CurrencyId,
-                    Amount = Math.Round(x.Amount, 2),
-                    Date = x.Date,
-                    Currency = ctx.Currencies.FirstOrDefault(c=>c.Id==x.CurrencyId).ShortName
-                }).ToArray();
 
                 decimal total = 0m;
                 List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
@@ -578,10 +547,75 @@ namespace chiffon_back.Controllers
         }
 
         // method for Angelika managers
+        [HttpGet("OrderPayments")]
+        public Models.OrderPayments? OrderPayments([FromQuery] int orderId)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+
+            Models.OrderPayments orderPayments = new OrderPayments();
+
+            Context.Order? order = ctx.Orders.FirstOrDefault(x => x.Id == orderId);
+
+            if (order == null)
+            {
+                return null;
+            }
+
+            decimal total = 0m;
+            foreach (var item in ctx.OrderItems.Where(x => x.OrderId == orderId))
+            {
+                if (item.Price != null)
+                {
+                    Decimal? amount = null;
+                    if (!String.IsNullOrWhiteSpace(item.Details))
+                    {
+                        try
+                        {
+                            amount = Convert.ToDecimal(dt.Compute(item.Details, ""));
+                        }
+                        catch (Exception e) { }
+                    }
+                    if (amount == null && item.Quantity != null)
+                    {
+                        amount = item.Quantity.Value;
+                    }
+                    if (amount != null)
+                    {
+                        total += amount.Value * item.Price.Value;
+                    }
+                }
+            }
+
+            orderPayments.Number = order.Number;
+            orderPayments.Created = order.Created;
+            orderPayments.Total = total;
+
+            var mapper = config.CreateMapper();
+            orderPayments.Payments = ctx.Payments.Where(x => x.OrderId == orderId).Select(x =>
+            new Models.Payment
+            {
+                OrderId = x.OrderId,
+                CurrencyId = x.CurrencyId,
+                Amount = Math.Round(x.Amount, 2),
+                Date = x.Date,
+                Currency = ctx.Currencies.FirstOrDefault(c => c.Id == x.CurrencyId).ShortName
+            }).ToArray();
+
+            decimal paySumm = 0m;
+            foreach (var p in orderPayments.Payments)
+            {
+                paySumm += p.Amount != null ? p.Amount.Value : 0m;
+            }
+            orderPayments.PaySumm = paySumm;
+
+            return orderPayments;
+        }
+
+        // method for Angelika managers
         [HttpGet("SampleOrders")]
         public IEnumerable<Models.Order> GetSampleOrders()
         {
-            DataTable dt = new DataTable();
+            System.Data.DataTable dt = new System.Data.DataTable();
 
             bool save = false;
             /*decimal courseUsd = Helper.GetCurrencyCourse("USD", DateTime.Now);

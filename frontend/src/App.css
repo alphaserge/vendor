@@ -3,7 +3,6 @@
   font-size: 12px;
 }
 
-
 .color_select_item {
   display: none;
 }
@@ -520,15 +519,28 @@ table.orders {
 }
 
 table.orders th {
-  font-size: 14px;
-  font-weight: 400;
-  height: 36px;
+  font-size: 13px;
+  font-weight: 500;
+  height: 60px;
+  padding: 14px 6px;
+  background-color: #fff;
+  border: 1px solid #ccc; /* Sets a 1px solid black border */
 }
 
-table.orders th, table.orders td {
+table.orders, table.orders td {
   border: 1px solid #ccc; /* Sets a 1px solid black border */
   padding: 4px 6px;
-  background-color: #eaf0ff;
+  /* background-color: #eaf0ff; */
+  background-color: none;
+}
+
+table.orders td.order {
+  padding: 16px 8px 8px 8px; 
+  /* padding: 6px 8px; */
+  background-color: #fff;
+  color: hsl(0, 0%, 20%);
+  font-weight: 600;
+  font-size: 13px;
 }
 
 .no-border-right {
@@ -545,6 +557,13 @@ table.orders th, table.orders td {
 }
 
 .orderrow {
-  height: 50px;
-  background-color: #eee;
+  /* height: 50px; */
+  /* background-color: #eee; */
+  background-color: none;
+}
+
+.sticky {
+  position: sticky;
+  top: 65px;
+  z-index: 10;
 }
