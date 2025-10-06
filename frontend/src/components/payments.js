@@ -103,7 +103,7 @@ export default function Payments(props) {
                 <td style={{textAlign: "center"}}>{data.currency}</td>
                 </tr> ))}
           </table>
-          <Typography sx={{ padding: "10px", fontSize: "15px", fontWeight: 500 }}> Total&nbsp;paid:&nbsp;{safeFixed(order.paySumm, 2)}$&nbsp;</Typography>
+          <Typography sx={{ padding: "15px 10px", fontSize: "15px", fontWeight: 500, textAlign: "right" }}> Total&nbsp;paid:&nbsp;{safeFixed(order.paySumm, 2)}$&nbsp;</Typography>
           </> }
 
           { !addingState && !hasPayments && 

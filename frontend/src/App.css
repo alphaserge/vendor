@@ -367,14 +367,16 @@ a.no-link {
   font-weight: 400;  
   font-size: 14px;
   /* font-family: 'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif'; */
-  padding: 2px 6px;
+  padding: 0px;
+  line-height: 18px;
+
     /* min-width: 70px; */
 }
 
 .my-val-1 {
   /*display: inline-block;*/
   font-weight: 400;  
-  font-size: 15px;
+  font-size: 14px;
   /* font-family: 'Chiron Sung HK', 'Open-Sans', Arial, Inter, 'sans-serif'; */
   /* text-decoration: underline; */
   /*background-color: #e4e4e4;*/
@@ -520,11 +522,14 @@ table.orders {
 
 table.orders th {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   height: 60px;
   padding: 14px 6px;
   background-color: #fff;
   border: 1px solid #ccc; /* Sets a 1px solid black border */
+  color: #777;
+  /* text-decoration: underline; */
+  z-index: 10;
 }
 
 table.orders, table.orders td {
@@ -532,10 +537,7 @@ table.orders, table.orders td {
   padding: 4px 6px;
   /* background-color: #eaf0ff; */
   background-color: none;
-}
-
-table.orders td.order {
-  padding: 16px 8px 8px 8px; 
+  /* padding: 12px 8px 12px 8px;  */
   /* padding: 6px 8px; */
   background-color: #fff;
   color: hsl(0, 0%, 20%);
@@ -545,10 +547,12 @@ table.orders td.order {
 
 .no-border-right {
   border-right: none !important;
+  border-left: 1px dashed #ccc !important;
 }
 
 .no-border-left {
   border-left: none !important;
+  border-right: 1px dashed #ccc !important;
 }
 
 .no-borders {
@@ -556,10 +560,11 @@ table.orders td.order {
   border-right: none !important;
 }
 
-.orderrow {
+tr.orderrow td{
   /* height: 50px; */
-  /* background-color: #eee; */
-  background-color: none;
+  background-color: #eee; 
+  padding: 12px 24px;
+  /* background-color: none; */
 }
 
 .sticky {

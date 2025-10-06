@@ -338,17 +338,17 @@ export default function ListOrder(props) {
         <Box component="form" noValidate style={outboxStyle}>
 
         {/* <Box sx={{ fontWeight: "400", fontSize: "16px", pt: 3, pb: 3, pr: 6, textAlign: "left" }} > {"Order list of " + props.user.vendorName}</Box>  */}
-        <Typography sx={{textAlign: "center", fontSize: "16px", fontWeight: "500", padding: "10px 0 15px 0", color: "#444"}} >{"Order list of " + props.user.vendorName} </Typography>
+        <Typography sx={{textAlign: "center", fontSize: "16px", fontWeight: "500", padding: "10px 0 15px 0", color: "#555"}} >{"Order list of " + props.user.vendorName} </Typography>
 
         <table className="orders">
           <tr className="table-header sticky">
             <th>Photo</th>
             <th>Art / Ref no.</th>
-            <th>Design</th>
+            <th>Design /&nbsp;Color</th>
             <th>Item name</th>
-            <th>Vendor</th>
             <th>Amount</th>
             <th>Details</th>
+            <th>Stock</th>
             <th>Status</th>
           </tr>
 
@@ -381,19 +381,15 @@ export default function ListOrder(props) {
                           </Link>
                         </td>
 
-                        <td style={{textAlign: "center", minWidth: "100px"}}>
+                        <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-                          <span className="my-val">{data.design}</span>
+                          <span className="my-val">{data.design}<br/>No.{data.colorNo} {data.colorNames} </span>
                           </Link>
                         </td>        
                         <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-                          <span className="my-val">{data.itemName}</span>
-                          </Link>
-                        </td>        
-                        <td style={{textAlign: "center"}}>
-                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-                          <span className="my-val">{data.vendorName}</span>
+                          <span className="my-val">{data.itemName}<br/>
+                          (&nbsp;{data.vendorName}&nbsp;)</span>
                           </Link>
                         </td>        
                         <td style={{textAlign: "center"}}>
@@ -403,9 +399,14 @@ export default function ListOrder(props) {
                         </td>
                         <td style={{textAlign: "center", minWidth: "95px"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-                          <span className="my-val">{!!data.details? data.details : "-"}</span><br/><span className="my-val">({data.total + ' m'})</span>
+                          <span className="my-val">{!!data.details ? data.details : "waiting.."}</span><br/><span className="my-val">({!!data.total?data.total + ' mtr' : '0 mtr' })</span>
                           </Link>
                         </td>
+                        <td style={{textAlign: "center"}}>
+                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+                          <span className="my-val">{data.stockName}</span>
+                          </Link>
+                        </td>        
                         <td style={{textAlign: "left"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
                           <span className="my-val">{OrderItemStatus(data)}</span>
@@ -416,6 +417,8 @@ export default function ListOrder(props) {
               </React.Fragment>
               ))}
         </table>   
+
+        <br/><br/><br/><br/>
         <Box sx={{ 
           display: "grid", 
           gridTemplateColumns: "65px 105px 100px 1fr 120px 70px 110px 100px",
