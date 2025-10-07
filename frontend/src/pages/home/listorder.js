@@ -27,6 +27,7 @@ import Payments from '../../components/payments';
 import MySelect from '../../components/myselect';
 import MyText from '../../components/mytext';
 import OrderItemStatus from '../../components/orderitemstatus';
+import OrderItemStatus1 from '../../components/orderitemstatus1';
 import { APPEARANCE } from '../../appearance';
 
 import { toFixed2, formattedDate, quantityInfo, computePrice, safeFixed, percent } from "../../functions/helper"
@@ -348,8 +349,8 @@ export default function ListOrder(props) {
             <th>Item name</th>
             <th>Amount</th>
             <th>Details</th>
-            <th>Stock</th>
-            <th>Status</th>
+            {/* <th>Stock</th> */}
+            <th>Delivery</th>
           </tr>
 
           <tr></tr>
@@ -402,14 +403,14 @@ export default function ListOrder(props) {
                           <span className="my-val">{!!data.details ? data.details : "waiting.."}</span><br/><span className="my-val">({!!data.total?data.total + ' mtr' : '0 mtr' })</span>
                           </Link>
                         </td>
-                        <td style={{textAlign: "center"}}>
+                        {/* <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
                           <span className="my-val">{data.stockName}</span>
                           </Link>
-                        </td>        
-                        <td style={{textAlign: "left"}}>
+                        </td> */}
+                        <td style={{textAlign: "left", width: "auto"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-                          <span className="my-val">{OrderItemStatus(data)}</span>
+                          <span className="my-val">{OrderItemStatus1(data)}</span>
                           </Link>
                         </td>        
                       </tr>
