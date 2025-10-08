@@ -347,8 +347,7 @@ export default function ListOrder(props) {
             <th>Art / Ref no.</th>
             <th>Design /&nbsp;Color</th>
             <th>Item name</th>
-            <th>Amount</th>
-            <th>Details</th>
+            <th>Amount&nbsp;/ Details</th>
             {/* <th>Stock</th> */}
             <th>Delivery</th>
           </tr>
@@ -361,7 +360,7 @@ export default function ListOrder(props) {
                   
                   <td colSpan={2} className="order no-border-right fw200">No.&nbsp;{order.number}&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
                   <td colSpan={3} className="order no-borders fw200">{order.clientName}&nbsp;&nbsp;{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
-                  <td colSpan={3} className="order no-border-left fw200"><Payments orderId={order.id}/></td>
+                  <td colSpan={2} className="order no-border-left fw200"><Payments orderId={order.id}/></td>
                 </tr>
 
                  {order.items.map((data, index) => (
@@ -393,15 +392,17 @@ export default function ListOrder(props) {
                           (&nbsp;{data.vendorName}&nbsp;)</span>
                           </Link>
                         </td>        
-                        <td style={{textAlign: "center"}}>
+                        {/* <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
                           <span className="my-val">{quantityInfo(data)}</span>
                           </Link>
-                        </td>
+                        </td> */}
                         <td style={{textAlign: "center", minWidth: "95px"}}>
-                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-                          <span className="my-val">{!!data.details ? data.details : "waiting.."}</span><br/><span className="my-val">({!!data.total?data.total + ' mtr' : '0 mtr' })</span>
-                          </Link>
+                          <Box display="flex" flexDirection="column" >
+                          <div className="my-val">{quantityInfo(data)}</div>
+                          <div className="my-val">{!!data.details ? data.details : "waiting.."}</div>
+                          <div className="my-val">({!!data.total?data.total + ' mtr' : '0 mtr' })</div>
+                          </Box>
                         </td>
                         {/* <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >

@@ -23,13 +23,17 @@ export default function OrderItemStatus(data) {
   const green = "#595"
   const size = 28
 
+  const handleClientDelivery = (e) => {
+
+  }
+
   return <Box sx={{display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1}}>
-            <span style={{backgroundColor: "#ff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>vendor:</span>
-            <span>СДЭК no. 20001083</span>
-            <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", margin: "2px 0", fontWeight: "500", color: "#777"}}>stock:</span>
-            <span>Moscow</span>
-            <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>client:</span>
-            <span>-</span>
+            <span style={{backgroundColor: "#ff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>shipment:</span>
+            { data.clientDeliveryCompany && <span onClick={handleClientDelivery}>{data.deliveryCompany}&nbsp;-&nbsp;{data.deliveryNo}</span> }
+            <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", margin: "2px 0", fontWeight: "500", color: "#777"}}>on stock:</span>
+            <span>{data.stockName}</span>
+            <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>delivery:</span>
+            { data.clientDeliveryCompany && <span onClick={handleClientDelivery}>{data.clientDeliveryCompany}&nbsp;-&nbsp;{data.clientDeliveryNo}</span>}
          </Box>
     
   /*if (!!data.delivered) {
