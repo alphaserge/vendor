@@ -411,7 +411,7 @@ export default function ListOrder(props) {
                         </td> */}
                         <td style={{textAlign: "left", width: "auto"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-                          <span className="my-val">{OrderItemStatus1(data)}</span>
+                          <span className="my-val"><OrderItemStatus1 data={data}/></span>
                           </Link>
                         </td>        
                       </tr>

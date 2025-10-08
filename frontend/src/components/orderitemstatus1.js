@@ -1,5 +1,6 @@
-import * as React from 'react';
+import React, { useState, useEffect } from "react";
 import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal'
 
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ChecklistOutlinedIcon from '@mui/icons-material/ChecklistOutlined';
@@ -16,80 +17,50 @@ import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
 //import span from '@mui/material/span';
 import Tooltip from '@mui/material/Tooltip';
 
-export default function OrderItemStatus(data) {
+export default function OrderItemStatus1(props) {
 
-  const grey = "#777"
-  const red = "#f77"
-  const green = "#595"
-  const size = 28
+  const [show, setShow] = useState(false)
+  //const [order, setOrder] = useState(false)
+
+  const stockName = !!props.data.stockName ? props.data.stockName : "-";
+  const deliveryCompany = !!props.data.deliveryCompany ? props.data.deliveryCompany : "-";
+  const clientDeliveryCompany = !!props.data.clientDeliveryCompany ? props.data.clientDeliveryCompany : "-";
 
   const handleClientDelivery = (e) => {
 
   }
 
-  return <Box sx={{display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1}}>
-            <span style={{backgroundColor: "#ff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>shipment:</span>
-            { data.clientDeliveryCompany && <span onClick={handleClientDelivery}>{data.deliveryCompany}&nbsp;-&nbsp;{data.deliveryNo}</span> }
-            <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", margin: "2px 0", fontWeight: "500", color: "#777"}}>on stock:</span>
-            <span>{data.stockName}</span>
-            <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>delivery:</span>
-            { data.clientDeliveryCompany && <span onClick={handleClientDelivery}>{data.clientDeliveryCompany}&nbsp;-&nbsp;{data.clientDeliveryNo}</span>}
-         </Box>
-    
-  /*if (!!data.delivered) {
-    return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-            <VerifiedOutlinedIcon sx={{ color: green, fontSize: size }} />
-            <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", ml: "3px", color: green}}>
-              <span fontSize="11px">Delivered!</span>
-            </Box>
-         </Box> }
+  return <>
+    <Box  sx={{display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1}}>
+      <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>shipment:</span>
+      <span>{deliveryCompany}</span>
+      <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", margin: "2px 0", fontWeight: "500", color: "#777"}}>on stock:</span>
+      <span>{stockName}</span>
+      <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>delivery:</span>
+      <span>{clientDeliveryCompany}</span>
+    </Box>
 
-  if (!!data.clientDeliveryNo && !!data.clientDeliveryCompany) {
-    return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-            <LocalShippingIcon sx={{ color: grey, fontSize: size }} />
-            <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", ml: "3px", color: grey}}>
-              <span fontSize="11px">delivering</span>
-            </Box>
-         </Box> }
+   <Modal
+      open={show}
+      onClose={function() { setShow(false) }}
+      aria-labelledby=""
+      aria-describedby=""
+      sx={{ width: "auto"}} >
 
-  if (!!data.stockName) {
-    return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-            <AddHomeOutlinedIcon sx={{ color: grey, fontSize: size }} />
-            <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", ml: "3px", color: grey}}>
-              <span fontSize="11px">On stock</span>
-            </Box>
-         </Box> }
-
-  if (!!data.deliveryNo && !!data.deliveryCompany) {
-    return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-            <LocalShippingIcon sx={{ color: grey, fontSize: size }} />
-            <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", ml: "3px", color: grey}}>
-              <span fontSize="11px">shipping</span>
-              <span fontSize="11px" mt="-5px">to stock</span>
-            </Box>
-         </Box> }*/
-
-  /* if (!!data.paid) {
-    return <Tooltip title={<span fontSize="12px">Paid</span>}>
-              <MonetizationOnOutlinedIcon sx={{ color: grey, fontSize: size }} />
-            </Tooltip>
-  }*/
-
-  /*if (!!data.details) {
-    return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-            <CheckCircleOutlineOutlinedIcon sx={{ color: grey, fontSize: size }} />
-            <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", ml: "3px", color: grey}}>
-              <span fontSize="11px">confirmed</span>
-              <span fontSize="11px" mt="-5px">by vendor</span>
-            </Box>
-         </Box> }
-
-  return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-            <AccessTimeOutlinedIcon sx={{ color: red, fontSize: size }} />
-            <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", ml: "3px", color: red}}>
-            <span fontSize="11px">waiting</span>
-            <span fontSize="11px" mt="-5px">vendor</span>
-            </Box>
-         </Box>*/
-      
+       <Box onClick={handleClientDelivery} 
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: "330px",
+          boxShadow: 24,
+          padding: "45px 40px 40px 40px",
+          outline: "none",
+          bgcolor: 'background.paper',
+          display: "flex",
+          flexDirection: "column" }}>
+      </Box> 
+    </Modal>
+    </>
 }
