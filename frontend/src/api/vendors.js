@@ -28,7 +28,7 @@ export const getTransportCompanies = (vendorId, setFn) => {
     axios.get(config.api + '/Vendors/Transports?vendorId=' + vendorId)
     .then(function (res) {
         let items = res.data.map((item)=>({ 
-          id    : item.vendorName,//item.id, 
+          id    : item.id, 
           vendorName  : item.vendorName,
           value       : item.vendorName,
           vendorType  : item.vendorType,

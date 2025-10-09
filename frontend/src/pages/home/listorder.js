@@ -174,6 +174,7 @@ export default function ListOrder(props) {
                   design    : i.design,
                   spec      : i.composition,
                   price     : i.price,
+                  vendorId  : i.vendorId,
                   vendorName: i.vendorName,
                   quantity  : i.quantity,
                   unit      : i.unit,
@@ -410,9 +411,9 @@ export default function ListOrder(props) {
                           </Link>
                         </td> */}
                         <td style={{textAlign: "left", width: "auto"}}>
-                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-                          <span className="my-val"><OrderItemStatus1 data={data}/></span>
-                          </Link>
+                          {/* <Link to={"/updateproduct?id=" + data.productId} className="my-link" > */}
+                          <span className="my-val"><OrderItemStatus1 data={data} order={order} /></span>
+                          {/* </Link> */}
                         </td>        
                       </tr>
                 ))}

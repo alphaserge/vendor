@@ -21,6 +21,7 @@ export default function MyText(props) {
             size="small" 
             label={""}
             sx={{marginTop: 0 }}
+            //width={!props.width ? "100px" : props.width} 
             value={props.value}
             
             onChange={ev => { props.onChange(ev.target.value)}} />
