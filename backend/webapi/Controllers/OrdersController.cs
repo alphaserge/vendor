@@ -1128,7 +1128,7 @@ namespace chiffon_back.Controllers
         [HttpPost("DeliveryInfo")]
         public ActionResult DeliveryInfo([FromBody] Models.DeliveryInfo di)
         {
-            throw new Exception("Not supported since 23/08/2025");
+            //throw new Exception("Not supported since 23/08/2025");
 
             try
             {
@@ -1137,14 +1137,17 @@ namespace chiffon_back.Controllers
                 {
                     oi.DeliveryNo = di.DeliveryNo;
                     oi.DeliveryCompany = di.DeliveryCompany;
+                    oi.ClientDeliveryNo = di.ClientDeliveryNo;
+                    oi.ClientDeliveryCompany = di.ClientDeliveryCompany;
+                    oi.StockId = di.StockId;
                     ctx.SaveChanges();
                 }
 
-                return CreatedAtAction(nameof(Context.OrderItem), new { id = di.Id }, "");
+                return Ok();// CreatedAtAction(nameof(Context.OrderItem), new { id = di.Id }, "");
             }
             catch (Exception ex)
             {
-                Log("DeliveryInfo", ex); return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
+                Log("DeliveryInfo", ex); return BadRequest();
             }
         }
 

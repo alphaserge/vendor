@@ -3,24 +3,27 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal'
 import { Typography } from '@mui/material';
+import axios from 'axios'
 
 import MySelectLab from "../components/myselectlab";
 import MyText from '../components/mytext';
 import { getTransportCompanies } from '../api/vendors'
 import { getStocks } from '../api/stocks'
+import config from "../config.json"
 
 export default function OrderItemStatus1(props) {
 
   const [show, setShow] = useState(false)
   const [deliveryCompany, setDeliveryCompany] = useState(props.data.deliveryCompany)
   const [deliveryNo, setDeliveryNo] = useState(props.data.deliveryNo)
-  const [clientDeliveryCompany, setClientDeliveryCompany] = useState(props.data.deliveryCompany)
-  const [clientDeliveryNo, setClientDeliveryNo] = useState(props.data.deliveryNo)
-  const [stockId, setStockId] = useState(props.data.stockId)
-  const [stockName, setStockName] = useState(props.data.stockName)
+  const [clientDeliveryCompany, setClientDeliveryCompany] = useState(props.data.clientDeliveryCompany)
+  const [clientDeliveryNo, setClientDeliveryNo] = useState(props.data.clientDeliveryNo)
+  const [stock, setStock] = useState(props.data.stockName)
+  //const [stockName, setStockName] = useState(props.data.stockName)
   const [transportCompanies, setTransportCompanies] = useState([])
   const [stocks, setStocks] = useState([])
   const [changes, setChanges] = useState(false)
+  const [error, setError] = useState("")
   
   //const stockName = !!props.data.stockName ? props.data.stockName : "-";
   //const deliveryCompany = !!props.data.deliveryCompany ? props.data.deliveryCompany : "-";
@@ -29,11 +32,39 @@ export default function OrderItemStatus1(props) {
   const handleClick = (e) => {
      setShow(true) 
   }
-  const setStock = (value) => {
+  
+  const setStock1 = (value) => {
+
   }
-  const save = (e) => {
-     let d1 = deliveryCompany
-     let d2 = clientDeliveryCompany
+
+
+  const save = async (e) => {
+
+    let company1 = transportCompanies.find(it => it.id == deliveryCompany)
+    let company2 = transportCompanies.find(it => it.id == clientDeliveryCompany)
+    const st = stocks.find(it => it.value == stock)
+    const stockId = !!st ? st._id : null
+
+    let data = JSON.stringify({
+        id: props.data.id,
+        deliveryCompany: !!company1 ? company1.value : null,
+        deliveryNo: deliveryNo,
+        clientDeliveryCompany: !!company2 ? company2.value : null,
+        clientDeliveryNo: clientDeliveryNo,
+        stockId: stockId,
+      })
+
+    await axios.post(config.api + '/DeliveryInfo', data, {headers:{"Content-Type" : "application/json"}})
+      .then(function (response) {
+        console.log('response for DeliveryInfo:');
+        console.log(response);
+        setShow(false)
+      })
+      .catch(function (error) {
+        console.log(error)
+        setError(error)
+        return false;
+      })
   }
 
   useEffect(() => {
@@ -42,8 +73,11 @@ export default function OrderItemStatus1(props) {
     getStocks(setStocks)
   }, []);      
 
+  const st = stocks.find(it => it.value == stock)
+  const stockName = !!st ? st.stockName : "-"
   const transportCompanies1 = transportCompanies.filter(e => e.id != props.data.vendorId)
-  console.log(transportCompanies1)
+  //console.log(transportCompanies1)
+  console.log(stockName)
 
   return <>
     <Box sx={{ display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} onClick={handleClick}>
@@ -76,7 +110,7 @@ export default function OrderItemStatus1(props) {
           display: "flex",
           flexDirection: "column" }}>
 
-          <Typography sx={{ padding: "10px 0", fontSize: "14px", fontWeight: 600, color: "555", textAlign: "center" }}>Order&nbsp;#{props.order.number}&nbsp;delivery</Typography>
+          <Typography sx={{ padding: "10px 0", fontSize: "14px", fontWeight: 500, color: "555", textAlign: "center" }}>Order&nbsp;#{props.order.number}&nbsp;delivery information</Typography>
 
           <Box sx={{marginTop: "7px", display: "flex", columnGap: 1}}>
           <MySelectLab 
@@ -91,11 +125,11 @@ export default function OrderItemStatus1(props) {
           </Box>
           <MySelectLab 
               label="Stock"
-              valueName="stockName"
+              valueName="stock"
               width="180px"
               //disabled={!data.paid}
-              valueVariable={stockName}
-              setValueFn={(value) => { setStockId(value) }}
+              valueVariable={stock}
+              setValueFn={(value) => { setStock(value) }}
               data={stocks}
             />
           <Box sx={{marginTop: "8px", display: "flex", columnGap: 1}}>
@@ -119,28 +153,21 @@ export default function OrderItemStatus1(props) {
               sx={{marginTop: 0, backgroundColor: !!data.details ? "none" : "#fcc"}}
               value={data.details}
               onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}} /> */}
-          <Button 
-            onClick={(e)=>{ save() }} 
-            edge="end" 
-            //disabled={!changes}
-            sx={{
-              // visibility: !data.details ? "hidden":"visible", 
-              //backgroundColor: !changes ? "#ccc" : "#222",
-              backgroundColor: "#222",
-              //border: !data.changes ? "none" : "1px solid #aaa",
-              borderRadius: "3px",
-              //color: !changes ? "#fff" : "#fff", 
-              color: "#fff", 
-              borderRadius: "2px", 
-              height: "32px", 
-              minWidth: "20px", 
-              fontSize: "14px", 
-              marginTop: "15px",
-              padding: "6px 10px",
-              textTransform: "none"}}>
-                Save
-          </Button>
-
+              <Typography display={!!error} color={"red"}>{error.message}</Typography>
+              <Box display="flex" marginTop="15px" columnGap={1} justifyContent={"center"}>
+                <Button onClick={(e)=>{ save() }} 
+                  sx={{
+                    backgroundColor: "#222",
+                    color: "#fff", 
+                    borderRadius: "2px", 
+                    textTransform: "none"}}>Save</Button>
+                <Button onClick={(e)=>{ setShow(false) }} 
+                  sx={{
+                    backgroundColor: "#222",
+                    color: "#fff", 
+                    borderRadius: "2px", 
+                    textTransform: "none"}}>Close</Button>
+              </Box>
       </Box> 
     </Modal>
     </>

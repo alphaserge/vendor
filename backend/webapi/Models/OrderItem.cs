@@ -65,8 +65,11 @@
     public class DeliveryInfo
     {
         public int? Id { get; set; }
+        public int? StockId { get; set; }
         public string? DeliveryNo { get; set; }
         public string? DeliveryCompany { get; set; }
+        public string? ClientDeliveryNo { get; set; }
+        public string? ClientDeliveryCompany { get; set; }
     }
 
     public class IdValue
