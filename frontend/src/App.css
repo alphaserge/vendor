@@ -335,19 +335,14 @@ a.no-link {
   vertical-align: top;
 }
 
-.my-grid-table td, .my-grid-table th {
-  padding: 5px;
-  vertical-align: middle;
-  color: #222;
+.order {
+  font-size: 14px;
+  font-style: italic;
 }
 
 .my-link {
   text-decoration: none;
   color: #222;
-}
-
-.row-border {
-    grid-column: 1 / 8; /* this code makes the row stretch to entire width of the container */
 }
 
 .my-lab {
@@ -541,7 +536,7 @@ table.orders, table.orders td {
   /* padding: 6px 8px; */
   background-color: #fff;
   color: hsl(0, 0%, 20%);
-  font-weight: 600;
+  /* font-weight: 600; */
   font-size: 13px;
 }
 

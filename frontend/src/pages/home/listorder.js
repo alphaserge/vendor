@@ -74,72 +74,7 @@ export default function ListOrder(props) {
   const [courseRur, setCourseRur] = useState(0)
   const [transportCompanies, setTransportCompanies] = useState([])
   const [stocks, setStocks] = useState([])
-    
-  //const [expand, setExpand] = useState(new Set())
-
-  const saveOrderItem = async (id) => {
-
-    var orderIndex = -1
-    var itemIndex = -1
-      for (let j=0; j< orders.length; j++) {
-      for (let i=0; i< orders[j].items.length; i++) {
-        if (orders[j].items[i].id == id) {
-            orderIndex = j
-            const data = JSON.stringify({
-                id: orders[j].items[i].id,
-                stock: orders[j].items[i].stockName,
-                clientDeliveryCompany: orders[j].items[i].clientDeliveryCompany,
-                clientDeliveryNo: orders[j].items[i].clientDeliveryNo,
-              })
-
-            await axios.post(config.api + '/OrderItemUpdate', data, {headers:{"Content-Type" : "application/json"}})
-              .then(function (response) {
-                console.log('response for OrderItemUpdate:');
-                console.log(response);
-                let ords = [...orders]
-                ords[orderIndex].items[itemIndex].changes = false
-                setOrders(ords)
-                return true;
-              })
-              .catch(function (error) {
-                console.log(error);
-                return false;
-              })
-
-            break
-            }
-          }
-        }
-  };
-
-  const postAccept = async (itemId) => {
-
-  await axios.post(config.api + '/Accept', 
-    {
-      itemId: itemId,
-    })
-    .then(function (response) {
-      console.log(response);
-      return true;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return false;
-    })
-  };
-
-  const toggleExpand = (index) => {
-    let ords = orders
-    ords[index].expand = !ords[index].expand
-    /*if (expand.has(index)) {
-      exp.delete(index)
-    } else {
-      exp.add(index)
-    }*/
-    setOrders(ords)
-    setToggle(!toggle)
-  }
-
+  
     const loadOrders = async (e) => {
 
       axios.get(config.api + '/Orders?vendorId=' + props.user.vendorId 
@@ -208,43 +143,16 @@ export default function ListOrder(props) {
       })
     }
 
-    const setTransportCompany = (orderId, id, value) => {
+    const refreshStatus = (data) => {
       let ords = [...orders]
       for (let j=0; j< ords.length; j++) {
       for (let i=0; i< ords[j].items.length; i++) {
-        if (ords[j].id == orderId && ords[j].items[i].id == id) {
-              ords[j].items[i].clientDeliveryCompany = value
-              ords[j].items[i].changes = true
-
-
-              setOrders(ords)
-              break
-            }
-          }
-        }
-    }
-
-    const setDeliveryNo = (orderId, id, value) => {
-      let ords = [...orders]
-      for (let j=0; j< ords.length; j++) {
-      for (let i=0; i< ords[j].items.length; i++) {
-        if (ords[j].id == orderId && ords[j].items[i].id == id) {
-              ords[j].items[i].clientDeliveryNo = value
-              ords[j].items[i].changes = true
-              setOrders(ords)
-              break
-            }
-          }
-        }
-    }
-
-    const setStock = (orderId, id, value) => {
-      let ords = [...orders]
-      for (let j=0; j< ords.length; j++) {
-      for (let i=0; i< ords[j].items.length; i++) {
-        if (ords[j].id == orderId && ords[j].items[i].id == id) {
-              ords[j].items[i].stockName = value
-              ords[j].items[i].changes = true
+        if (ords[j].items[i].id == data.id) {
+              ords[j].items[i].stockName = data.stockName
+              ords[j].items[i].clientDeliveryCompany = data.clientDeliveryCompany
+              ords[j].items[i].clientDeliveryNo = data.clientDeliveryNo
+              ords[j].items[i].deliveryCompany = data.deliveryCompany
+              ords[j].items[i].deliveryNo = data.deliveryNo
               setOrders(ords)
               break
             }
@@ -260,57 +168,6 @@ export default function ListOrder(props) {
         setOrders(ords)
       } )
     }
-
-    const makePayment = async (orderIndex) => {
-      let ords = [...orders]
-      let addSumm = 0
-      if (ords[orderIndex].makePayment) {
-        let order = ords[orderIndex]
-        let currency = ''
-        currencies.forEach((c)=> { if (c.id == order.currencyNew) { currency = c.value } })
-        let pay = { 
-          amount: parseFloat(order.paySummNew), 
-          currencyAmount: parseFloat(order.paySummNew), 
-          currencyId: order.currencyNew, 
-          orderId: order.id, 
-          date: new Date() 
-        }
-        await postPayment(pay)
-        //pay.currency = currency
-        //order.payments.push(pay)
-
-        setTimeout( () =>  { 
-          updatePayment(orderIndex) 
-        }, 500)
-
-        /* todo - courses cash 
-        let curShort = currencies.find(({ id }) => id == order.currencyNew);
-        if (!!curShort) {s
-          const crs = await getCourse(curShort.value)
-          addSumm = parseFloat(order.paySummNew)*crs
-          ords[orderIndex].paySumm += addSumm
-        }*/
-       //temp:
-        //let course = order.currencyNew == 1 ? 1 : courseRur
-        //addSumm = parseFloat(order.paySummNew) / (course > 0 ? course : 1e-9)
-        //ords[orderIndex].paySumm += addSumm
-      }
-      ords[orderIndex].makePayment = !ords[orderIndex].makePayment
-      setOrders(ords)
-    }
-
-    const setPay = (orderIndex, value) => {
-      let ords = [...orders]
-      ords[orderIndex].paySummNew = value;
-      setOrders(ords)
-    }
-
-    const setCurrency = (orderIndex, value) => {
-      let ords = [...orders]
-      ords[orderIndex].currencyNew = value;
-      setOrders(ords)
-    }
-
 
     useEffect(() => {
       loadOrders()
@@ -361,9 +218,9 @@ export default function ListOrder(props) {
               <React.Fragment>
                 <tr className="orderrow">
                   
-                  <td colSpan={2} className="order no-border-right fw200">No.&nbsp;{order.number}&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
-                  <td colSpan={3} className="order no-borders fw200">{order.clientName}&nbsp;&nbsp;{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
-                  <td colSpan={2} className="order no-border-left fw200"><Payments orderId={order.id}/></td>
+                  <td colSpan={2} className="order no-border-right">No.&nbsp;{order.number}&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
+                  <td colSpan={3} className="order no-borders">{order.clientName}&nbsp;&nbsp;{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
+                  <td colSpan={2} className="order no-border-left"><Payments orderId={order.id}/></td>
                 </tr>
 
                  {order.items.map((data, index) => (
@@ -414,7 +271,7 @@ export default function ListOrder(props) {
                         </td> */}
                         <td style={{textAlign: "left", width: "auto"}}>
                           {/* <Link to={"/updateproduct?id=" + data.productId} className="my-link" > */}
-                          <span className="my-val"><OrderItemStatus1 data={data} order={order} /></span>
+                          <span className="my-val"><OrderItemStatus1 data={data} order={order} refreshFn={refreshStatus} /></span>
                           {/* </Link> */}
                         </td>        
                       </tr>
@@ -423,244 +280,10 @@ export default function ListOrder(props) {
               ))}
         </table>   
 
-        <br/><br/><br/><br/>
-        <Box sx={{ 
-          display: "grid", 
-          gridTemplateColumns: "65px 105px 100px 1fr 120px 70px 110px 100px",
-          columnGap: "0px",
-          rowGap: "0px",
-          alignItems: "flex-start",
-          fontSize: "15px" }}>
-            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Photo"/></Grid>
-            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Art / Ref no."/></Grid>
-            {/* <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Ref.no."/></Grid> */}
-            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Design"/></Grid>
-            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Item name"/></Grid>
-            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Vendor"/></Grid>
-            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Amount"/></Grid>
-            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Details"/></Grid>
-            <Grid item sx={{marginBottom: "4px", position: "sticky", top: "70px", zIndex: 10}}><Header text="Status"/></Grid>
-
-    {orders.map((order, indexOrder) => (
-      <React.Fragment>
-        <Grid item sx={{ 
-          gridColumn: "1 / -1", 
-          backgroundColor: "#eee", // "#cfe1ed", 
-          padding: "10px",
-          margin: "10px 0",
-          //border: "1px solid #ccc",
-          //borderRadius: "6px",
-          display: "grid",
-          gridTemplateColumns: "1fr 20px 70px 190px 60px",
-          gridTemplateRows: "auto 1fr",
-          columnGap: "4px",
-          rowGap: "0px",
-          flexDirection: "row",
-          alignItems: "flex-start",
-          minHeight: "70px" }} visibility={"visible"} > 
-        
-        <table className="my-val-1" sx={{ gridRow: "1 / span 2", gridColumn: "1 / 1" }}>
-          <tr>
-            <td className="caption w100">Order No:</td><td><span className="fw600">{order.number}</span>&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
-          </tr>
-          {/* <tr>
-            <td className="caption w100">Client:</td><td>{order.clientName}&nbsp;&nbsp;{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
-          </tr> */}
-          {/* <tr>
-            <td className="caption w100">Contacts:</td><td>{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
-          </tr> */}
-          {/* <tr>
-            <td className="caption w100">Total summ:</td><td><span className="fw600">{ safeFixed(order.total, 2) }&nbsp;usd</span></td>
-          </tr> */}
-        </table>
-            <Typography></Typography>
-            
-            
-
-<Box sx={{display: "flex", flexDirection: "column", height: "100%"}}>
-  <Button 
-              onClick={(e)=>{ makePayment(indexOrder); }} 
-              //edge="end" 
-              disabled={false}
-              sx={{
-                //gridRow: "1 / span 2",
-                //gridColumn: "8 / 8",
-                // visibility: !data.details ? "hidden":"visible", 
-                backgroundColor: false ? "#ccc" : "#627eb5",
-                //border: !data.changes ? "none" : "1px solid #aaa",
-                borderRadius: "3px",
-                color: false ? "#fff" : "#fff", 
-                borderRadius: "2px", 
-                height: "26px",
-                minWidth: "20px", 
-                fontSize: "14px", 
-                margin: "0px", padding: "2px 4px",
-                //padding: "0 10px",
-                textTransform: "none"}}>
-                  { order.makePayment && <React.Fragment>Save</React.Fragment> }
-                  { !order.makePayment && <React.Fragment>Add</React.Fragment> }
-            </Button>
-  
-                      <IconButton aria-label="Expand" size="small" sx={{backgroundColor: "#f2f2f2", border: "none", borderRadius: "2px", margin: "0px", padding: "2px 4px", marginTop: "auto" }}>
-                      <KeyboardArrowDownIcon 
-                        sx={{ color: "#666", fontSize: 22 }}
-                        onClick={(e)=>{ toggleExpand(indexOrder)}} >
-                      </KeyboardArrowDownIcon>
-                      </IconButton> 
-                    
-  </Box>
-            
-            
-            <Typography></Typography>
-            <Typography></Typography>
-            <Typography></Typography>
-            <Typography></Typography>
-            <Typography></Typography> 
-                    
-            
-        </Grid>
-
-      {order.items.map((data, index) => (
-        <React.Fragment>
-        <Link to={"/updateproduct?id=" + data.productId } style={{ textDecoration: 'none' }} >
-          <Grid item>
-                
-                  <img 
-                    src={config.api + "/" + data.imagePath}
-                    width={60}
-                    height={50}
-                    style={{padding: "4px 0 0 0" }}
-                    alt={data.itemName}
-                /> 
-          </Grid>
-        </Link>
-
-        {/* <Link to={"/updateproduct?id=" + data.productId} >
-        <Grid item ><span className="my-val">{data.artNo}</span></Grid>
-        </Link> */}
-
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{ textAlign: "center" }} ><span className="my-val">{data.artNo}<br/>{data.refNo}</span></Grid>
-        </Link>
-
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{ textAlign: "center" }} ><span className="my-val">{data.design}</span></Grid>
-        </Link>
-
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{ textAlign: "center" }} ><span className="my-val">{data.itemName}</span></Grid>
-        </Link>
-
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{ textAlign: "center" }} ><span className="my-val">{data.vendorName}</span></Grid>
-        </Link>
-
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        {/* <Grid item >{data.quantity}&nbsp;{data.unit}</Grid> */}
-        <Grid item sx={{textAlign: "center"}}><span className="my-val">{quantityInfo(data)}</span></Grid>
-        </Link>
-
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{textAlign: "center"}}><span className="my-val">{!!data.details? data.details : "-"}</span><br/><span className="my-val">({data.total + ' m'})</span></Grid>
-        </Link>
-
-        <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-        <Grid item sx={{ textAlign: "center" }} ><span className="my-val">{OrderItemStatus(data)}</span></Grid>
-        </Link>
-
-        <Grid item sx={{ textAlign: "center" }} >
-          {/* <IconButton aria-label="Expand" size="small" sx={{backgroundColor: "#f2f2f2", border: "none", borderRadius: "2px", margin: "0px", padding: "2px 4px" }}>
-          <KeyboardArrowDownIcon 
-            sx={{ color: "#666", fontSize: 22 }}
-            onClick={(e)=>{toggleExpand(index)}} >
-          </KeyboardArrowDownIcon>
-          </IconButton>  */}
-        </Grid>
-
-        { order.expand && <Grid item sx={{ gridColumn: "1 / -1" }} visibility={"visible"} > 
-        <Box sx={{ 
-            display: "flex", 
-            flexDirection: "row", 
-            alignItems: "center",
-            columnGap: "10px", 
-            height: "85px", 
-            padding: "0 10px 0 0", 
-            backgroundColor: "#f2f2f2"}} >
-              <Box sx={{display: "flex", 
-                flexDirection: "column", 
-                alignItems: "flex-start", 
-                padding: "10px"}}>
-                  <Typography className="caption mb4" >Vendor delivery:</Typography>
-                  <Typography>No.&nbsp;{data.deliveryNo}&nbsp;-&nbsp;{data.deliveryCompany}</Typography>
-              </Box>
-          <MySelectLab 
-              label="Stock"
-              valueName="stockName"
-              width="130px"
-              //disabled={!data.paid}
-              valueVariable={data.stockName}
-              setValueFn={(value) => { setStock(data.orderId, data.id, value) }}
-              data={stocks}
-            />
-          <MySelectLab 
-              label="Customer delivery company"
-              valueName="clientDeliveryCompany"
-              width="180px"
-              //disabled={!data.paid}
-              valueVariable={data.clientDeliveryCompany}
-              setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
-              data={transportCompanies}
-            />
-            <Box sx={{marginTop: "7px"}}>
-            <MyText label="Delivery No." value={data.clientDeliveryNo} onChange={value => { setDeliveryNo(data.orderId, data.id, value)}}></MyText>
-            </Box>
-          {/* <TextField //label="Details"
-              margin="normal"
-              size="small" 
-              id={"valuedetails-" + index}
-              name={"valuedetails-" + index}
-              label={!!data.details ? "" : "Details"}
-              sx={{marginTop: 0, backgroundColor: !!data.details ? "none" : "#fcc"}}
-              value={data.details}
-              onChange={ev => { setDetails(data.orderId, data.id, ev.target.value)}} /> */}
-          <Button 
-            onClick={(e)=>{ saveOrderItem(data.id) }} 
-            edge="end" 
-            disabled={!data.changes}
-            sx={{
-              // visibility: !data.details ? "hidden":"visible", 
-              backgroundColor: !data.changes ? "#ccc" : "#222",
-              //border: !data.changes ? "none" : "1px solid #aaa",
-              borderRadius: "3px",
-              color: !data.changes ? "#fff" : "#fff", 
-              borderRadius: "2px", 
-              height: "32px", 
-              minWidth: "20px", 
-              fontSize: "14px", 
-              marginTop: "15px",
-              padding: "6px 10px",
-              textTransform: "none"}}>
-                Save
-          </Button>
-
-          </Box>
-        </Grid> }
-        { !expand[index] && <Grid item sx={{ gridColumn: "1 / -1" }} visibility= {"collapse"} > 
-        <Box height={0} ></Box>
-        </Grid> }
-
-        </React.Fragment> 
-      ))}
-
-      </React.Fragment> 
-    ))}
-    </Box>
-    </Box>
-    <br/>
-    <br/>
-    </div>
-    <Footer />
+     </Box>
+     </div>
     </Container>
+    <Footer />
               
     </ThemeProvider>
   );

@@ -21,7 +21,7 @@ export default function Payments(props) {
   const [order, setOrder] = useState(false)
   const [addingState, setAddingState] = useState(false)
   const [paySumm, setPaySumm] = useState("")
-  const [currency, setCurrency] = useState(false)
+  const [currencyId, setCurrencyId] = useState(false)
   const [currencies, setCurrencies] = useState([])
   const [courseRur, setCourseRur] = useState(0)
   const [reload, setReload] = useState(false)
@@ -33,7 +33,7 @@ export default function Payments(props) {
   const savePayment = (e) => {
     postPayment({ 
       currencyAmount: parseFloat(paySumm), 
-      currencyId: currency, 
+      currencyId: currencyId, 
       orderId: props.orderId, 
       date: new Date() 
     })
@@ -68,9 +68,9 @@ export default function Payments(props) {
 
   return <>
   
-    <Typography onClick={handleClick} style={{ cursor: 'pointer' }}>
+    <span onClick={handleClick} style={{ cursor: 'pointer' }}>
       Paid&nbsp;{percent(order.paySumm, order.total)}&nbsp;%:&nbsp;&nbsp;{toFixed2(order.paySumm)}&nbsp;/&nbsp;{toFixed2(order.total)}&nbsp;$ 
-    </Typography>
+    </span>
     
     <Modal
       open={show}
@@ -122,12 +122,13 @@ export default function Payments(props) {
 
               <MySelectLab 
                 label="Currency"
-                valueName="shortName"
                 width="90px"
                 disabled={false}
-                valueVariable={currency}
-                setValueFn={(value) => { setCurrency(value) }}
-                data={currencies} /> 
+                value={currencyId}
+                setValue={setCurrencyId}
+                values={currencies.map((e)=>{return e.shortName})}
+                keys={currencies.map((e)=>{return e.id})}
+                 /> 
           </Box>
           <Box display={"flex"} flexDirection={"row"} justifyContent={"center"} columnGap={1} marginTop={"10px"}>
           <Button 

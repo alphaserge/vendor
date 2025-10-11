@@ -34,26 +34,29 @@ export default function OrderItemStatus1(props) {
   
   const save = async () => {
 
-     const data = JSON.stringify({
+     const data = {
         id: props.data.id,
         stockId: stockId,
         deliveryNo: deliveryNo,
         deliveryCompany: deliveryCompany,
         clientDeliveryNo: clientDeliveryNo,
         clientDeliveryCompany: clientDeliveryCompany
-     })
+     }
 
-    await axios.post(config.api + '/DeliveryInfo', data, {headers:{"Content-Type" : "application/json"}})
+    await axios.post(config.api + '/DeliveryInfo', JSON.stringify(data), {headers:{"Content-Type" : "application/json"}})
       .then(function (response) {
-        if (props.refreshFn) {
-          props.refreshFn(props.data.id)
-        }
       })
       .catch(function (error) {
         console.log('error for DeliveryInfo:')
         console.log(error)
       })
 
+      if (!!stockId) {
+          data.stockName = stocks.find((e) => e.id == stockId).stockName
+        }
+      if (props.refreshFn) {
+        props.refreshFn(data)
+      }
      setShow(false) 
   }
 

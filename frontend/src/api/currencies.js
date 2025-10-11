@@ -4,7 +4,7 @@ import config from "../config.json"
 export const getCurrencies = (setFn) => {
     axios.get(config.api + '/Currencies')
     .then(function (res) {
-        let items = res.data.map((item)=>({ id:item.id, value:item.shortName }))
+        let items = res.data
         //items.push({ id:-1, value:"All" })
         setFn(items)
     })
