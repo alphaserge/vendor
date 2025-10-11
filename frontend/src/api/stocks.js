@@ -6,10 +6,8 @@ export const getStocks = (setFn) => {
     axios.get(config.api + '/Stocks')
     .then(function (res) {
         let items = res.data.map((item)=>({ 
-          _id    : item.id, //!
-          id    : item.stockName, //!
-          value    : item.stockName, //!
-          stockName  : item.stockName,
+          id        : item.id, 
+          stockName : item.stockName,
          }))
         //items.push({ id:-1, value:"All" })
         setFn(items)

@@ -190,6 +190,7 @@ export default function ListOrder(props) {
                     deliveryCompany : i.deliveryCompany,
                     clientDeliveryNo: i.clientDeliveryNo,
                     clientDeliveryCompany : i.clientDeliveryCompany,
+                    stockId : i.stockId,
                     stockName : i.stockName,
                     changes: false,
                     expand : true }}) }
@@ -327,7 +328,8 @@ export default function ListOrder(props) {
   }
 
 
-  console.log(stocks);
+  console.log('orders:');
+  console.log(orders);
 
   return (
     <ThemeProvider theme={defaultTheme}>

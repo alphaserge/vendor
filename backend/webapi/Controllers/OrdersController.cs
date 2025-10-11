@@ -1143,11 +1143,11 @@ namespace chiffon_back.Controllers
                     ctx.SaveChanges();
                 }
 
-                return Ok();// CreatedAtAction(nameof(Context.OrderItem), new { id = di.Id }, "");
+                return CreatedAtAction(nameof(Context.OrderItem), new { id = di.Id }, "");
             }
             catch (Exception ex)
             {
-                Log("DeliveryInfo", ex); return BadRequest();
+                Log("DeliveryInfo", ex); return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
             }
         }
 

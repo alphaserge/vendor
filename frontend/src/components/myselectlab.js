@@ -32,14 +32,14 @@ export default function MySelectLab(props) {
         <Typography sx={{ fontSize: "13px", fontWeight: "400" }}>{props.label}</Typography>
         <MySelect 
               hideLabel={true}
-              valueName={props.valueName}
               labelStyle={labelStyle}
               itemStyle={itemStyle1}
               disabled={props.disabled}
               MenuProps={MySelectProps}
-              valueVariable={props.valueVariable}
-              setValueFn={props.setValueFn}
-              data={props.data}
+              value={props.value}
+              setValue={props.setValue}
+              values={props.values}
+              keys={props.keys}
             />
     </Box>
 }
