@@ -563,9 +563,9 @@ export default function ListProduct(props) {
                   labelStyle={labelStyle1}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
-                  valueVariable={productType}
-                  setValueFn={setProductType}
-                  data={productTypes}
+                  value={productType}
+                  setValue={setProductType}
+                  values={productTypes}
                 />
                 </Grid>
 
@@ -578,9 +578,9 @@ export default function ListProduct(props) {
                   labelStyle={labelStyle1}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
-                  valueVariable={productStyle}
-                  setValueFn={setProductStyle}
-                  data={productStyles}
+                  value={productStyle}
+                  setValue={setProductStyle}
+                  values={productStyles}
                 />
                 </Grid>
 
@@ -593,9 +593,9 @@ export default function ListProduct(props) {
                   labelStyle={labelStyle1}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
-                  valueVariable={season}
-                  setValueFn={setSeason}
-                  data={seasons}
+                  value={season}
+                  setValue={setSeason}
+                  values={seasons}
                 />
                 </Grid>
 
@@ -608,9 +608,9 @@ export default function ListProduct(props) {
                   labelStyle={labelStyle1}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
-                  valueVariable={color}
-                  setValueFn={setColor}
-                  data={colors}
+                  value={color}
+                  setValue={setColor}
+                  values={colors}
                 />
                 </Grid>
 
@@ -623,9 +623,9 @@ export default function ListProduct(props) {
                   labelStyle={labelStyle1}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
-                  valueVariable={designType}
-                  setValueFn={setDesignType}
-                  data={designTypes}
+                  value={designType}
+                  setValue={setDesignType}
+                  values={designTypes}
                 />
                 </Grid>
 
@@ -638,9 +638,9 @@ export default function ListProduct(props) {
                   labelStyle={labelStyle1}
                   itemStyle={itemStyle}
                   MenuProps={MenuProps}
-                  valueVariable={overworkType}
-                  setValueFn={setOverworkType}
-                  data={overworkTypes}
+                  value={overworkType}
+                  setValue={setOverworkType}
+                  values={overworkTypes}
                 />
                 </Grid>
 

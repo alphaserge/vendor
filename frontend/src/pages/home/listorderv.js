@@ -334,9 +334,9 @@ export default function ListOrderV(props) {
               valueName="deliveryCompany"
               width="160px"
               disabled={!data.paid}
-              valueVariable={data.deliveryCompany}
-              setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
-              data={transportCompanies}
+              value={data.deliveryCompany}
+              setValue={(value) => { setTransportCompany(data.orderId, data.id, value) }}
+              values={transportCompanies}
             />
             <Box sx={{marginTop: "7px"}}>
             <MyText label="Delivery No." value={data.deliveryNo} onChange={value => { setDeliveryNo(data.orderId, data.id, value)}}></MyText>
@@ -402,9 +402,9 @@ export default function ListOrderV(props) {
               itemStyle={itemStyle1}
               disabled={!data.paid}
               MenuProps={MySelectProps}
-              valueVariable={data.deliveryCompany}
-              setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
-              data={transportCompanies}
+              value={data.deliveryCompany}
+              setValue={(value) => { setTransportCompany(data.orderId, data.id, value) }}
+              values={transportCompanies}
             />
             </div>
           <TextField

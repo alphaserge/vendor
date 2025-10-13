@@ -573,9 +573,9 @@ useEffect(() => {
                   itemStyle = {itemStyle1}
                   sx={itemStyle1}
                   MenuProps={MySelectProps1}
-                  valueVariable={productStyle}
-                  setValueFn={setProductStyle}
-                  data={productStyles}
+                  value={productStyle}
+                  setValue={setProductStyle}
+                  values={productStyles}
                 />
                 </Grid>
           </Grid>
@@ -598,7 +598,7 @@ useEffect(() => {
 
           { colorVariant.map((cv) => (
               <Grid item xs={12} md={6} sx={{ ...flexStyle}} >
-                  <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNewFn={addNewColor} data={colors} />
+                  <ColorVariant cv={cv} setColorItem={setColorVariantItem} addNew={addNewColor} values={colors} />
               </Grid> ))}
           </Grid> 
           <FormControl sx = {{itemStyle}} > 
@@ -639,9 +639,9 @@ useEffect(() => {
                   labelStyle={labelStyle1}
                   itemStyle = {itemStyle1}
                   MenuProps={MySelectProps1}
-                  valueVariable={productType}
-                  setValueFn={setProductType}
-                  data={productTypes}
+                  value={productType}
+                  setValue={setProductType}
+                  values={productTypes}
                 />
                 </Grid>
 
@@ -654,9 +654,9 @@ useEffect(() => {
                   labelStyle={labelStyle}
                   itemStyle={itemStyle1}
                   MenuProps={MySelectProps}
-                  valueVariable={season}
-                  setValueFn={setSeason}
-                  data={seasons}
+                  value={season}
+                  setValue={setSeason}
+                  values={seasons}
                 />
                 </Grid>
 
@@ -669,9 +669,9 @@ useEffect(() => {
                   labelStyle={labelStyle}
                   itemStyle={itemStyle1}
                   MenuProps={MySelectProps}
-                  valueVariable={designType}
-                  setValueFn={setDesignType}
-                  data={designTypes}
+                  value={designType}
+                  setValue={setDesignType}
+                  values={designTypes}
                 />
               </Grid>
 
@@ -684,9 +684,9 @@ useEffect(() => {
                   labelStyle={labelStyle}
                   itemStyle={itemStyle1}
                   MenuProps={MySelectProps}
-                  valueVariable={overworkType}
-                  setValueFn={setOverworkType}
-                  data={overworkTypes}
+                  value={overworkType}
+                  setValue={setOverworkType}
+                  values={overworkTypes}
                 />
             </Grid>
           </Grid>
@@ -826,9 +826,9 @@ useEffect(() => {
                 labelStyle={labelStyle}
                 itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
-                valueVariable={finishing}
-                setValueFn={setFinishing}
-                data={finishings}
+                value={finishing}
+                setValue={setFinishing}
+                values={finishings}
               />
               </Grid>
               <Grid item xs={12} md={6} >
@@ -853,9 +853,9 @@ useEffect(() => {
                 labelStyle={labelStyle}
                 itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
-                valueVariable={printType}
-                setValueFn={setPrintType}
-                data={printTypes}
+                value={printType}
+                setValue={setPrintType}
+                values={printTypes}
               />
               </Grid>
 
@@ -868,9 +868,9 @@ useEffect(() => {
                 labelStyle={labelStyle}
                 itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
-                valueVariable={plainDyedType}
-                setValueFn={setPlainDyedType}
-                data={plainDyedTypes}
+                value={plainDyedType}
+                setValue={setPlainDyedType}
+                values={plainDyedTypes}
               />
               </Grid>
 
@@ -883,9 +883,9 @@ useEffect(() => {
                 labelStyle={labelStyle}
                 itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
-                valueVariable={dyeStaff}
-                setValueFn={setDyeStaff}
-                data={dyeStaffs}
+                value={dyeStaff}
+                setValue={setDyeStaff}
+                values={dyeStaffs}
               />
 
           </Grid>
@@ -917,9 +917,9 @@ useEffect(() => {
                   labelStyle={labelStyle}
                   
                   MenuProps={MySelectProps}
-                  valueVariable={textileType}
-                  setValueFn={setTextileType}
-                  data={textileTypes}
+                  value={textileType}
+                  setValue={setTextileType}
+                  values={textileTypes}
                 />
             </Box>
             </Box>

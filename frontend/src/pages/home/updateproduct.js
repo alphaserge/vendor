@@ -272,13 +272,13 @@ export default function UpdateProduct(props) {
     }
 
 
-    const productStyleChanged = (value) => {
+    /*const productStyleChanged = (value) => {
       //setTimeout( function() { setProductStyle(value); }, 200 )
       setProductStyleId(value)
 
       //setWeight(value)
       //wChanged(width, value)
-    }
+    }*/
 
     const addVariants = () => {
       let cv = [...colorVariantsAdd]
@@ -619,6 +619,8 @@ const setQuantity = (value) => {
   setAddQuantity(parseInt(value))
 }
 
+
+//?
 const setColorIds = (value) => {
   setAddColorIds(value)
 }
@@ -743,6 +745,9 @@ useEffect(() => {
 
   const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
 
+  console.log('colors:')
+  console.log(colors)
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -762,10 +767,11 @@ useEffect(() => {
           <ColorVariant 
             cv={colorVariants.find((v)=> v.uuid == colorVariantUuid)} 
             setColorItem={setColorVariantItem} 
-            addNewFn={addNewColor}
+            addNew={addNewColor}
             fireChange={fireChange}
             fileChanges={fileChange}
-            data={colors}
+            values={colors.map(e => { return e.colorName})} 
+            keys={colors.map(e => { return e.id})} 
             last={false} />
           <Box sx={{display: "flex", flexDirection: 'row', justifyContent: "center", m: 2, mt: 3}} >
           <Button 
@@ -943,7 +949,9 @@ useEffect(() => {
         </Box>
       </Modal>
 
-      <Modal
+
+      {/* what is a window ??? */}
+      {/* <Modal
         open={windowColorVariant}
         onClose={function() { setWindowColorVariant(false) }}
         aria-labelledby="modal-modal-title"
@@ -971,21 +979,22 @@ useEffect(() => {
         sx = {{...textStyle, ...{width: "120px"}, ...existingStyle}}
         value={addQuantity}
         onChange={ev => setQuantity(ev.target.value) }
-        InputLabelProps={{ shrink: true }}
-      />
+        InputLabelProps={{ shrink: true }} />
+
       <MySelect 
         id="addproduct-colorvariant"
         url="Colors"
         title="Color"
-        valueName="colorName"
         labelStyle={labelStyle}
         itemStyle={{...itemStyle, ...existingStyle}}
         MenuProps={MySelectProps}
-        valueVariable={addColorIds}
-        setValueFn={setAddColorIds}
-        addNewFn={props.addNewFn}
-        data={props.data}
-      />
+        value={addColorIds}
+        setValue={setAddColorIds}
+        addNew={props.addNew}
+        values={props.data} /> 
+
+//</ThemeProvider> values={designTypes.map(e => { return e.designName})}
+  //  keys={designTypes.map(e => { return e.id})}  }
 
       <label htmlFor={"icon-button-file-111"}>
       <Input accept="image/*" id={"icon-button-file-111"} type="file" onChange={onFileChange} />
@@ -999,7 +1008,7 @@ useEffect(() => {
       </IconButton>
       </label>      
       </Box>
-      </Modal>
+      </Modal>*/}
 
       <Modal
         open={openedNewValue}
@@ -1218,10 +1227,11 @@ useEffect(() => {
                   itemStyle = {halfItemStyle}
                   sx={itemStyle1}
                   MenuProps={MySelectProps1}
-                  valueVariable={productStyleId}
-                  setValueFn={productStyleChanged}
-                  data={productStyles}
-                />
+                  value={productStyleId}
+                  setValue={setProductStyleId}
+                  values={productStyles.map(e => { return e.styleName})}
+                  keys={productStyles.map(e => { return e.id})}/>
+
                 </Grid>
               </Grid>
 
@@ -1362,9 +1372,10 @@ useEffect(() => {
                     <ColorVariant 
                       cv={cv} 
                       setColorItem={setColorVariantItem} 
-                      addNewFn={addNewColor} 
+                      addNew={addNewColor} 
                       fireChange={fireChange} 
-                      data={colors} 
+                      values={colors.map(e => { return e.colorName})} 
+                      keys={colors.map(e => { return e.id})} 
                       last={index == colorVariantsAdd.length-1} />
                     }
                     </Grid> ))}
@@ -1391,10 +1402,11 @@ useEffect(() => {
                   labelStyle={labelStyle1}
                   itemStyle = {itemStyle1}
                   MenuProps={MySelectProps1}
-                  valueVariable={productTypeId}
-                  setValueFn={setProductTypeId}
-                  addNewFn={(e) => { setNewValueEntity("product type"); setOpenedNewValue(true); }}
-                  data={productTypes}
+                  value={productTypeId}
+                  setValue={setProductTypeId}
+                  addNew={(e) => { setNewValueEntity("product type"); setOpenedNewValue(true); }}
+                  values={productTypes.map(e => { return e.typeName})}
+                  keys={productTypes.map(e => { return e.id})}
                 />
                 </Grid>
 
@@ -1407,10 +1419,10 @@ useEffect(() => {
                   labelStyle={labelStyle}
                   itemStyle={itemStyle1}
                   MenuProps={MySelectProps}
-                  valueVariable={season}
-                  setValueFn={setSeason}
-                  data={seasons}
-                />
+                  value={season}
+                  setValue={setSeason}
+                  values={seasons.map(e => { return e.seasonName})}
+                  keys={seasons.map(e => { return e.id})} />
                 </Grid>
 
                 { (plainDyedTypeId != config.product.plain_dyed_type) && 
@@ -1423,11 +1435,12 @@ useEffect(() => {
                   labelStyle={labelStyle}
                   itemStyle={itemStyle1}
                   MenuProps={MySelectProps}
-                  valueVariable={designType}
-                  setValueFn={setDesignType}
-                  addNewFn={(e) => { setNewValueEntity("design type"); setOpenedNewValue(true); }}
-                  data={designTypes}
-                />
+                  value={designType}
+                  setValue={setDesignType}
+                  addNew={(e) => { setNewValueEntity("design type"); setOpenedNewValue(true); }}
+                  values={designTypes.map(e => { return e.designName})}
+                  keys={designTypes.map(e => { return e.id})} />
+
               </Grid>)}
 
                 <Grid item xs={12} md={6}  >
@@ -1439,10 +1452,11 @@ useEffect(() => {
                   labelStyle={labelStyle}
                   itemStyle={itemStyle1}
                   MenuProps={MySelectProps}
-                  valueVariable={overworkType}
-                  setValueFn={setOverworkType}
-                  addNewFn={(e) => { setNewValueEntity("overwork"); setOpenedNewValue(true); }}
-                  data={overworkTypes}
+                  value={overworkType}
+                  setValue={setOverworkType}
+                  addNew={(e) => { setNewValueEntity("overwork"); setOpenedNewValue(true); }}
+                  values={overworkTypes.map(e => { return e.overworkName})}
+                  keys={overworkTypes.map(e => { return e.id})}
                 />
             </Grid>
           </Grid>
@@ -1530,10 +1544,11 @@ useEffect(() => {
                   labelStyle={labelStyle}
                   itemStyle={itemStyle2}
                   MenuProps={MySelectProps}
-                  valueVariable={finishingId}
-                  setValueFn={setFinishingId}
-                  addNewFn={(e) => { setNewValueEntity("finishing"); setOpenedNewValue(true); }}
-                  data={finishings}
+                  value={finishingId}
+                  setValue={setFinishingId}
+                  addNew={(e) => { setNewValueEntity("finishing"); setOpenedNewValue(true); }}
+                  values={finishings.map(e => { return e.finishingName})}
+                  keys={finishings.map(e => { return e.id})} 
                 />
               </FormControl> &nbsp;
                 
@@ -1562,10 +1577,11 @@ useEffect(() => {
                 labelStyle={labelStyle}
                 itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
-                valueVariable={printTypeId}
-                setValueFn={setPrintTypeId}
-                addNewFn={(e) => { setNewValueEntity("print type"); setOpenedNewValue(true); }}
-                data={printTypes}
+                value={printTypeId}
+                setValue={setPrintTypeId}
+                addNew={(e) => { setNewValueEntity("print type"); setOpenedNewValue(true); }}
+                values={printTypes.map(e => { return e.typeName})}
+                keys={printTypes.map(e => { return e.id})} 
               />
               </FormControl>
 
@@ -1578,10 +1594,11 @@ useEffect(() => {
                 labelStyle={labelStyle}
                 itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
-                valueVariable={dyeStaffId}
-                setValueFn={setDyeStaffId}
-                addNewFn={(e) => { setNewValueEntity("dye staff"); setOpenedNewValue(true); }}
-                data={dyeStaffs}
+                value={dyeStaffId}
+                setValue={setDyeStaffId}
+                addNew={(e) => { setNewValueEntity("dye staff"); setOpenedNewValue(true); }}
+                values={dyeStaffs.map(e => { return e.dyeStaffName})}
+                keys={dyeStaffs.map(e => { return e.id})} 
               />
               </FormControl> 
               </Grid>
@@ -1596,10 +1613,11 @@ useEffect(() => {
                   labelStyle={labelStyle}
                   itemStyle={halfItemStyle}
                   MenuProps={MySelectProps}
-                  valueVariable={plainDyedTypeId}
-                  setValueFn={setPlainDyedTypeId}
-                  addNewFn={(e) => { setNewValueEntity("plain dyed type"); setOpenedNewValue(true); }}
-                  data={plainDyedTypes}
+                  value={plainDyedTypeId}
+                  setValue={setPlainDyedTypeId}
+                  addNew={(e) => { setNewValueEntity("plain dyed type"); setOpenedNewValue(true); }}
+                  values={plainDyedTypes.map(e => { return e.plainDyedTypeName})}
+                  keys={plainDyedTypes.map(e => { return e.id})}
                 /> </Grid> )}
 
 
@@ -1609,10 +1627,10 @@ useEffect(() => {
                   labelStyle={labelStyle}
                   itemStyle={itemStyle1}
                   MenuProps={MySelectProps}
-                  valueVariable={textileTypeId}
-                  setValueFn={setTextileTypeId}
-                  addNewFn={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
-                  data={ textileTypes.map((e) => { return e.value }) }
+                  value={textileTypeId}
+                  setValue={setTextileTypeId}
+                  addNew={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
+                  values={ textileTypes.map((e) => { return e.value }) }
                 />
               </Grid> */}
 
@@ -1645,11 +1663,11 @@ useEffect(() => {
                                     labelStyle={labelStyle}
                                     //itemStyle={halfItemStyle}
                                     MenuProps={MySelectProps}
-                                    valueVariable={compositionValues[index].textileTypeId}
-                                    setValueFn={compositionIdChanged}
-                                    data={textileTypes}
+                                    value={compositionValues[index].textileTypeId}
+                                    setValue={compositionIdChanged}
+                                    values={textileTypes}
                                     option={index}
-                                    //addNewFn={props.addNewFn}
+                                    //addNew={props.addNew}
                                   />
                                   <TextField
                                     margin="normal"

@@ -74,72 +74,7 @@ export default function ListOrder(props) {
   const [courseRur, setCourseRur] = useState(0)
   const [transportCompanies, setTransportCompanies] = useState([])
   const [stocks, setStocks] = useState([])
-    
-  //const [expand, setExpand] = useState(new Set())
-
-  const saveOrderItem = async (id) => {
-
-    var orderIndex = -1
-    var itemIndex = -1
-      for (let j=0; j< orders.length; j++) {
-      for (let i=0; i< orders[j].items.length; i++) {
-        if (orders[j].items[i].id == id) {
-            orderIndex = j
-            const data = JSON.stringify({
-                id: orders[j].items[i].id,
-                stock: orders[j].items[i].stockName,
-                clientDeliveryCompany: orders[j].items[i].clientDeliveryCompany,
-                clientDeliveryNo: orders[j].items[i].clientDeliveryNo,
-              })
-
-            await axios.post(config.api + '/OrderItemUpdate', data, {headers:{"Content-Type" : "application/json"}})
-              .then(function (response) {
-                console.log('response for OrderItemUpdate:');
-                console.log(response);
-                let ords = [...orders]
-                ords[orderIndex].items[itemIndex].changes = false
-                setOrders(ords)
-                return true;
-              })
-              .catch(function (error) {
-                console.log(error);
-                return false;
-              })
-
-            break
-            }
-          }
-        }
-  };
-
-  const postAccept = async (itemId) => {
-
-  await axios.post(config.api + '/Accept', 
-    {
-      itemId: itemId,
-    })
-    .then(function (response) {
-      console.log(response);
-      return true;
-    })
-    .catch(function (error) {
-      console.log(error);
-      return false;
-    })
-  };
-
-  const toggleExpand = (index) => {
-    let ords = orders
-    ords[index].expand = !ords[index].expand
-    /*if (expand.has(index)) {
-      exp.delete(index)
-    } else {
-      exp.add(index)
-    }*/
-    setOrders(ords)
-    setToggle(!toggle)
-  }
-
+  
     const loadOrders = async (e) => {
 
       axios.get(config.api + '/Orders?vendorId=' + props.user.vendorId 
@@ -190,6 +125,7 @@ export default function ListOrder(props) {
                     deliveryCompany : i.deliveryCompany,
                     clientDeliveryNo: i.clientDeliveryNo,
                     clientDeliveryCompany : i.clientDeliveryCompany,
+                    stockId : i.stockId,
                     stockName : i.stockName,
                     changes: false,
                     expand : true }}) }
@@ -207,43 +143,16 @@ export default function ListOrder(props) {
       })
     }
 
-    const setTransportCompany = (orderId, id, value) => {
+    const refreshStatus = (data) => {
       let ords = [...orders]
       for (let j=0; j< ords.length; j++) {
       for (let i=0; i< ords[j].items.length; i++) {
-        if (ords[j].id == orderId && ords[j].items[i].id == id) {
-              ords[j].items[i].clientDeliveryCompany = value
-              ords[j].items[i].changes = true
-
-
-              setOrders(ords)
-              break
-            }
-          }
-        }
-    }
-
-    const setDeliveryNo = (orderId, id, value) => {
-      let ords = [...orders]
-      for (let j=0; j< ords.length; j++) {
-      for (let i=0; i< ords[j].items.length; i++) {
-        if (ords[j].id == orderId && ords[j].items[i].id == id) {
-              ords[j].items[i].clientDeliveryNo = value
-              ords[j].items[i].changes = true
-              setOrders(ords)
-              break
-            }
-          }
-        }
-    }
-
-    const setStock = (orderId, id, value) => {
-      let ords = [...orders]
-      for (let j=0; j< ords.length; j++) {
-      for (let i=0; i< ords[j].items.length; i++) {
-        if (ords[j].id == orderId && ords[j].items[i].id == id) {
-              ords[j].items[i].stockName = value
-              ords[j].items[i].changes = true
+        if (ords[j].items[i].id == data.id) {
+              ords[j].items[i].stockName = data.stockName
+              ords[j].items[i].clientDeliveryCompany = data.clientDeliveryCompany
+              ords[j].items[i].clientDeliveryNo = data.clientDeliveryNo
+              ords[j].items[i].deliveryCompany = data.deliveryCompany
+              ords[j].items[i].deliveryNo = data.deliveryNo
               setOrders(ords)
               break
             }
@@ -259,57 +168,6 @@ export default function ListOrder(props) {
         setOrders(ords)
       } )
     }
-
-    const makePayment = async (orderIndex) => {
-      let ords = [...orders]
-      let addSumm = 0
-      if (ords[orderIndex].makePayment) {
-        let order = ords[orderIndex]
-        let currency = ''
-        currencies.forEach((c)=> { if (c.id == order.currencyNew) { currency = c.value } })
-        let pay = { 
-          amount: parseFloat(order.paySummNew), 
-          currencyAmount: parseFloat(order.paySummNew), 
-          currencyId: order.currencyNew, 
-          orderId: order.id, 
-          date: new Date() 
-        }
-        await postPayment(pay)
-        //pay.currency = currency
-        //order.payments.push(pay)
-
-        setTimeout( () =>  { 
-          updatePayment(orderIndex) 
-        }, 500)
-
-        /* todo - courses cash 
-        let curShort = currencies.find(({ id }) => id == order.currencyNew);
-        if (!!curShort) {s
-          const crs = await getCourse(curShort.value)
-          addSumm = parseFloat(order.paySummNew)*crs
-          ords[orderIndex].paySumm += addSumm
-        }*/
-       //temp:
-        //let course = order.currencyNew == 1 ? 1 : courseRur
-        //addSumm = parseFloat(order.paySummNew) / (course > 0 ? course : 1e-9)
-        //ords[orderIndex].paySumm += addSumm
-      }
-      ords[orderIndex].makePayment = !ords[orderIndex].makePayment
-      setOrders(ords)
-    }
-
-    const setPay = (orderIndex, value) => {
-      let ords = [...orders]
-      ords[orderIndex].paySummNew = value;
-      setOrders(ords)
-    }
-
-    const setCurrency = (orderIndex, value) => {
-      let ords = [...orders]
-      ords[orderIndex].currencyNew = value;
-      setOrders(ords)
-    }
-
 
     useEffect(() => {
       loadOrders()
@@ -327,7 +185,8 @@ export default function ListOrder(props) {
   }
 
 
-  console.log(stocks);
+  console.log('orders:');
+  console.log(orders);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -359,9 +218,9 @@ export default function ListOrder(props) {
               <React.Fragment>
                 <tr className="orderrow">
                   
-                  <td colSpan={2} className="order no-border-right fw200">No.&nbsp;{order.number}&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
-                  <td colSpan={3} className="order no-borders fw200">{order.clientName}&nbsp;&nbsp;{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
-                  <td colSpan={2} className="order no-border-left fw200"><Payments orderId={order.id}/></td>
+                  <td colSpan={2} className="order no-border-right">No.&nbsp;{order.number}&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
+                  <td colSpan={3} className="order no-borders">{order.clientName}&nbsp;&nbsp;{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
+                  <td colSpan={2} className="order no-border-left"><Payments orderId={order.id}/></td>
                 </tr>
 
                  {order.items.map((data, index) => (
@@ -412,7 +271,7 @@ export default function ListOrder(props) {
                         </td> */}
                         <td style={{textAlign: "left", width: "auto"}}>
                           {/* <Link to={"/updateproduct?id=" + data.productId} className="my-link" > */}
-                          <span className="my-val"><OrderItemStatus1 data={data} order={order} /></span>
+                          <span className="my-val"><OrderItemStatus1 data={data} order={order} refreshFn={refreshStatus} /></span>
                           {/* </Link> */}
                         </td>        
                       </tr>

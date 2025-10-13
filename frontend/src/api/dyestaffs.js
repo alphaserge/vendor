@@ -4,7 +4,7 @@ import config from "../config.json"
 export const getDyeStaffs = (setFn) => {
     axios.get(config.api + '/DyeStaffs')
     .then(function (res) {
-        let items = res.data.map((item)=>({ id:item.id, value:item.dyeStaffName }))
+        let items = res.data
         items.push({ id:-2, value:"Add new.." })
         setFn(items)
     })

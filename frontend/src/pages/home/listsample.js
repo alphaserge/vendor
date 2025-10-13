@@ -409,9 +409,9 @@ export default function ListSample(props) {
                 valueName="shortName"
                 width="80px"
                 disabled={false}
-                valueVariable={order.currencyNew}
-                setValueFn={(value) => { setCurrency(indexOrder, value) }}
-                data={currencies}
+                value={order.currencyNew}
+                setValue={(value) => { setCurrency(indexOrder, value) }}
+                values={currencies}
               /> 
               </Typography>
             </Box> }
@@ -537,18 +537,18 @@ export default function ListSample(props) {
               valueName="stockName"
               width="130px"
               //disabled={!data.paid}
-              valueVariable={data.stockName}
-              setValueFn={(value) => { setStock(data.orderId, data.id, value) }}
-              data={stocks}
+              value={data.stockName}
+              setValue={(value) => { setStock(data.orderId, data.id, value) }}
+              values={stocks}
             /> */}
           <MySelectLab 
               label="Customer delivery company"
               valueName="clientDeliveryCompany"
               width="180px"
               //disabled={!data.paid}
-              valueVariable={data.clientDeliveryCompany}
-              setValueFn={(value) => { setTransportCompany(data.orderId, data.id, value) }}
-              data={transportCompanies}
+              value={data.clientDeliveryCompany}
+              setValue={(value) => { setTransportCompany(data.orderId, data.id, value) }}
+              values={transportCompanies}
             />
             <Box sx={{marginTop: "7px"}}>
             <MyText label="Delivery No." value={data.clientDeliveryNo} onChange={value => { setDeliveryNo(data.orderId, data.id, value)}}></MyText>
