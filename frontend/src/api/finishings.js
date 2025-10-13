@@ -4,7 +4,7 @@ import config from "../config.json"
 export const getFinishings= (setFn) => {
     axios.get(config.api + '/Finishings')
     .then(function (res) {
-        let items = res.data.map((item)=>({ id:item.id, value:item.finishingName }))
+        let items = res.data
         items.push({ id:-2, value:"Add new.." })
         setFn(items)
     })

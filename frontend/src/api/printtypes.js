@@ -4,7 +4,7 @@ import config from "../config.json"
 export const getPrintTypes = (setFn) => {
     axios.get(config.api + '/PrintTypes')
     .then(function (res) {
-        let items = res.data.map((item)=>({ id:item.id, value:item.typeName }))
+        let items = res.data
         items.push({ id:-2, value:"Add new.." })
         setFn(items)
     })

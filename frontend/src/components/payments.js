@@ -84,26 +84,25 @@ export default function Payments(props) {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: "330px",
           boxShadow: 24,
-          padding: "45px 40px 40px 40px",
+          padding: "25px",
           outline: "none",
           bgcolor: 'background.paper',
           display: "flex",
           flexDirection: "column"
            }}>
           { !addingState && hasPayments && <>
-          <Typography sx={{ padding: "10px", fontSize: "15px", fontWeight: 500 }}>Order&nbsp;no.{order.number}&nbsp;payments:</Typography>
+          <Typography sx={{ padding: "10px", fontSize: "15px", fontWeight: 600, textAlign: "center" }}>Order&nbsp;{order.number}&nbsp;payments</Typography>
           <table style={{marginLeft: "5px"}}>
                {  order.payments.map((data, index) => (
                 <tr>
-                <td className="my-val-1">{formattedDate(data.date)}</td>
-                <td style={{textAlign: "center"}}>-</td>
-                <td className="my-val-1" style={{textAlign: "right"}}>{ safeFixed(data.amount,2) }</td>
-                <td style={{textAlign: "center"}}>{data.currency}</td>
+                <td style={{fontSize: "15px", padding: "3px 10px"}}>{formattedDate(data.date)}</td>
+                <td style={{fontSize: "15px", padding: "3px 0px", textAlign: "center"}}>:</td> 
+                <td style={{fontSize: "15px", padding: "3px 10px", textAlign: "right"}}>{ safeFixed(data.amount,2) }</td>
+                <td style={{fontSize: "15px", padding: "3px 10px", textAlign: "center"}}>{data.currency}</td>
                 </tr> ))}
           </table>
-          <Typography sx={{ padding: "15px 10px", fontSize: "15px", fontWeight: 500, textAlign: "right" }}> Total&nbsp;paid:&nbsp;{safeFixed(order.paySumm, 2)}$&nbsp;</Typography>
+          <Typography sx={{ padding: "15px 10px", fontSize: "15px", fontWeight: 600, textAlign: "right" }}> Total&nbsp;paid:&nbsp;{safeFixed(order.paySumm, 2)}$&nbsp;</Typography>
           </> }
 
           { !addingState && !hasPayments && 
@@ -113,16 +112,16 @@ export default function Payments(props) {
           }
 
           { addingState && <Box display={"flex"} flexDirection={"column"} >
-            <Box display={"flex"} flexDirection={"row"} columnGap={1} justifyContent={"center"} > 
+            <Box display={"flex"} flexDirection={"column"} columnGap={1} justifyContent={"center"} > 
               <MyText 
                 label="Pay summ" 
                 value={paySumm}
-                width="120px"
+                width="160px"
                 onChange={value => { setPaySumm(value)}}></MyText>
 
               <MySelectLab 
                 label="Currency"
-                width="90px"
+                width="160px"
                 disabled={false}
                 value={currencyId}
                 setValue={setCurrencyId}
@@ -130,7 +129,7 @@ export default function Payments(props) {
                 keys={currencies.map((e)=>{return e.id})}
                  /> 
           </Box>
-          <Box display={"flex"} flexDirection={"row"} justifyContent={"center"} columnGap={1} marginTop={"10px"}>
+          <Box display={"flex"} flexDirection={"row"} justifyContent={"center"} columnGap={1} marginTop={"24px"}>
           <Button 
             onClick={(e)=>{ savePayment() }} //edge="end" 
             sx={{
@@ -139,7 +138,7 @@ export default function Payments(props) {
               color: "#fff", 
               fontSize: "14px", 
               textTransform: "none"}}>
-                Save
+                Add
           </Button>
           <Button 
             onClick={(e)=>{ setAddingState(false) }} //edge="end" 
@@ -155,7 +154,7 @@ export default function Payments(props) {
           </Box>
           }
 
-          { !addingState && <Box display={"flex"} justifyContent={"center"} marginTop={"10px"} columnGap={1}>
+          { !addingState && <Box display={"flex"} justifyContent={"center"} marginTop={"5px"} columnGap={1}>
           <Button 
             onClick={(e)=>{ setAddingState(true) }} //edge="end" 
             sx={{ 

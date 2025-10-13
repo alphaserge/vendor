@@ -4,7 +4,7 @@ import config from "../config.json"
 export const getDesignTypes = (setFn) => {
     axios.get(config.api + '/DesignTypes')
     .then(function (res) {
-        let items = res.data.map((item)=>({ id:item.id, value:item.designName }))
+        let items = res.data
         items.push({ id:-2, value:"Add new.." })
         setFn(items)
     })

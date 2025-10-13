@@ -36,8 +36,8 @@ export default function Composition(props) {
     getTextileTypes(setTextileTypes)
   }, [])*/
 
-console.log('comp.values')
-console.log(props.values)
+//console.log('comp.values')
+//console.log(props.values)
   
   return                 <Box 
                               sx={{ 
@@ -60,11 +60,11 @@ console.log(props.values)
                                       labelStyle={labelStyle}
                                       //itemStyle={halfItemStyle}
                                       MenuProps={MySelectProps}
-                                      valueVariable={props.values[index].id}
-                                      setValueFn={props.idChanged}
-                                      data={props.valueList}
+                                      value={props.values[index].id}
+                                      setValue={props.idChanged}
+                                      values={props.valueList}
                                       option={index}
-                                      //addNewFn={props.addNewFn}
+                                      //addNew={props.addNew}
                                     />
                                     <TextField
                                       margin="normal"

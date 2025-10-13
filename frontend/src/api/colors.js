@@ -4,7 +4,7 @@ import config from "../config.json"
 export const getColors = (setFn) => {
     axios.get(config.api + '/Colors')
     .then(function (res) {
-        let items = res.data.map((item)=>({ id:item.id, value:item.colorName, rgb:item.rgb }))
+        let items = res.data //.map((item)=>({ id:item.id, value:item.colorName, rgb:item.rgb }))
         items.push({ id:-2, value:"Add new.." })
         setFn(items)
     })

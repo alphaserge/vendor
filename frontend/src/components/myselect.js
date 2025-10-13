@@ -66,6 +66,11 @@ export default function MySelect(props) {
       var a = 0;
     }, []);
   
+/*console.log('props.keys')
+console.log(props.keys)
+console.log(props.values)
+console.log(props.value)*/
+
 return (
   <FormControl error={ false } required sx={{ ...props.itemStyle,  ...{width: "100%", display: "flex" } }} > 
     {!props.hideLabel && <InputLabel 

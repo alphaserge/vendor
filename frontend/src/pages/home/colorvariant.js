@@ -90,6 +90,9 @@ export default function ColorVariant(props) {
 
    const existingStyle = (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
 
+   console.log('props.values')
+   console.log( props.values)
+
   return (
     
       <FormControl sx={divStyle}> 
@@ -121,15 +124,16 @@ export default function ColorVariant(props) {
         id="addproduct-colorvariant"
         url="Colors"
         title="Color"
-        valueName="colorName"
         labelStyle={labelStyle}
         itemStyle={{...itemStyle, ...existingStyle}}
         MenuProps={MenuProps}
-        valueVariable={props.cv.colorIds}
-        setValueFn={setColorName}
-        addNewFn={props.addNewFn}
-        data={props.data}
+        value={props.cv.colorIds}
+        setValue={setColorName}
+        addNew={props.addNew}
+        values={props.values}
       />
+        {/* values={props.values.map(e => { return e.value})}
+        keys={props.values.map(e => { return e.id})} */}
 
       <label htmlFor={"icon-button-file-" + props.cv.colorVariantId}>
       <Input accept="image/*" id={"icon-button-file-"+props.cv.colorVariantId} type="file" onChange={onFileChange} value={""}  />
