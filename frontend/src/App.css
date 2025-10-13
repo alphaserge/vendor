@@ -69,6 +69,20 @@ li > .color_select_item {
   padding-left: 8px;
 } */
 
+.center-content {
+  margin: 0 auto!important;
+  /* justify-content: center; */
+  /* width: auto; */
+  max-width: 940px!important;
+}
+
+.main-section {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 auto;
+}
+
+
 div.product-img-holder {
   width:310px;
   height:300px;    

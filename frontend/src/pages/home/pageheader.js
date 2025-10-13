@@ -22,7 +22,7 @@ import { fromUrl } from '../../functions/helper';
 
 import config from "../../config.json"
 
-const pages = ['Fabrics', 'Accessories', 'Orders', 'Sample Orders', 'Help', 'Contacts' ]; 
+const pages = ['Fabrics', 'Orders', 'Sample Orders', 'Help', 'Contacts' ]; 
 const settings = ['Login', 'Logout', 'Register'];
 
 const menuPagesStyle = { fontSize: "14px", fontWeight: "300", color: "#fff", textTransform: "none" }
