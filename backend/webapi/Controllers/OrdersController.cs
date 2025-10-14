@@ -1086,8 +1086,8 @@ namespace chiffon_back.Controllers
                 if (oi != null)
                 {
                     oi.Details = cd.Details;
-                    oi.DeliveryCompany = cd.DeliveryCompany;
-                    oi.DeliveryNo = cd.DeliveryNo;
+                    //oi.DeliveryCompany = cd.DeliveryCompany;
+                    //oi.DeliveryNo = cd.DeliveryNo;
                     ctx.SaveChanges();
                 }
 

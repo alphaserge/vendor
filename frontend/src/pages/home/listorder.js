@@ -237,7 +237,7 @@ export default function ListOrder(props) {
                         </td>
                         <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-                            <span className="my-val">{data.artNo}<br/>{data.refNo}</span>
+                            <span className="my-val">{data.artNo}<br/><span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>ref.</span>&nbsp;{data.refNo}</span>
                           </Link>
                         </td>
 
@@ -259,9 +259,9 @@ export default function ListOrder(props) {
                         </td> */}
                         <td style={{textAlign: "center", minWidth: "95px"}}>
                           <Box display="flex" flexDirection="column" >
-                          <div className="my-val">{quantityInfo(data)}</div>
-                          <div className="my-val">{!!data.details ? data.details : "waiting.."}</div>
-                          <div className="my-val">({!!data.total?data.total + ' mtr' : '0 mtr' })</div>
+                          <div>{quantityInfo(data)}</div>
+                          <div style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>details:&nbsp;{!!data.details ? data.details : "?"}</div>
+                          <div style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>total:&nbsp;{!!data.total?data.total + ' m' : '0 m' }</div>
                           </Box>
                         </td>
                         {/* <td style={{textAlign: "center"}}>

@@ -141,7 +141,7 @@ export const notNull = (text) => {
 
 export const quantityInfo = (item) => {
     if (!item.unit) return item.quantity
-    return item.quantity + ' ' + item.unit.replace('rolls','roll').replace('meters','mtr')// + ")"
+    return item.quantity + ' ' + item.unit.replace('rolls','r').replace('meters','m')// + ")"
 }
 
 export const orderStatusString = (item, order) => {
