@@ -350,8 +350,9 @@ a.no-link {
 }
 
 .order {
-  font-size: 14px;
-  font-style: italic;
+  font-size: 12px !important;
+  font-weight: 300;
+  /* font-style: italic; */
 }
 
 .my-link {

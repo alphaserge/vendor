@@ -30,7 +30,7 @@ import OrderItemStatus from '../../components/orderitemstatus';
 import OrderItemStatus1 from '../../components/orderitemstatus1';
 import { APPEARANCE } from '../../appearance';
 
-import { toFixed2, formattedDate, quantityInfo, computePrice, safeFixed, percent } from "../../functions/helper"
+import { toFixed2, formattedDate, quantityInfo, shortUnit, safeFixed, percent } from "../../functions/helper"
 import { getCurrencies, getCourse } from '../../api/currencies'
 import { postPayment, orderPayments } from '../../api/payments'
 import { getTransportCompanies } from '../../api/vendors'
@@ -60,6 +60,8 @@ const MySelectProps = {
   },
 }
 
+const styleLabel = {backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}
+
 export default function ListOrder(props) {
 
   const navigate = useNavigate();
@@ -70,7 +72,6 @@ export default function ListOrder(props) {
   const [detail, setDetail] = useState([])
   const [filter, setFilter] = useState(false)
   const [paySumm, setPaySumm] = useState([])
-  const [currencies, setCurrencies] = useState([])
   const [courseRur, setCourseRur] = useState(0)
   const [transportCompanies, setTransportCompanies] = useState([])
   const [stocks, setStocks] = useState([])
@@ -160,22 +161,11 @@ export default function ListOrder(props) {
         }
     }
 
-    const updatePayment = (orderIndex) => {
-      orderPayments(orders[orderIndex].id, (payments, total) => { 
-        let ords = [...orders]  
-        ords[orderIndex].payments = payments
-        ords[orderIndex].paySumm = total
-        setOrders(ords)
-      } )
-    }
-
     useEffect(() => {
       loadOrders()
-      getCurrencies(setCurrencies)
       getTransportCompanies(props.user.vendorId, setTransportCompanies)
       getStocks(setStocks)
     }, []);
-
 
     useEffect(() => {
     }, [toggle]);
@@ -183,10 +173,6 @@ export default function ListOrder(props) {
   if (!props.user || props.user.Id === 0) {
     navigate("/")
   }
-
-
-  console.log('orders:');
-  console.log(orders);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -207,7 +193,7 @@ export default function ListOrder(props) {
             <th>Art / Ref no.</th>
             <th>Design /&nbsp;Color</th>
             <th>Item name</th>
-            <th>Ordered&nbsp;/ Details</th>
+            <th>Amount</th>
             {/* <th>Stock</th> */}
             <th>Delivery</th>
           </tr>
@@ -217,7 +203,6 @@ export default function ListOrder(props) {
             { orders.map((order, indexOrder) => (
               <React.Fragment>
                 <tr className="orderrow">
-                  
                   <td colSpan={2} className="order no-border-right">No.&nbsp;{order.number}&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
                   <td colSpan={3} className="order no-borders">{order.clientName}&nbsp;&nbsp;{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
                   <td colSpan={2} className="order no-border-left"><Payments orderId={order.id}/></td>
@@ -237,7 +222,7 @@ export default function ListOrder(props) {
                         </td>
                         <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-                            <span className="my-val">{data.artNo}<br/><span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>ref.</span>&nbsp;{data.refNo}</span>
+                            <span className="my-val"><span style={styleLabel}>art.</span>&nbsp;{data.artNo}<br/><span style={styleLabel}>ref.</span>&nbsp;{data.refNo}</span>
                           </Link>
                         </td>
 
@@ -257,11 +242,17 @@ export default function ListOrder(props) {
                           <span className="my-val">{quantityInfo(data)}</span>
                           </Link>
                         </td> */}
-                        <td style={{textAlign: "center", minWidth: "95px"}}>
-                          <Box display="flex" flexDirection="column" >
-                          <div>{quantityInfo(data)}</div>
-                          <div style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>details:&nbsp;{!!data.details ? data.details : "?"}</div>
-                          <div style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>total:&nbsp;{!!data.total?data.total + ' m' : '0 m' }</div>
+                        <td style={{textAlign: "left", minWidth: "95px"}}>
+                          <Box sx={{ display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} >
+                          <span style={styleLabel}>ordered:</span>
+                          <span>{data.quantity + (!data.unit?"" : ' ' + shortUnit(data.unit))}</span>
+                          <span style={styleLabel}>details:</span>
+                          { !!data.details && <span>{data.details}</span> }
+                          { !data.details && <span style={{backgroundColor: "#ddd", width: "16px", textAlign: "center", fontSize: "11px", borderRadius: "3px"}}>?</span> }
+                          <span style={styleLabel}>total:</span>
+                          { !!data.total && <span>{data.total}</span> }
+                          { !data.total && <span style={{backgroundColor: "#ddd", width: "16px", textAlign: "center", fontSize: "11px", borderRadius: "3px"}}>?</span> }
+                          
                           </Box>
                         </td>
                         {/* <td style={{textAlign: "center"}}>

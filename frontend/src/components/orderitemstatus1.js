@@ -12,6 +12,8 @@ import { getTransportCompanies } from '../api/vendors'
 import { getStocks } from '../api/stocks'
 import { getDeliveryNo } from '../api/orders'
 
+const styleLabel = {backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}
+
 export default function OrderItemStatus1(props) {
 
   const [show, setShow] = useState(false)
@@ -95,16 +97,13 @@ export default function OrderItemStatus1(props) {
 
   }
 
-  console.log('stockId=');
-  console.log(props.data);
-
   return <>
     <Box sx={{ display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} onClick={handleClick}>
-      <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>shipment:</span>
+      <span style={styleLabel}>shipment:</span>
       <span>{props.data.deliveryCompany}</span>
-      <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", margin: "2px 0", fontWeight: "500", color: "#777"}}>on stock:</span>
+      <span style={styleLabel}>on stock:</span>
       <span>{props.data.stockName}</span>
-      <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>delivery:</span>
+      <span style={styleLabel}>delivery:</span>
       <span>{props.data.clientDeliveryCompany}</span>
     </Box>
 
