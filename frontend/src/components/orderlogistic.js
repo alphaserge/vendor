@@ -11,11 +11,16 @@ import MyText from '../components/mytext';
 import { getTransportCompanies } from '../api/vendors'
 import { getStocks } from '../api/stocks'
 import { getDeliveryNo } from '../api/orders'
+import { quantityInfo, shortUnit } from "../functions/helper"
 
-export default function OrderDetails(props) {
+const styleLabel = {backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}
+
+export default function OrderLogistic(props) {
 
   const [show, setShow] = useState(false)
   const [details, setDetails] = useState(props.data.details)
+  const [deliveryCompany, setDeliveryCompany] = useState(props.data.deliveryCompany)
+  const [deliveryNo, setDeliveryNo] = useState(props.data.deliveryNo)
 
   const handleClick = (e) => {
      setShow(true) 
@@ -45,10 +50,13 @@ export default function OrderDetails(props) {
   useEffect(() => {}, []);      
 
   return <>
-    <Box display="flex" flexDirection="column" >
-      <div>{quantityInfo(data)}</div>
-      <div style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>details:&nbsp;{!!data.details ? data.details : "?"}</div>
-      <div style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>total:&nbsp;{!!data.total?data.total + ' m' : '0 m' }</div>
+    <Box sx={{ display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} onClick={handleClick}>
+                          <span style={styleLabel}>ordered:</span>
+                          <span>{props.data.quantity + (!props.data.unit?"" : ' ' + shortUnit(props.data.unit))}</span>
+                          <span style={styleLabel}>details:</span>
+                          { !!props.data.details && <span>{props.data.details + " (total " + props.data.total + ")"}</span> }
+                          { !props.data.details && <span style={{backgroundColor: "#ddd", width: "16px", textAlign: "center", fontSize: "11px", borderRadius: "3px"}}>?</span> }
+      <div><span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>shipment by:</span>&nbsp;{!!props.data.deliveryCompany ? props.data.deliveryCompany : '-' }</div>
     </Box>
 
    <Modal

@@ -27,7 +27,7 @@ import Payments from '../../components/payments';
 import MySelect from '../../components/myselect';
 import MyText from '../../components/mytext';
 import OrderItemStatus from '../../components/orderitemstatus';
-import OrderItemStatus1 from '../../components/orderitemstatus1';
+import OrderLogistic from '../../components/orderlogistic';
 import { APPEARANCE } from '../../appearance';
 
 import { toFixed2, formattedDate, quantityInfo, shortUnit, safeFixed, percent } from "../../functions/helper"
@@ -179,17 +179,7 @@ export default function ListOrderV(props) {
             <th>Delivery</th>
           </tr>
 
-          <tr></tr>
-
-            { orders.map((order, indexOrder) => (
-              <React.Fragment>
-                <tr className="orderrow">
-                  <td colSpan={2} className="order no-border-right">No.&nbsp;{order.number}&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
-                  <td colSpan={3} className="order no-borders">{order.clientName}&nbsp;&nbsp;{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
-                  <td colSpan={2} className="order no-border-left"><Payments orderId={order.id}/></td>
-                </tr>
-
-                 {order.items.map((data, index) => (
+                 {orders.map((data, index) => (
                     
                       <tr>
                         <td style={{textAlign: "center"}}>
@@ -214,8 +204,7 @@ export default function ListOrderV(props) {
                         </td>        
                         <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-                          <span className="my-val">{data.itemName}<br/>
-                          (&nbsp;{data.vendorName}&nbsp;)</span>
+                          <span className="my-val">{data.itemName}</span>
                           </Link>
                         </td>        
                         {/* <td style={{textAlign: "center"}}>
@@ -223,7 +212,7 @@ export default function ListOrderV(props) {
                           <span className="my-val">{quantityInfo(data)}</span>
                           </Link>
                         </td> */}
-                        <td style={{textAlign: "left", minWidth: "95px"}}>
+                        {/* <td style={{textAlign: "left", minWidth: "95px"}}>
                           <Box sx={{ display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} >
                           <span style={styleLabel}>ordered:</span>
                           <span>{data.quantity + (!data.unit?"" : ' ' + shortUnit(data.unit))}</span>
@@ -233,9 +222,8 @@ export default function ListOrderV(props) {
                           <span style={styleLabel}>total:</span>
                           { !!data.total && <span>{data.total}</span> }
                           { !data.total && <span style={{backgroundColor: "#ddd", width: "16px", textAlign: "center", fontSize: "11px", borderRadius: "3px"}}>?</span> }
-                          
                           </Box>
-                        </td>
+                        </td> */}
                         {/* <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
                           <span className="my-val">{data.stockName}</span>
@@ -243,13 +231,11 @@ export default function ListOrderV(props) {
                         </td> */}
                         <td style={{textAlign: "left", width: "auto"}}>
                           {/* <Link to={"/updateproduct?id=" + data.productId} className="my-link" > */}
-                          <span className="my-val"><OrderItemStatus1 data={data} order={order} refreshFn={refreshStatus} /></span>
+                          <span className="my-val"><OrderLogistic data={data} order={data} refreshFn={refreshStatus} /></span>
                           {/* </Link> */}
                         </td>        
                       </tr>
-                ))}
-              </React.Fragment>
-              ))}
+                 ))}
         </table>   
 
     </Box>
