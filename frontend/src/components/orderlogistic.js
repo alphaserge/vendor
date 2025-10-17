@@ -21,6 +21,7 @@ export default function OrderLogistic(props) {
   const [details, setDetails] = useState(props.data.details)
   const [deliveryCompany, setDeliveryCompany] = useState(props.data.deliveryCompany)
   const [deliveryNo, setDeliveryNo] = useState(props.data.deliveryNo)
+  const [transportCompanies, setTransportCompanies] = useState([])
 
   const handleClick = (e) => {
      setShow(true) 
@@ -31,6 +32,8 @@ export default function OrderLogistic(props) {
      const data = {
         id: props.data.id,
         details: details,
+        deliveryCompany: deliveryCompany,
+        deliveryNo: deliveryNo
      }
 
     await axios.post(config.api + '/ChangeDetails', JSON.stringify(data), {headers:{"Content-Type" : "application/json"}})
@@ -47,16 +50,19 @@ export default function OrderLogistic(props) {
     setShow(false) 
   }
 
-  useEffect(() => {}, []);      
+  useEffect(() => {
+    getTransportCompanies(props.data.vendorId, setTransportCompanies)
+  }, []);      
 
   return <>
     <Box sx={{ display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} onClick={handleClick}>
-                          <span style={styleLabel}>ordered:</span>
-                          <span>{props.data.quantity + (!props.data.unit?"" : ' ' + shortUnit(props.data.unit))}</span>
-                          <span style={styleLabel}>details:</span>
-                          { !!props.data.details && <span>{props.data.details + " (total " + props.data.total + ")"}</span> }
-                          { !props.data.details && <span style={{backgroundColor: "#ddd", width: "16px", textAlign: "center", fontSize: "11px", borderRadius: "3px"}}>?</span> }
-      <div><span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>shipment by:</span>&nbsp;{!!props.data.deliveryCompany ? props.data.deliveryCompany : '-' }</div>
+          <span style={styleLabel}>ordered:</span>
+          <span>{props.data.quantity + (!props.data.unit?"" : ' ' + shortUnit(props.data.unit))}</span>
+          <span style={styleLabel}>details:</span>
+          { !!props.data.details && <span>{props.data.details + " (total " + props.data.total + ")"}</span> }
+          { !props.data.details && <span style={{backgroundColor: "#ddd", width: "16px", textAlign: "center", fontSize: "11px", borderRadius: "3px"}}>?</span> }
+          <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>shipment by:</span>
+          <span>{!!props.data.deliveryCompany ? props.data.deliveryCompany : '-' }</span>
     </Box>
 
    <Modal
@@ -80,12 +86,23 @@ export default function OrderLogistic(props) {
           display: "flex",
           flexDirection: "column" }}>
 
-          <Typography sx={{ padding: "10px 0", fontSize: "14px", fontWeight: 600, color: "555", textAlign: "center" }}>Order&nbsp;#{props.order.number}&nbsp;amount&nbsp;details</Typography>
+          <Typography sx={{ padding: "10px 0", fontSize: "14px", fontWeight: 600, color: "555", textAlign: "center" }}>Order logistic</Typography>
 
-          <Box sx={{marginTop: "7px", display: "flex", columnGap: 1}}>
-            <MyText label="Details" value={details} width={"100px"} onChange={setDetails}></MyText>
+          <Box sx={{display: "flex", flexDirection: "column"}}>
+            <MyText label="Details" value={details} width={"248px"} onChange={setDetails}></MyText>
+
+          <Box sx={{marginTop: "7px", display: "flex", flexDirection: "row", columnGap: 1}}>
+          <MySelectLab 
+              label="Shipping company"
+              width="140px"
+              value={deliveryCompany}
+              setValue={(value) => { setDeliveryCompany(value, 'vendor') }}
+              values={transportCompanies.map(e => { return e.vendorName })} />
+            <MyText label="Shipping No." value={deliveryNo} width={"100px"} onChange={value => { setDeliveryNo(value)}}></MyText>
           </Box>
-          <Box sx={{display: "flex", columnGap: 1, justifyContent: "center", marginTop: "10px"}}>
+
+          </Box>
+          <Box sx={{display: "flex", columnGap: 1, justifyContent: "center", marginTop: "15px"}}>
           <Button 
             onClick={(e)=>{ save() }} 
             //edge="end" 

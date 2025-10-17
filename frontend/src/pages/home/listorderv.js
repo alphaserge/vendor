@@ -127,17 +127,13 @@ export default function ListOrderV(props) {
     const refreshStatus = (data) => {
       let ords = [...orders]
       for (let j=0; j< ords.length; j++) {
-      for (let i=0; i< ords[j].items.length; i++) {
-        if (ords[j].items[i].id == data.id) {
-              ords[j].items[i].stockName = data.stockName
-              ords[j].items[i].clientDeliveryCompany = data.clientDeliveryCompany
-              ords[j].items[i].clientDeliveryNo = data.clientDeliveryNo
-              ords[j].items[i].deliveryCompany = data.deliveryCompany
-              ords[j].items[i].deliveryNo = data.deliveryNo
+        if (ords[j].id == data.id) {
+              ords[j].deliveryCompany = data.deliveryCompany
+              ords[j].deliveryNo = data.deliveryNo
+              ords[j].details = data.details
               setOrders(ords)
               break
             }
-          }
         }
     }
 
@@ -174,9 +170,7 @@ export default function ListOrderV(props) {
             <th>Art / Ref no.</th>
             <th>Design /&nbsp;Color</th>
             <th>Item name</th>
-            <th>Amount</th>
-            {/* <th>Stock</th> */}
-            <th>Delivery</th>
+            <th>Logistic</th>
           </tr>
 
                  {orders.map((data, index) => (
