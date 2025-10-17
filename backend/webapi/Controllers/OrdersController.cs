@@ -319,7 +319,27 @@ namespace chiffon_back.Controllers
                                from j in jointable.DefaultIfEmpty()
                                select new { j, p };
                 decimal? paySumm = payQuery.Sum(x => x.j.Rate != null && x.j.Rate > 0m ? x.j.Rate * x.p.Amount : 0m);
-                decimal? totalSumm = ctx.OrderItems.Where(x => x.OrderId == item.oi.OrderId).Sum(x => x.Quantity* x.Price);
+                decimal? totalSumm = 0m;
+                foreach (var oi in ctx.OrderItems.Where(x => x.OrderId == item.oi.OrderId))
+                {
+                    decimal t = 0m;
+                    if (!String.IsNullOrEmpty(item.oi.Details))
+                    {
+                        try
+                        {
+                            t = Convert.ToDecimal(dt.Compute(item.oi.Details, ""));
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                    } else
+                    {
+                        t = oi.Quantity.Value;
+                    }
+
+                    totalSumm += t * oi.Price;
+                }
 
                 Models.OrderItem orderItem = new Models.OrderItem()
                 {
@@ -347,7 +367,7 @@ namespace chiffon_back.Controllers
                     StockName = ctx.Stocks.FirstOrDefault(x => x.Id == item.oi.StockId)?.StockName,
                     VendorId = item.j.VendorId,
                     VendorName = ctx.Vendors.FirstOrDefault(x=>x.Id==item.j.VendorId)?.VendorName,
-                    ///!Paid = paySumm != null && totalSumm != null && paySumm >= totalSumm // ctx.Payments.FirstOrDefault(x=>x.Amount>0m && x.What=="order" && x.WhatId==item.oi.OrderId) != null
+                    PaidShare = paySumm != null && totalSumm > 0m ? paySumm / totalSumm : 0m,
                 };
 
                 string imagePath = @"colors\nopicture.png";
@@ -377,6 +397,7 @@ namespace chiffon_back.Controllers
                     }
                 }
 
+                /*orderItem.Total = 0m;
                 if (!String.IsNullOrEmpty(item.oi.Details))
                 {
                     try
@@ -388,6 +409,9 @@ namespace chiffon_back.Controllers
 
                     }
                 }
+
+                totalSumm = orderItem.Total * orderItem.Price;
+                orderItem.PaidShare = paySumm != null && totalSumm > 0m ? paySumm / totalSumm : 0m;*/
 
                 orderItem.imagePath = imagePath;
                 orderItems.Add(orderItem);
@@ -445,17 +469,13 @@ namespace chiffon_back.Controllers
                 order.ClientEmail = o.ClientEmail;
                 order.ClientName = o.ClientName;
                 order.Uuid = o.Uuid;
-                //order.PaySumm = ctx.Payments.Where(x => x.OrderId == o.Id).Sum(x => x.Amount);
+                order.PaySumm = ctx.Payments.Where(x => x.OrderId == o.Id).Sum(x => x.Amount);
 
 
                 decimal total = 0m;
                 List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
                 foreach (var item in query.ToList())
                 {
-                    if (item.oi.Quantity != null && item.oi.Price != null)
-                    {
-                        total += item.oi.Quantity.Value * item.oi.Price.Value;
-                    }
                     Models.OrderItem orderItem = new Models.OrderItem()
                     {
                         OrderId = item.oi.OrderId,
@@ -523,6 +543,7 @@ namespace chiffon_back.Controllers
                          }
                      }*/
 
+                    orderItem.Total = 0m;
                     if (!String.IsNullOrEmpty(item.oi.Details))
                     {
                         try
@@ -533,6 +554,11 @@ namespace chiffon_back.Controllers
                         {
 
                         }
+                    }
+                    decimal? q = orderItem.Total > 0m ? orderItem.Total : item.oi.Quantity;
+                    if (q != null && item.oi.Price != null)
+                    {
+                        total += q.Value * item.oi.Price.Value;
                     }
 
                     orderItem.imagePath = imagePath;

@@ -38,6 +38,7 @@
         public string? ClientDeliveryNo { get; set; }
         public string? ClientDeliveryCompany { get; set; }
         public decimal? Total { get; set; }
+        public decimal? PaidShare { get; set; }
     }
 
     public class ChangeDetails

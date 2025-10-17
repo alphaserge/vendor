@@ -104,7 +104,7 @@ export default function ListOrderV(props) {
                   details   : d.details,
                   delivered : d.delivered,
                   shipped   : d.shipped,
-                  paid      : d.paid,
+                  paidShare : d.paidShare,
                   deliveryNo: d.deliveryNo,
                   deliveryCompany : d.deliveryCompany,
                   clientDeliveryNo: d.clientDeliveryNo,
@@ -171,6 +171,7 @@ export default function ListOrderV(props) {
             <th>Design /&nbsp;Color</th>
             <th>Item name</th>
             <th>Logistic</th>
+            <th>Paid</th>
           </tr>
 
                  {orders.map((data, index) => (
@@ -201,32 +202,11 @@ export default function ListOrderV(props) {
                           <span className="my-val">{data.itemName}</span>
                           </Link>
                         </td>        
-                        {/* <td style={{textAlign: "center"}}>
-                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-                          <span className="my-val">{quantityInfo(data)}</span>
-                          </Link>
-                        </td> */}
-                        {/* <td style={{textAlign: "left", minWidth: "95px"}}>
-                          <Box sx={{ display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} >
-                          <span style={styleLabel}>ordered:</span>
-                          <span>{data.quantity + (!data.unit?"" : ' ' + shortUnit(data.unit))}</span>
-                          <span style={styleLabel}>details:</span>
-                          { !!data.details && <span>{data.details}</span> }
-                          { !data.details && <span style={{backgroundColor: "#ddd", width: "16px", textAlign: "center", fontSize: "11px", borderRadius: "3px"}}>?</span> }
-                          <span style={styleLabel}>total:</span>
-                          { !!data.total && <span>{data.total}</span> }
-                          { !data.total && <span style={{backgroundColor: "#ddd", width: "16px", textAlign: "center", fontSize: "11px", borderRadius: "3px"}}>?</span> }
-                          </Box>
-                        </td> */}
-                        {/* <td style={{textAlign: "center"}}>
-                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
-                          <span className="my-val">{data.stockName}</span>
-                          </Link>
-                        </td> */}
                         <td style={{textAlign: "left", width: "auto"}}>
-                          {/* <Link to={"/updateproduct?id=" + data.productId} className="my-link" > */}
                           <span className="my-val"><OrderLogistic data={data} order={data} refreshFn={refreshStatus} /></span>
-                          {/* </Link> */}
+                        </td>        
+                        <td style={{textAlign: "center"}}>
+                          <span className="my-val">{toFixed2(data.paidShare*100)}%</span>
                         </td>        
                       </tr>
                  ))}
