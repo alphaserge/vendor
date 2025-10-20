@@ -193,7 +193,7 @@ export default function ListOrder(props) {
             <th>Art / Ref no.</th>
             <th>Design /&nbsp;Color</th>
             <th>Item name</th>
-            <th>Amount</th>
+            <th>Logistic</th>
             {/* <th>Stock</th> */}
             <th>Delivery</th>
           </tr>
@@ -243,7 +243,7 @@ export default function ListOrder(props) {
                           </Link>
                         </td> */}
                         <td style={{textAlign: "left", minWidth: "95px"}}>
-                          <Box sx={{ display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} >
+                          <Box sx={{ display: "grid", gridTemplateColumns: "60px auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} >
                           <span style={styleLabel}>ordered:</span>
                           <span>{data.quantity + (!data.unit?"" : ' ' + shortUnit(data.unit))}</span>
                           <span style={styleLabel}>details:</span>
@@ -262,7 +262,7 @@ export default function ListOrder(props) {
                         </td> */}
                         <td style={{textAlign: "left", width: "auto"}}>
                           {/* <Link to={"/updateproduct?id=" + data.productId} className="my-link" > */}
-                          <span className="my-val"><OrderItemStatus1 data={data} order={order} refreshFn={refreshStatus} /></span>
+                          <span className="my-val"><OrderItemStatus1 data={data} order={order} user={props.user} refreshFn={refreshStatus} /></span>
                           {/* </Link> */}
                         </td>        
                       </tr>

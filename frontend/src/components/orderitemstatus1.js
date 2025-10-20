@@ -64,7 +64,7 @@ export default function OrderItemStatus1(props) {
 
   useEffect(() => {
     // todo: make with Redux state
-    getTransportCompanies(props.data.vendorId, setTransportCompanies)
+    getTransportCompanies(props.user.vendorId, props.data.vendorId, setTransportCompanies)
     getStocks(setStocks)
   }, []);      
 

@@ -49,9 +49,9 @@ namespace chiffon_back.Controllers
 
 
         [HttpGet("Transports")]
-        public IEnumerable<Models.Vendor> Transports(int? vendorId)
+        public IEnumerable<Models.Vendor> Transports(int? vendorId, int? productVendorId)
         {
-            var query = ctx.Vendors.Where(x => x.VendorType == "transport" || x.VendorType == "owner" || x.Id == vendorId);
+            var query = ctx.Vendors.Where(x => x.VendorType == "transport" || x.VendorType == "owner" || x.Id == productVendorId);
 
             return query.Select(x => config.CreateMapper()
                         .Map<Models.Vendor>(x))

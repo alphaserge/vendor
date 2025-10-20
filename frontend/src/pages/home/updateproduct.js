@@ -678,12 +678,37 @@ const setProduct = (prod) => {
   setDesignType(non(prod.designTypeIds))
   setCompositionSamples(non(prod.compositionsSamples))
 
+  let comps = defaultComposition(textileTypes)
+
+  prod.compositionValues.forEach(c => {
+    let index = comps.findIndex(e => e.id == c.textileTypeId)
+    if (index != -1) {
+      comps.splice(index, 1)
+    }
+  })
+
   let vals = [...prod.compositionValues]
   vals = []
-  for (let i=0; i<5; i++) {
+
+  for (let i=0; i<prod.compositionValues.length; i++) {
+    vals.push({id: prod.compositionValues[i].textileTypeId, value: prod.compositionValues[i].value})
+  }
+
+  for (let j=0; j<comps.length; j++) {
+    vals.push(comps[j])
+  }
+
+  let d = 5 - vals.length
+  if (d < 2) { d = 2}
+
+  for (let k=0; k<d; k++) {
+    vals.push({id: null, value: null})
+  }
+
+  /*for (let i=0; i<5; i++) {
     vals.push(i<prod.compositionValues.length ?
         {id: prod.compositionValues[i].textileTypeId, value: prod.compositionValues[i].value} : {id: null, value: null})
-  }
+  }*/
   setCompositionValues(vals)
   setProductTextileTypes(prod.textileTypes)
 
@@ -710,7 +735,7 @@ const setProduct = (prod) => {
 
   const compositionValueChanged = (value, index) => {
     let vals = [...compositionValues]
-    vals[index].value = value
+    vals[index].value = parseInt(value)
     setCompositionValues(vals)
   }
 
@@ -723,11 +748,35 @@ const setProduct = (prod) => {
     setCompositionValues(vals)
   }
 
+  const defaultComposition = (items) => {
+
+    var comps = []
+    try {
+    items.forEach(it => {
+      if (it.value.toLowerCase() == 'cotton') { comps.push({id: it.id, value: null}) }
+    })
+    items.forEach(it => {
+      if (it.value.toLowerCase() == 'polyester') { comps.push({id: it.id, value: null}) }
+    })
+    items.forEach(it => {
+      if (it.value.startsWith('rayon')) { comps.push({id: it.id, value: null}) }
+    })
+    items.forEach(it => {
+      if (it.value.toLowerCase() == 'spandex') { comps.push({id: it.id, value: null}) }
+    })
+  } catch (e) {
+    const ee = e
+  }
+
+  return comps
+  }
+
 
 useEffect(() => {
 
-  let id = idFromUrl()
-  loadProduct(id, setProduct)
+  // >>> moved to setTextileTypesFunc()
+  //let id = idFromUrl()
+  //loadProduct(id, setProduct)
 
   getColors(setColors)
   getDesignTypes(setDesignTypes)
@@ -741,7 +790,18 @@ useEffect(() => {
   getPlainDyedTypes(setPlainDyedTypes)
   getPrintTypes(setPrintTypes)
   getTextileTypes(setTextileTypes)
+
   }, []);
+
+useEffect(() => {
+
+  let id = idFromUrl()
+  loadProduct(id, setProduct)
+
+  }, [textileTypes]);
+
+
+
 
   const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
 
@@ -1455,7 +1515,7 @@ useEffect(() => {
                   value={overworkType}
                   setValue={setOverworkType}
                   addNew={(e) => { setNewValueEntity("overwork"); setOpenedNewValue(true); }}
-                  values={overworkTypes.map(e => { return e.overworkName})}
+                  values={overworkTypes.map(e => { return e.overWorkName})}
                   keys={overworkTypes.map(e => { return e.id})}
                 />
             </Grid>
@@ -1636,11 +1696,14 @@ useEffect(() => {
 
             <Grid item xs={12} md={6} >
               <Composition 
-                values={compositionValues} 
+                value={compositionValues} 
                 idChanged={compositionIdChanged} 
                 valueChanged={compositionValueChanged} 
                 setComposition={setCompositionValues} 
-                valueList={textileTypes}
+                //valueList={textileTypes}
+                values={textileTypes.map(e => { return e.value})}
+                keys={textileTypes.map(e => { return e.id})} 
+
                 delete={compositionDelete}/>
                 {/* <Box 
                             sx={{ 

@@ -87,6 +87,7 @@ export default function ListOrderV(props) {
                   id        : d.id,
                   productId : d.productId,
                   orderId   : d.orderId,
+                  vendorId  : d.vendorId,
                   imagePath : d.imagePath,
                   itemName  : d.itemName,
                   artNo     : d.artNo,
@@ -225,7 +226,7 @@ export default function ListOrderV(props) {
                         </td> */}
                         <td style={{textAlign: "left", width: "auto"}}>
                           {/* <Link to={"/updateproduct?id=" + data.productId} className="my-link" > */}
-                          <span className="my-val"><OrderLogistic data={data} order={data} refreshFn={refreshStatus} /></span>
+                          <span className="my-val"><OrderLogistic data={data} order={data} user={props.user} refreshFn={refreshStatus} /></span>
                           {/* </Link> */}
                         </td>        
                       </tr>

@@ -3,6 +3,9 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal'
 import { Typography } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import axios from 'axios'
 
 import config from "../config.json"
@@ -12,6 +15,7 @@ import { getTransportCompanies } from '../api/vendors'
 import { getStocks } from '../api/stocks'
 import { getDeliveryNo } from '../api/orders'
 import { quantityInfo, shortUnit } from "../functions/helper"
+import { MoreHoriz } from "@mui/icons-material";
 
 const styleLabel = {backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}
 
@@ -50,19 +54,38 @@ export default function OrderLogistic(props) {
     setShow(false) 
   }
 
+  const setTransportCompany = async (value, option) => {
+      
+      setDeliveryCompany(value)
+      if (value == 'Angelika Moscow' && !deliveryNo) { //todo!!
+        const no = await getDeliveryNo(value)
+        setDeliveryNo(no.toString().padStart(4, '0'))
+      }
+    }
+  
+
   useEffect(() => {
-    getTransportCompanies(props.data.vendorId, setTransportCompanies)
+    getTransportCompanies(props.user.vendorId, props.data.vendorId, setTransportCompanies)
   }, []);      
 
   return <>
     <Box sx={{ display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} onClick={handleClick}>
           <span style={styleLabel}>ordered:</span>
-          <span>{props.data.quantity + (!props.data.unit?"" : ' ' + shortUnit(props.data.unit))}</span>
+          <div><span>{props.data.quantity + (!props.data.unit?"" : ' ' + shortUnit(props.data.unit))}</span>
+
+              <IconButton
+              color="success"
+              aria-label="upload picture"
+              sx={{color: "#888", ml: 1, p: 0, mt: "-2px" }}
+              component="span"><MoreHorizIcon/></IconButton></div>
+
           <span style={styleLabel}>details:</span>
-          { !!props.data.details && <span>{props.data.details + " (total " + props.data.total + ")"}</span> }
+          { !!props.data.details && <span>{props.data.details + (!props.data.total ? "" : " (total " + props.data.total + ")")}</span> }
           { !props.data.details && <span style={{backgroundColor: "#ddd", width: "16px", textAlign: "center", fontSize: "11px", borderRadius: "3px"}}>?</span> }
+          
           <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>shipment by:</span>
-          <span>{!!props.data.deliveryCompany ? props.data.deliveryCompany : '-' }</span>
+          <span>{(!!props.data.deliveryCompany ? props.data.deliveryCompany : '-') + (!!props.data.deliveryNo ? (' / ' + props.data.deliveryNo) : '') }</span>
+          <span></span>
     </Box>
 
    <Modal
@@ -96,7 +119,7 @@ export default function OrderLogistic(props) {
               label="Shipping company"
               width="140px"
               value={deliveryCompany}
-              setValue={(value) => { setDeliveryCompany(value, 'vendor') }}
+              setValue={(value) => { setTransportCompany(value, 'vendor') }}
               values={transportCompanies.map(e => { return e.vendorName })} />
             <MyText label="Shipping No." value={deliveryNo} width={"100px"} onChange={value => { setDeliveryNo(value)}}></MyText>
           </Box>

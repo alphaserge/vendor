@@ -27,7 +27,6 @@ const MySelectProps = {
   },
 }
 
-
 export default function Composition(props) {
 
   /*const [textileTypes, setTextileTypes] = useState([])
@@ -38,6 +37,8 @@ export default function Composition(props) {
 
 //console.log('comp.values')
 //console.log(props.values)
+console.log('props.value:')
+console.log(props.value)
   
   return                 <Box 
                               sx={{ 
@@ -50,29 +51,32 @@ export default function Composition(props) {
                                 fontSize: ap.FONTSIZE
                                 }}>
                                 <div style={{gridColumn: "span 3"}}> <Typography align="center" sx={{ width: "100%", fontWeight: "bold", fontSize: "11pt", backgroundColor: "#ddd", padding: "20px 20px" }}>Composition</Typography></div>
-                                { props.values.map((data, index) => (  
+                                { props.value.map((data, index) => (  
                                 <React.Fragment>
                                    <MySelect 
                                       id={"comps-" + index}
+                                      key={"compsk-" + props.value[index].id}
                                       url="TextileTypes"
                                       title="Textile type"
-                                      valueName="value"
+                                      //valueName="value"
                                       labelStyle={labelStyle}
                                       //itemStyle={halfItemStyle}
                                       MenuProps={MySelectProps}
-                                      value={props.values[index].id}
+                                      value={props.value[index].id}
                                       setValue={props.idChanged}
-                                      values={props.valueList}
+                                      values={props.values}
+                                      keys={props.keys}
                                       option={index}
                                       //addNew={props.addNew}
                                     />
                                     <TextField
                                       margin="normal"
                                       size="small" 
-                                      id={"compv-" + index}
+                                      id={"compv-" + props.value[index].id}
+                                      key={"compvk-" + props.value[index].id}
                                       label="%"
                                       name={"compv-" + index}
-                                      value={props.values[index].value}
+                                      value={props.value[index].value}
                                       sx = {{ m: 0, textAlign: "center" }}
                                       onChange={ev => props.valueChanged(ev.target.value, index)}
                                     />
