@@ -68,9 +68,26 @@ export default function Payments(props) {
 
   return <>
   
-    <span onClick={handleClick} style={{ cursor: 'pointer' }}>
-      Paid&nbsp;{percent(order.paySumm, order.total)}&nbsp;%:&nbsp;&nbsp;{toFixed2(order.paySumm)}&nbsp;/&nbsp;{toFixed2(order.total)}&nbsp;$ 
-    </span>
+    <Box onClick={handleClick} style={{ cursor: 'pointer', display: "flex", justifyContent: "flex-end" }}>
+      <Box sx={{width: "auto"}}>Paid&nbsp;{percent(order.paySumm, order.total)}&nbsp;%:&nbsp;&nbsp;{toFixed2(order.paySumm)}&nbsp;/&nbsp;{toFixed2(order.total)}&nbsp;$ </Box>
+      <Box  justifyContent="flex-end" >
+    <Button style={{border: "1px solid #aaa",
+    backgroundColor: "#none",
+    border: "none",
+              color: "#555", 
+              maxWidth: "24px",
+              minWidth: "24px",
+              maxHeight: "20px",
+              minHeight: "20px",
+              borderRadius: "1px", 
+              padding: "0px",
+              marginLeft: "10px",
+              textTransform: "none"}}
+              onClick={handleClick} >
+                  ...
+              </Button>
+    </Box>
+    </Box>
     
     <Modal
       open={show}

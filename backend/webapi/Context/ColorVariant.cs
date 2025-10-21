@@ -10,6 +10,7 @@ namespace chiffon_back.Context
         public string? Uuid { get; set; }
         public int Num { get; set; }
         public decimal? Quantity { get; set; }
+        public decimal? Price { get; set; }
 
     }
 }

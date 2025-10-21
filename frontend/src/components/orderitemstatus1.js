@@ -98,6 +98,7 @@ export default function OrderItemStatus1(props) {
   }
 
   return <>
+  <Box width="100%" sx={{display:"flex"}}>
     <Box sx={{ display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} onClick={handleClick}>
       <span style={styleLabel}>shipment:</span>
       <span>{props.data.deliveryCompany}</span>
@@ -105,6 +106,23 @@ export default function OrderItemStatus1(props) {
       <span>{props.data.stockName}</span>
       <span style={styleLabel}>delivery:</span>
       <span>{props.data.clientDeliveryCompany}</span>
+    </Box>
+    <Box style={{marginLeft:"auto"}} justifyContent="flex-end" >
+      <Button style={{border: "1px solid #aaa",border:"none",
+      backgroundColor: "#ebebeb",
+                color: "#555", 
+                maxWidth: "24px",
+                minWidth: "24px",
+                maxHeight: "20px",
+                minHeight: "20px",
+                borderRadius: "1px", 
+                padding: "0px",
+                marginLeft: "10px",
+                textTransform: "none"}}
+                onClick={handleClick} >
+                    ...
+                </Button>
+    </Box>
     </Box>
 
    <Modal

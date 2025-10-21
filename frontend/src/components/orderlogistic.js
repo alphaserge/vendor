@@ -82,8 +82,8 @@ export default function OrderLogistic(props) {
           <span></span>
     </Box>
     <Box style={{marginLeft:"auto"}} justifyContent="flex-end" >
-    <Button style={{border: "1px solid #aaa",
-    backgroundColor: "#eee",
+    <Button style={{border: "1px solid #aaa",border:"none",
+    backgroundColor: "#ddd",
               color: "#555", 
               maxWidth: "24px",
               minWidth: "24px",

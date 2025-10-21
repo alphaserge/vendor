@@ -205,7 +205,7 @@ export default function ListOrder(props) {
                 <tr className="orderrow">
                   <td colSpan={2} className="order no-border-right">No.&nbsp;{order.number}&nbsp;dated&nbsp;{formattedDate(order.created)}</td>
                   <td colSpan={3} className="order no-borders">{order.clientName}&nbsp;&nbsp;{order.clientPhone},&nbsp;&nbsp;{order.clientEmail}</td>
-                  <td colSpan={2} className="order no-border-left"><Payments orderId={order.id}/></td>
+                  <td colSpan={2} className="order no-border-left" style={{paddingRight: "7px"}}><Payments orderId={order.id}/></td>
                 </tr>
 
                  {order.items.map((data, index) => (
@@ -242,7 +242,7 @@ export default function ListOrder(props) {
                           <span className="my-val">{quantityInfo(data)}</span>
                           </Link>
                         </td> */}
-                        <td style={{textAlign: "left", minWidth: "95px"}}>
+                        <td style={{textAlign: "left", minWidth: "95px", padding: "4px 10px"}}>
                           <Box sx={{ display: "grid", gridTemplateColumns: "60px auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} >
                           <span style={styleLabel}>ordered:</span>
                           <span>{data.quantity + (!data.unit?"" : ' ' + shortUnit(data.unit))}</span>
@@ -262,7 +262,7 @@ export default function ListOrder(props) {
                         </td> */}
                         <td style={{textAlign: "left", width: "auto"}}>
                           {/* <Link to={"/updateproduct?id=" + data.productId} className="my-link" > */}
-                          <span className="my-val"><OrderItemStatus1 data={data} order={order} user={props.user} refreshFn={refreshStatus} /></span>
+                          <OrderItemStatus1 data={data} order={order} user={props.user} refreshFn={refreshStatus} />
                           {/* </Link> */}
                         </td>        
                       </tr>
