@@ -4,59 +4,22 @@ import { useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Link } from 'react-router-dom';
-import { colors, FormControl, Icon, Typography } from "@mui/material";
-//import { Paid, Payments } from "@mui/icons-material";
-import TextField from '@mui/material/TextField';
-import { InputLabel } from "@mui/material"
-import InputAdornment from '@mui/material/InputAdornment';
-import Tooltip from '@mui/material/Tooltip';
+import { Typography } from "@mui/material";
 
 import axios from 'axios'
 
 import config from "../../config.json"
 import PageHeader from './pageheader';
 import Footer from './footer';
-import Header from '../../components/header';
-import Payments from '../../components/payments';
-import MySelect from '../../components/myselect';
-import MyText from '../../components/mytext';
-import OrderItemStatus from '../../components/orderitemstatus';
 import OrderLogistic from '../../components/orderlogistic';
-import { APPEARANCE } from '../../appearance';
 
-import { toFixed2, formattedDate, quantityInfo, shortUnit, safeFixed, percent } from "../../functions/helper"
-import { getTransportCompanies } from '../../api/vendors'
-import { getStocks } from '../../api/stocks'
-import MySelectLab from "../../components/myselectlab";
+import { toFixed2 } from "../../functions/helper"
+import { orderPaidShare } from '../../api/orders'
 
 const defaultTheme = createTheme()
 const outboxStyle = { maxWidth: "940px", margin: "80px auto 20px auto", padding: "0 10px" }
-const entities = ['active orders', 'delivered orders']
-//const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, color: APPEARANCE.WHITE, m: 1 }
-//const disableStyle = { width: 90, height: 40, backgroundColor: "#ccc", color: APPEARANCE.WHITE, m: 1 }
-const buttonStyle = { height: 26, backgroundColor: "#222", color: APPEARANCE.WHITE, textTransform: "none" }
-const disableStyle = { height: 26, backgroundColor: "#ccc", color: APPEARANCE.WHITE, textTransform: "none" }
-const labelStyle = { m: 0, ml: 0, mr: 0 }
-const itemStyle  = { width: "100%", mt: 3, ml: 0, mr: 0, mb: 0  }
-const itemStyle1 = { width: "calc( 100% - 0px )", mt: 0, ml: 0, mr: 0, mb: 0 }
-
-const ITEM_HEIGHT = 48
-const ITEM_PADDING_TOP = 8
-
-const MySelectProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-}
 
 const styleLabel = {backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}
 
@@ -64,16 +27,7 @@ export default function ListOrderV(props) {
 
   const navigate = useNavigate();
 
-  const [toggle, setToggle] = useState(false)
   const [orders, setOrders] = useState([])
-  const [expand, setExpand] = useState([])
-  const [detail, setDetail] = useState([])
-  const [filter, setFilter] = useState(false)
-  const [paySumm, setPaySumm] = useState([])
-  const [currencies, setCurrencies] = useState([])
-  const [courseRur, setCourseRur] = useState(0)
-  const [transportCompanies, setTransportCompanies] = useState([])
-  const [stocks, setStocks] = useState([])
   
 
     const loadOrders = async (e) => {
@@ -115,22 +69,24 @@ export default function ListOrderV(props) {
                   }
               })
           setOrders(result)
-          setFilter(false)
-          setDetail(result.map((e)=> { return e.details }))
-          const desiredLength = result.length;
-          setExpand(new Array(desiredLength).fill(false))
           })      
       .catch (error => {
         console.log(error)
       })
     }
 
-    const refreshStatus = (data) => {
+    const refreshStatus = async (data) => {
       let ords = [...orders]
       for (let j=0; j< ords.length; j++) {
-        if (ords[j].id == data.id) {
+        if (ords[j].id === data.id) {
               ords[j].deliveryCompany = data.deliveryCompany
               ords[j].deliveryNo = data.deliveryNo
+              if (ords[j].details !== data.details) {
+                const paidShare = await orderPaidShare(ords[j].orderId)
+                console.log('paidShare')
+                console.log(paidShare)
+                ords[j].paidShare = paidShare
+              }
               ords[j].details = data.details
               setOrders(ords)
               break
@@ -140,13 +96,7 @@ export default function ListOrderV(props) {
 
     useEffect(() => {
       loadOrders()
-      getTransportCompanies(props.user.vendorId, setTransportCompanies)
-      getStocks(setStocks)
     }, []);
-
-
-    useEffect(() => {
-    }, [toggle]);
 
   if (!props.user || props.user.Id === 0) {
     navigate("/")
@@ -204,7 +154,7 @@ export default function ListOrderV(props) {
                           </Link>
                         </td>        
                         <td style={{textAlign: "left", width: "auto"}}>
-                          <span className="my-val"><OrderLogistic data={data} order={data} user={props.user} refreshFn={refreshStatus} /></span>
+                          <OrderLogistic data={data} order={data} user={props.user} refreshFn={refreshStatus} />
                         </td>        
                         <td style={{textAlign: "center"}}>
                           <span className="my-val">{toFixed2(data.paidShare*100)}%</span>

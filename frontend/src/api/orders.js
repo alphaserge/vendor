@@ -40,7 +40,6 @@ export const getOrders = (setFn) => {
       {
         deliveryCompany: company
       }})
-      console.log(res)
       return res.data
     } 
     catch (e) 
@@ -48,6 +47,16 @@ export const getOrders = (setFn) => {
       console.log(e)
     }
   }
+
+export const orderPaidShare = async (orderId) => {
+  try {
+    const response = await axios.get(config.api + '/OrderPaidShare?orderId=' + orderId)
+    return response.data
+  } catch (error) {
+    console.log('orderPaidShare error:' )
+    console.log(error)
+  }
+}
 
 
   

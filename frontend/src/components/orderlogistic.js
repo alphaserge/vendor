@@ -3,19 +3,15 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal'
 import { Typography } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import axios from 'axios'
 
 import config from "../config.json"
 import MySelectLab from "../components/myselectlab";
 import MyText from '../components/mytext';
 import { getTransportCompanies } from '../api/vendors'
-import { getStocks } from '../api/stocks'
 import { getDeliveryNo } from '../api/orders'
-import { quantityInfo, shortUnit } from "../functions/helper"
-import { MoreHoriz } from "@mui/icons-material";
+import { shortUnit } from "../functions/helper"
+import {APPEARANCE as ap} from '../appearance';
 
 const styleLabel = {backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}
 
@@ -57,7 +53,7 @@ export default function OrderLogistic(props) {
   const setTransportCompany = async (value, option) => {
       
       setDeliveryCompany(value)
-      if (value == 'Angelika Moscow' && !deliveryNo) { //todo!!
+      if (value === 'Angelika Moscow' && !deliveryNo) { //todo!!
         const no = await getDeliveryNo(value)
         setDeliveryNo(no.toString().padStart(4, '0'))
       }
@@ -66,18 +62,16 @@ export default function OrderLogistic(props) {
 
   useEffect(() => {
     getTransportCompanies(props.user.vendorId, props.data.vendorId, setTransportCompanies)
-  }, []);      
+  }, [props.user.vendorId, props.data.vendorId]);      
+
+  const orderedAmount = props.data.quantity + (!props.data.unit?"" : ' ' + shortUnit(props.data.unit))
 
   return <>
-    <Box sx={{ display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} onClick={handleClick}>
+  <Box width="100%" sx={{display:"flex"}}>
+    <Box  sx={{ display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} onClick={handleClick}>
           <span style={styleLabel}>ordered:</span>
-          <div><span>{props.data.quantity + (!props.data.unit?"" : ' ' + shortUnit(props.data.unit))}</span>
-
-              <IconButton
-              color="success"
-              aria-label="upload picture"
-              sx={{color: "#888", ml: 1, p: 0, mt: "-2px" }}
-              component="span"><MoreHorizIcon/></IconButton></div>
+          <div><span>{orderedAmount}</span>
+          </div>
 
           <span style={styleLabel}>details:</span>
           { !!props.data.details && <span>{props.data.details + (!props.data.total ? "" : " (total " + props.data.total + ")")}</span> }
@@ -86,6 +80,23 @@ export default function OrderLogistic(props) {
           <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>shipment by:</span>
           <span>{(!!props.data.deliveryCompany ? props.data.deliveryCompany : '-') + (!!props.data.deliveryNo ? (' / ' + props.data.deliveryNo) : '') }</span>
           <span></span>
+    </Box>
+    <Box style={{marginLeft:"auto"}} justifyContent="flex-end" >
+    <Button style={{border: "1px solid #aaa",
+    backgroundColor: "#eee",
+              color: "#555", 
+              maxWidth: "24px",
+              minWidth: "24px",
+              maxHeight: "20px",
+              minHeight: "20px",
+              borderRadius: "1px", 
+              padding: "0px",
+              marginLeft: "10px",
+              textTransform: "none"}}
+              onClick={handleClick} >
+                  ...
+              </Button>
+    </Box>
     </Box>
 
    <Modal
@@ -112,17 +123,17 @@ export default function OrderLogistic(props) {
           <Typography sx={{ padding: "10px 0", fontSize: "14px", fontWeight: 600, color: "555", textAlign: "center" }}>Order logistic</Typography>
 
           <Box sx={{display: "flex", flexDirection: "column"}}>
-            <MyText label="Details" value={details} width={"248px"} onChange={setDetails}></MyText>
+            <MyText label="Ordered:" value={orderedAmount} readOnly={true} width={"200px"} ></MyText>
 
-          <Box sx={{marginTop: "7px", display: "flex", flexDirection: "row", columnGap: 1}}>
+            <MyText label="Details:" value={details} marginTop={"10px"} width={"200px"} onChange={setDetails}></MyText>
+
           <MySelectLab 
               label="Shipping company"
-              width="140px"
+              width="200px"
               value={deliveryCompany}
               setValue={(value) => { setTransportCompany(value, 'vendor') }}
               values={transportCompanies.map(e => { return e.vendorName })} />
-            <MyText label="Shipping No." value={deliveryNo} width={"100px"} onChange={value => { setDeliveryNo(value)}}></MyText>
-          </Box>
+            <MyText label="Shipping No." value={deliveryNo} width={"200px"} onChange={value => { setDeliveryNo(value)}}></MyText>
 
           </Box>
           <Box sx={{display: "flex", columnGap: 1, justifyContent: "center", marginTop: "15px"}}>
@@ -132,7 +143,6 @@ export default function OrderLogistic(props) {
             //disabled={!changes}
             sx={{
               backgroundColor: "#222",
-              borderRadius: "3px",
               color: "#fff", 
               borderRadius: "2px", 
               padding: "6px 10px",
@@ -145,7 +155,6 @@ export default function OrderLogistic(props) {
             //disabled={!changes}
             sx={{
               backgroundColor: "#222",
-              borderRadius: "3px",
               color: "#fff", 
               borderRadius: "2px", 
               padding: "6px 10px",

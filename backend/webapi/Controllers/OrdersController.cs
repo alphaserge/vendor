@@ -313,12 +313,8 @@ namespace chiffon_back.Controllers
                     continue;
                 }
 
-                var order = ctx.Orders.FirstOrDefault(x => x.Id == item.oi.OrderId);
-                var payQuery = from p in ctx.Payments.Where(x => x.OrderId == item.oi.OrderId)
-                               join c in ctx.Currencies on p.CurrencyId equals c.Id into jointable
-                               from j in jointable.DefaultIfEmpty()
-                               select new { j, p };
-                decimal? paySumm = payQuery.Sum(x => x.j.Rate != null && x.j.Rate > 0m ? x.j.Rate * x.p.Amount : 0m);
+                var payQuery = ctx.Payments.Where(x => x.OrderId == item.oi.OrderId);
+                decimal? paySumm = payQuery.Sum(x => x.Amount != null ? x.Amount : 0m);
                 decimal? totalSumm = 0m;
                 foreach (var oi in ctx.OrderItems.Where(x => x.OrderId == item.oi.OrderId))
                 {
@@ -1381,6 +1377,39 @@ namespace chiffon_back.Controllers
             }
             return null;
         }
+
+        // method for Vendor managers
+        [HttpGet("OrderPaidShare")]
+        public decimal OrderPaidShare([FromQuery] string orderId)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+
+            decimal totalSumm = 0m;
+            foreach (var oi in ctx.OrderItems.Where(x => x.OrderId.ToString() == orderId))
+            {
+                decimal t = 0m;
+                if (!String.IsNullOrEmpty(oi.Details))
+                {
+                    try
+                    {
+                        t = Convert.ToDecimal(dt.Compute(oi.Details, ""));
+                    }
+                    catch (Exception ex) {}
+                }
+                else
+                {
+                    t = oi.Quantity == null ? 0m : oi.Quantity.Value;
+                }
+                totalSumm += t * (oi.Price == null ? 0m : oi.Price.Value);
+            }
+
+            var payQuery = ctx.Payments.Where(x => x.OrderId.ToString() == orderId);
+            decimal paySumm = payQuery.Sum(x => x.Amount);
+            decimal PaidShare = totalSumm > 0m ? paySumm / totalSumm : 0m;
+
+            return PaidShare;
+        }
+
 
         public void Log(string method, Exception ex)
         {
