@@ -39,21 +39,9 @@ namespace chiffon_back.Code
 
     public class ProductsImport
     {
-        List<ProductItem> items;
+        private static readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
 
-        private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
-
-        ProductsImport()
-        {
-            items = new List<ProductItem>();
-        }
-
-        public void ReadExcelFileDOM(string filePath, string sheetName, int branchId, bool checkMode)
-        {
-            ReadExcelFileSheet(filePath, sheetName, branchId, checkMode);
-        }
-
-        public string GetCellValue(Cell cell)
+        public static string GetCellValue(Cell cell)
         {
             string text = cell.InnerText == null ? string.Empty : cell.InnerText;// CellValue.Text;
             return text;
@@ -61,7 +49,7 @@ namespace chiffon_back.Code
 
         // Retrieve the value of a cell, given a file name, sheet name, 
         // and address name.
-        public static string GetCellValue(string fileName, string sheetName, string addressName)
+        public static string GetCellValue(string fileName, string addressName) // 2-nd parameter was: string sheetName, 
         {
             string value = null;
 
@@ -72,9 +60,13 @@ namespace chiffon_back.Code
                 // Retrieve a reference to the workbook part.
                 WorkbookPart wbPart = document.WorkbookPart;
 
+                Workbook workbook = wbPart.Workbook;
+                Sheets sheets = workbook.Sheets;
+
+
                 // Find the sheet with the supplied name, and then use that 
                 // Sheet object to retrieve a reference to the first worksheet.
-                Sheet? theSheet = wbPart.Workbook.Descendants<Sheet>().FirstOrDefault(s => s.Name == sheetName);
+                Sheet? theSheet = wbPart.Workbook.Descendants<Sheet>().FirstOrDefault(); // take first sheet!!!  older: (s => s.Name == sheetName);
 
                 // Throw an exception if there is no sheet.
                 if (theSheet == null)
@@ -147,54 +139,53 @@ namespace chiffon_back.Code
             return value;
         }
 
-        public void ReadExcelFileSheet(string filePath, string sheetName, int branchId, bool checkMode)
+        public static void ReadExcelFile(string filePath, int vendorId)
         {
+            DateTime created = DateTime.Now;
+
             int n = 2; // start import from line 2
 
-            items = new List<ProductItem>();
-
-            string artNo = GetCellValue(filePath, sheetName, $"A{n}");
-            string refNo = GetCellValue(filePath, sheetName, $"B{n}");
-            string itemName = GetCellValue(filePath, sheetName, $"C{n}");
-            string design = GetCellValue(filePath, sheetName, $"D{n}");
-            string colNum = GetCellValue(filePath, sheetName, $"E{n}");
-            string colNames = GetCellValue(filePath, sheetName, $"F{n}").ToLower();
-            string sqtyM = GetCellValue(filePath, sheetName, $"G{n}");
-            string sqtyR = GetCellValue(filePath, sheetName, $"H{n}");
-            string sprice = GetCellValue(filePath, sheetName, $"I{n}");
+            string artNo    = GetCellValue(filePath, $"A{n}");
+            string refNo    = GetCellValue(filePath, $"B{n}");
+            string itemName = GetCellValue(filePath, $"C{n}");
+            string design   = GetCellValue(filePath, $"D{n}");
+            string colNum   = GetCellValue(filePath, $"E{n}");
+            string colNames = GetCellValue(filePath, $"F{n}");
+            string sqtyM    = GetCellValue(filePath, $"G{n}");
+            string sqtyR    = GetCellValue(filePath, $"H{n}");
+            string sprice   = GetCellValue(filePath, $"I{n}");
 
             bool eof = string.IsNullOrEmpty(artNo) && string.IsNullOrEmpty(itemName);
+
+            if (!String.IsNullOrWhiteSpace(colNames))
+            {
+                colNames = colNames.ToLower();
+            }
+
             int qtyM = -1;
             int qtyR = -1;
             if (!int.TryParse(sqtyM, out qtyM)) { qtyM = -1; }
             if (!int.TryParse(sqtyR, out qtyR)) { qtyR = -1; }
 
-            string[] colorNames = colNames.Split(new char[] { ',', ';' });
+            string[] colorNames = colNames.Split(new char[] { ',', ';' }).Select(x=>x.Trim()).ToArray();
 
             while (!eof)
             {
                 Context.Product? existed = ctx.Products.FirstOrDefault(x =>
-                    ((!String.IsNullOrWhiteSpace(x.ArtNo) && x.ArtNo.ToLower() == artNo.Trim().ToLower()) || (String.IsNullOrWhiteSpace(x.ArtNo) && String.IsNullOrWhiteSpace(artNo))) &&
-                    ((!String.IsNullOrWhiteSpace(x.ItemName) && x.ItemName.ToLower() == itemName.Trim().ToLower()) || (String.IsNullOrWhiteSpace(x.ItemName) && String.IsNullOrWhiteSpace(itemName))) &&
-                    ((!String.IsNullOrWhiteSpace(x.Design) && x.Design.ToLower() == design.Trim().ToLower()) || (String.IsNullOrWhiteSpace(x.Design) && String.IsNullOrWhiteSpace(design))));
+                    x.VendorId == vendorId &&
+                    ((!String.IsNullOrWhiteSpace(x.ArtNo) && !String.IsNullOrWhiteSpace(artNo) && x.ArtNo.ToLower() == artNo.Trim().ToLower()) || (String.IsNullOrWhiteSpace(x.ArtNo) && String.IsNullOrWhiteSpace(artNo))) &&
+                    ((!String.IsNullOrWhiteSpace(x.ItemName) && !String.IsNullOrWhiteSpace(itemName) && x.ItemName.ToLower() == itemName.Trim().ToLower()) || (String.IsNullOrWhiteSpace(x.ItemName) && String.IsNullOrWhiteSpace(itemName))) &&
+                    ((!String.IsNullOrWhiteSpace(x.Design) && !String.IsNullOrWhiteSpace(design) && x.Design.ToLower() == design.Trim().ToLower()) || (String.IsNullOrWhiteSpace(x.Design) && String.IsNullOrWhiteSpace(design))));
 
-                ProductItem item = new ProductItem();
-                item.ArtNo = artNo;
-                item.RefNo = refNo;
-                item.ItemName = itemName;
-                item.Design = design;
 
                 Decimal price = 0;
-                if (Decimal.TryParse(sprice, out price))
-                {
-                    item.Price = price;
-                }
+                Decimal.TryParse(sprice, out price);
 
                 if (existed != null)
                 {
-                    item.Id = existed.Id;
+                    //item.Id = existed.Id;
                     int colNo = -1;
-                    if (int.TryParse(colNum.Trim(), out colNo)) 
+                    if (int.TryParse(colNum.Trim(), out colNo))
                     {
                         Context.ColorVariant? existedColorVar = ctx.ColorVariants.FirstOrDefault(x => x.Num == colNo);
                         if (existedColorVar != null)
@@ -215,7 +206,7 @@ namespace chiffon_back.Code
                                     ctx.ColorVariantsInColors.Add(new ColorVariantsInColors() { ColorId = colorId, ColorVariantId = existedColorVar.Id });
                                 }
                                 ctx.SaveChanges();
-                            } 
+                            }
                             /* nothing to do..
                             else
                             {
@@ -236,25 +227,35 @@ namespace chiffon_back.Code
                                 ctx.SaveChanges();
                             }*/
                         }
-                    } 
-                    else
+                    }
+                }
+                else
+                {
+                    Product prod = new Product()
                     {
-                        Product prod = new Product()
-                        {
-                            ArtNo = artNo,
-                            RefNo = refNo,
-                            ItemName = itemName,
-                            Design = design
+                        VendorId = vendorId,
+                        Created = created,
+                        ArtNo = artNo,
+                        RefNo = refNo,
+                        ItemName = itemName,
+                        Design = design
+                    };
+                    ctx.Products.Add(prod);
+                    ctx.SaveChanges();
+
+                    int colNo = -1;
+                    if (int.TryParse(colNum.Trim(), out colNo))
+                    {
+                        ColorVariant newColorVar = new ColorVariant() 
+                        { 
+                            Num = colNo, 
+                            Price = price, 
+                            ProductId = prod.Id, 
+                            Quantity = qtyM, 
+                            Uuid = Guid.NewGuid().ToString() // --only when photo is exists: 
                         };
-                        ctx.Products.Add(prod);
-                        ctx.SaveChanges();
-
-                        ColorVariant newColorVar = new ColorVariant() { Num = colNo, Price = price, ProductId = prod.Id, Quantity = qtyM, Uuid = Guid.NewGuid().ToString() };
-
                         ctx.ColorVariants.Add(newColorVar);
                         ctx.SaveChanges();
-
-
                         foreach (string colorName in colorNames)
                         {
                             int? colorId = ctx.Colors.FirstOrDefault(x => x.ColorName != null && x.ColorName.ToLower() == colorName).Id;
@@ -264,12 +265,34 @@ namespace chiffon_back.Code
                             }
                         }
                         ctx.SaveChanges();
-
                     }
                 }
+
+                n++;
+
+                artNo    = GetCellValue(filePath, $"A{n}");
+                refNo    = GetCellValue(filePath, $"B{n}");
+                itemName = GetCellValue(filePath, $"C{n}");
+                design   = GetCellValue(filePath, $"D{n}");
+                colNum   = GetCellValue(filePath, $"E{n}");
+                colNames = GetCellValue(filePath, $"F{n}");
+                sqtyM    = GetCellValue(filePath, $"G{n}");
+                sqtyR    = GetCellValue(filePath, $"H{n}");
+                sprice   = GetCellValue(filePath, $"I{n}");
+
+                eof = string.IsNullOrEmpty(artNo) && string.IsNullOrEmpty(itemName);
+
+                if (!String.IsNullOrWhiteSpace(colNames))
+                {
+                    colNames = colNames.ToLower();
+                }
+                colorNames = String.IsNullOrWhiteSpace(colNames) ? [] : colNames.Split(new char[] { ',', ';' }).Select(x => x.Trim()).ToArray();
+
+                qtyM = -1;
+                qtyR = -1;
+                if (!int.TryParse(sqtyM, out qtyM)) { qtyM = -1; }
+                if (!int.TryParse(sqtyR, out qtyR)) { qtyR = -1; }
             }
-
-
         }
     }
 }

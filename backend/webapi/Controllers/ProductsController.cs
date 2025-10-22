@@ -2,6 +2,7 @@
 using chiffon_back.Code;
 using chiffon_back.Context;
 using chiffon_back.Models;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -188,6 +189,57 @@ namespace chiffon_back.Controllers
                 Console.WriteLine();
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ImportFile: {1}", DateTime.Now, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ImportFile: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+                return CreatedAtAction(nameof(Product), new { id = -1 }, false);
+            }
+        }
+
+        [HttpPost("ImportProducts")]
+        public /*async*/ ActionResult ImportProducts([FromForm] IFormFile formFile, [FromForm] int? vendorId)
+        {
+            try
+            {
+                if (vendorId == null)
+                {
+                    throw new Exception("Not vendor specified");
+                }
+
+                string name = formFile.FileName;
+                string extension = Path.GetExtension(formFile.FileName);
+
+                if (formFile.Length > 0)
+                {
+                    var dirPath = Path.Combine(Directory.GetCurrentDirectory(), @"files\import");
+                    Code.DirectoryHelper.CreateDirectoryIfMissing(dirPath);
+                    var fileNumber = Directory.GetFiles(dirPath, "*.*").Count() + 1;
+                    string fileName = $"{fileNumber}{extension}";
+                    string filePath = Path.Combine(dirPath, fileName);
+
+                    // first remove all existing files in directory
+                    /*System.IO.DirectoryInfo di = new DirectoryInfo(dirPath);
+                    foreach (FileInfo file in di.EnumerateFiles())
+                    {
+                        file.Delete();
+                    }*/
+                    // add picture file
+                    using (var stream = System.IO.File.Create(filePath))
+                    {
+                        //await formFile.CopyToAsync(stream);
+                        formFile.CopyTo(stream);
+                    }
+
+                    ProductsImport.ReadExcelFile(filePath, vendorId.Value);
+
+                }
+                return Ok();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ImportProducts: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ImportProducts: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
                 return CreatedAtAction(nameof(Product), new { id = -1 }, false);
             }
         }

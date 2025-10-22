@@ -62,11 +62,12 @@ export default function ColorVariant(props) {
       props.setColorItem(cv.uuid, cv)
     }
 
-    const setColorName = (value) => {
+    const setColorIds = (value) => {
       let cv1 = props.cv;
       cv1.colorIds = value
       //props.cv.ColorNo = props.cv.ColorNo
-      props.setColorItem(cv1.colorVariantId, cv1)
+      //props.setColorItem(cv1.colorVariantId, cv1)
+      props.setColorItem(cv1.uuid, cv1)
     }
 
     const setSelectedFile = (value) => {
@@ -128,9 +129,10 @@ export default function ColorVariant(props) {
         itemStyle={{...itemStyle, ...existingStyle}}
         MenuProps={MenuProps}
         value={props.cv.colorIds}
-        setValue={setColorName}
+        setValue={setColorIds}
         addNew={props.addNew}
         values={props.values}
+        keys={props.keys}
       />
         {/* values={props.values.map(e => { return e.value})}
         keys={props.values.map(e => { return e.id})} */}

@@ -13,7 +13,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import TuneIcon from '@mui/icons-material/Tune';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import InputAdornment from '@mui/material/InputAdornment';
-
+import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import GridViewIcon from '@mui/icons-material/GridView';
 import TableRowsIcon from '@mui/icons-material/TableRows';
@@ -30,10 +30,11 @@ import Footer from './footer';
 import ItemProduct from './itemproduct';
 import ItemProductRow from './itemproductrow';
 import MySelect from '../../components/myselect';
-import { postProduct } from '../../api/products'
+import { postProduct, productsImport } from '../../api/products'
 
 import { APPEARANCE } from '../../appearance';
 import { Button } from "@mui/material";
+import { styled } from '@mui/material/styles'
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
@@ -65,6 +66,10 @@ const fromUrl = (name) => {
   const params = new URLSearchParams(search)
   return params.get(name)
 }
+
+const Input = styled('input')({
+  display: 'none',
+});
 
 
 export default function ListProduct(props) {
@@ -669,6 +674,15 @@ export default function ListProduct(props) {
             ))}
           </Grid>
 
+          <Box>
+            <label htmlFor={"icon-button-file-prod"}>
+                          <Input accept=".xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id={"icon-button-file-prod"} type="file" onChange={(e) => { productsImport(e.target.files[0], props.user.vendorId);}} />
+                          <Link aria-label="Load your products from Excel file" >
+                                {/* <AddAPhotoIcon sx={{ml: 0, mr: 1}} />  */}
+                                Load your products from Excel file
+                          </Link>
+                        </label>
+          </Box>
           </Box>
         </div>
         <Footer/>

@@ -430,10 +430,12 @@ export default function UpdateProduct(props) {
     }
 
     if (colorVariantFile) {
-      let cv = colorVariants[colorVariantUuid]
-      cv.SelectedFile = colorVariantFile
-      let rf = await postFile(cv, id)
-      needUpdate = true
+      let cv = colorVariants.find(e => e.uuid === colorVariantUuid) 
+      if (!!cv) {
+        cv.SelectedFile = colorVariantFile
+        let rf = await postFile(cv, id)
+        needUpdate = true
+      }
     }
 
     if (needUpdate) {
@@ -829,7 +831,7 @@ useEffect(() => {
             setColorItem={setColorVariantItem} 
             addNew={addNewColor}
             fireChange={fireChange}
-            fileChanges={fileChange}
+            fileChange={fileChange}
             values={colors.map(e => { return e.colorName})} 
             keys={colors.map(e => { return e.id})} 
             last={false} />
