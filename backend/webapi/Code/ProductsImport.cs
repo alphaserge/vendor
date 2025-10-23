@@ -136,7 +136,7 @@ namespace chiffon_back.Code
                     }
                 }
             }
-            return value;
+            return value != null ? value : "";
         }
 
         public static void ReadExcelFile(string filePath, int vendorId)
@@ -145,15 +145,33 @@ namespace chiffon_back.Code
 
             int n = 2; // start import from line 2
 
-            string artNo    = GetCellValue(filePath, $"A{n}");
-            string refNo    = GetCellValue(filePath, $"B{n}");
-            string itemName = GetCellValue(filePath, $"C{n}");
-            string design   = GetCellValue(filePath, $"D{n}");
-            string colNum   = GetCellValue(filePath, $"E{n}");
-            string colNames = GetCellValue(filePath, $"F{n}");
-            string sqtyM    = GetCellValue(filePath, $"G{n}");
-            string sqtyR    = GetCellValue(filePath, $"H{n}");
-            string sprice   = GetCellValue(filePath, $"I{n}");
+            string artNo                = GetCellValue(filePath, $"A{n}");
+            string refNo                = GetCellValue(filePath, $"B{n}");
+            string itemName             = GetCellValue(filePath, $"C{n}");
+            string design               = GetCellValue(filePath, $"D{n}");
+            string colNum               = GetCellValue(filePath, $"E{n}");
+            string colNames             = GetCellValue(filePath, $"F{n}");
+            string sqtyM                = GetCellValue(filePath, $"G{n}");
+            string sqtyR                = GetCellValue(filePath, $"H{n}");
+            string sprice               = GetCellValue(filePath, $"I{n}");
+            string plainOrPrint         = GetCellValue(filePath, $"J{n}");
+            string plainDyedType        = GetCellValue(filePath, $"K{n}");
+            string fabricType           = GetCellValue(filePath, $"L{n}");
+            string designTypes          = GetCellValue(filePath, $"M{n}");
+            string seasons              = GetCellValue(filePath, $"N{n}");
+            string overworkTypes        = GetCellValue(filePath, $"O{n}");
+            string finishing            = GetCellValue(filePath, $"P{n}");
+            string printType            = GetCellValue(filePath, $"Q{n}");
+            string dyeStaff             = GetCellValue(filePath, $"R{n}");
+            string composition          = GetCellValue(filePath, $"S{n}");
+            string width                = GetCellValue(filePath, $"T{n}");
+            string gsm                  = GetCellValue(filePath, $"U{n}");
+            string rollLength           = GetCellValue(filePath, $"V{n}");
+            string fabricConstruction   = GetCellValue(filePath, $"W{n}");
+            string fabricYarnCount      = GetCellValue(filePath, $"X{n}");
+            string fabricShrinkage      = GetCellValue(filePath, $"Y{n}");
+            string colorFastness        = GetCellValue(filePath, $"Z{n}");
+            string hsCode               = GetCellValue(filePath, $"AA{n}");
 
             bool eof = string.IsNullOrEmpty(artNo) && string.IsNullOrEmpty(itemName);
 
@@ -169,6 +187,7 @@ namespace chiffon_back.Code
 
             string[] colorNames = colNames.Split(new char[] { ',', ';' }).Select(x=>x.Trim()).ToArray();
 
+            Context.Product? prod = null;
             while (!eof)
             {
                 Context.Product? existed = ctx.Products.FirstOrDefault(x =>
@@ -227,11 +246,57 @@ namespace chiffon_back.Code
                                 ctx.SaveChanges();
                             }*/
                         }
+                        else
+                        {
+                            ColorVariant newColorVar = new ColorVariant()
+                            {
+                                Num = colNo,
+                                Price = price,
+                                ProductId = existed.Id,
+                                Quantity = qtyM,
+                                Uuid = Guid.NewGuid().ToString() // --only when photo is exists: 
+                            };
+                            ctx.ColorVariants.Add(newColorVar);
+                            ctx.SaveChanges();
+                            foreach (string colorName in colorNames)
+                            {
+                                int? colorId = ctx.Colors.FirstOrDefault(x => x.ColorName != null && x.ColorName.ToLower() == colorName).Id;
+                                if (colorId != null)
+                                {
+                                    ctx.ColorVariantsInColors.Add(new ColorVariantsInColors() { ColorId = colorId.Value, ColorVariantId = newColorVar.Id });
+                                }
+                            }
+                            ctx.SaveChanges();
+
+                        }
                     }
+
+                    prod = existed;
+                    prod.ProductStyleId = null;
+                    prod.ProductTypeId = null;
+                    prod.PrintTypeId = null;
+                    prod.GSM = null;
+                    prod.FabricShrinkage = null;
+                    prod.FabricYarnCount = null;
+                    prod.FabricConstruction = null;
+                    prod.DyeStaffId = null;
+                    prod.PlainDyedTypeId = null;
+                    prod.ColorFastness = null;
+                    prod.MetersInKG = null;
+                    prod.HSCode = null;
+                    prod.FinishingId = null;
+                    prod.RollLength = null;
+
+                    ctx.ProductsInDesignTypes.RemoveRange(ctx.ProductsInDesignTypes.Where(x => x.ProductId == prod.Id));
+                    ctx.ProductsInOverWorkTypes.RemoveRange(ctx.ProductsInOverWorkTypes.Where(x => x.ProductId == prod.Id));
+                    ctx.ProductsInSeasons.RemoveRange(ctx.ProductsInSeasons.Where(x => x.ProductId == prod.Id));
+                    ctx.SaveChanges();
+
+
                 }
                 else
                 {
-                    Product prod = new Product()
+                    prod = new Product()
                     {
                         VendorId = vendorId,
                         Created = created,
@@ -268,18 +333,119 @@ namespace chiffon_back.Code
                     }
                 }
 
+                if (prod != null)
+                {
+                    prod.FabricYarnCount = fabricYarnCount;
+                    prod.FabricConstruction = fabricConstruction;
+                    prod.HSCode = hsCode;
+
+                    int m = 0;
+                    if (int.TryParse(gsm, out m)) prod.GSM = m;
+                    if (int.TryParse(colorFastness, out m)) prod.ColorFastness = m;
+
+                    decimal d = 0;
+                    if (decimal.TryParse(fabricShrinkage, out d)) prod.FabricShrinkage = d;
+                    if (decimal.TryParse(rollLength, out d)) prod.RollLength = d;
+                    //!!prod.MetersInKG = ;
+
+                    var productStyle = ctx.ProductStyles.FirstOrDefault(x => x.StyleName.ToLower() == plainOrPrint.ToLower());
+                    if (productStyle != null)
+                    {
+                        prod.ProductStyleId = productStyle.Id;
+                    }
+
+                    var productType = ctx.ProductTypes.FirstOrDefault(x => x.TypeName.ToLower() == fabricType.ToLower());
+                    if (productType != null)
+                    {
+                        prod.ProductTypeId = productType.Id;
+                    }
+
+                    var _printType = ctx.PrintTypes.FirstOrDefault(x => x.TypeName.ToLower() == printType.ToLower());
+                    if (_printType != null)
+                    {
+                        prod.PrintTypeId = _printType.Id;
+                    }
+
+                    var _dyeStaff = ctx.DyeStaffs.FirstOrDefault(x => x.DyeStaffName.ToLower() == dyeStaff.ToLower());
+                    if (_dyeStaff != null)
+                    {
+                        prod.DyeStaffId = _dyeStaff.Id;
+                    }
+
+                    var _plainDyedType = ctx.PlainDyedTypes.FirstOrDefault(x => x.PlainDyedTypeName.ToLower() == plainDyedType.ToLower());
+                    if (_plainDyedType != null)
+                    {
+                        prod.PlainDyedTypeId = _plainDyedType.Id;
+                    }
+
+                    var _finishing = ctx.Finishings.FirstOrDefault(x => x.FinishingName.ToLower() == finishing.ToLower());
+                    if (_finishing != null)
+                    {
+                        prod.FinishingId = _finishing.Id;
+                    }
+                    ctx.SaveChanges();
+
+                    foreach (var designType in designTypes.ToLower().Split(new char[] { ',', ';' }).Select(x => x.Trim()))
+                    {
+                        var data = ctx.DesignTypes.FirstOrDefault(x => x.DesignName.ToLower() == designType);
+                        if (data != null)
+                        {
+                            ctx.ProductsInDesignTypes.Add(new ProductsInDesignTypes() { DesignTypeId = data.Id, ProductId = prod.Id });
+                        }
+                    }
+                    ctx.SaveChanges();
+
+                    foreach (var overWorkType in overworkTypes.ToLower().Split(new char[] { ',', ';' }).Select(x => x.Trim()))
+                    {
+                        var data = ctx.OverWorkTypes.FirstOrDefault(x => x.OverWorkName.ToLower() == overWorkType);
+                        if (data != null)
+                        {
+                            ctx.ProductsInOverWorkTypes.Add(new ProductsInOverWorkTypes() { OverWorkTypeId = data.Id, ProductId = prod.Id });
+                        }
+                    }
+                    ctx.SaveChanges();
+
+                    foreach (var season in seasons.ToLower().Split(new char[] { ',', ';' }).Select(x => x.Trim()))
+                    {
+                        var data = ctx.Seasons.FirstOrDefault(x => x.SeasonName.ToLower() == season);
+                        if (data != null)
+                        {
+                            ctx.ProductsInSeasons.Add(new ProductsInSeasons() { SeasonId = data.Id, ProductId = prod.Id });
+                        }
+                    }
+                    ctx.SaveChanges();
+
+                }
+
                 n++;
 
-                artNo    = GetCellValue(filePath, $"A{n}");
-                refNo    = GetCellValue(filePath, $"B{n}");
+                artNo = GetCellValue(filePath, $"A{n}");
+                refNo = GetCellValue(filePath, $"B{n}");
                 itemName = GetCellValue(filePath, $"C{n}");
-                design   = GetCellValue(filePath, $"D{n}");
-                colNum   = GetCellValue(filePath, $"E{n}");
+                design = GetCellValue(filePath, $"D{n}");
+                colNum = GetCellValue(filePath, $"E{n}");
                 colNames = GetCellValue(filePath, $"F{n}");
-                sqtyM    = GetCellValue(filePath, $"G{n}");
-                sqtyR    = GetCellValue(filePath, $"H{n}");
-                sprice   = GetCellValue(filePath, $"I{n}");
-
+                sqtyM = GetCellValue(filePath, $"G{n}");
+                sqtyR = GetCellValue(filePath, $"H{n}");
+                sprice = GetCellValue(filePath, $"I{n}");
+                plainOrPrint = GetCellValue(filePath, $"J{n}");
+                plainDyedType = GetCellValue(filePath, $"K{n}");
+                fabricType = GetCellValue(filePath, $"L{n}");
+                designTypes = GetCellValue(filePath, $"M{n}");
+                seasons = GetCellValue(filePath, $"N{n}");
+                overworkTypes = GetCellValue(filePath, $"O{n}");
+                finishing = GetCellValue(filePath, $"P{n}");
+                printType = GetCellValue(filePath, $"Q{n}");
+                dyeStaff = GetCellValue(filePath, $"R{n}");
+                composition = GetCellValue(filePath, $"S{n}");
+                width = GetCellValue(filePath, $"T{n}");
+                gsm = GetCellValue(filePath, $"U{n}");
+                rollLength = GetCellValue(filePath, $"V{n}");
+                fabricConstruction = GetCellValue(filePath, $"W{n}");
+                fabricYarnCount = GetCellValue(filePath, $"X{n}");
+                fabricShrinkage = GetCellValue(filePath, $"Y{n}");
+                colorFastness = GetCellValue(filePath, $"Z{n}");
+                hsCode = GetCellValue(filePath, $"AA{n}");
                 eof = string.IsNullOrEmpty(artNo) && string.IsNullOrEmpty(itemName);
 
                 if (!String.IsNullOrWhiteSpace(colNames))

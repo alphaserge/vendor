@@ -807,8 +807,9 @@ useEffect(() => {
 
   const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
 
-  console.log('colors:')
-  console.log(colors)
+  console.log('plain_dyed_type:')
+  console.log(plainDyedTypeId)
+   console.log(config.product.plain_dyed_type)
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -1487,7 +1488,7 @@ useEffect(() => {
                   keys={seasons.map(e => { return e.id})} />
                 </Grid>
 
-                { (plainDyedTypeId != config.product.plain_dyed_type) && 
+                { (productStyleId != config.product.plain_dyed_type) && 
                 (<Grid item xs={12} md={6}  >
                 <MySelect 
                   id="addproduct-designtype"
@@ -1502,8 +1503,24 @@ useEffect(() => {
                   addNew={(e) => { setNewValueEntity("design type"); setOpenedNewValue(true); }}
                   values={designTypes.map(e => { return e.designName})}
                   keys={designTypes.map(e => { return e.id})} />
-
               </Grid>)}
+              
+              { (productStyleId == config.product.plain_dyed_type) && (
+                <Grid item xs={12} md={6} >
+                <MySelect 
+                  id="addproduct-plaindyedtype"
+                  url="PlainDyedTypes"
+                  title="Plain Dyed Type"
+                  valueName="plainDyedTypeName"
+                  labelStyle={labelStyle}
+                  itemStyle={halfItemStyle}
+                  MenuProps={MySelectProps}
+                  value={plainDyedTypeId}
+                  setValue={setPlainDyedTypeId}
+                  addNew={(e) => { setNewValueEntity("plain dyed type"); setOpenedNewValue(true); }}
+                  values={plainDyedTypes.map(e => { return e.plainDyedTypeName})}
+                  keys={plainDyedTypes.map(e => { return e.id})}
+                /> </Grid> )}
 
                 <Grid item xs={12} md={6}  >
                 <MySelect 
@@ -1664,24 +1681,6 @@ useEffect(() => {
               />
               </FormControl> 
               </Grid>
-
-              { (plainDyedTypeId == config.product.plain_dyed_type) && (
-                <Grid item xs={12} md={6} >
-                <MySelect 
-                  id="addproduct-plaindyedtype"
-                  url="PlainDyedTypes"
-                  title="Plain Dyed Type"
-                  valueName="plainDyedTypeName"
-                  labelStyle={labelStyle}
-                  itemStyle={halfItemStyle}
-                  MenuProps={MySelectProps}
-                  value={plainDyedTypeId}
-                  setValue={setPlainDyedTypeId}
-                  addNew={(e) => { setNewValueEntity("plain dyed type"); setOpenedNewValue(true); }}
-                  values={plainDyedTypes.map(e => { return e.plainDyedTypeName})}
-                  keys={plainDyedTypes.map(e => { return e.id})}
-                /> </Grid> )}
-
 
               {/* <Grid item xs={12} md={6} >
               <MyAutocomplete
