@@ -93,6 +93,7 @@ namespace chiffon_back.Models
         public int?           ColorNo { get; set; }
         public int?           ColorVariantId { get; set; }
         public decimal?       Quantity { get; set; }
+        public decimal?       Price { get; set; }
         public int?           ProductId { get; set; }
         public bool           IsProduct { get; set; }
         public bool           IsVideo { get; set; }

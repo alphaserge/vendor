@@ -220,9 +220,13 @@ namespace chiffon_back.Code
                             if (!colorNames.SequenceEqual(existedColNames))
                             {
                                 ctx.ColorVariantsInColors.RemoveRange(ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == existedColorVar.Id));
-                                foreach (int colorId in colVarsInColors.Select(x => x.ColorId))
+                                foreach (string colorName in colorNames)
                                 {
-                                    ctx.ColorVariantsInColors.Add(new ColorVariantsInColors() { ColorId = colorId, ColorVariantId = existedColorVar.Id });
+                                    int? colorId = ctx.Colors.FirstOrDefault(x => x.ColorName.ToLower() == colorName.ToLower()).Id;
+                                    if (colorId != null)
+                                    {
+                                        ctx.ColorVariantsInColors.Add(new ColorVariantsInColors() { ColorId = colorId.Value, ColorVariantId = existedColorVar.Id });
+                                    }
                                 }
                                 ctx.SaveChanges();
                             }

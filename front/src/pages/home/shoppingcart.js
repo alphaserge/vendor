@@ -39,7 +39,7 @@ import ShortPrice from '../../components/shortprice';
 import StyledButton from '../../components/styledbutton';
 import Header from '../../components/header';
 
-import { fined, computePrice, fromUrl } from "../../functions/helper"
+import { fined, computePrice, computeTotalPrice, fromUrl, toFixed2 } from "../../functions/helper"
 
 const useStyles = makeStyles((theme) => ({
   noexpand: {
@@ -313,6 +313,10 @@ const makeOrder = async (event) => {
   console.log('shopcart')
   console.log(shopCart)
 
+  const totalPrice = toFixed2(shopCart.reduce((accumulator, data) => {
+    return accumulator +  computeTotalPrice(data.product, data.quantity, data.unit=="rolls", data.colorVar)
+  }, 0)); // The '0' is the initial value of the accumulator
+  
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -328,7 +332,7 @@ const makeOrder = async (event) => {
 
     <Box sx={{ 
       display: "grid", 
-      gridTemplateColumns: "80px 1fr 60px 140px 140px 40px",
+      gridTemplateColumns: "80px 1fr 70px 140px 140px 140px 40px",
       columnGap: "10px",
       rowGap: "20px",
       alignItems: "center" }}>
@@ -338,6 +342,7 @@ const makeOrder = async (event) => {
       <Grid item><Header text="Price"></Header></Grid>
       <Grid item><Header text="Amount"></Header></Grid>
       <Grid item><Header text="Unit"></Header></Grid>
+      <Grid item><Header text="Subtotal"></Header></Grid>
       <Grid item></Grid>
 
     {shopCart.map((data, index) => (
@@ -364,12 +369,14 @@ const makeOrder = async (event) => {
 
         <Link to={"/product?id=" + data.product.id}  style={{ textDecoration: 'none' }} >
         <Grid item sx={{ display: "flex", textAlign: "center", justifyContent: "center"}}>
-          <ShortPrice value={fined(data.product.price) + "$"} />
+          <ShortPrice value={fined(computePrice(data.product, data.quantity, data.unit=="rolls", data.colorVar)) + "$"} />
         </Grid>
         </Link>
 
         <Amount size="-small" value={data.quantity} setValue={(e)=>{setQuantity(index,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
         <Selector size="-small" value={data.unit} list={["meters","rolls"]} setValue={(e)=>{setUnit(index,e)}} /> 
+
+        <ShortPrice value={fined(computeTotalPrice(data.product, data.quantity, data.unit=="rolls", data.colorVar)) + "$"} />
 
         <IconButton aria-label="delete" sx={{backgroundColor: "#fff", borderRadius: "8px", margin: "6px" }}>
           <DeleteOutlineIcon
@@ -379,13 +386,26 @@ const makeOrder = async (event) => {
         </IconButton>
       </React.Fragment>
     ))}
+    
+    
+
 
     </Box>
         <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "right"}}>
+        <Box sx={{ display:"flex", flexDirection:"column"}}>
+            <Box sx={{ 
+              color: "#333", 
+              height: "40px",
+              textAlign: "center",
+              padding: "7px 60px 7px 10px",
+              fontWeight: "500",
+              width: "220px" }}>{ "Total: " + fined(totalPrice) + " $"} 
+            </Box>
           <StyledButton
             startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
             onClick={(e) => { setStep("delivery")} }
-            sx={{ mt: 4 }}>Create order</StyledButton>
+            sx={{ mt: 4, width: "160px" }}>Create order</StyledButton>
+        </Box>
         </Box>
     </Box>
     </Box> )}

@@ -12,6 +12,8 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import TuneIcon from '@mui/icons-material/Tune';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import BorderClearIcon from '@mui/icons-material/BorderClear';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import InputAdornment from '@mui/material/InputAdornment';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
@@ -491,10 +493,30 @@ export default function ListProduct(props) {
             <Button
               variant="text"
                startIcon={<AddCircleOutlineIcon sx={{color: APPEARANCE.BLACK}} />}
-               sx={{ backgroundColor: "#fff", color: APPEARANCE.BLACK, textTransform: "none", width: "140px", height: "26px", marginTop: "5px" }}
+               sx={{ backgroundColor: "#fff", color: APPEARANCE.BLACK, textTransform: "none", width: "180px", height: "26px", marginTop: "5px" }}
                onClick={handleAddProductShow}>
                Add product
             </Button>
+
+
+            <Box>
+            <label htmlFor={"icon-button-file-prod"}>
+                          <Input accept=".xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id={"icon-button-file-prod"} type="file" onChange={(e) => { productsImport(e.target.files[0], props.user.vendorId);}} />
+                          <Link aria-label="Load your products from Excel file" sx={{display: "block", width: "130px", backgroundColor: "#fff", color: "#222", fontSize: "12px", cursor: "pointer"}} >
+                            <Box sx={{display: "flex", marginTop: "7px", alignItems: "center"}}>
+                                <div><UploadFileIcon sx={{ml: 0, mr: "5px"}} /></div>
+                                <div style={{ml: 0, pl: 0, paddingBottom:"2px"}}>Load from file</div>
+                            </Box>
+                          </Link>
+                        </label>
+            </Box>
+            {/* <Button
+              variant="text"
+               startIcon={<UploadFileIcon sx={{color: APPEARANCE.BLACK}} />}
+               sx={{ backgroundColor: "#fff", color: APPEARANCE.BLACK, textTransform: "none", width: "190px", height: "26px", marginTop: "5px" }}
+               onClick={handleAddProductShow}>
+               Load from file
+            </Button> */}
 
             {/* <Tooltip title="Add a new product">
             <IconButton onClick={handleAddProductShow} style={toolButtonStyle} sx={{mr: 1}} >
@@ -674,15 +696,7 @@ export default function ListProduct(props) {
             ))}
           </Grid>
 
-          <Box>
-            <label htmlFor={"icon-button-file-prod"}>
-                          <Input accept=".xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id={"icon-button-file-prod"} type="file" onChange={(e) => { productsImport(e.target.files[0], props.user.vendorId);}} />
-                          <Link aria-label="Load your products from Excel file" >
-                                {/* <AddAPhotoIcon sx={{ml: 0, mr: 1}} />  */}
-                                Load your products from Excel file
-                          </Link>
-                        </label>
-          </Box>
+          
           </Box>
         </div>
         <Footer/>

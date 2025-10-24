@@ -10,8 +10,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
 import config from "../../config.json"
-import { toFixed2 } from "../../functions/helper"
-
+import { fined, computePrice, fromUrl } from "../../functions/helper"
 
 const defaultTheme = createTheme()
 const itemStyle = { width: 265 }
@@ -60,7 +59,7 @@ export default function ItemProduct(props) {
         
       <Box sx={{ display: "flex", flexDirection: "column", marginLeft: "5px", marginTop: "10px"}}> 
         <Box className="product-item">{props.data.itemName}</Box>
-        <Box className="product-item price">From ${toFixed2(props.data.price)} per meter</Box>
+        <Box className="product-item price">From {fined(computePrice(props.data, 1000, false))} $ per meter</Box>
       </Box> 
       
       <div style={{ clear: "left" }} >

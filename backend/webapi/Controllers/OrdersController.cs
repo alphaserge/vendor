@@ -929,10 +929,16 @@ namespace chiffon_back.Controllers
                 foreach(var item in order.Items)
                 {
                     numItem++;
+
+                    Context.ColorVariant cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.ColorVariantId);
+
                     Context.OrderItem newItem = config.CreateMapper()
                         .Map<Context.OrderItem>(item);
                     
                     newItem.OrderId = newOrder.Id;
+
+                    if (cv != null && cv.Price != null)
+                        newItem.Price = cv.Price.Value;
 
                     ctx.OrderItems.Add(newItem);
 
@@ -941,7 +947,7 @@ namespace chiffon_back.Controllers
                     if (product != null)
                     {
                         string img = String.Empty;
-                        Context.ColorVariant cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.ColorVariantId);
+                        
 
                         if (cv != null)
                         {
@@ -991,6 +997,9 @@ namespace chiffon_back.Controllers
                             + newItem.Quantity + $" m </td><td style={rightAlign}>" 
                             + String.Format("{0:0.0#}", item.Price) + " $</td></tr>";
                         linkedRes.Add(LinkedImg);
+
+                        if (cv != null && cv.Price != null)
+                            item.Price = cv.Price.Value;
 
                         if (item.Price != null && newItem.Quantity != null)
                             total += item.Price.Value  * newItem.Quantity.Value;

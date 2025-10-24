@@ -56,9 +56,6 @@ export const formattedPrice = (value, empty) => {
     return value.toFixed(2);// + ' $'
 }
 
-
-
-
 export const isInteger = (x) => { return typeof x === "number" && isFinite(x) && Math.floor(x) === x; }
 export const isFloat = (x) => { return !!(x % 1); }
 
@@ -72,38 +69,60 @@ export const isNumber = (value) => {
 
 export function toFixed2(value) {
     
-    if (value === undefined || value === null) { return "-"}
+    if (!value === undefined || value === null) { return "-"}
 
-    return value.toFixed(2)
+    return !!value.toFixed ?  value.toFixed(2) : value
 }
 
 export const validDecimal = (value) => {
     return isNumber(value)
 }
 
-export const computePrice = (product, quantity, isRolls) => {
+export const computePrice = (product, quantity, isRolls, colorVar) => {
 
-    if (!product.price) {
+    let price = product.price
+    if (!!colorVar && !!colorVar.price) {
+        price = colorVar.price
+    }
+
+    if (!price) {
         return null
     }
+    
+    price = price * 1.15
+
+    let sum = 0
 
     if (!quantity) {
-        return toFixed2(product.price*1.1)
-    }
-
+        sum = price*1.1
+    } 
+        
     if (isRolls == true) {
         quantity *= product.rollLength
     }
 
-    if (quantity > 500) {
-        return toFixed2(product.price)
+    if (quantity >= 500) {
+        sum = price
+    } else if (quantity >= 300) {
+        sum = price*1.05
+    } else {
+        sum = price*1.1
     }
 
-    if (quantity > 300) {
-        return toFixed2(product.price*1.05)
-    }
+    return round2(sum)
+}
 
-    return toFixed2(product.price*1.1)
+export const computeTotalPrice = (product, quantity, isRolls, colorVar) => {
+    
+    let qty = isRolls ? quantity * product.rollLength : quantity
+
+    return round2( computePrice(product, quantity, isRolls, colorVar)*qty) 
+}
+
+export const round2 = (num) => {
+
+    return Math.round(num * 100) / 100
+
 }
 
 export const fromUrl = (paramName) => {
@@ -146,7 +165,7 @@ export const orderStatusString = (item, order) => {
 
     if (!!item.deliveryNo && !!item.deliveryCompany  ) return "shipping to stock"
 
-    if (!!order && order.paySumm >= 0) {
+    if (!!order && order.paySumm > 0) {
         if (order.paySumm - order.total >=0) return "paid"
         else return "partially paid"
     }

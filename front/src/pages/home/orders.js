@@ -130,8 +130,9 @@ export default function Orders(props) {
       let id = idFromUrl()
 
       let api = config.api + '/Orders'
-      axios.get(api, { 
-        params: { type: "client", value: props.data.user.email, id: id }})
+      axios.get(api)
+      //axios.get(api, { 
+      //  params: { type: "client", value: props.data.user.email, id: id }})
       .then(function (res) {
         if (!res.data) {
           //navigate("/login")

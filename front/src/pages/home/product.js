@@ -458,7 +458,7 @@ console.log(productInSamples)
             pl: "20px",
             pr: "20px" }}>
         <ItemName label="Item name" value={product.itemName} />
-        <Price label="Price per meter :" price={product.price} />
+        <Price label="Price per meter :" product={product} />
        </Box>
 
           <Box sx={{

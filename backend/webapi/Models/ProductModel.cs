@@ -400,6 +400,7 @@ namespace chiffon_back.Models
                         ColorNo = null,
                         Uuid = uuid,
                         ProductId = prod.Id,
+                        Price = prod.Price,
                         IsProduct = true,
                         IsVideo = false,
                         ImagePath = imageFiles
@@ -439,6 +440,7 @@ namespace chiffon_back.Models
                         ColorIds = colorsIds,
                         Quantity = cv.Quantity,
                         ProductId = prod.Id,
+                        Price = cv.Price,
                         IsProduct = false,
                         IsVideo = false,
                         Uuid = cv.Uuid,
