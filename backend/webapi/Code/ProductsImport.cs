@@ -1,4 +1,5 @@
 ﻿using chiffon_back.Context;
+using chiffon_back.Models;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 
@@ -206,7 +207,7 @@ namespace chiffon_back.Code
                     int colNo = -1;
                     if (int.TryParse(colNum.Trim(), out colNo))
                     {
-                        Context.ColorVariant? existedColorVar = ctx.ColorVariants.FirstOrDefault(x => x.Num == colNo);
+                        Context.ColorVariant? existedColorVar = ctx.ColorVariants.FirstOrDefault(x => x.ProductId == existed.Id && x.Num == colNo);
                         if (existedColorVar != null)
                         {
                             if (qtyM > 0)
@@ -225,7 +226,7 @@ namespace chiffon_back.Code
                                     int? colorId = ctx.Colors.FirstOrDefault(x => x.ColorName.ToLower() == colorName.ToLower()).Id;
                                     if (colorId != null)
                                     {
-                                        ctx.ColorVariantsInColors.Add(new ColorVariantsInColors() { ColorId = colorId.Value, ColorVariantId = existedColorVar.Id });
+                                        ctx.ColorVariantsInColors.Add(new Context.ColorVariantsInColors() { ColorId = colorId.Value, ColorVariantId = existedColorVar.Id });
                                     }
                                 }
                                 ctx.SaveChanges();
@@ -252,7 +253,7 @@ namespace chiffon_back.Code
                         }
                         else
                         {
-                            ColorVariant newColorVar = new ColorVariant()
+                            Context.ColorVariant newColorVar = new Context.ColorVariant()
                             {
                                 Num = colNo,
                                 Price = price,
@@ -267,7 +268,7 @@ namespace chiffon_back.Code
                                 int? colorId = ctx.Colors.FirstOrDefault(x => x.ColorName != null && x.ColorName.ToLower() == colorName).Id;
                                 if (colorId != null)
                                 {
-                                    ctx.ColorVariantsInColors.Add(new ColorVariantsInColors() { ColorId = colorId.Value, ColorVariantId = newColorVar.Id });
+                                    ctx.ColorVariantsInColors.Add(new Context.ColorVariantsInColors() { ColorId = colorId.Value, ColorVariantId = newColorVar.Id });
                                 }
                             }
                             ctx.SaveChanges();
@@ -280,13 +281,13 @@ namespace chiffon_back.Code
                     prod.ProductTypeId = null;
                     prod.PrintTypeId = null;
                     prod.GSM = null;
+                    prod.Width = null;
                     prod.FabricShrinkage = null;
                     prod.FabricYarnCount = null;
                     prod.FabricConstruction = null;
                     prod.DyeStaffId = null;
                     prod.PlainDyedTypeId = null;
                     prod.ColorFastness = null;
-                    prod.MetersInKG = null;
                     prod.HSCode = null;
                     prod.FinishingId = null;
                     prod.RollLength = null;
@@ -300,7 +301,7 @@ namespace chiffon_back.Code
                 }
                 else
                 {
-                    prod = new Product()
+                    prod = new Context.Product()
                     {
                         VendorId = vendorId,
                         Created = created,
@@ -315,7 +316,7 @@ namespace chiffon_back.Code
                     int colNo = -1;
                     if (int.TryParse(colNum.Trim(), out colNo))
                     {
-                        ColorVariant newColorVar = new ColorVariant() 
+                        Context.ColorVariant newColorVar = new Context.ColorVariant() 
                         { 
                             Num = colNo, 
                             Price = price, 
@@ -330,7 +331,7 @@ namespace chiffon_back.Code
                             int? colorId = ctx.Colors.FirstOrDefault(x => x.ColorName != null && x.ColorName.ToLower() == colorName).Id;
                             if (colorId != null)
                             {
-                                ctx.ColorVariantsInColors.Add(new ColorVariantsInColors() { ColorId = colorId.Value, ColorVariantId = newColorVar.Id });
+                                ctx.ColorVariantsInColors.Add(new Context.ColorVariantsInColors() { ColorId = colorId.Value, ColorVariantId = newColorVar.Id });
                             }
                         }
                         ctx.SaveChanges();
@@ -343,9 +344,11 @@ namespace chiffon_back.Code
                     prod.FabricConstruction = fabricConstruction;
                     prod.HSCode = hsCode;
 
+
                     int m = 0;
                     if (int.TryParse(gsm, out m)) prod.GSM = m;
                     if (int.TryParse(colorFastness, out m)) prod.ColorFastness = m;
+                    if (int.TryParse(width, out m)) prod.Width = m;
 
                     decimal d = 0;
                     if (decimal.TryParse(fabricShrinkage, out d)) prod.FabricShrinkage = d;
@@ -394,7 +397,7 @@ namespace chiffon_back.Code
                         var data = ctx.DesignTypes.FirstOrDefault(x => x.DesignName.ToLower() == designType);
                         if (data != null)
                         {
-                            ctx.ProductsInDesignTypes.Add(new ProductsInDesignTypes() { DesignTypeId = data.Id, ProductId = prod.Id });
+                            ctx.ProductsInDesignTypes.Add(new Context.ProductsInDesignTypes() { DesignTypeId = data.Id, ProductId = prod.Id });
                         }
                     }
                     ctx.SaveChanges();
@@ -404,7 +407,7 @@ namespace chiffon_back.Code
                         var data = ctx.OverWorkTypes.FirstOrDefault(x => x.OverWorkName.ToLower() == overWorkType);
                         if (data != null)
                         {
-                            ctx.ProductsInOverWorkTypes.Add(new ProductsInOverWorkTypes() { OverWorkTypeId = data.Id, ProductId = prod.Id });
+                            ctx.ProductsInOverWorkTypes.Add(new Context.ProductsInOverWorkTypes() { OverWorkTypeId = data.Id, ProductId = prod.Id });
                         }
                     }
                     ctx.SaveChanges();
@@ -414,7 +417,31 @@ namespace chiffon_back.Code
                         var data = ctx.Seasons.FirstOrDefault(x => x.SeasonName.ToLower() == season);
                         if (data != null)
                         {
-                            ctx.ProductsInSeasons.Add(new ProductsInSeasons() { SeasonId = data.Id, ProductId = prod.Id });
+                            ctx.ProductsInSeasons.Add(new Context.ProductsInSeasons() { SeasonId = data.Id, ProductId = prod.Id });
+                        }
+                    }
+                    ctx.SaveChanges();
+
+                    ctx.ProductsInTextileTypes.RemoveRange(ctx.ProductsInTextileTypes.Where(x=>x.ProductId == prod.Id));
+                    ctx.SaveChanges();
+
+                    string[] parts = composition.Split(new char[] {',',';'}, StringSplitOptions.RemoveEmptyEntries);
+                    foreach(string part in parts)
+                    {
+                        string[] terms = part.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (terms.Length == 2)
+                        {
+                            string perc  = terms[0].Replace("%","").Trim();
+                            string ttype = terms[1].Trim();
+                            int percent = 0;
+                            if (int.TryParse(perc, out percent))
+                            {
+                                var data = ctx.TextileTypes.FirstOrDefault(x => x.TextileTypeName.ToLower() == ttype.ToLower());
+                                if (data != null)
+                                {
+                                    ctx.ProductsInTextileTypes.Add(new Context.ProductsInTextileTypes() { TextileTypeId = data.Id, ProductId = prod.Id, Value = percent });
+                                }
+                            }
                         }
                     }
                     ctx.SaveChanges();

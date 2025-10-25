@@ -43,6 +43,7 @@ SELECT TOP (1000) [Id]
   delete FROM ProductsInOverWorkTypes where ProductId>=@id
   delete FROM ProductsInSeasons where ProductId>=@id
   delete FROM ProductsInTextileTypes where ProductId>=@id
-  delete FROM Products where Id>=@id
-
+  delete FROM OrderItems where ProductId>=@id
+  delete FROM Orders where NOT EXISTS (SELECT 1 FROM OrderItems WHERE OrderItems.OrderId = Orders.Id);
+  delete FROM Products where Id >= @id
 

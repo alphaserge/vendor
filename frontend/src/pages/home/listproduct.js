@@ -109,11 +109,24 @@ export default function ListProduct(props) {
     const [addDesign, setAddDesign] = useState("")
 
     const [savingError, setSavingError] = useState(false)
+    const [waiting, setWaiting] = useState(false)
     
     const headStyle = { maxWidth: "744px", width: "auto", margin: "0", padding: "0 10px" }
 
+    const handleImport = async (event) => {
+      showWaiting(true)
+      await productsImport(event.target.files[0], props.user.vendorId); 
+      loadProducts();
+      showWaiting(false)
+    };
+
+
+    const showWaiting = (show) => {
+      setWaiting(show)
+    }
+    
     const handleShowHideFilter = (event) => {
-      setFilter(!filter);
+      setFilter(!filter)
     };
 
     const clearFilter = (e) => {
@@ -333,6 +346,29 @@ export default function ListProduct(props) {
       <CssBaseline />
 
       <Modal
+        open={waiting}
+        onClose={function() { setWaiting(false) }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+        sx={{ width: "auto", outline: "none" }} >
+
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: "330px",
+          boxShadow: 24,
+          padding: "45px 40px 40px 40px",
+          outline: "none",
+          bgcolor: 'background.paper',
+           }}>
+          
+          <Typography sx={{fontSize: "16px", color: "#333" , textAlign: "center" }}>Please waiting</Typography>
+        </Box>
+      </Modal>
+
+      <Modal
         open={addProduct}
         onClose={function() { setAddProduct(false) }}
         aria-labelledby="modal-modal-title"
@@ -501,7 +537,7 @@ export default function ListProduct(props) {
 
             <Box>
             <label htmlFor={"icon-button-file-prod"}>
-                          <Input accept=".xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id={"icon-button-file-prod"} type="file" onChange={(e) => { productsImport(e.target.files[0], props.user.vendorId);}} />
+                          <Input accept=".xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id={"icon-button-file-prod"} type="file" onChange={handleImport} />
                           <Link aria-label="Load your products from Excel file" sx={{display: "block", width: "130px", backgroundColor: "#fff", color: "#222", fontSize: "12px", cursor: "pointer"}} >
                             <Box sx={{display: "flex", marginTop: "7px", alignItems: "center"}}>
                                 <div><UploadFileIcon sx={{ml: 0, mr: "5px"}} /></div>

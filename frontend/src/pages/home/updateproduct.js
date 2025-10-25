@@ -60,7 +60,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto'
 import DoneIcon from '@mui/icons-material/Done'
 import { styled } from '@mui/material/styles'
-import { non } from '../../functions/helper'
+import { non, toFixed2, fined } from '../../functions/helper'
 import axios from "axios"
 
 const defaultTheme = createTheme()
@@ -383,6 +383,20 @@ export default function UpdateProduct(props) {
 
   const saveProduct = async (e) => {
     
+    let cvars = colorVariants.concat(colorVariantsAdd)
+    ///works fine without it: 
+      cvars.forEach(cv => {
+      if (typeof cv.price == "string") {
+        var value = cv.price.replace(",", ".");
+        const len = value.length
+        if (len > 0) {
+            if (value[len-1] == '.') 
+                value = value.slice(0, -1)
+        }
+        cv.price = parseFloat(value)
+      }
+    }) 
+
     let prod = {
       vendorId: + props.user.vendorId, //!
       artNo: artNo,
@@ -414,7 +428,7 @@ export default function UpdateProduct(props) {
       dyeStaffId: dyeStaffId,
       finishingId: finishingId,
       plainDyedTypeId: plainDyedTypeId,
-      colorVariants: colorVariants.concat(colorVariantsAdd),
+      colorVariants: cvars,
       globalPhotos: productColors.filter(it => !!it.SelectedFile)
     }
 
@@ -661,6 +675,7 @@ const setProduct = (prod) => {
   setPrice3((prod.price*1.10).toFixed(2))
   setStock(non(prod.stock))
   setWidth(non(prod.width))
+  setGsm(non(prod.gsm))
   setRollLength(non(prod.rollLength))
   setWeight(non(prod.weight))
   setColorFastness(non(prod.colorFastness))
@@ -679,6 +694,10 @@ const setProduct = (prod) => {
   setOverworkType(non(prod.overWorkTypeIds))
   setDesignType(non(prod.designTypeIds))
   setCompositionSamples(non(prod.compositionsSamples))
+
+  if (!!gsm) {
+    densityChanged({target: {value: gsm}})
+  }
 
   let comps = defaultComposition(textileTypes)
 
@@ -1372,7 +1391,8 @@ useEffect(() => {
                     
                     { cv.isProduct==false && cv.isVideo==false &&
                     <Box sx={{ width: "100%", height: "auto", padding: "5px 3px", borderRadius: 3, textAlign: "left"}}>
-                      { 'COLOR ' + (cv.colorNo ? cv.colorNo + ' : ' : ' ? ') + (cv.quantity ? cv.quantity : ' -') + ' m - ' + cv.colorNames }
+                      { 'COLOR ' + (cv.colorNo ? cv.colorNo + ': ' : '? ') + fined(cv.quantity,"-") + ' m ' + fined(toFixed2(cv.price),"-") + '$'}
+                      <br/>{ cv.colorNames }
                     </Box>
                     }
                     { cv.isProduct==true &&

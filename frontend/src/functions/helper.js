@@ -74,6 +74,17 @@ export function toFixed2(value) {
     
     if (value === undefined || value === null) { return "-"}
 
+    if (typeof value == "string") {
+        value = value.replace(",", ".");
+        const len = value.length
+        if (len > 0) {
+            if (value[len-1] == '.') 
+                value = value.slice(0, -1)
+        }
+
+        value = parseFloat(value)
+    }
+
     return value.toFixed(2)
 }
 

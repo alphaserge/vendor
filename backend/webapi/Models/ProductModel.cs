@@ -598,6 +598,7 @@ namespace chiffon_back.Models
                             cv.Uuid = item.Uuid;
                             cv.Num = item.ColorNo == null ? 0 : item.ColorNo.Value;
                             cv.Quantity = item.Quantity;
+                            cv.Price = item.Price;
                             ctx.SaveChanges(true);
 
                             ctx.ColorVariantsInColors.RemoveRange(ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == cv.Id));

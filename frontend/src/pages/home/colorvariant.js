@@ -19,7 +19,7 @@ const itemStyle = { width: "185px" }
 const labelStyle = {  }
 const textStyle = { m: 0, mr: 1 }
 const divStyle = { width: 365, mt: 0, ml: 0, mr: 0 }
-const flexStyle = { display: "flex", justifyContent: "space-between", alignContent: "space-between", alignItems: "center", mr: 1 }
+const flexStyle = { display: "flex", justifyContent: "space-between", alignContent: "space-between", alignItems: "center" }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -62,6 +62,17 @@ export default function ColorVariant(props) {
       props.setColorItem(cv.uuid, cv)
     }
 
+    const setPrice = (value) => {
+      let cv = props.cv;
+      if (value && !cv.price && props.fireChange) {
+        props.fireChange(props.last)
+      }
+      //cv.price = parseFloat(value)
+      cv.price = value
+      //??props.setColorItem(cv.id, cv)
+      props.setColorItem(cv.uuid, cv)
+    }
+
     const setColorIds = (value) => {
       let cv1 = props.cv;
       cv1.colorIds = value
@@ -98,11 +109,13 @@ export default function ColorVariant(props) {
     
       <FormControl sx={divStyle}> 
 
-      <Box component="div" style={flexStyle}>
+      <Box component="div" style={{display: "flex", flexDirection: "column"}}>
+      <Box component="div" style={{...flexStyle, ...{marginBottom: "25px", marginRight: "38px" }}}>
       <TextField
         margin="normal"
         size="small" 
         id="colorNo"
+        key="colorNo"
         name="colorNo"
         label="Col. No"
         sx = {{...textStyle, ...{width: "125px"}, ...existingStyle}}
@@ -114,6 +127,7 @@ export default function ColorVariant(props) {
         margin="normal"
         size="small" 
         id="colorQuantity"
+        key="colorQuantity"
         name="colorQuantity"
         label="Quantity"
         sx = {{...textStyle, ...{width: "140px"}, ...existingStyle}}
@@ -121,12 +135,26 @@ export default function ColorVariant(props) {
         onChange={ev => setQuantity(ev.target.value) }
         InputLabelProps={{ shrink: true }}
       />
+      <TextField
+        margin="normal"
+        size="small" 
+        id="colorPrice"
+        key="colorPrice"
+        name="colorPrice"
+        label="Price"
+        sx = {{...textStyle, ...{width: "140px"}, ...existingStyle}}
+        value={props.cv.price ? props.cv.price : ""}
+        onChange={ev => setPrice(ev.target.value) }
+        InputLabelProps={{ shrink: true }}
+      />
+      </Box>
+      <Box style={{...flexStyle}}>
       <MySelect 
         id="addproduct-colorvariant"
         url="Colors"
         title="Color"
         labelStyle={labelStyle}
-        itemStyle={{...itemStyle, ...existingStyle}}
+        itemStyle={{...itemStyle, ...existingStyle }}
         MenuProps={MenuProps}
         value={props.cv.colorIds}
         setValue={setColorIds}
@@ -134,9 +162,6 @@ export default function ColorVariant(props) {
         values={props.values}
         keys={props.keys}
       />
-        {/* values={props.values.map(e => { return e.value})}
-        keys={props.values.map(e => { return e.id})} */}
-
       <label htmlFor={"icon-button-file-" + props.cv.colorVariantId}>
       <Input accept="image/*" id={"icon-button-file-"+props.cv.colorVariantId} type="file" onChange={onFileChange} value={""}  />
       <IconButton
@@ -147,7 +172,12 @@ export default function ColorVariant(props) {
             {!props.cv.SelectedFile && <AddAPhotoIcon />}
             { props.cv.SelectedFile && <DoneIcon />}
       </IconButton>
-      </label>      
+      </label>
+
+      </Box>
+        {/* values={props.values.map(e => { return e.value})}
+        keys={props.values.map(e => { return e.id})} */}
+
       </Box>
        </FormControl>
   );

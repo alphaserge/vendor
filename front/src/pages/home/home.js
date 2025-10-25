@@ -136,7 +136,7 @@ export default function Home(props) {
               design: design,
               colors: JSON.stringify(selectedColor), //color
               seasons: JSON.stringify(selectedSeason),
-              overworks: JSON.stringify(overworkType),
+              overworks: JSON.stringify(selectedOverworkType),
               designtypes: JSON.stringify(selectedDesignType),
               textiletypes: JSON.stringify(selectedTextileType),
               printypes: JSON.stringify(selectedPrintType),
@@ -176,7 +176,7 @@ export default function Home(props) {
 
       loadProducts()
 
-    }, [quickViewProduct, quickViewRef, selectedSeason, selectedColor, selectedDesignType, selectedPrintType, selectedProductType, selectedTextileType]);
+    }, [quickViewProduct, quickViewRef, selectedSeason, selectedColor, selectedDesignType, selectedPrintType, selectedProductType, selectedTextileType, selectedOverworkType]);
 
 
     let passwordhash1 = stringToHash('Aa123456')
@@ -272,6 +272,15 @@ export default function Home(props) {
               expanded={false}
               setValueFn={setSelectedSeason }
               value={selectedSeason}
+              padding="10px 0 0 0"
+            />
+            <CheckboxList
+              list={!props.data.seasons ? [] : props.data.seasons.map((it) => ({ key: it.id, name: it.value }))}
+              title="Overwork type"
+              //height={120}
+              expanded={false}
+              setValueFn={setSelectedOverworkType }
+              value={selectedOverworkType}
               padding="10px 0 0 0"
             />
           </Box>
