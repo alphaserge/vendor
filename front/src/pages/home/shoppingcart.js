@@ -313,9 +313,9 @@ const makeOrder = async (event) => {
   console.log('shopcart')
   console.log(shopCart)
 
-  const totalPrice = toFixed2(shopCart.reduce((accumulator, data) => {
+  const totalPrice = shopCart.reduce((accumulator, data) => {
     return accumulator +  computeTotalPrice(data.product, data.quantity, data.unit=="rolls", data.colorVar)
-  }, 0)); // The '0' is the initial value of the accumulator
+  }, 0); // The '0' is the initial value of the accumulator
   
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -326,15 +326,18 @@ const makeOrder = async (event) => {
         data={props.data}/>
 
     {(step == "cart" && what == 'cart' && 
-    <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column" }} className="center-content" >
-    <Box sx={{ justifyContent: "flex-start", alignItems: "center" }}  >
-    <PageHeader value={"Shopping cart: " + shopCart.length + " items"} />
+    <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column"  }} className="center-content" >
+    <Box sx={{ justifyContent: "flex-start", alignItems: "center", maxWidth: "960px" }}  >
+      <Box sx={{marginTop: "10px"}}>
+      <PageHeader value={"Your shopping cart: " + shopCart.length + " items"} />
+      </Box>
 
     <Box sx={{ 
       display: "grid", 
-      gridTemplateColumns: "80px 1fr 70px 140px 140px 140px 40px",
-      columnGap: "10px",
-      rowGap: "20px",
+      gridTemplateColumns: "66px 1fr 70px 110px 120px 110px 20px",
+      columnGap: "5px",
+      rowGap: "10px",
+      fontSize: "13px",
       alignItems: "center" }}>
 
       <Grid item><Header text="Photo"></Header></Grid>
@@ -353,32 +356,32 @@ const makeOrder = async (event) => {
                   <img 
                     src={config.api + "/" + data.colorVar.imagePath[0]}
                     sx={{padding: "0 10px"}}
-                    width={65}
-                    height={65}
+                    width={64}
+                    height={54}
                     alt={data.product.itemName}
                 /> )}
                 </Grid></Link>
                 
         <Link to={"/product?id=" + data.product.id}  style={{ textDecoration: 'none' }} >
         <Grid item sx={{display: "flex", flexDirection: "column"}}>
-          <Property value={fined(data.product.itemName)}  />
+          <Property fontSize="14px" value={fined(data.product.artNo) + " " + fined(data.product.itemName)} />
           {/* <Property value={data.product.colors.filter((e)=>{ return e.colorNames!="PRODUCT" && e.colorNames!=""}).map((e)=> { return e.colorNames }).join(", ")}  /> */}
-          <Property value={"color no. " + data.colorVar.colorNo + " : " + data.colorVar.colorNames} />
+          <Property value={"Color " + data.colorVar.colorNo + ": " + data.colorVar.colorNames} />
         </Grid>
         </Link>
 
         <Link to={"/product?id=" + data.product.id}  style={{ textDecoration: 'none' }} >
         <Grid item sx={{ display: "flex", textAlign: "center", justifyContent: "center"}}>
-          <ShortPrice value={fined(computePrice(data.product, data.quantity, data.unit=="rolls", data.colorVar)) + "$"} />
+          <ShortPrice value={fined(computePrice(data.product, data.quantity, data.unit=="rolls", data.colorVar))} />
         </Grid>
         </Link>
 
         <Amount size="-small" value={data.quantity} setValue={(e)=>{setQuantity(index,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
         <Selector size="-small" value={data.unit} list={["meters","rolls"]} setValue={(e)=>{setUnit(index,e)}} /> 
 
-        <ShortPrice value={fined(computeTotalPrice(data.product, data.quantity, data.unit=="rolls", data.colorVar)) + "$"} />
+        <ShortPrice value={fined(computeTotalPrice(data.product, data.quantity, data.unit=="rolls", data.colorVar))} />
 
-        <IconButton aria-label="delete" sx={{backgroundColor: "#fff", borderRadius: "8px", margin: "6px" }}>
+        <IconButton aria-label="delete" sx={{backgroundColor: "#fff", borderRadius: "8px", margin: "0" }}>
           <DeleteOutlineIcon
             sx={{ color: "#888", fontSize: 26 }}
             onClick={(e)=>{deleteFromCart(index)}} >
@@ -386,27 +389,26 @@ const makeOrder = async (event) => {
         </IconButton>
       </React.Fragment>
     ))}
-    
-    
 
+      {[1,2,3,4].map((data, index) => (
+        <Grid item></Grid>
+      ))}
+      <Grid item sx={{textAlign: "right", fontSize: "14px", fontWeight: 600, gridColumn: "span 2"}}>
+        <Header text={"Total :  " + fined(totalPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2})) + " $"} /> </Grid>
+      <Grid item></Grid>
 
-    </Box>
-        <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "right"}}>
-        <Box sx={{ display:"flex", flexDirection:"column"}}>
-            <Box sx={{ 
-              color: "#333", 
-              height: "40px",
-              textAlign: "center",
-              padding: "7px 60px 7px 10px",
-              fontWeight: "500",
-              width: "220px" }}>{ "Total: " + fined(totalPrice) + " $"} 
-            </Box>
-          <StyledButton
+      {[1,2,3,4].map((data, index) => (
+        <Grid item></Grid>
+      ))}
+      <Grid item sx={{textAlign: "right", fontSize: "14px", fontWeight: 600, gridColumn: "span 2"}}>
+        <StyledButton
             startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
             onClick={(e) => { setStep("delivery")} }
-            sx={{ mt: 4, width: "160px" }}>Create order</StyledButton>
-        </Box>
-        </Box>
+            sx={{ mt: 2, width: "160px" }}>Create order</StyledButton>
+      </Grid>
+      <Grid item></Grid>
+
+    </Box>
     </Box>
     </Box> )}
 

@@ -4,7 +4,7 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 
 export default function PageHeader(props) {
-  return <Box title={props.value} sx={{ padding: "30px 0", fontSize: "18px", color: "#80398d" }}
+  return <Box title={props.value} sx={{ padding: "10px 0", fontSize: "16px", color: "#222" }}
     textAlign={!!props.textAlign ? props.textAlign : "none" } 
     
     >{props.value}
