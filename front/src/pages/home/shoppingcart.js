@@ -25,8 +25,6 @@ import config from "../../config.json"
 import { postOrder } from '../../api/orders'
 import { generateSimplePassword, stringToHash } from '../../functions/hash'
 
-
-import ImageMagnifier from '../../components/imagemagnifier';
 import MainSection from './mainsection';
 import Footer from './footer';
 
@@ -38,6 +36,7 @@ import Property from '../../components/property';
 import ShortPrice from '../../components/shortprice';
 import StyledButton from '../../components/styledbutton';
 import Header from '../../components/header';
+import { Fieldset } from '../../functions/fieldset';
 
 import { fined, computePrice, computeTotalPrice, fromUrl, toFixed2 } from "../../functions/helper"
 
@@ -328,7 +327,7 @@ const makeOrder = async (event) => {
     {(step == "cart" && what == 'cart' && 
     <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column"  }} className="center-content" >
     <Box sx={{ justifyContent: "flex-start", alignItems: "center", maxWidth: "960px" }}  >
-      <Box sx={{marginTop: "10px"}}>
+      <Box sx={{marginTop: "20px"}}>
       <PageHeader value={"Your shopping cart: " + shopCart.length + " items"} />
       </Box>
 
@@ -414,7 +413,7 @@ const makeOrder = async (event) => {
 
     {(step == "cart" && what == 'samples' && 
     <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column" }} className="center-content" >
-    <Box sx={{ justifyContent: "flex-start", alignItems: "center" }}  >
+    <Box sx={{ justifyContent: "flex-start", alignItems: "center", marginTop: "20px" }}  >
     <PageHeader value={"Delivery a samples: " + shopCart.length + " items"} />
 
     <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "center", columnGap: 4, rowGap: 4 }}>
@@ -458,8 +457,9 @@ const makeOrder = async (event) => {
     {(step == "delivery" &&  
 
     <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column" }} className="center-content" >
-      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", minWidth: "600px" }}  >
-      <PageHeader value={"Delivery information"} />
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", minWidth: "600px", marginTop: "20px" }}  >
+      <PageHeader value={"Step 1 of creating an order:"} />
+      <Fieldset title="Delivery Information">
                 <StyledTextField
                   margin="normal"
                   size="small"
@@ -514,9 +514,7 @@ const makeOrder = async (event) => {
                   value={sms}
                   onChange={ev => { setSms(ev.target.value)  } }
                 />
-            <Button
-            onClick={sendEmail}
-            sx={{ 
+            <Button onClick={sendEmail} sx={{ 
               display: fieldsValid && ( counter>=0 ? "block":"none" ),
               p: "3px 8px", 
               height: "32px",
@@ -537,6 +535,8 @@ const makeOrder = async (event) => {
             An error has occurred. Please check that all fields are filled in correctly and completely and try saving again.
             </Box> }
 
+        </Fieldset>
+
         <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "right"}}>
           <StyledButton
             startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
@@ -545,6 +545,7 @@ const makeOrder = async (event) => {
             //disabled={fieldsValid==false}
             sx={{ mt: 4 }} >Confirm</StyledButton>
         </Box>
+
         </Box>
         </Box> )}
 
