@@ -393,7 +393,7 @@ const makeOrder = async (event) => {
         <Grid item></Grid>
       ))}
       <Grid item sx={{textAlign: "right", fontSize: "14px", fontWeight: 600, gridColumn: "span 2"}}>
-        <Header text={"Total :  " + fined(totalPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2})) + " $"} /> </Grid>
+        <Header text={"Total :  " + (!!totalPrice ? (fined(totalPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2})) + " $") : "-")} /> </Grid>
       <Grid item></Grid>
 
       {[1,2,3,4].map((data, index) => (
@@ -458,8 +458,10 @@ const makeOrder = async (event) => {
 
     <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column" }} className="center-content" >
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", minWidth: "600px", marginTop: "20px" }}  >
-      <PageHeader value={"Step 1 of creating an order:"} />
-      <Fieldset title="Delivery Information">
+      <Typography sx={{fontSize: "16px", fontWeight: 700, color: "#444", margin: "20px 0 20px"}} >Delivery information:</Typography>
+
+      {/* <Typography sx={{fontSize: "15px", fontWeight: 600, color: "#333", margin: "20px 0 10px"}} >Delivery Information</Typography> */}
+      {/* <Fieldset title="Delivery Information"> */}
                 <StyledTextField
                   margin="normal"
                   size="small"
@@ -535,7 +537,7 @@ const makeOrder = async (event) => {
             An error has occurred. Please check that all fields are filled in correctly and completely and try saving again.
             </Box> }
 
-        </Fieldset>
+        {/* </Fieldset> */}
 
         <Box sx={{ display:"flex", flexDirection:"row", justifyContent: "right"}}>
           <StyledButton

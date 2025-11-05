@@ -5,7 +5,7 @@ export default function ShortPrice(props) {
   
   const fontSize = !!props.fontSize ? props.fontSize : "14px"
 
-  const value = props.value.toLocaleString('ru-RU', {minimumFractionDigits: 2});
+  const value = !!props.value? props.value.toLocaleString('ru-RU', {minimumFractionDigits: 2}) : "";
 
   return <Box sx={{ 
     color: "#333", 
