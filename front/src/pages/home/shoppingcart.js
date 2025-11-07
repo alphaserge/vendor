@@ -393,7 +393,11 @@ const makeOrder = async (event) => {
         <Grid item></Grid>
       ))}
       <Grid item sx={{textAlign: "right", fontSize: "14px", fontWeight: 600, gridColumn: "span 2"}}>
-        <Header text={"Total :  " + (!!totalPrice ? (fined(totalPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2})) + " $") : "-")} /> </Grid>
+        <Box sx={{display: "flex", flexDirection: "column"}}>
+          <Typography sx={{fontWeight: "400"}}>Total USD:&nbsp;&nbsp;&nbsp;{(!!totalPrice ? (fined(totalPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2})) + " $") : "-")}</Typography>
+          <Typography sx={{fontWeight: "400"}}>Total RUR:&nbsp;&nbsp;&nbsp;{(!!totalPrice ? (fined(totalPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2})) + " $") : "-")}</Typography>
+        </Box> 
+      </Grid>
       <Grid item></Grid>
 
       {[1,2,3,4].map((data, index) => (
