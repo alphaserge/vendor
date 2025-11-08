@@ -322,7 +322,6 @@ const makeOrder = async (event) => {
     setCourseRur(getCourse(setCourseRur,'rur'))
    }, [])
   
-  
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -403,16 +402,16 @@ const makeOrder = async (event) => {
       <Grid item sx={{textAlign: "right", fontSize: "14px", fontWeight: 600, gridColumn: "span 2"}}>
         <Box sx={{display: "grid", gridTemplateColumns: "100px 100px", justifyContent: "flex-end"}}>
           <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "15px"}}>Total USD:</Typography>
-          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "15px"}}>{(!!totalPrice ? (fined(totalPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2})) + " $") : "-")}</Typography>
+          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "15px"}}>{(!!totalPrice ? (fined(totalPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " $") : "-")}</Typography>
           <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Total RUR:</Typography>
-          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!totalPrice && !!courseRur ? (fined((totalPrice*courseRur).toLocaleString('ru-RU', {minimumFractionDigits: 2})) + " ₽") : "-")}</Typography>
+          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!totalPrice && !!courseRur ? (fined((totalPrice*courseRur).toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " ₽") : "-")}</Typography>
           <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Course USD:</Typography>
-          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!courseRur ? (fined(courseRur.toLocaleString('ru-RU', {minimumFractionDigits: 2})) + " ₽") : "-")}</Typography>
-        </Box> 
+          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!courseRur ? (fined(courseRur.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ₽") : "-")}</Typography>
+        </Box>
       </Grid>
       <Grid item></Grid>
 
-      {[1,2,3,4].map((data, index) => (
+      {[1,2,3].map((data, index) => (
         <Grid item></Grid>
       ))}
       <Grid item sx={{textAlign: "right", fontSize: "14px", fontWeight: 600, gridColumn: "span 2"}}>

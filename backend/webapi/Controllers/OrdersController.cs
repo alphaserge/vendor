@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using chiffon_back.Code;
+using chiffon_back.Context;
 using chiffon_back.Models;
 using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Vml;
+
 
 //using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -68,12 +71,12 @@ namespace chiffon_back.Controllers
 
                 Models.Order o = config.CreateMapper().Map<Models.Order>(ctx.Orders.FirstOrDefault(x => x.Id.ToString() == id));
 
-                var items = from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
+                var items = (from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
                             join p in ctx.Products on oi.ProductId equals p.Id into jointable
                             from j in jointable.DefaultIfEmpty()
                             join v in ctx.Vendors on j.VendorId equals v.Id into joinvendors
                             from jv in joinvendors.DefaultIfEmpty()
-                            select new { oi, j, jv };
+                            select new { oi, j, jv }).ToList();
 
                 List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
                 foreach (var item in items)
@@ -223,10 +226,8 @@ namespace chiffon_back.Controllers
                 decimal total = 0m;
                 List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
                 foreach (var item in items) {
-                    if (item.oi.Quantity != null && item.oi.Price != null)
-                    {
-                        total += item.oi.Quantity.Value * item.oi.Price.Value;
-                    }
+                    
+                    total += item.oi.Quantity * item.oi.Price;
 
                     Models.OrderItem orderItem = new Models.OrderItem()
                     {
@@ -289,8 +290,8 @@ namespace chiffon_back.Controllers
         }
 
         // method for Vendor managers
-        [HttpGet("OrderItems")]
-        public IEnumerable<Models.OrderItem> GetOrderItems([FromQuery] string vendorId)
+        [HttpGet("VendorOrderItems")]
+        public IEnumerable<Models.OrderItem> GetVendorOrderItems([FromQuery] string vendorId)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
 
@@ -331,7 +332,7 @@ namespace chiffon_back.Controllers
                         }
                     } else
                     {
-                        t = oi.Quantity.Value;
+                        t = oi.Quantity;
                     }
 
                     totalSumm += t * oi.Price;
@@ -552,9 +553,9 @@ namespace chiffon_back.Controllers
                         }
                     }
                     decimal? q = orderItem.Total > 0m ? orderItem.Total : item.oi.Quantity;
-                    if (q != null && item.oi.Price != null)
+                    if (q != null)
                     {
-                        total += q.Value * item.oi.Price.Value;
+                        total += q.Value * item.oi.Price;
                     }
 
                     orderItem.imagePath = imagePath;
@@ -567,6 +568,133 @@ namespace chiffon_back.Controllers
             }
             return orders.AsEnumerable();
         }
+
+        // method for Angelika clients
+        [HttpGet("ClientOrders")]
+        public IEnumerable<Models.ClientOrder> GetClientOrders(string email, bool isSamples)
+        {
+            var orders = (from o in ctx.Orders where o.ClientEmail == email && o.IsSamples == isSamples orderby o.Id descending select new Models.ClientOrder
+            {
+                Id = o.Id,
+                Created = o.Created,
+                ClientAddress = o.ClientAddress,
+                ClientPhone = o.ClientPhone,
+                Number = o.Number,
+                ClientEmail = o.ClientEmail,
+                ClientName = o.ClientName,
+                Uuid = o.Uuid,
+                Items = ctx.OrderItems
+                    .Where(x => x.OrderId == o.Id)
+                    .Select(i => new ClientOrderItem 
+                     { 
+                        Id = i.Id,
+                        ProductId = i.ProductId,
+                        Details = i.Details,
+                        Price = i.Price,
+                        Quantity = i.Quantity}).ToList()
+            }).ToList();
+
+            System.Data.DataTable dt = new System.Data.DataTable();
+            foreach (var order in orders)
+            {
+                decimal total = 0;
+                foreach (var oi in order.Items)
+                {
+                    decimal actualQuantity = String.IsNullOrWhiteSpace(oi.Details) ? oi.Quantity : Convert.ToDecimal(dt.Compute(oi.Details, ""));
+                    total += oi.Price * actualQuantity;
+                }
+                order.TotalCost = total;
+            }
+
+            return orders;
+        }
+
+
+        [HttpGet("OrderItems")]
+        public IEnumerable<Models.ClientOrderItem> GetOrderItems([FromQuery] string orderId)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+
+            var query =
+                from oi in ctx.OrderItems.Where(x => x.OrderId.ToString() == orderId)
+                join p in ctx.Products
+                    on oi.ProductId equals p.Id into jointable
+                from j in jointable.DefaultIfEmpty()
+                orderby oi.OrderId, j.ItemName
+                select new { oi, j };
+
+            var items = query.ToList();
+
+            List<Models.ClientOrderItem> orderItems = new List<Models.ClientOrderItem>();
+            foreach (var item in items)
+            {
+                    decimal actualQuantity = String.IsNullOrWhiteSpace(item.oi.Details) ? item.oi.Quantity : Convert.ToDecimal(dt.Compute(item.oi.Details, ""));
+                    decimal totalCost = item.oi.Price * actualQuantity;
+
+                Models.ClientOrderItem orderItem = new Models.ClientOrderItem()
+                {
+                    ProductId = item.oi.ProductId,
+                    Id = item.oi.Id,
+                    ArtNo = item.j.ArtNo,
+                    RefNo = item.j.RefNo,
+                    ItemName = item.j.ItemName,
+                    //Composition = item.j.Composition,
+                    Design = item.j.Design,
+                    Price = item.oi.Price,
+                    Quantity = item.oi.Quantity,
+                    Unit = item.oi.Unit,
+                    Details = item.oi.Details,
+                    Shipped = item.oi.Shipped,
+                    Delivered = item.oi.Delivered,
+                    DeliveryCompany = item.oi.DeliveryCompany,
+                    DeliveryNo = item.oi.DeliveryNo,
+                    ClientDeliveryCompany = item.oi.ClientDeliveryCompany,
+                    ClientDeliveryNo = item.oi.ClientDeliveryNo,
+                    ColorNo = item.oi.ColorNo,
+                    ColorNames = item.oi.ColorNames,
+                    StockId = item.oi.StockId,
+                    StockName = ctx.Stocks.FirstOrDefault(x => x.Id == item.oi.StockId)?.StockName,
+                    VendorId = item.j.VendorId,
+                    VendorName = ctx.Vendors.FirstOrDefault(x => x.Id == item.j.VendorId)?.VendorName,
+                    TotalCost = totalCost
+                    //PaidShare = paySumm != null && totalSumm > 0m ? paySumm / totalSumm : 0m,
+                };
+
+                string imagePath = @"colors\nopicture.png";
+                if (item.oi.ColorVariantId != null && item.oi.ColorVariantId != -1)
+                {
+                    Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.oi.ColorVariantId);
+                    if (cv != null)
+                    {
+                        var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                        if (imageFiles.Count > 0)
+                        {
+                            imagePath = imageFiles[0];
+                        }
+                    }
+                }
+                else
+                {
+                    var product = ctx.Products.FirstOrDefault(x => x.Id == item.j.Id);
+                    if (product != null)
+                    {
+                        string[] uuids = PhotoHelper.GetPhotoUuids(product.PhotoUuids);
+                        if (uuids.Length > 0)
+                        {
+                            var imageFiles = DirectoryHelper.GetImageFiles(uuids[0]);
+                            imagePath = imageFiles[0];
+                        }
+                    }
+                }
+
+                orderItem.imagePath = imagePath;
+                orderItems.Add(orderItem);
+            }
+
+            return orderItems.AsEnumerable();
+        }
+
+
 
         // method for Angelika managers
         [HttpGet("OrderPayments")]
@@ -597,13 +725,13 @@ namespace chiffon_back.Controllers
                         }
                         catch (Exception e) { }
                     }
-                    if (amount == null && item.Quantity != null)
+                    if (amount == null)
                     {
-                        amount = item.Quantity.Value;
+                        amount = item.Quantity;
                     }
                     if (amount != null)
                     {
-                        total += amount.Value * item.Price.Value;
+                        total += amount.Value * item.Price;
                     }
                 }
             }
@@ -1000,9 +1128,8 @@ namespace chiffon_back.Controllers
 
                         if (cv != null && cv.Price != null)
                             item.Price = cv.Price.Value;
-
-                        if (item.Price != null && newItem.Quantity != null)
-                            total += item.Price.Value  * newItem.Quantity.Value;
+                        
+                        total += item.Price  * newItem.Quantity;
                     }
                 }
                 itemsBody += "</table>";
@@ -1198,14 +1325,14 @@ namespace chiffon_back.Controllers
                         var q = oi.Quantity;
                         var r = ctx.Products.FirstOrDefault(x=>x.Id==oi.ProductId).RollLength;
                         String details = "";
-                        if (q != null && r != null)
+                        if (r != null)
                         {
-                            Decimal n = Math.Floor(q.Value / r.Value);
+                            Decimal n = Math.Floor(q / r.Value);
                             if (n > 0)
                             {
                                 details = String.Format("{0:0.##}", n) + "*" + String.Format("{0:0.##}", r);
                             }
-                            q -= n * r;
+                            q -= n * r.Value;
                             details += "+" + String.Format("{0:0.##}", q);
                             oi.Details = details;
                         }
@@ -1407,9 +1534,9 @@ namespace chiffon_back.Controllers
                 }
                 else
                 {
-                    t = oi.Quantity == null ? 0m : oi.Quantity.Value;
+                    t = oi.Quantity;
                 }
-                totalSumm += t * (oi.Price == null ? 0m : oi.Price.Value);
+                totalSumm += t * oi.Price;
             }
 
             var payQuery = ctx.Payments.Where(x => x.OrderId.ToString() == orderId);

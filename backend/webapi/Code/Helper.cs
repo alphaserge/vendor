@@ -67,7 +67,6 @@ namespace chiffon_back.Code
             return [firstName, lastName];
         }
 
-
         public static decimal GetCurrencyCourse(string currShort, DateTime date)
         {
             decimal crs = 0m;
@@ -93,6 +92,14 @@ namespace chiffon_back.Code
             {
                 return -1m;
             }
+        }
+
+        public static decimal ZeroWhenNull(decimal? value)
+        {
+            if (value == null)
+                return 0;
+
+            return value.Value;
         }
     }
 }

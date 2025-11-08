@@ -8,6 +8,7 @@ import BuySample from './pages/home/buysample';
 import AddProduct from './pages/home/addproduct';
 import ListProduct from './pages/home/listproduct';
 import Orders from './pages/home/orders';
+import Order from './pages/home/order';
 import ShoppingCart from './pages/home/shoppingcart';
 import Menu from './pages/home/menu';
 import Login from './pages/auth/login';
@@ -211,6 +212,7 @@ function App() {
           <Route path="/listproduct" element={<ListProduct data={data} />} />
           <Route path="/product" element={<Product data={data} />} />
           <Route path="/orders" element={<Orders data={data} />} />
+          <Route path="/order" element={<Order data={data} />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/shoppingcart" element={<ShoppingCart data={data} />} />
           <Route path="/buysample" element={<BuySample data={data} />} />

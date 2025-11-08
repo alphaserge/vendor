@@ -6,9 +6,9 @@
         public int OrderId { get; set; }
         public int ProductId { get; set; }
         public int? StockId { get; set; }
-        public decimal? Quantity { get; set; }
+        public decimal Quantity { get; set; }
         public string? Details { get; set; }
-        public decimal? Price { get; set; }
+        public decimal Price { get; set; }
         public int? ColorVariantId { get; set; }
         public int? ColorNo { get; set; }
         public string? ColorNames { get; set; }

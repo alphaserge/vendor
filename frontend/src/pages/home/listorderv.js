@@ -32,7 +32,7 @@ export default function ListOrderV(props) {
 
     const loadOrders = async (e) => {
 
-      axios.get(config.api + '/OrderItems?vendorId=' + props.user.vendorId 
+      axios.get(config.api + '/VendorOrderItems?vendorId=' + props.user.vendorId 
         //,{ params: { type: "vendorId", value: props.user.vendorId, id: null }}
       ).then(function (res) {
           var result = res.data.map((d) => 
