@@ -37,6 +37,7 @@ import ShortPrice from '../../components/shortprice';
 import StyledButton from '../../components/styledbutton';
 import Header from '../../components/header';
 import { Fieldset } from '../../functions/fieldset';
+import { getCurrencies, getCourse } from '../../api/currencies'
 
 import { fined, computePrice, computeTotalPrice, fromUrl, toFixed2 } from "../../functions/helper"
 
@@ -166,6 +167,7 @@ export default function ShoppingCart(props) {
     const [sms, setSms] = useState("")
     const [code, setCode] = useState(randomInt(1001,9999))
     const [counter, setCounter] = useState(1)
+    const [courseRur, setCourseRur] = useState(0)
 
     const [orderError, setOrderError] = useState(false)
 
@@ -315,6 +317,11 @@ const makeOrder = async (event) => {
   const totalPrice = shopCart.reduce((accumulator, data) => {
     return accumulator +  computeTotalPrice(data.product, data.quantity, data.unit=="rolls", data.colorVar)
   }, 0); // The '0' is the initial value of the accumulator
+
+  useEffect(()=>{ 
+    setCourseRur(getCourse(setCourseRur,'rur'))
+   }, [])
+  
   
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -333,7 +340,7 @@ const makeOrder = async (event) => {
 
     <Box sx={{ 
       display: "grid", 
-      gridTemplateColumns: "66px 1fr 70px 110px 120px 110px 20px",
+      gridTemplateColumns: "66px 1fr 70px 110px 120px 130px",
       columnGap: "5px",
       rowGap: "10px",
       fontSize: "13px",
@@ -345,7 +352,6 @@ const makeOrder = async (event) => {
       <Grid item><Header text="Amount"></Header></Grid>
       <Grid item><Header text="Unit"></Header></Grid>
       <Grid item><Header text="Subtotal"></Header></Grid>
-      <Grid item></Grid>
 
     {shopCart.map((data, index) => (
       <React.Fragment>
@@ -378,14 +384,16 @@ const makeOrder = async (event) => {
         <Amount size="-small" value={data.quantity} setValue={(e)=>{setQuantity(index,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
         <Selector size="-small" value={data.unit} list={["meters","rolls"]} setValue={(e)=>{setUnit(index,e)}} /> 
 
+        <Box sx={{display: "flex", flexDirection: "row", justifyContent: "flex-end"}} >
         <ShortPrice value={fined(computeTotalPrice(data.product, data.quantity, data.unit=="rolls", data.colorVar))} />
-
-        <IconButton aria-label="delete" sx={{backgroundColor: "#fff", borderRadius: "8px", margin: "0" }}>
+        <IconButton aria-label="delete" sx={{backgroundColor: "#fff", borderRadius: "8px", margin: "0", padding: "0" }}>
           <DeleteOutlineIcon
-            sx={{ color: "#888", fontSize: 26 }}
+            sx={{ color: "#888", fontSize: 26}}
             onClick={(e)=>{deleteFromCart(index)}} >
           </DeleteOutlineIcon>
         </IconButton>
+        </Box>
+
       </React.Fragment>
     ))}
 
@@ -393,9 +401,13 @@ const makeOrder = async (event) => {
         <Grid item></Grid>
       ))}
       <Grid item sx={{textAlign: "right", fontSize: "14px", fontWeight: 600, gridColumn: "span 2"}}>
-        <Box sx={{display: "flex", flexDirection: "column"}}>
-          <Typography sx={{fontWeight: "400"}}>Total USD:&nbsp;&nbsp;&nbsp;{(!!totalPrice ? (fined(totalPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2})) + " $") : "-")}</Typography>
-          <Typography sx={{fontWeight: "400"}}>Total RUR:&nbsp;&nbsp;&nbsp;{(!!totalPrice ? (fined(totalPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2})) + " $") : "-")}</Typography>
+        <Box sx={{display: "grid", gridTemplateColumns: "100px 100px", justifyContent: "flex-end"}}>
+          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "15px"}}>Total USD:</Typography>
+          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "15px"}}>{(!!totalPrice ? (fined(totalPrice.toLocaleString('ru-RU', {minimumFractionDigits: 2})) + " $") : "-")}</Typography>
+          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Total RUR:</Typography>
+          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!totalPrice && !!courseRur ? (fined((totalPrice*courseRur).toLocaleString('ru-RU', {minimumFractionDigits: 2})) + " ₽") : "-")}</Typography>
+          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Course USD:</Typography>
+          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!courseRur ? (fined(courseRur.toLocaleString('ru-RU', {minimumFractionDigits: 2})) + " ₽") : "-")}</Typography>
         </Box> 
       </Grid>
       <Grid item></Grid>
