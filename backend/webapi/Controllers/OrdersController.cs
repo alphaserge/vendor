@@ -3,12 +3,14 @@ using chiffon_back.Code;
 using chiffon_back.Context;
 using chiffon_back.Models;
 using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Vml;
 
 
 //using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Data;
 using System.Net;
 using System.Net.Mail;
@@ -38,6 +40,10 @@ namespace chiffon_back.Controllers
                 cfg.CreateMap<Context.Order, Models.Order>();
                 cfg.CreateMap<Models.OrderItem, Context.OrderItem>();
                 cfg.CreateMap<Context.OrderItem, Models.OrderItem>();
+                cfg.CreateMap<Models.ClientOrder, Context.Order>();
+                cfg.CreateMap<Context.Order, Models.ClientOrder>();
+                cfg.CreateMap<Models.ClientOrderItem, Context.OrderItem>();
+                cfg.CreateMap<Context.OrderItem, Models.ClientOrderItem>();
                 cfg.CreateMap<Models.Vendor, Context.Vendor>();
                 cfg.CreateMap<Context.Vendor, Models.Vendor>();
                 cfg.CreateMap<Models.Payment, Context.Payment>();
@@ -60,7 +66,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpGet("Order")]
-        public Models.Order Order([FromQuery] string id)
+        public Models.Order Order([FromQuery] string uuid)
         {
             try
             {
@@ -69,7 +75,7 @@ namespace chiffon_back.Controllers
                 //if (vendorId <= 0) vendorId = 1;
                 //if (vendorId < 0) vendorId = 0;
 
-                Models.Order o = config.CreateMapper().Map<Models.Order>(ctx.Orders.FirstOrDefault(x => x.Id.ToString() == id));
+                Models.Order o = config.CreateMapper().Map<Models.Order>(ctx.Orders.FirstOrDefault(x => x.Uuid == uuid));
 
                 var items = (from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
                             join p in ctx.Products on oi.ProductId equals p.Id into jointable
@@ -108,9 +114,9 @@ namespace chiffon_back.Controllers
                     string imagePath = string.Empty;
                     if (!String.IsNullOrEmpty(item.j.PhotoUuids))
                     {
-                        foreach (string uuid in PhotoHelper.GetPhotoUuids(item.j.PhotoUuids))
+                        foreach (string photoUuid in PhotoHelper.GetPhotoUuids(item.j.PhotoUuids))
                         {
-                            var imageFiles = DirectoryHelper.GetImageFiles(uuid);
+                            var imageFiles = DirectoryHelper.GetImageFiles(photoUuid);
                             if (imageFiles.Count > 0)
                             {
                                 imagePath = imageFiles[0];
@@ -569,7 +575,105 @@ namespace chiffon_back.Controllers
             return orders.AsEnumerable();
         }
 
-        // method for Angelika clients
+
+        [HttpGet("ClientOrder")]
+        public Models.ClientOrder GetClientOrder(string uuid)
+        {
+            Models.ClientOrder? order = ctx.Orders.Where(x => x.Uuid == uuid)
+                .Select(x => config.CreateMapper().Map<Models.ClientOrder>(x)).FirstOrDefault();
+
+            System.Data.DataTable dt = new System.Data.DataTable();
+
+            var query =
+                from oi in ctx.OrderItems.Where(x => x.OrderId == order.Id)
+                join p in ctx.Products
+                    on oi.ProductId equals p.Id into jointable
+                from j in jointable.DefaultIfEmpty()
+                orderby oi.OrderId, j.ItemName
+                select new { oi, j };
+
+            var items = query.ToList();
+
+            foreach (var item in items)
+            {
+                decimal actualQuantity = String.IsNullOrWhiteSpace(item.oi.Details) ? item.oi.Quantity : Convert.ToDecimal(dt.Compute(item.oi.Details, ""));
+                decimal totalCost = item.oi.Price * actualQuantity;
+
+                Models.ClientOrderItem orderItem = new Models.ClientOrderItem()
+                {
+                    ProductId = item.oi.ProductId,
+                    Id = item.oi.Id,
+                    ArtNo = item.j.ArtNo,
+                    RefNo = item.j.RefNo,
+                    ItemName = item.j.ItemName,
+                    //Composition = item.j.Composition,
+                    Design = item.j.Design,
+                    Price = item.oi.Price,
+                    Quantity = item.oi.Quantity,
+                    Unit = item.oi.Unit,
+                    Details = item.oi.Details,
+                    Shipped = item.oi.Shipped,
+                    Delivered = item.oi.Delivered,
+                    DeliveryCompany = item.oi.DeliveryCompany,
+                    DeliveryNo = item.oi.DeliveryNo,
+                    ClientDeliveryCompany = item.oi.ClientDeliveryCompany,
+                    ClientDeliveryNo = item.oi.ClientDeliveryNo,
+                    ColorNo = item.oi.ColorNo,
+                    ColorNames = item.oi.ColorNames,
+                    StockId = item.oi.StockId,
+                    StockName = ctx.Stocks.FirstOrDefault(x => x.Id == item.oi.StockId)?.StockName,
+                    VendorId = item.j.VendorId,
+                    VendorName = ctx.Vendors.FirstOrDefault(x => x.Id == item.j.VendorId)?.VendorName,
+                    TotalCost = totalCost
+                    //PaidShare = paySumm != null && totalSumm > 0m ? paySumm / totalSumm : 0m,
+                };
+
+                string imagePath = @"colors\nopicture.png";
+                if (item.oi.ColorVariantId != null && item.oi.ColorVariantId != -1)
+                {
+                    Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.oi.ColorVariantId);
+                    if (cv != null)
+                    {
+                        var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                        if (imageFiles.Count > 0)
+                        {
+                            imagePath = imageFiles[0];
+                        }
+                    }
+                }
+                else
+                {
+                    var product = ctx.Products.FirstOrDefault(x => x.Id == item.j.Id);
+                    if (product != null)
+                    {
+                        string[] uuids = PhotoHelper.GetPhotoUuids(product.PhotoUuids);
+                        if (uuids.Length > 0)
+                        {
+                            var imageFiles = DirectoryHelper.GetImageFiles(uuids[0]);
+                            imagePath = imageFiles[0];
+                        }
+                    }
+                }
+
+                orderItem.imagePath = imagePath;
+                order.Items.Add(orderItem);
+            }
+
+            order.Payments = ctx.Payments
+                .Where(x => x.OrderId == order.Id)
+                .Select(x => config.CreateMapper().Map<Models.Payment>(x)).ToList();
+
+            foreach (Models.Payment p in order.Payments)
+            {
+                p.Currency = ctx.Currencies.FirstOrDefault(c => c.Id == p.CurrencyId).ShortName;
+            }
+
+            decimal? paid = order.Payments.Sum(x => x.Amount);
+            order.TotalPaid = paid != null ? paid.Value : 0m;
+
+            return order;
+        }
+
         [HttpGet("ClientOrders")]
         public IEnumerable<Models.ClientOrder> GetClientOrders(string email, bool isSamples)
         {
@@ -694,8 +798,6 @@ namespace chiffon_back.Controllers
             return orderItems.AsEnumerable();
         }
 
-
-
         // method for Angelika managers
         [HttpGet("OrderPayments")]
         public Models.OrderPayments? OrderPayments([FromQuery] int orderId)
@@ -741,7 +843,7 @@ namespace chiffon_back.Controllers
             orderPayments.Total = total;
 
             var mapper = config.CreateMapper();
-            orderPayments.Payments = ctx.Payments.Where(x => x.OrderId == orderId).Select(x =>
+            orderPayments.Items = ctx.Payments.Where(x => x.OrderId == orderId).Select(x =>
             new Models.Payment
             {
                 OrderId = x.OrderId,
@@ -752,7 +854,7 @@ namespace chiffon_back.Controllers
             }).ToArray();
 
             decimal paySumm = 0m;
-            foreach (var p in orderPayments.Payments)
+            foreach (var p in orderPayments.Items)
             {
                 paySumm += p.Amount != null ? p.Amount.Value : 0m;
             }
@@ -930,10 +1032,10 @@ namespace chiffon_back.Controllers
 
         [HttpGet("{id}")]
         //public Models.Product? Product([FromQuery] string id)
-        public Models.Order? GetOrder([FromQuery] string id)
+        public Models.Order? GetOrder([FromQuery] string uuid)
         {
             Models.Order? order =
-                ctx.Orders.Where(x => x.Id.ToString() == id)
+                ctx.Orders.Where(x => x.Uuid == uuid)
                 .Select(x =>
                     config.CreateMapper()
                         .Map<Models.Order>(x)).FirstOrDefault();

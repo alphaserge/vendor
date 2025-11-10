@@ -12,7 +12,9 @@
         public string? ClientAddress { get; set; }
         public bool IsSamples { get; set; }
         public decimal TotalCost { get; set; }
+        public decimal TotalPaid { get; set; }
         public List<ClientOrderItem> Items { get; set; }
+        public List<Payment> Payments { get; set; }
     }
 
 

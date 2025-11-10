@@ -75,16 +75,16 @@ namespace chiffon_back.Controllers
         public OrderPayments GetOrderPayments([FromQuery] string id)
         {
             OrderPayments payments = new Models.OrderPayments();
-            payments.Payments = ctx.Payments
+            payments.Items = ctx.Payments
                 .Where(x => x.OrderId == Convert.ToInt32(id))
                 .Select(x => config.CreateMapper().Map<Models.Payment>(x)).ToArray();
 
-            foreach(Models.Payment p in payments.Payments)
+            foreach(Models.Payment p in payments.Items)
             {
                 p.Currency = ctx.Currencies.FirstOrDefault(c => c.Id == p.CurrencyId).ShortName;
             }
 
-            payments.Total = payments.Payments.Sum(x => x.Amount);
+            payments.Total = payments.Items.Sum(x => x.Amount);
 
             return payments;
         }

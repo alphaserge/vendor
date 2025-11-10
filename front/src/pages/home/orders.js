@@ -124,11 +124,11 @@ export default function Orders(props) {
             
                 { orders.map((data, index) => ( 
               <React.Fragment>
-                <Link to={"/order?id=" + data.id } ><Grid item sx={{textAlign: "center"}} >{data.number.toString().padStart(4, '0')}</Grid></Link>
-                <Link to={"/order?id=" + data.id } ><Grid item sx={{textAlign: "center"}} >{formattedDate(data.created)}</Grid></Link>
-                <Link to={"/order?id=" + data.id } ><Grid item sx={{textAlign: "center"}}>{data.items.length}</Grid></Link>
-                <Link to={"/order?id=" + data.id } ><Grid item sx={{textAlign: "center"}}>{toFixed2(data.totalCost)} $</Grid></Link>
-                {/* <Link to={"/orders?id=" + data.id } ><Grid item sx={{textAlign: "center"}}>{data.status}</Grid></Link> */}
+                <Link to={"/order?uuid=" + data.uuid } ><Grid item sx={{textAlign: "center"}}>{data.number.toString().padStart(4, '0')}</Grid></Link>
+                <Link to={"/order?uuid=" + data.uuid } ><Grid item sx={{textAlign: "center"}}>{formattedDate(data.created)}</Grid></Link>
+                <Link to={"/order?uuid=" + data.uuid } ><Grid item sx={{textAlign: "center"}}>{data.items.length}</Grid></Link>
+                <Link to={"/order?uuid=" + data.uuid } ><Grid item sx={{textAlign: "center"}}>{toFixed2(data.totalCost)} $</Grid></Link>
+                {/* <Link to={"/orders?id=" + data.id } ><Grid item sx={{textAlign: "cent+er"}}>{data.status}</Grid></Link> */}
               </React.Fragment> ))}
         </Box>
         </Box>

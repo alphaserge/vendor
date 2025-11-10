@@ -25,7 +25,7 @@ import { getPayments } from '../../api/payments'
 import PageHeader from '../../components/pageheader';
 import Header from '../../components/header';
 import MainSection from './mainsection';
-import { formattedPrice, orderStatusString, fined, idFromUrl, formattedDate, toFixed2 } from "../../functions/helper";
+import { formattedPrice, orderStatusString, fined, fromUrl, formattedDate, toFixed2 } from "../../functions/helper";
 import StyledButton from '../../components/styledbutton';
 import StyledButtonWhite from '../../components/styledbuttonwhite';
 import StyledIconButton from '../../components/stylediconbutton';
@@ -48,7 +48,7 @@ const theme = createTheme({
   },
 });
 
-const linkStyle = { textDecoration: 'none', height: "100%" }
+const linkStyle = { textDecoration: 'none', height: "100%", display: "contents" }
 const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 
 export default function Order(props) {
@@ -58,10 +58,10 @@ export default function Order(props) {
   const [agree, setAgree] = useState(false)
   const [invoiceUrl, setInvoiceUrl] = useState("")
   const [expand, setExpand] = useState(false)
+  const [toggleExpand, setToggleExpand] = useState(false)
   const [courseRur, setCourseRur] = useState(0)
   const [payerName, setPayerName] = useState( !props.data.user.payerName ? "" : props.data.user.payerName )
-  const [payments, setPayments] = useState([])
-
+  
   const handleAgree = (event) => {
     setAgree(event.target.checked);
   };
@@ -119,55 +119,20 @@ export default function Order(props) {
     })    
   };
 
-  const toggleExpand = (e) => {
-    setExpand(!expand)
-  }
-
+  
   const loadOrder = async (e) => {
-
-      if (!props.data.user || props.data.user.email=="") {
-        navigate("/login?return=orders")
-        return
-      }
-
-      let id = idFromUrl()
-
-      let api = config.api + '/OrderItems?orderId=' + id
-      axios.get(api) //axios.get(api, { //  params: { type: "client", value: props.data.user.email, id: id }})
-          .then(function (res) {
-              var result = res.data.map((it) => 
-              {
-                  return {
-                      checked   : false,
-                      id        : it.id,
-                      productId : it.productId,
-                      imagePath : it.imagePath,
-                      itemName  : it.itemName,
-                      artNo     : it.artNo,
-                      refNo     : it.refNo,
-                      design    : it.design,
-                      colorNo   : it.colorNo,
-                      spec      : it.composition,
-                      price     : it.price,
-                      owner     : it.vendorName,
-                      quantity  : it.quantity,
-                      unit      : it.unit,
-                      colorNames: it.colorNames,
-                      details   : it.details,
-                      changes   : false,
-                      details   : it.details,
-                      shipped   : it.shipped,
-                      delivered : it.delivered,
-                      deliveryNo: it.deliveryNo,
-                      deliveryCompany : it.deliveryCompany,
-                      //!!!status: orderStatusString(it,d) // it.confirmByVendor != null ? "confirmed" : (it.confirmByVendor != null ? "shipped" : (it.inStock != null ? "in stock" : (it.shippedToClient != null ? "shipped to client" : (it.recievedByClient != null ? "recieved" : "ordered"))))
-                      }})
-                      setOrder(result)
-                      console.log(result)
-                  }
-              );
+    if (!props.data.user || props.data.user.email=="") {
+      navigate("/login?return=orders")
+      return
     }
 
+    let uuid = fromUrl("uuid")
+
+    axios.get(config.api + '/Order?uuid=' + uuid) 
+    .then(function (res) {
+        setOrder(res.data)
+    })
+  }
         
   useEffect(() => {
     loadOrder()
@@ -189,11 +154,13 @@ export default function Order(props) {
   let total = 0;
   let orderTotal = 0;
   
-  total = order.reduce((n, {price}) => n + price, 0)
-  orderTotal = (order.findIndex(i => i.checked) != -1) ?
-      order.filter((i)=> {return i.checked}).reduce((n, {price}) => n + price, 0) : total
+  // orderTotal = 0
+  // if (!!order && !!order.items && order.items.length>0) {
+  //   total = order.items.reduce((n, {price}) => n + price, 0)
+  //   (order.items.findIndex(i => i.checked) != -1) ?
+  //     order.items.filter((i)=> {return i.checked}).reduce((n, {price}) => n + price, 0) : total
+  // }
   
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -210,22 +177,22 @@ export default function Order(props) {
         </Box> 
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "90px 90px 2fr 2fr 100px 1fr 90px 150px",
+          gridTemplateColumns: "70px auto auto auto auto auto auto",
           columnGap: "8px",
           rowGap: "6px",
           fontSize: "16px",
           alignItems: "center" }}>
                   <Grid item sx={{mb: 1}}><Header text="Photo"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Art No."></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Item name, design"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Colors"></Header></Grid>
-                  {/* <Grid item sx={{mb: 1}}><Header text="Design"></Header></Grid> */}
+                  {/* <Grid item sx={{mb: 1}}><Header text="Art No."></Header></Grid> */}
+                  <Grid item sx={{mb: 1}}><Header text="Item name"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Design"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Color"></Header></Grid>
                   <Grid item sx={{mb: 1}}><Header text="Ordered"></Header></Grid>
                   <Grid item sx={{mb: 1}}><Header text="Details"></Header></Grid>
                   <Grid item sx={{mb: 1}}><Header text="Price"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Status"></Header></Grid>
+                  {/* <Grid item sx={{mb: 1}}><Header text="Status"></Header></Grid> */}
             
-                { order.map((data, index) => ( 
+                { !!order && !!order.items && order.items.map((data, index) => ( 
               <React.Fragment>
                 <Link to={"/orders?id=" + data.id } style={{  }} onClick={() => {}} >
                 <Grid item sx={{textAlign: "center", display: "flex", flexDirection: "row", justifyContent: "center"}} >
@@ -247,9 +214,9 @@ export default function Order(props) {
                     /> )}                              
                 </Grid>
                 </Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center", verticalAlign:"top"}} >{data.artNo}</Grid></Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "left"}} >{data.itemName + " " + data.design}</Grid></Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "left"}} >{data.colorNo + " / " + data.colorNames}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "left", verticalAlign:"top"}} >{ (!!data.artNo ? "Art. " + data.artNo + " " : "") + data.itemName}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center", verticalAlign:"middle", display: "flex"}} >{data.design}</Grid></Link>
+                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center", verticalAlign:"top"}} >{data.colorNo}</Grid></Link>
                 {/* <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.design}</Grid></Link> */}
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.quantity + " " + data.unit}</Grid></Link>
                 <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.details}</Grid></Link>

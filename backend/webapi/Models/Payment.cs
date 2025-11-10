@@ -15,7 +15,7 @@
     {
         public int Number { get; set; }
         public DateTime? Created { get; set; }
-        public Payment[]? Payments { get; set; }
+        public Payment[]? Items { get; set; }
         public Decimal? Total { get; set; }
         public Decimal? PaySumm { get; set; }
     }
