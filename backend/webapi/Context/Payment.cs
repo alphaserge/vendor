@@ -7,6 +7,7 @@
         public int OrderId { get; set; }
         public Decimal Amount { get; set; }
         public Decimal CurrencyAmount { get; set; }
+        public Decimal ExchangeRate { get; set; }
         public int CurrencyId { get; set; }
     }
 }

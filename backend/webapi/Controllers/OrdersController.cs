@@ -68,6 +68,7 @@ namespace chiffon_back.Controllers
         [HttpGet("Order")]
         public Models.Order Order([FromQuery] string uuid)
         {
+            System.Data.DataTable dt = new System.Data.DataTable();
             try
             {
                 //var user = ctx.Users.FirstOrDefault(x => x.Id.ToString() == id);
@@ -95,10 +96,13 @@ namespace chiffon_back.Controllers
                         ArtNo = item.j.ArtNo,
                         RefNo = item.j.RefNo,
                         ItemName = item.j.ItemName,
+                        ColorNo = item.oi.ColorNo,
+                        ColorNames = item.oi.ColorNames,
                         //Composition = item.j.Composition,
                         Design = item.j.Design,
                         Price = item.oi.Price,
                         Quantity = item.oi.Quantity,
+                        Unit = item.oi.Unit,
                         VendorId = item.j.VendorId,
                         VendorName = item.jv.VendorName,
                         StockId = item.oi.StockId,
@@ -138,10 +142,22 @@ namespace chiffon_back.Controllers
                         }
                     }
 
+                    object obj = dt.Compute(orderItem.Details, "");
+                    orderItem.Total = !obj.Equals(System.DBNull.Value) ? Convert.ToDecimal(obj) : 0m;
                     orderItem.imagePath = imagePath;
                     orderItems.Add(orderItem);
                 }
                 o.Items = orderItems.ToArray();
+
+                o.Payments = ctx.Payments
+                    .Where(x => x.OrderId == Convert.ToInt32(o.Id))
+                    .Select(x => config.CreateMapper().Map<Models.Payment>(x)).ToArray();
+
+                foreach (Models.Payment p in o.Payments)
+                {
+                    p.Currency = ctx.Currencies.FirstOrDefault(c => c.Id == p.CurrencyId).ShortName;
+                }
+                o.Total = o.Payments.Sum(x => x.Amount);
 
                 return o;
             }
@@ -856,7 +872,7 @@ namespace chiffon_back.Controllers
             decimal paySumm = 0m;
             foreach (var p in orderPayments.Items)
             {
-                paySumm += p.Amount != null ? p.Amount.Value : 0m;
+                paySumm += p.Amount;
             }
             orderPayments.PaySumm = paySumm;
 

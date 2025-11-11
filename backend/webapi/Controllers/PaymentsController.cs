@@ -112,7 +112,7 @@ namespace chiffon_back.Controllers
                 decimal course = 1m;
                 if (newPay.CurrencyId == 2) // "RUR"
                 {
-                    course = Helper.GetCurrencyCourse("USD", payment.Date.Value);
+                    course = Helper.GetCurrencyCourse("USD", payment.Date);
                     if (course < 0)
                     {
                         course = currency.Rate.Value;
@@ -122,6 +122,7 @@ namespace chiffon_back.Controllers
                 {
                     newPay.Amount = Math.Round(newPay.CurrencyAmount / course, 2);
                 }
+                newPay.ExchangeRate = course;
                 ctx.Payments.Add(newPay);
                 ctx.SaveChanges();
 

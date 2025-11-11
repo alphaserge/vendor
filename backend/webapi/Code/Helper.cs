@@ -101,5 +101,12 @@ namespace chiffon_back.Code
 
             return value.Value;
         }
+        public static string EmptyWhenNull(string? value)
+        {
+            if (value == null)
+                return "";
+
+            return value;
+        }
     }
 }

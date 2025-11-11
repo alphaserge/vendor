@@ -32,6 +32,7 @@ import StyledIconButton from '../../components/stylediconbutton';
 import IconButtonWhite from "../../components/iconbuttonwhite";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import StyledTextField from '../../components/styledtextfield';
+import GridItem from "../../components/griditem";
 
 const defaultTheme = createTheme()
 
@@ -58,13 +59,16 @@ export default function Order(props) {
   const [agree, setAgree] = useState(false)
   const [invoiceUrl, setInvoiceUrl] = useState("")
   const [expand, setExpand] = useState(false)
-  const [toggleExpand, setToggleExpand] = useState(false)
   const [courseRur, setCourseRur] = useState(0)
   const [payerName, setPayerName] = useState( !props.data.user.payerName ? "" : props.data.user.payerName )
   
   const handleAgree = (event) => {
     setAgree(event.target.checked);
   };
+
+  const toggleExpand = (e) => {
+    setExpand(!expand)
+  }
 
   const logout = () => {
     props.data.logOut()
@@ -122,7 +126,7 @@ export default function Order(props) {
   
   const loadOrder = async (e) => {
     if (!props.data.user || props.data.user.email=="") {
-      navigate("/login?return=orders")
+      navigate("/login?return=order?uuid=" + uuid)
       return
     }
 
@@ -177,7 +181,7 @@ export default function Order(props) {
         </Box> 
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "70px auto auto auto auto auto auto",
+          gridTemplateColumns: "70px auto auto auto auto auto auto auto",
           columnGap: "8px",
           rowGap: "6px",
           fontSize: "16px",
@@ -186,56 +190,99 @@ export default function Order(props) {
                   {/* <Grid item sx={{mb: 1}}><Header text="Art No."></Header></Grid> */}
                   <Grid item sx={{mb: 1}}><Header text="Item name"></Header></Grid>
                   <Grid item sx={{mb: 1}}><Header text="Design"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Color"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Ordered"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Details"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Color No"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Order qty"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Roll details"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Total qty"></Header></Grid>
                   <Grid item sx={{mb: 1}}><Header text="Price"></Header></Grid>
                   {/* <Grid item sx={{mb: 1}}><Header text="Status"></Header></Grid> */}
             
-                { !!order && !!order.items && order.items.map((data, index) => ( 
-              <React.Fragment>
-                <Link to={"/orders?id=" + data.id } style={{  }} onClick={() => {}} >
-                <Grid item sx={{textAlign: "center", display: "flex", flexDirection: "row", justifyContent: "center"}} >
-                  {( !!data.imagePath && 
-                      <img 
-                        src={config.api + "/" + data.imagePath}
-                        sx={{padding: "5px 5px 0 5px"}}
-                        width={60}
-                        height={55}
-                        alt={data.itemName}
-                    /> )}
-                  {( !data.imagePath && 
-                      <img 
-                        src={config.api + "/public/noimage.jpg"}
-                        sx={{padding: "5px 5px 0 5px"}}
-                        width={60}
-                        height={55}
-                        alt={data.itemName}
-                    /> )}                              
+                { !!order && !!order.items && order.items.map((data, index) => { 
+                  console.log("data:")
+                  console.log(data)
+                  const link = "/product?id=" + data.productId
+                  const src = !!data.imagePath ? config.api + "/" + data.imagePath : config.api + "/public/noimage.jpg"
+                  const quantity = data.quantity + data.unit.replace('rolls','r').replace('meters','m')
+                  return (
+                  <React.Fragment>
+                    <GridItem link={link} center img src={src} />
+                    <GridItem link={link} text={(!!data.artNo ? "Art. " + data.artNo + " " : "") + data.itemName}/>
+                    <GridItem link={link} center text={data.design}/>
+                    <GridItem link={link} center text={data.colorNo}/>
+                    <GridItem link={link} center text={quantity}/>
+                    <GridItem link={link} center text={data.details}/>
+                    <GridItem link={link} center text={data.total+"m"}/>
+                    <GridItem link={link} center text={formattedPrice(data.price)}/>
+                </React.Fragment> )})}
+                {[1,2,3,4,5,6].map((data, index) => (
+                  <Grid item></Grid>
+                ))}
+                <Grid item sx={{textAlign: "right", fontSize: "14px", fontWeight: 600, gridColumn: "span 2"}}>
+                  <Box sx={{display: "grid", gridTemplateColumns: "100px 70px", justifyContent: "flex-end"}}>
+                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "0px"}}>Total USD:</Typography>
+                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "0px"}}>{(!!orderTotal ? (fined(orderTotal.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " $") : "-")}</Typography>
+                    {/* <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Total RUR:</Typography>
+                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!orderTotal && !!courseRur ? (fined((orderTotal*courseRur).toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " ₽") : "-")}</Typography>
+                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Course USD:</Typography>
+                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!courseRur ? (fined(courseRur.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ₽") : "-")}</Typography> */}
+                  </Box>
                 </Grid>
-                </Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "left", verticalAlign:"top"}} >{ (!!data.artNo ? "Art. " + data.artNo + " " : "") + data.itemName}</Grid></Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center", verticalAlign:"middle", display: "flex"}} >{data.design}</Grid></Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center", verticalAlign:"top"}} >{data.colorNo}</Grid></Link>
-                {/* <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.design}</Grid></Link> */}
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.quantity + " " + data.unit}</Grid></Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{data.details}</Grid></Link>
-                <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{formattedPrice(data.price)}&nbsp;$</Grid></Link>
-                {/* <Link to={"/product?id=" + data.productId } style={linkStyle} ><Grid item sx={{textAlign: "center"}} >{orderStatusString(data, orders[orderIndex])}</Grid></Link> */}
-              </React.Fragment> ))}
-      {[1,2,3,4,5,6].map((data, index) => (
-        <Grid item></Grid>
-      ))}
-      <Grid item sx={{textAlign: "right", fontSize: "14px", fontWeight: 600, gridColumn: "span 2"}}>
-        <Box sx={{display: "grid", gridTemplateColumns: "100px 70px", justifyContent: "flex-end"}}>
-          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "0px"}}>Total USD:</Typography>
-          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "0px"}}>{(!!orderTotal ? (fined(orderTotal.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " $") : "-")}</Typography>
-          {/* <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Total RUR:</Typography>
-          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!orderTotal && !!courseRur ? (fined((orderTotal*courseRur).toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " ₽") : "-")}</Typography>
-          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Course USD:</Typography>
-          <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!courseRur ? (fined(courseRur.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ₽") : "-")}</Typography> */}
-        </Box>
-      </Grid>
+      </Box>
+        public DateTime? Date { get; set; }
+        public string? Currency { get; set; }
+        public int OrderId { get; set; }
+        public Decimal? Amount { get; set; }
+        public Decimal? CurrencyAmount { get; set; }
+        public int CurrencyId { get; set; }
+
+        <Box sx={{ 
+          display: "grid", 
+          gridTemplateColumns: "100px 100px 100px",
+          columnGap: "8px",
+          rowGap: "6px",
+          fontSize: "16px",
+          alignItems: "center" }}>
+                  <Grid item sx={{mb: 1}}><Header text="Photo"></Header></Grid>
+                  {/* <Grid item sx={{mb: 1}}><Header text="Art No."></Header></Grid> */}
+                  <Grid item sx={{mb: 1}}><Header text="Item name"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Design"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Color No"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Order qty"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Roll details"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Total qty"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Price"></Header></Grid>
+                  {/* <Grid item sx={{mb: 1}}><Header text="Status"></Header></Grid> */}
+            
+                { !!order && !!order.items && order.items.map((data, index) => { 
+                  console.log("data:")
+                  console.log(data)
+                  const link = "/product?id=" + data.productId
+                  const src = !!data.imagePath ? config.api + "/" + data.imagePath : config.api + "/public/noimage.jpg"
+                  const quantity = data.quantity + data.unit.replace('rolls','r').replace('meters','m')
+                  return (
+                  <React.Fragment>
+                    <GridItem link={link} center img src={src} />
+                    <GridItem link={link} text={(!!data.artNo ? "Art. " + data.artNo + " " : "") + data.itemName}/>
+                    <GridItem link={link} center text={data.design}/>
+                    <GridItem link={link} center text={data.colorNo}/>
+                    <GridItem link={link} center text={quantity}/>
+                    <GridItem link={link} center text={data.details}/>
+                    <GridItem link={link} center text={data.total+"m"}/>
+                    <GridItem link={link} center text={formattedPrice(data.price)}/>
+                </React.Fragment> )})}
+                {[1,2,3,4,5,6].map((data, index) => (
+                  <Grid item></Grid>
+                ))}
+                <Grid item sx={{textAlign: "right", fontSize: "14px", fontWeight: 600, gridColumn: "span 2"}}>
+                  <Box sx={{display: "grid", gridTemplateColumns: "100px 70px", justifyContent: "flex-end"}}>
+                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "0px"}}>Total USD:</Typography>
+                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "0px"}}>{(!!orderTotal ? (fined(orderTotal.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " $") : "-")}</Typography>
+                    {/* <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Total RUR:</Typography>
+                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!orderTotal && !!courseRur ? (fined((orderTotal*courseRur).toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " ₽") : "-")}</Typography>
+                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Course USD:</Typography>
+                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!courseRur ? (fined(courseRur.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ₽") : "-")}</Typography> */}
+                  </Box>
+                </Grid>
       </Box>
 
       {/* <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}} >
@@ -256,7 +303,7 @@ export default function Order(props) {
             <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}} >
               
               <FormControlLabel required control={<Checkbox checked={agree} onChange={handleAgree} />} label="I confirm that the order composition meets my requirements" sx={{pl: 2 }} />
-            </Box>  
+            </Box>
             <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}} >
                 <StyledTextField
                             margin="normal"
