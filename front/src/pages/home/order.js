@@ -228,12 +228,13 @@ export default function Order(props) {
                   </Box>
                 </Grid>
       </Box>
-        public DateTime? Date { get; set; }
+        {/* public DateTime? Date { get; set; }
         public string? Currency { get; set; }
         public int OrderId { get; set; }
         public Decimal? Amount { get; set; }
         public Decimal? CurrencyAmount { get; set; }
-        public int CurrencyId { get; set; }
+        ExchangeRate
+        public int CurrencyId { get; set; } */}
 
         <Box sx={{ 
           display: "grid", 
@@ -242,16 +243,9 @@ export default function Order(props) {
           rowGap: "6px",
           fontSize: "16px",
           alignItems: "center" }}>
-                  <Grid item sx={{mb: 1}}><Header text="Photo"></Header></Grid>
-                  {/* <Grid item sx={{mb: 1}}><Header text="Art No."></Header></Grid> */}
-                  <Grid item sx={{mb: 1}}><Header text="Item name"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Design"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Color No"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Order qty"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Roll details"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Total qty"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Price"></Header></Grid>
-                  {/* <Grid item sx={{mb: 1}}><Header text="Status"></Header></Grid> */}
+                  <Grid item sx={{mb: 1}}><Header text="Date"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Amount"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Amount USD"></Header></Grid>
             
                 { !!order && !!order.items && order.items.map((data, index) => { 
                   console.log("data:")
