@@ -106,6 +106,7 @@ export default function Order(props) {
         items: 
           order.items.map((i) => ({ 
             id: i.id,
+            productId: i.productId,
             itemName: i.itemName,
             quantity: i.quantity,
             price: i.price,
@@ -329,7 +330,7 @@ export default function Order(props) {
                   onChange={ev => setPayerName(ev.target.value)}
                   style={{ width: 400 }}
                   autoFocus /></Grid>
-                <Grid item><StyledTextField 
+                { payOption == "prepayment" && <React.Fragment><Grid item><StyledTextField 
                   margin="normal"
                   required
                   id="pay-amount"
@@ -337,14 +338,12 @@ export default function Order(props) {
                   name="pay-amount"
                   value={payAmount}
                   onChange={handlePayAmount} /></Grid>
-                <Grid item><Typography sx={{ml: 2, mt: 1}}>Should be at least {paymentMinimum}$</Typography></Grid>
+                <Grid item><Typography sx={{ml: 2, mt: 1}}>Should be at least {paymentMinimum}$</Typography></Grid></React.Fragment>}
                 <StyledIconButton 
                   aria-label="pay" 
                   sx={{backgroundColor: "#222", color: "#fff", width: "90px", mt: 1}} 
                   disabled={!agree || payerName.length < 6 || order.items.findIndex(x => !x.details) != -1 || payAmount < paymentMinimum }
                   onClick={(e)=> { sendInvoice(order) }} >
-                  {/*onClick={(e)=> { pay(orders[orderIndex].id, orders[orderIndex].total) }} >*/}
-                  {/* <AttachMoneyIcon sx={{color: "#fff"}} /> */}
                   Continue
                 </StyledIconButton>                          
             </Box>

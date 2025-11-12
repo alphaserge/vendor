@@ -15,9 +15,11 @@ namespace chiffon_back.Models
     public class InvoiceItem
     {
         public int? Id { get; set; }
+        public int? ProductId { get; set; }
         public int? Quantity { get; set; }
         public string? ItemName { get; set; }
         public string? Unit { get; set; }
+        public string? Details { get; set; }
         public int? DiscountedRate { get; set; }
         public decimal? Price { get; set; }
          
@@ -39,6 +41,9 @@ namespace chiffon_back.Models
         public DateTime? Date { get; set; }
         public string? Customer { get; set; }
         public string? Currency { get; set; }
+        public decimal? PaySumm { get; set; }
+        public decimal? Knitting { get; set; }
+        public decimal? Woven { get; set; }
         public InvoiceItem[]? Items { get; set; }
     }
 
@@ -207,10 +212,15 @@ namespace chiffon_back.Models
             int numpp = 1;
             decimal summ = 0;
             var f = new NumberFormatInfo { NumberGroupSeparator = " " };
-            
-            foreach (var it in inv.Items)
+
+            string[] items = { "Текстильное полотно", "Трикотажное полотно" };
+            decimal?[] qty = { inv.Knitting, inv.Woven };
+
+            for( int i = 0; i < 2; i++ )
             {
-                int a = it.Quantity == null ? 0 : it.Quantity.Value;
+                if (qty[i] <= 0) continue;
+
+                int a = (int)qty[i];
                 int d = it.DiscountedRate == null ? 0 : it.DiscountedRate.Value;
                 decimal p = it.Price == null ? 0 : Math.Round(it.Price.Value * courseUSD, 2, MidpointRounding.ToZero);
                 decimal t = p*a;
