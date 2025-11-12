@@ -3,7 +3,11 @@ import { useNavigate, Link } from "react-router-dom";
 import { makeStyles, withStyles } from '@mui/styles';
 import { Typography } from "@mui/material";
 
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -25,7 +29,7 @@ import { getPayments } from '../../api/payments'
 import PageHeader from '../../components/pageheader';
 import Header from '../../components/header';
 import MainSection from './mainsection';
-import { formattedPrice, orderStatusString, fined, fromUrl, formattedDate, toFixed2 } from "../../functions/helper";
+import { formattedPrice, round2, fined, fromUrl, formattedDate, toFixed2 } from "../../functions/helper";
 import StyledButton from '../../components/styledbutton';
 import StyledButtonWhite from '../../components/styledbuttonwhite';
 import StyledIconButton from '../../components/stylediconbutton';
@@ -50,7 +54,6 @@ const theme = createTheme({
 });
 
 const linkStyle = { textDecoration: 'none', height: "100%", display: "contents" }
-const itemStyle = { width: 340, m: 2, ml: 4, mr: 4 }
 
 export default function Order(props) {
 
@@ -60,18 +63,36 @@ export default function Order(props) {
   const [invoiceUrl, setInvoiceUrl] = useState("")
   const [expand, setExpand] = useState(false)
   const [courseRur, setCourseRur] = useState(0)
+  const [payOption, setPayOption] = React.useState("")
   const [payerName, setPayerName] = useState( !props.data.user.payerName ? "" : props.data.user.payerName )
+  const [payAmount, setPayAmount] = useState(null)
   
-  const handleAgree = (event) => {
-    setAgree(event.target.checked);
-  };
-
   const toggleExpand = (e) => {
     setExpand(!expand)
   }
 
   const logout = () => {
     props.data.logOut()
+  }
+
+  const paymentMinimum = Math.ceil(0.3 * order.total)
+
+  const handlePayAmount = (event) => {
+    
+    var value = null
+    try {
+      value = parseFloat(event.target.value)
+      if (Number.isNaN(value)) {
+        value = null
+      }
+      /*if (value < paymentMinimum) {
+        value = paymentMinimum
+      }*/
+    }
+    catch (error) {
+      value = null
+    }
+    setPayAmount(value)
   }
 
   const sendInvoice = async (order) => {
@@ -121,8 +142,12 @@ export default function Order(props) {
     .catch(function (error) {
       console.log(error);
     })    
-  };
+  }
 
+  const payOptionChange = (event)  => {
+    setPayOption(event.target.value)
+    setAgree(true)
+  }
   
   const loadOrder = async (e) => {
     if (!props.data.user || props.data.user.email=="") {
@@ -137,7 +162,7 @@ export default function Order(props) {
         setOrder(res.data)
     })
   }
-        
+
   useEffect(() => {
     loadOrder()
     setCourseRur(getCourse(setCourseRur,'rur'))
@@ -157,6 +182,9 @@ export default function Order(props) {
 
   let total = 0;
   let orderTotal = 0;
+
+  console.log('order:')
+  console.log(order)
   
   // orderTotal = 0
   // if (!!order && !!order.items && order.items.length>0) {
@@ -198,8 +226,6 @@ export default function Order(props) {
                   {/* <Grid item sx={{mb: 1}}><Header text="Status"></Header></Grid> */}
             
                 { !!order && !!order.items && order.items.map((data, index) => { 
-                  console.log("data:")
-                  console.log(data)
                   const link = "/product?id=" + data.productId
                   const src = !!data.imagePath ? config.api + "/" + data.imagePath : config.api + "/public/noimage.jpg"
                   const quantity = data.quantity + data.unit.replace('rolls','r').replace('meters','m')
@@ -217,10 +243,10 @@ export default function Order(props) {
                 {[1,2,3,4,5,6].map((data, index) => (
                   <Grid item></Grid>
                 ))}
-                <Grid item sx={{textAlign: "right", fontSize: "14px", fontWeight: 600, gridColumn: "span 2"}}>
-                  <Box sx={{display: "grid", gridTemplateColumns: "100px 70px", justifyContent: "flex-end"}}>
-                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "0px"}}>Total USD:</Typography>
-                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "0px"}}>{(!!orderTotal ? (fined(orderTotal.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " $") : "-")}</Typography>
+                <Grid item sx={{textAlign: "right", fontWeight: 600, gridColumn: "span 2", marginRight: "20px", marginTop: "10px"}}>
+                  <Box sx={{display: "grid", gridTemplateColumns: "100px 90px", justifyContent: "flex-end"}}>
+                    <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>Total USD:</Typography>
+                    <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>{(!!order.total ? (fined(order.total.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " $") : "-")}</Typography>
                     {/* <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Total RUR:</Typography>
                     <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!orderTotal && !!courseRur ? (fined((orderTotal*courseRur).toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " ₽") : "-")}</Typography>
                     <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Course USD:</Typography>
@@ -228,62 +254,43 @@ export default function Order(props) {
                   </Box>
                 </Grid>
       </Box>
-        {/* public DateTime? Date { get; set; }
-        public string? Currency { get; set; }
-        public int OrderId { get; set; }
-        public Decimal? Amount { get; set; }
-        public Decimal? CurrencyAmount { get; set; }
-        ExchangeRate
-        public int CurrencyId { get; set; } */}
 
+        { !!order && 
+          !!order.payments && 
+            order.payments.length != 0 &&
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "100px 100px 100px",
+          gridTemplateColumns: "120px 120px 140px 120px",
           columnGap: "8px",
           rowGap: "6px",
           fontSize: "16px",
           alignItems: "center" }}>
                   <Grid item sx={{mb: 1}}><Header text="Date"></Header></Grid>
                   <Grid item sx={{mb: 1}}><Header text="Amount"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Exchange rate "></Header></Grid>
                   <Grid item sx={{mb: 1}}><Header text="Amount USD"></Header></Grid>
             
-                { !!order && !!order.items && order.items.map((data, index) => { 
-                  console.log("data:")
-                  console.log(data)
-                  const link = "/product?id=" + data.productId
-                  const src = !!data.imagePath ? config.api + "/" + data.imagePath : config.api + "/public/noimage.jpg"
-                  const quantity = data.quantity + data.unit.replace('rolls','r').replace('meters','m')
+                { order.payments.map((data, index) => { 
                   return (
                   <React.Fragment>
-                    <GridItem link={link} center img src={src} />
-                    <GridItem link={link} text={(!!data.artNo ? "Art. " + data.artNo + " " : "") + data.itemName}/>
-                    <GridItem link={link} center text={data.design}/>
-                    <GridItem link={link} center text={data.colorNo}/>
-                    <GridItem link={link} center text={quantity}/>
-                    <GridItem link={link} center text={data.details}/>
-                    <GridItem link={link} center text={data.total+"m"}/>
-                    <GridItem link={link} center text={formattedPrice(data.price)}/>
+                    <GridItem center text={data.date}/>
+                    <GridItem center text={data.currencyAmount + data.currency}/>
+                    <GridItem center text={data.exchangeRate}/>
+                    <GridItem center text={data.amount}/>
                 </React.Fragment> )})}
-                {[1,2,3,4,5,6].map((data, index) => (
+                {[1,2].map((data, index) => (
                   <Grid item></Grid>
                 ))}
                 <Grid item sx={{textAlign: "right", fontSize: "14px", fontWeight: 600, gridColumn: "span 2"}}>
                   <Box sx={{display: "grid", gridTemplateColumns: "100px 70px", justifyContent: "flex-end"}}>
                     <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "0px"}}>Total USD:</Typography>
-                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "0px"}}>{(!!orderTotal ? (fined(orderTotal.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " $") : "-")}</Typography>
-                    {/* <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Total RUR:</Typography>
-                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!orderTotal && !!courseRur ? (fined((orderTotal*courseRur).toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " ₽") : "-")}</Typography>
-                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Course USD:</Typography>
-                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!courseRur ? (fined(courseRur.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2 })) + " ₽") : "-")}</Typography> */}
+                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "0px"}}>{(!!order.totalPaid ? (fined(order.totalPaid.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " $") : "-")}</Typography>
                   </Box>
                 </Grid>
-      </Box>
+      </Box> }
 
-      {/* <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}} >
-        <Box className="product-item" sx={{mt: 1}}>Total summ: {formattedPrice(orderTotal)}&nbsp;$</Box>
-      </Box> */}
 
-        { order.status != "paid" && <Box sx={{display: "flex", alignItems: "flex-start", mt: 3}}>
+        { !!order && order.totalPaid < order.total && <Box sx={{display: "flex", alignItems: "flex-start", mt: 3}}>
           <IconButtonWhite aria-label="expand" onClick={toggleExpand} >
           <KeyboardArrowDownIcon sx={{ color: "#3d694a", fontSize: 26 }} >
           </KeyboardArrowDownIcon>
@@ -296,26 +303,45 @@ export default function Order(props) {
           { invoiceUrl.length == 0 && <Box sx={{display: "flex", flexDirection: "column", alignItems: "left", mt: 4}} >
             <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}} >
               
-              <FormControlLabel required control={<Checkbox checked={agree} onChange={handleAgree} />} label="I confirm that the order composition meets my requirements" sx={{pl: 2 }} />
+              {/* <FormControlLabel required control={<Checkbox checked={agree} onChange={handleAgree} />} label="I confirm that the order details meets my requirements" sx={{pl: 2 }} /> */}
+               <FormControl>
+                  <FormLabel id="radio-buttons-group" sx={{ color: "#222", marginBottom: "5px" }}>Payment option:</FormLabel>
+                  <RadioGroup 
+                    aria-labelledby="radio-buttons-group"
+                    name="radio-buttons-group"
+                    value={payOption}
+                    onChange={payOptionChange}
+                  >
+                    <FormControlLabel value="payment" control={<Radio />} label="Pay for the order in full" />
+                    <FormControlLabel value="prepayment" control={<Radio />} label="Pay for the order partially" />
+                  </RadioGroup>
+              </FormControl>
+
             </Box>
-            <Box sx={{display: "flex", flexDirection: "row", alignItems: "center"}} >
-                <StyledTextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="payerName"
-                            label="Payer name"
-                            name="payerName"
-                            value={payerName}
-                            onChange={ev => setPayerName(ev.target.value)}
-                            style={itemStyle}
-                            autoFocus
-                          />
+            <Box sx={{ display: "grid", alignItems: "center", gridTemplateColumns: "150px 300px"}} >
+                <Grid item gridColumn="span 2"><StyledTextField item
+                  margin="normal"
+                  required
+                  id="payerName"
+                  label="Payer name"
+                  name="payerName"
+                  value={payerName}
+                  onChange={ev => setPayerName(ev.target.value)}
+                  style={{ width: 400 }}
+                  autoFocus /></Grid>
+                <Grid item><StyledTextField 
+                  margin="normal"
+                  required
+                  id="pay-amount"
+                  label="Amount"
+                  name="pay-amount"
+                  value={payAmount}
+                  onChange={handlePayAmount} /></Grid>
+                <Grid item><Typography sx={{ml: 2, mt: 1}}>Should be at least {paymentMinimum}$</Typography></Grid>
                 <StyledIconButton 
-                  size="small" 
                   aria-label="pay" 
-                  sx={{backgroundColor: "#222", color: "#fff", width: "80px", ml: 2}} 
-                  disabled={!agree || payerName.length < 6 || order.findIndex(x => !x.details) != -1}
+                  sx={{backgroundColor: "#222", color: "#fff", width: "90px", mt: 1}} 
+                  disabled={!agree || payerName.length < 6 || order.items.findIndex(x => !x.details) != -1 || payAmount < paymentMinimum }
                   onClick={(e)=> { sendInvoice(order) }} >
                   {/*onClick={(e)=> { pay(orders[orderIndex].id, orders[orderIndex].total) }} >*/}
                   {/* <AttachMoneyIcon sx={{color: "#fff"}} /> */}
@@ -336,7 +362,7 @@ export default function Order(props) {
                 <StyledIconButton 
                   size="small" 
                   aria-label="pay" 
-                  sx={{backgroundColor: "#222", color: "#fff", width: "80px", mt: 2}} 
+                  sx={{backgroundColor: "#222", color: "#fff", width: "90px", mt: 2}} 
                   onClick={(e)=> { setInvoiceUrl("") }} >
                   Back
                 </StyledIconButton>                          

@@ -16,6 +16,7 @@
         public string? Password { get; set; }
         public int? Hash { get; set; }
         public Decimal? Total { get; set; }
+        public Decimal? TotalPaid { get; set; }
         public Decimal? PaySumm { get; set; }
         public decimal? PaidLevel { get; set; }
         public OrderItem[]? Items { get; set; }

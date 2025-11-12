@@ -85,6 +85,7 @@ namespace chiffon_back.Controllers
                             from jv in joinvendors.DefaultIfEmpty()
                             select new { oi, j, jv }).ToList();
 
+                decimal summ = 0m;
                 List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
                 foreach (var item in items)
                 {
@@ -146,8 +147,11 @@ namespace chiffon_back.Controllers
                     orderItem.Total = !obj.Equals(System.DBNull.Value) ? Convert.ToDecimal(obj) : 0m;
                     orderItem.imagePath = imagePath;
                     orderItems.Add(orderItem);
+                    summ += (orderItem.Total != 0m ? orderItem.Total : orderItem.Quantity)*orderItem.Price;
                 }
+
                 o.Items = orderItems.ToArray();
+                o.Total = summ;
 
                 o.Payments = ctx.Payments
                     .Where(x => x.OrderId == Convert.ToInt32(o.Id))
@@ -157,7 +161,7 @@ namespace chiffon_back.Controllers
                 {
                     p.Currency = ctx.Currencies.FirstOrDefault(c => c.Id == p.CurrencyId).ShortName;
                 }
-                o.Total = o.Payments.Sum(x => x.Amount);
+                o.TotalPaid = o.Payments.Sum(x => x.Amount);
 
                 return o;
             }
