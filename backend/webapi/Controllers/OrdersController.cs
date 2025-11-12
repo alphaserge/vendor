@@ -1568,6 +1568,8 @@ namespace chiffon_back.Controllers
         [HttpPost("SendInvoice")]
         public string SendInvoice([FromBody]Models.Invoice inv)
         {
+            System.Data.DataTable dt = new System.Data.DataTable();
+
             int rc = 0;
             try
             {
@@ -1579,6 +1581,40 @@ namespace chiffon_back.Controllers
                 string fileName = String.Format("invoice_{0}.docx", inv.Number != null ? inv.Number.Value : "nonumber");
                 string contentRootPath = _webHostEnvironment.ContentRootPath;
                 path = System.IO.Path.Combine(contentRootPath, "files");
+                decimal knitting = 0m, woven = 0m;
+                foreach (var it in inv.Items)
+                {
+                    bool knitt = true;
+                    var product = ctx.Products.FirstOrDefault(x=>x.Id == it.ProductId);
+                    if (product != null)
+                    {
+                        var productType = ctx.ProductTypes.FirstOrDefault(x=>x.Id==it.ProductId);
+                        if (productType != null)
+                        {
+                            knitt = productType.TypeName.ToLower().Trim() == "knitting";
+                        }
+                    }
+
+                    decimal amount = 0; 
+                    if (it.Quantity != null)
+                        amount = it.Quantity.Value;
+                    if (!String.IsNullOrEmpty(it.Details))
+                    {
+                        try
+                        {
+                        amount = Convert.ToDecimal(dt.Compute(it.Details, ""));
+                        }
+                        catch (Exception ex) { }
+                    }
+
+                    if (knitt) {
+                        knitting += amount;
+                    } else
+                    {
+                        woven += amount;
+                    }
+                }
+
                 new InvoiceReports().CreateInvoice(inv, path, fileName, "Russian");
                 /*foreach (var it in ctx.OrderItems.Where(x => x.OrderId == order.Id))
                 {
