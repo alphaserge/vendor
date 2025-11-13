@@ -97,22 +97,12 @@ export default function Order(props) {
 
   const sendInvoice = async (order) => {
 
-    let data = 
-      { id: order.id,
-        number: order.number,
-        email: props.data.user.email,
-        phones: props.data.user.phones,
-        customer: payerName,
-        items: 
-          order.items.map((i) => ({ 
-            id: i.id,
-            productId: i.productId,
-            itemName: i.itemName,
-            quantity: i.quantity,
-            price: i.price,
-            unit: i.unit,
-            discountedRate: 0}))
-      }
+    let data = { 
+      order: order,
+      email: props.data.user.email,
+      phones: props.data.user.phones,
+      customer: payerName,
+    }
 
     await axios.post(
       config.api + '/SendInvoice', 

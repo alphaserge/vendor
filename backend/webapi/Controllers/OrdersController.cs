@@ -1566,7 +1566,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost("SendInvoice")]
-        public string SendInvoice([FromBody]Models.Invoice inv)
+        public string SendInvoice([FromBody]Models.InvoiceData inv)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
 
@@ -1578,57 +1578,64 @@ namespace chiffon_back.Controllers
                 //string language = "Russian";
                 string path = String.Format(@"files");
                 //img = @"colors\nopicture.png";
-                string fileName = String.Format("invoice_{0}.docx", inv.Number != null ? inv.Number.Value : "nonumber");
+                string fileName = String.Format("invoice_{0}.docx", inv.Order.Number != null ? inv.Order.Number : "no number");
                 string contentRootPath = _webHostEnvironment.ContentRootPath;
                 path = System.IO.Path.Combine(contentRootPath, "files");
-                decimal knitting = 0m, woven = 0m;
-                foreach (var it in inv.Items)
+                decimal knittingLeng = 0m, wovenLeng = 0m;
+                decimal knittingCost = 0m, wovenCost = 0m;
+                foreach (var it in inv.Order.Items)
                 {
                     bool knitt = true;
                     var product = ctx.Products.FirstOrDefault(x=>x.Id == it.ProductId);
-                    if (product != null)
-                    {
-                        var productType = ctx.ProductTypes.FirstOrDefault(x=>x.Id==it.ProductId);
-                        if (productType != null)
-                        {
-                            knitt = productType.TypeName.ToLower().Trim() == "knitting";
-                        }
-                    }
+                    if (product == null) throw new Exception("Product not found");
+                    
+                    var productType = ctx.ProductTypes.FirstOrDefault(x=>x.Id==product.ProductTypeId);
+                    if (productType == null) throw new Exception("Product type not found");
 
                     decimal amount = 0; 
-                    if (it.Quantity != null)
-                        amount = it.Quantity.Value;
+                    amount = it.Quantity;
                     if (!String.IsNullOrEmpty(it.Details))
                     {
                         try
                         {
-                        amount = Convert.ToDecimal(dt.Compute(it.Details, ""));
+                            amount = Convert.ToDecimal(dt.Compute(it.Details, ""));
                         }
-                        catch (Exception ex) { }
+                        catch (Exception ex) { throw new Exception($"Invalid details {it.Details}. Error:{ex.Message}"); }
                     }
 
-                    if (knitt) {
-                        knitting += amount;
+                    if (productType!.TypeName!.ToLower().Trim() == "knitting") {
+                        knittingLeng += amount;
+                        knittingCost += amount*it.Price;
                     } else
                     {
-                        woven += amount;
+                        wovenLeng += amount;
+                        wovenCost += amount * it.Price;
                     }
                 }
 
-                new InvoiceReports().CreateInvoice(inv, path, fileName, "Russian");
-                /*foreach (var it in ctx.OrderItems.Where(x => x.OrderId == order.Id))
+                Invoice invoice = new Invoice()
                 {
-                    var item = order.Items.FirstOrDefault(x => x.Id == it.Id);
-                    if (item != null)
-                    {
-                        it.Details = item.Details;
-                        rc++;
-                    }
-                }
-                ctx.SaveChanges();*/
+                    Currency = "RUR",
+                    Customer = inv.Customer,
+                    Date = DateTime.Now,
+                    Number = inv.Order.Number,
+                    Supplier = "ООО \"Текстильная компания Анжелика\"\"",
+                    SupplierBankBIC = "044525500",
+                    SupplierBankName = "\"КОММЕРЧЕСКИЙ ИНДО БАНК\" ООО Г.МОСКВА",
+                    SupplierCorrAccount = "30101810400000000500",
+                    SupplierFirmAccount = "40702810500000000066",
+                    SupplierDetails = "Общество с ограниченной ответственностью \"Текстильная компания \"АНЖЕЛИКА\", ИНН, 7706270562, КПП, 770601001, 119049,город Москва, улица Донская, дом 4, строение 2, 8 495 969 24 38",
+                    SupplierINN = "7706270562",
+                    SupplierKPP = "770601001",
+                    Phones = "",
+                    Knitting = knittingLeng,
+                    KnittingCost = knittingCost,
+                    Woven = wovenLeng,
+                    WovenCost = wovenCost,
+                };
 
-                //var message = new { FileName = Path.Combine(path, fileName) };
-                //return new OkObjectResult(message);
+                new InvoiceReports().CreateInvoice(invoice, path, fileName, "Russian");
+                
                 return System.IO.Path.Combine(@"files", fileName);
             }
             catch (Exception ex)

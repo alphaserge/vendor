@@ -24,11 +24,19 @@ namespace chiffon_back.Models
         public decimal? Price { get; set; }
          
     }
+
+    public class InvoiceData
+    {
+        public Order? Order { get; set; }
+        public string? Email { get; set; }
+        public string? Phones { get; set; }
+        public string? Customer { get; set; }
+    }
+
     public class Invoice
     {
-        public int? Id { get; set; }
         public int? Number { get; set; }
-        public string? Email { get; set; }
+        public DateTime? Date { get; set; }
         public string? Phones { get; set; }
         public string? Supplier { get; set; }
         public string? SupplierFirmAccount { get; set; }
@@ -38,14 +46,14 @@ namespace chiffon_back.Models
         public string? SupplierINN { get; set; }
         public string? SupplierKPP { get; set; }
         public string? SupplierDetails { get; set; }
-        public DateTime? Date { get; set; }
         public string? Customer { get; set; }
         public string? Currency { get; set; }
-        public decimal? PaySumm { get; set; }
-        public decimal? Knitting { get; set; }
-        public decimal? Woven { get; set; }
-        public InvoiceItem[]? Items { get; set; }
+        public decimal Knitting { get; set; }
+        public decimal Woven { get; set; }
+        public decimal KnittingCost { get; set; }
+        public decimal WovenCost { get; set; }
     }
+
 
     public class InvoiceReports
     {
@@ -63,19 +71,6 @@ namespace chiffon_back.Models
 
             OXML.OXSimpleWORD report = new OXML.OXSimpleWORD();
             
-            inv.Supplier = "ООО \"Текстильная компания Анжелика\"\"";
-
-            inv.SupplierFirmAccount = "40702810500000000066";
-            inv.SupplierBankName = "\"КОММЕРЧЕСКИЙ ИНДО БАНК\" ООО Г.МОСКВА";
-            inv.SupplierBankBIC = "044525500";
-            inv.SupplierCorrAccount = "30101810400000000500";
-            inv.SupplierINN = "7706270562";
-            inv.SupplierKPP = "770601001";
-            inv.SupplierDetails = "Общество с ограниченной ответственностью \"Текстильная компания \"АНЖЕЛИКА\", ИНН, 7706270562, КПП, 770601001, 119049,город Москва, улица Донская, дом 4, строение 2, 8 495 969 24 38";
-            inv.Date = DateTime.Now;
-            inv.Customer = "FIO";
-            inv.Currency = "RUR";
-
             report.SetParagraph(OXML.Aligment.CENTER, OXML.Interval.INT_POINT_10pt, 0);
 
             if (language == "English")
@@ -214,15 +209,16 @@ namespace chiffon_back.Models
             var f = new NumberFormatInfo { NumberGroupSeparator = " " };
 
             string[] items = { "Текстильное полотно", "Трикотажное полотно" };
-            decimal?[] qty = { inv.Knitting, inv.Woven };
+            decimal[] lens = { inv.Knitting, inv.Woven };
+            decimal[] costs = { inv.Knitting, inv.Woven };
 
-            for( int i = 0; i < 2; i++ )
+            for ( int i = 0; i < 2; i++ )
             {
-                if (qty[i] <= 0) continue;
+                if (lens[i] <= 0) continue;
 
-                int a = (int)qty[i];
-                int d = it.DiscountedRate == null ? 0 : it.DiscountedRate.Value;
-                decimal p = it.Price == null ? 0 : Math.Round(it.Price.Value * courseUSD, 2, MidpointRounding.ToZero);
+                int a = (int)lens[i];
+                int d = 0;// it.DiscountedRate == null ? 0 : it.DiscountedRate.Value;
+                decimal p = costs[i] * courseUSD; //it.Price == null ? 0 : Math.Round(it.Price.Value * courseUSD, 2, MidpointRounding.ToZero);
                 decimal t = p*a;
 
                 string price = p == null ? string.Empty : p.ToString("n", f) + " руб.";
@@ -233,12 +229,12 @@ namespace chiffon_back.Models
                 oxRow = new OXSimpleWordTableRow();
                 oxRow.Cells.Add(new OXSimpleWordTableCell("&" + numpp.ToString() + "&", "700", JustificationValues.Center, "18", "240"));
                 //oxRow.Cells.Add(new OXSimpleWordTableCell("&" +  it.ArtNo + "&", "1300", JustificationValues.Left, "18", "240"));
-                oxRow.Cells.Add(new OXSimpleWordTableCell("&" + it.ItemName + "&", "4000", JustificationValues.Left, "18", "240"));
+                oxRow.Cells.Add(new OXSimpleWordTableCell("&" + items[i] + "&", "4000", JustificationValues.Left, "18", "240"));
                 oxRow.Cells.Add(new OXSimpleWordTableCell("&" + amount + "&", "1100", JustificationValues.Center, "18", "240"));
                 if (language != "English")
-                    oxRow.Cells.Add(new OXSimpleWordTableCell("&" + it.Unit.Replace("rolls", "рул.").Replace("meters", "пог.м.").Replace("MET", "пог.м.").Replace("YDS", "пог.м.") + "&", "900", JustificationValues.Center, "18", "240"));
+                    oxRow.Cells.Add(new OXSimpleWordTableCell("&пог.м.&", "900", JustificationValues.Center, "18", "240"));
                 else
-                    oxRow.Cells.Add(new OXSimpleWordTableCell("&" + it.Unit.Replace("YDS", "MET") + "&", "900", JustificationValues.Center, "18", "240"));
+                    oxRow.Cells.Add(new OXSimpleWordTableCell("&MET&", "900", JustificationValues.Center, "18", "240"));
                 oxRow.Cells.Add(new OXSimpleWordTableCell("&" + price + "&", "1500", JustificationValues.Right, "18", "240"));
                 oxRow.Cells.Add(new OXSimpleWordTableCell("&" + total + "&", "1500", JustificationValues.Right, "18", "240"));
                 oxTable.Rows.Add(oxRow);
