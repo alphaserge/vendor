@@ -35,8 +35,13 @@ export default function Payments(props) {
       currencyAmount: parseFloat(paySumm), 
       currencyId: currencyId, 
       orderId: props.orderId, 
-      date: new Date() 
+      date: new Date() ,
+      id: 0,
+      amount: 0,
+      exchangeRate: 0,
+      currency: currencies.find((e) => e.id == currencyId).shortName //"string"
     })
+    
     setAddingState(false)
     setTimeout( () => { loadOrder() }, 300 )
   }

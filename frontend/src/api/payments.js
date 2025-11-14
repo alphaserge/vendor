@@ -3,7 +3,10 @@ import config from "../config.json"
 
 export const  postPayment = async (pay) => {
 
-  const ody = JSON.stringify(pay)
+  //pay.date = "2025-11-14T11:26:57.057Z"
+  const body = JSON.stringify(pay)
+
+  const url = config.api + '/Payments/Pay';
 
   let rc = await fetch(config.api + '/Payments/Pay', {
       method: "POST",

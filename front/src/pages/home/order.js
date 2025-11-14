@@ -194,7 +194,7 @@ export default function Order(props) {
 
         <Box className="center-content" sx={{minHeight: "300px", padding: "0px 100px"}}>
         <Box sx={{display: "flex", alignItems: "center", margin: "20px 0 10px"}}>
-          <PageHeader value={"Order no. " + " / "  }></PageHeader>
+          <PageHeader value={"Order no. " + order.number + " from "  + formattedDate(order.created)}></PageHeader>
             <StyledButtonWhite sx={{ marginLeft: 'auto', p: 0}} onClick={(e)=>{navigate("/orders")}}>Back to list</StyledButtonWhite>
             <StyledButtonWhite sx={{ ml: 2 }} onClick={(e)=>{logout(); navigate("/")}}>Log out</StyledButtonWhite>
         </Box> 
@@ -237,7 +237,7 @@ export default function Order(props) {
                 <Grid item sx={{textAlign: "right", fontWeight: 600, gridColumn: "span 2", marginRight: "20px", marginTop: "10px"}}>
                   <Box sx={{display: "grid", gridTemplateColumns: "100px 90px", justifyContent: "flex-end"}}>
                     <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>Total USD:</Typography>
-                    <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>{(!!order.total ? (fined(order.total.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " $") : "-")}</Typography>
+                    <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>{(!!order.total ? (toFixed2(order.total) + " $") : "-")}</Typography>
                     {/* <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Total RUR:</Typography>
                     <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!orderTotal && !!courseRur ? (fined((orderTotal*courseRur).toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " ₽") : "-")}</Typography>
                     <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Course USD:</Typography>
@@ -247,8 +247,12 @@ export default function Order(props) {
       </Box>
 
         { !!order && 
+          (!order.payments || order.payments.length == 0) && <Typography  sx={{fontSize: "16px", fontWeight: "500", marginTop: "20px"}}>Order has no payments</Typography>
+        }
+        { !!order && 
           !!order.payments && 
             order.payments.length != 0 &&
+        <Box><Typography  sx={{fontSize: "16px", fontWeight: "500", margin: "20px 0"}}>Order payments</Typography>
         <Box sx={{ 
           display: "grid", 
           gridTemplateColumns: "120px 120px 140px 120px",
@@ -258,27 +262,27 @@ export default function Order(props) {
           alignItems: "center" }}>
                   <Grid item sx={{mb: 1}}><Header text="Date"></Header></Grid>
                   <Grid item sx={{mb: 1}}><Header text="Amount"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Exchange rate "></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Amount USD"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Amount (USD)"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Exch. rate "></Header></Grid>
             
                 { order.payments.map((data, index) => { 
                   return (
                   <React.Fragment>
-                    <GridItem center text={data.date}/>
-                    <GridItem center text={data.currencyAmount + data.currency}/>
-                    <GridItem center text={data.exchangeRate}/>
-                    <GridItem center text={data.amount}/>
+                    <GridItem center text={formattedDate(data.date)}/>
+                    <GridItem center text={toFixed2(data.currencyAmount) + " " + data.currency}/>
+                    <GridItem center text={toFixed2(data.amount)}/>
+                    <GridItem center text={toFixed2(data.exchangeRate)}/>
                 </React.Fragment> )})}
                 {[1,2].map((data, index) => (
                   <Grid item></Grid>
                 ))}
-                <Grid item sx={{textAlign: "right", fontSize: "14px", fontWeight: 600, gridColumn: "span 2"}}>
-                  <Box sx={{display: "grid", gridTemplateColumns: "100px 70px", justifyContent: "flex-end"}}>
-                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "0px"}}>Total USD:</Typography>
-                    <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "0px"}}>{(!!order.totalPaid ? (fined(order.totalPaid.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " $") : "-")}</Typography>
+                <Grid item sx={{textAlign: "right", fontSize: "14px", gridColumn: "span 2", mt: 1}}>
+                  <Box sx={{display: "grid", gridTemplateColumns: "100px 90px", justifyContent: "flex-end"}}>
+                    <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>Total USD:</Typography>
+                    <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>{(!!order.totalPaid ? (toFixed2(order.totalPaid)) : "")}&nbsp;$</Typography>
                   </Box>
                 </Grid>
-      </Box> }
+      </Box></Box> }
 
 
         { !!order && order.totalPaid < order.total && <Box sx={{display: "flex", alignItems: "flex-start", mt: 3}}>
@@ -332,7 +336,7 @@ export default function Order(props) {
                 <StyledIconButton 
                   aria-label="pay" 
                   sx={{backgroundColor: "#222", color: "#fff", width: "90px", mt: 1}} 
-                  disabled={!agree || payerName.length < 6 || order.items.findIndex(x => !x.details) != -1 || payAmount < paymentMinimum }
+                  disabled={!agree || payerName.length < 6 || order.items.findIndex(x => !x.details) != -1 || (payOption=="prepayment" && payAmount < paymentMinimum) }
                   onClick={(e)=> { sendInvoice(order) }} >
                   Continue
                 </StyledIconButton>                          

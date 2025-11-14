@@ -53,7 +53,7 @@ export const formattedPrice = (value, empty) => {
         return nullWord
     }
     
-    return value.toFixed(2);// + ' $'
+    return value.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2}) // .toFixed(2);// + ' $'
 }
 
 export const isInteger = (x) => { return typeof x === "number" && isFinite(x) && Math.floor(x) === x; }
@@ -71,7 +71,8 @@ export function toFixed2(value) {
     
     if (!value === undefined || value === null) { return "-"}
 
-    return !!value.toFixed ?  value.toFixed(2) : value
+    return value.toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+    // return !!value.toFixed ?  value.toFixed(2) : value
 }
 
 export const validDecimal = (value) => {
