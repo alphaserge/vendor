@@ -52,6 +52,7 @@ namespace chiffon_back.Models
         public decimal Woven { get; set; }
         public decimal KnittingCost { get; set; }
         public decimal WovenCost { get; set; }
+        public decimal courseUSD { get; set; }
     }
 
 
@@ -67,8 +68,6 @@ namespace chiffon_back.Models
 
         public string CreateInvoice(Invoice inv, string path, string fileName, string language)
         {
-            decimal courseUSD = Helper.GetCurrencyCourse("USD", DateTime.Now);
-
             OXML.OXSimpleWORD report = new OXML.OXSimpleWORD();
             
             report.SetParagraph(OXML.Aligment.CENTER, OXML.Interval.INT_POINT_10pt, 0);
@@ -210,7 +209,7 @@ namespace chiffon_back.Models
 
             string[] items = { "Текстильное полотно", "Трикотажное полотно" };
             decimal[] lens = { inv.Knitting, inv.Woven };
-            decimal[] costs = { inv.Knitting, inv.Woven };
+            decimal[] costs = { inv.KnittingCost, inv.WovenCost };
 
             for ( int i = 0; i < 2; i++ )
             {
@@ -218,12 +217,12 @@ namespace chiffon_back.Models
 
                 int a = (int)lens[i];
                 int d = 0;// it.DiscountedRate == null ? 0 : it.DiscountedRate.Value;
-                decimal p = costs[i] * courseUSD; //it.Price == null ? 0 : Math.Round(it.Price.Value * courseUSD, 2, MidpointRounding.ToZero);
+                decimal p = costs[i] * inv.courseUSD; //it.Price == null ? 0 : Math.Round(it.Price.Value * inv.courseUSD, 2, MidpointRounding.ToZero);
                 decimal t = p*a;
 
-                string price = p == null ? string.Empty : p.ToString("n", f) + " руб.";
-                string rate = d == null ? string.Empty : d.ToString("n", f) + " руб.";
-                string total = t == null ? string.Empty : t.ToString("n", f) + " руб.";
+                string price  = p == null ? string.Empty : p.ToString("n", f) + " руб.";
+                string rate   = d == null ? string.Empty : d.ToString("n", f) + " руб.";
+                string total  = t == null ? string.Empty : t.ToString("n", f) + " руб.";
                 string amount = a == null ? string.Empty : a.ToString("n", f);
                 summ += t;
                 oxRow = new OXSimpleWordTableRow();

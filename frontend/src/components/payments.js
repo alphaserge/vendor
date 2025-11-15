@@ -14,6 +14,7 @@ import { postPayment } from '../api/payments'
 import config from "../config.json"
 import { toFixed2, formattedDate, percent, safeFixed } from "../functions/helper"
 import { getCurrencies, getCourse } from '../api/currencies'
+import { APPEARANCE as ap } from '../appearance'
 
 export default function Payments(props) {
 
@@ -32,7 +33,7 @@ export default function Payments(props) {
 
   const savePayment = (e) => {
     postPayment({ 
-      currencyAmount: parseFloat(paySumm), 
+      currencyAmount: parseFloat(paySumm.replace(/\s+/g, "")), 
       currencyId: currencyId, 
       orderId: props.orderId, 
       date: new Date() ,
@@ -69,7 +70,7 @@ export default function Payments(props) {
 
   },[])
   
-  const hasPayments = order.payments && order.payments.length != 0
+  const hasPayments = !!order && !!order.items && order.items.length != 0
 
   return <>
   
@@ -107,29 +108,32 @@ export default function Payments(props) {
           left: '50%',
           transform: 'translate(-50%, -50%)',
           boxShadow: 24,
-          padding: "25px",
+          padding: "5px",
           outline: "none",
           bgcolor: 'background.paper',
           display: "flex",
-          flexDirection: "column"
+          flexDirection: "column",
+          fontFamily: ap.FONTFAMILY
            }}>
+          <Box sx={{cursor: "pointer", padding: "5px"}} onClick={(e)=>{ setShow(false) }}>
+            <Box sx={{display: "fixed", fontSize: "16px", top: "10px", float: "right", width: "20px", textAlign: "right", fontFamily: ap.FONTFAMILY, color: "#555" }}>x</Box>
+            </Box>
+          <Box sx={{padding: "20px 50px", marginBottom: "20px"}}>
           { !addingState && hasPayments && <>
-          <Typography sx={{ padding: "10px", fontSize: "15px", fontWeight: 600, textAlign: "center" }}>Order&nbsp;{order.number}&nbsp;payments</Typography>
-          <table style={{marginLeft: "5px"}}>
-               {  order.payments.map((data, index) => (
+          <Typography sx={{ padding: "0 0 0 3px", fontSize: "14px", fontWeight: 500, fontFamily: ap.FONTFAMILY }}>Order total paid: {toFixed2(order.paySumm, 2)}&nbsp;usd</Typography>
+          <Typography sx={{ padding: "10px 0 5px 3px", fontSize: "14px", fontWeight: 500, fontFamily: ap.FONTFAMILY }}>Details:</Typography>
+          <table style={{marginLeft: "0px", marginBottom: "20px"}}>
+               {  order.items.map((data, index) => (
                 <tr>
-                <td style={{fontSize: "15px", padding: "3px 10px"}}>{formattedDate(data.date)}</td>
-                <td style={{fontSize: "15px", padding: "3px 0px", textAlign: "center"}}>:</td> 
-                <td style={{fontSize: "15px", padding: "3px 10px", textAlign: "right"}}>{ safeFixed(data.amount,2) }</td>
-                <td style={{fontSize: "15px", padding: "3px 10px", textAlign: "center"}}>{data.currency}</td>
+                <td style={{fontSize: "14px", fontFamily: ap.FONTFAMILY, padding: "3px 10px 3px 0"}}>{formattedDate(data.date)}</td>
+                <td style={{fontSize: "14px", fontFamily: ap.FONTFAMILY, padding: "3px 0px", textAlign: "center"}}>:</td> 
+                <td style={{fontSize: "14px", fontFamily: ap.FONTFAMILY, padding: "3px 10px", textAlign: "right"}}>{ toFixed2(data.currencyAmount,2) + " " + data.currency}</td>
                 </tr> ))}
-          </table>
-          <Typography sx={{ padding: "15px 10px", fontSize: "15px", fontWeight: 600, textAlign: "right" }}> Total&nbsp;paid:&nbsp;{safeFixed(order.paySumm, 2)}$&nbsp;</Typography>
-          </> }
+          </table></> }
 
           { !addingState && !hasPayments && 
           <Box display={"flex"} justifyContent={"center"}>
-          <Typography sx={{ padding: "10px", fontWeight: 500 }}> Order&nbsp;no.{order.number}&nbsp;has not been paid</Typography>
+          <Typography sx={{ padding: "5px", fontFamily: ap.FONTFAMILY, fontWeight: 500 }}> Order&nbsp;no.{order.number}&nbsp;has not been paid</Typography>
           </Box>
           }
 
@@ -155,20 +159,22 @@ export default function Payments(props) {
           <Button 
             onClick={(e)=>{ savePayment() }} //edge="end" 
             sx={{
-              backgroundColor: false ? "#ccc" : "#627eb5",
-              borderRadius: "3px",
+              backgroundColor: "#222",
+              borderRadius: "1px",
               color: "#fff", 
-              fontSize: "14px", 
+              fontSize: "13px",
+              padding: "4px 12px",
               textTransform: "none"}}>
                 Add
           </Button>
           <Button 
             onClick={(e)=>{ setAddingState(false) }} //edge="end" 
             sx={{
-              backgroundColor: false ? "#ccc" : "#627eb5",
-              borderRadius: "3px",
+              backgroundColor: "#222",
+              borderRadius: "1px",
               color: "#fff", 
-              fontSize: "14px", 
+              fontSize: "13px",
+              padding: "4px 12px",
               textTransform: "none"}}>
                 Cancel
           </Button>
@@ -176,32 +182,32 @@ export default function Payments(props) {
           </Box>
           }
 
-          { !addingState && <Box display={"flex"} justifyContent={"center"} marginTop={"5px"} columnGap={1}>
+          { !addingState && <Box display={"flex"} justifyContent={"center"} marginTop={"15px"} columnGap={1}>
           <Button 
             onClick={(e)=>{ setAddingState(true) }} //edge="end" 
             sx={{ 
-              backgroundColor: false ? "#ccc" : "#627eb5",
-              borderRadius: "3px",
+              backgroundColor: "#222",
+              borderRadius: "1px",
               color: "#fff", 
-              fontSize: "14px",
+              fontSize: "13px",
+              padding: "4px 12px",
               textTransform: "none"}}>
                 Add a payment
           </Button>
-          <Button 
+          {/* <Button 
             onClick={(e)=>{ setShow(false) }} //edge="end" 
             sx={{
-              backgroundColor: "#fff",
-              border: "1px solid #888",
-              borderRadius: "3px",
-              color: "#222", 
-              fontSize: "14px", 
+              backgroundColor: "#222",
+              borderRadius: "1px",
+              color: "#fff", 
+              fontSize: "13px", 
+              padding: "4px",
               textTransform: "none"}}>
                 Close
-          </Button>
-
-          
+          </Button> */}
           </Box>}
 
+      </Box>
       </Box>
     </Modal>
 

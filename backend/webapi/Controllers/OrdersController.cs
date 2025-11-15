@@ -869,6 +869,7 @@ namespace chiffon_back.Controllers
                 OrderId = x.OrderId,
                 CurrencyId = x.CurrencyId,
                 Amount = Math.Round(x.Amount, 2),
+                CurrencyAmount = Math.Round(x.CurrencyAmount, 2),
                 Date = x.Date,
                 Currency = ctx.Currencies.FirstOrDefault(c => c.Id == x.CurrencyId).ShortName
             }).ToArray();
@@ -1605,11 +1606,11 @@ namespace chiffon_back.Controllers
 
                     if (productType!.TypeName!.ToLower().Trim() == "knitting") {
                         knittingLeng += amount;
-                        knittingCost += amount*it.Price;
+                        knittingCost += it.Price;
                     } else
                     {
                         wovenLeng += amount;
-                        wovenCost += amount * it.Price;
+                        wovenCost += it.Price;
                     }
                 }
 
@@ -1632,6 +1633,7 @@ namespace chiffon_back.Controllers
                     KnittingCost = knittingCost,
                     Woven = wovenLeng,
                     WovenCost = wovenCost,
+                    courseUSD = Helper.GetCurrencyCourse("USD", DateTime.Now)
                 };
 
                 new InvoiceReports().CreateInvoice(invoice, path, fileName, "Russian");

@@ -285,7 +285,7 @@ export default function Order(props) {
       </Box></Box> }
 
 
-        { !!order && order.totalPaid < order.total && <Box sx={{display: "flex", alignItems: "flex-start", mt: 3}}>
+        { !!order && order.totalPaid+0.1 < order.total && <Box sx={{display: "flex", alignItems: "flex-start", mt: 3}}>
           <IconButtonWhite aria-label="expand" onClick={toggleExpand} >
           <KeyboardArrowDownIcon sx={{ color: "#3d694a", fontSize: 26 }} >
           </KeyboardArrowDownIcon>
