@@ -15,6 +15,7 @@
         public decimal TotalPaid { get; set; }
         public List<ClientOrderItem> Items { get; set; }
         public List<Payment> Payments { get; set; }
+        public List<string> Photos { get; set; }
     }
 
 

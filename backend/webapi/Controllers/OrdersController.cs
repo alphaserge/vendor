@@ -722,10 +722,26 @@ namespace chiffon_back.Controllers
             foreach (var order in orders)
             {
                 decimal total = 0;
+                order.Photos = new List<string>();
                 foreach (var oi in order.Items)
                 {
+
                     decimal actualQuantity = String.IsNullOrWhiteSpace(oi.Details) ? oi.Quantity : Convert.ToDecimal(dt.Compute(oi.Details, ""));
                     total += oi.Price * actualQuantity;
+
+                    var product = ctx.Products.FirstOrDefault(x => x.Id == oi.ProductId);
+                    foreach (string uuid in PhotoHelper.GetPhotoUuids(product.PhotoUuids))
+                    {
+
+                        order.Photos.AddRange(DirectoryHelper.GetImageFiles(uuid));
+                    }
+
+                    foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == product.Id))
+                    {
+
+                        order.Photos.AddRange(DirectoryHelper.GetImageFiles(cv.Uuid!));
+                    }
+
                 }
                 order.TotalCost = total;
             }

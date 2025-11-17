@@ -118,10 +118,10 @@ export default function Payments(props) {
           <Box sx={{cursor: "pointer", padding: "5px"}} onClick={(e)=>{ setShow(false) }}>
             <Box sx={{display: "fixed", fontSize: "16px", top: "10px", float: "right", width: "20px", textAlign: "right", fontFamily: ap.FONTFAMILY, color: "#555" }}>x</Box>
             </Box>
-          <Box sx={{padding: "20px 50px", marginBottom: "20px"}}>
+          <Box sx={{padding: "10px 40px", marginBottom: "20px"}}>
           { !addingState && hasPayments && <>
-          <Typography sx={{ padding: "0 0 0 3px", fontSize: "14px", fontWeight: 500, fontFamily: ap.FONTFAMILY }}>Order total paid: {toFixed2(order.paySumm, 2)}&nbsp;usd</Typography>
-          <Typography sx={{ padding: "10px 0 5px 3px", fontSize: "14px", fontWeight: 500, fontFamily: ap.FONTFAMILY }}>Details:</Typography>
+          <Typography sx={{ padding: "0 0 0 3px", fontSize: "14px", fontWeight: 500, fontFamily: ap.FONTFAMILY }}>Order total paid: <b>{toFixed2(order.paySumm, 2)}&nbsp;usd</b></Typography>
+          <Typography sx={{ padding: "10px 0 5px 3px", fontSize: "14px", fontWeight: "bold", fontFamily: ap.FONTFAMILY }}>Details:</Typography>
           <table style={{marginLeft: "0px", marginBottom: "20px"}}>
                {  order.items.map((data, index) => (
                 <tr>

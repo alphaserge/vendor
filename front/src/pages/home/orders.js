@@ -23,6 +23,7 @@ import { Button  } from "@mui/material";
 import { getCourse } from '../../api/currencies'
 import { getPayments } from '../../api/payments'
 import PageHeader from '../../components/pageheader';
+import OrderPhotos from '../../components/orderphotos';
 import Header from '../../components/header';
 import MainSection from './mainsection';
 import { formattedPrice, orderStatusString, fined, idFromUrl, formattedDate, toFixed2 } from "../../functions/helper";
@@ -94,6 +95,9 @@ export default function Orders(props) {
     //}
   }
 
+  console.log("ords:")
+console.log(orders)
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -103,18 +107,15 @@ export default function Orders(props) {
         data={props.data}/>
 
         <Box className="center-content" sx={{minHeight: "300px", padding: "0 0 0 135px"}}>
-        <PageHeader value="Your orders list"></PageHeader>
-        {/* <Box sx={{display: "flex", alignItems: "center", maxWidth: 650, margin: "20px 0 10px"}}>
-          <PageHeader value="Your orders list"></PageHeader>
-          <StyledButtonWhite sx={{ marginLeft: "auto" }} onClick={(e)=>{logout(); navigate("/")}}>Log out</StyledButtonWhite>
-        </Box> */}
+        <PageHeader value="Your orders" ></PageHeader>
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "120px 120px 120px 120px",
+          gridTemplateColumns: "120px 120px 120px 120px 120px",
           columnGap: "10px",
           rowGap: "20px",
           fontSize: "16px",
           alignItems: "center" }}>
+                  <Grid item><Header text="Photos"></Header></Grid>
                   <Grid item><Header text="Number"></Header></Grid>
                   <Grid item><Header text="Date"></Header></Grid>
                   <Grid item><Header text="Items"></Header></Grid>
@@ -124,6 +125,7 @@ export default function Orders(props) {
             
                 { orders.map((data, index) => ( 
               <React.Fragment>
+                <Link to={"/order?uuid=" + data.uuid } ><Grid item sx={{textAlign: "center"}}><OrderPhotos photos={data.photos}/></Grid></Link>
                 <Link to={"/order?uuid=" + data.uuid } ><Grid item sx={{textAlign: "center"}}>{data.number.toString().padStart(4, '0')}</Grid></Link>
                 <Link to={"/order?uuid=" + data.uuid } ><Grid item sx={{textAlign: "center"}}>{formattedDate(data.created)}</Grid></Link>
                 <Link to={"/order?uuid=" + data.uuid } ><Grid item sx={{textAlign: "center"}}>{data.items.length}</Grid></Link>
