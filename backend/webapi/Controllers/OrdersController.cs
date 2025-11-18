@@ -1187,11 +1187,11 @@ namespace chiffon_back.Controllers
                 newOrder.Number = max.Value + 1;
 
                 //set is samples order:
-                /*order.IsSamples = false;
+                newOrder.IsSamples = false;
                 if (order.Items.Length>0 && order.Items[0].Quantity == -1)
                 {
                     newOrder.IsSamples = true;
-                }*/
+                }
 
                 ctx.Orders.Add(newOrder);
 
