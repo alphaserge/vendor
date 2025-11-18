@@ -41,4 +41,30 @@
         //public string?[] Uuids { get; set; }
     }
 
+    public class OrderPost
+    {
+        public bool? IsSamples { get; set; }
+        public string? ClientName { get; set; }
+        public string? ClientPhone { get; set; }
+        public string? ClientEmail { get; set; }
+        public string? ClientAddress { get; set; }
+        public string? Password { get; set; }
+        public int? Hash { get; set; }
+        public OrderItemPost[]? Items { get; set; }
+        public string? Uuid { get; set; }
+    }
+
+    public class OrderItemPost
+    {
+        public int ProductId { get; set; }
+        public decimal Quantity { get; set; }
+        public decimal Price { get; set; }
+        public int? ColorVariantId { get; set; }
+        public int? ColorNo { get; set; }
+        public string? ColorNames { get; set; }
+        public string? Unit { get; set; }
+        public string? Uuid { get; set; }
+    }
+
 }
+

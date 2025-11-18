@@ -38,6 +38,10 @@ namespace chiffon_back.Controllers
             {
                 cfg.CreateMap<Models.Order, Context.Order>();
                 cfg.CreateMap<Context.Order, Models.Order>();
+                cfg.CreateMap<Models.OrderPost, Context.Order>();
+                cfg.CreateMap<Context.Order, Models.OrderPost>();
+                cfg.CreateMap<Models.OrderItemPost, Context.OrderItem>();
+                cfg.CreateMap<Context.OrderItem, Models.OrderItemPost>();
                 cfg.CreateMap<Models.OrderItem, Context.OrderItem>();
                 cfg.CreateMap<Context.OrderItem, Models.OrderItem>();
                 cfg.CreateMap<Models.ClientOrder, Context.Order>();
@@ -729,18 +733,33 @@ namespace chiffon_back.Controllers
                     decimal actualQuantity = String.IsNullOrWhiteSpace(oi.Details) ? oi.Quantity : Convert.ToDecimal(dt.Compute(oi.Details, ""));
                     total += oi.Price * actualQuantity;
 
-                    var product = ctx.Products.FirstOrDefault(x => x.Id == oi.ProductId);
-                    foreach (string uuid in PhotoHelper.GetPhotoUuids(product.PhotoUuids))
+                    string imagePath = @"colors\nopicture.png";
+                    if (oi.ColorVariantId != null && oi.ColorVariantId != -1)
                     {
-
-                        order.Photos.AddRange(DirectoryHelper.GetImageFiles(uuid));
+                        Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == oi.ColorVariantId);
+                        if (cv != null)
+                        {
+                            var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                            if (imageFiles.Count > 0)
+                            {
+                                imagePath = imageFiles[0];
+                            }
+                        }
                     }
-
-                    foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == product.Id))
+                    else
                     {
-
-                        order.Photos.AddRange(DirectoryHelper.GetImageFiles(cv.Uuid!));
+                        var product = ctx.Products.FirstOrDefault(x => x.Id == oi.ProductId);
+                        if (product != null)
+                        {
+                            string[] uuids = PhotoHelper.GetPhotoUuids(product.PhotoUuids);
+                            if (uuids.Length > 0)
+                            {
+                                var imageFiles = DirectoryHelper.GetImageFiles(uuids[0]);
+                                imagePath = imageFiles[0];
+                            }
+                        }
                     }
+                    order.Photos.Add(imagePath);
 
                 }
                 order.TotalCost = total;
@@ -1122,7 +1141,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost("Create")]
-        public ActionResult<Models.Order> Post([FromBody]Models.Order order)
+        public ActionResult<Models.OrderPost> Post([FromBody]Models.OrderPost order)
         {
             try
             {
@@ -1168,11 +1187,11 @@ namespace chiffon_back.Controllers
                 newOrder.Number = max.Value + 1;
 
                 //set is samples order:
-                order.IsSamples = false;
+                /*order.IsSamples = false;
                 if (order.Items.Length>0 && order.Items[0].Quantity == -1)
                 {
                     newOrder.IsSamples = true;
-                }
+                }*/
 
                 ctx.Orders.Add(newOrder);
 
@@ -1204,8 +1223,19 @@ namespace chiffon_back.Controllers
                     
                     newItem.OrderId = newOrder.Id;
 
-                    if (cv != null && cv.Price != null)
-                        newItem.Price = cv.Price.Value;
+                    string colorNames = "";
+                    if (cv != null)
+                    {
+                        if (cv.Price != null)
+                        {
+                            newItem.Price = cv.Price.Value;
+                        }
+                        var colorIds = ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == cv.Id).Select(x => x.ColorId).ToList();
+                        newItem.ColorNames = String.Join(", ", ctx.Colors.Where(x => colorIds.Contains(x.Id)).Select(x => x.ColorName));
+                    } else
+                    {
+                        newItem.ColorNames = "custom color";
+                    }
 
                     ctx.OrderItems.Add(newItem);
 
@@ -1260,7 +1290,7 @@ namespace chiffon_back.Controllers
                             + product.ItemName + $"</td><td style={cell}>" 
                             + product.RefNo + $"</td style={cell}><td>" 
                             + product.ArtNo + $"</td><td style={cell}>" 
-                            + product.Design + "<br/>" + item.ColorNames + $"</td><td style={rightAlign}>" 
+                            + product.Design + "<br/>" + colorNames + $"</td><td style={rightAlign}>" 
                             + newItem.Quantity + $" m </td><td style={rightAlign}>" 
                             + String.Format("{0:0.0#}", item.Price) + " $</td></tr>";
                         linkedRes.Add(LinkedImg);
@@ -1338,7 +1368,6 @@ namespace chiffon_back.Controllers
                 }
                 //------------------------------
 
-
                 return CreatedAtAction(nameof(Get), new { id = newOrder.Id }, newOrder);
             }
             catch (Exception ex)
@@ -1347,7 +1376,6 @@ namespace chiffon_back.Controllers
                 return CreatedAtAction(nameof(Get), new { id = -1 }, null);
             }
         }
-
 
         [HttpPost("Details")]
         public ActionResult<Models.Order> Details(Models.Order order)
