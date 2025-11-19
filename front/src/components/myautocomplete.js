@@ -107,7 +107,7 @@ export default function MyAutocomplete(props)
         <ul id="autocomplete-list" className="suggestions-list" role="listbox">
           {suggestions.map((suggestion, index) => (
             <li
-              key={index}
+              key={"sugg"+index}
               onClick={() => handleSuggestionClick(suggestion)}
               role="option"
             >

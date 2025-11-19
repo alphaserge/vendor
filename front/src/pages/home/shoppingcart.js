@@ -282,6 +282,8 @@ const makeOrder = async (event) => {
 
     let order = {
       uuid : uuid(),
+      isSamples : false,
+      clientName : clientName,
       clientName : clientName,
       clientPhone : clientPhone,
       clientEmail : clientEmail,
@@ -310,10 +312,6 @@ const makeOrder = async (event) => {
     //}
   }
 
-  console.log(generateSimplePassword())
-  console.log('shopcart')
-  console.log(shopCart)
-
   const totalPrice = shopCart.reduce((accumulator, data) => {
     return accumulator +  computeTotalPrice(data.product, data.quantity, data.unit=="rolls", data.colorVar)
   }, 0); // The '0' is the initial value of the accumulator
@@ -331,11 +329,10 @@ const makeOrder = async (event) => {
         data={props.data}/>
 
     {(step == "cart" && what == 'cart' && 
-    <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column"  }} className="center-content" >
-    <Box sx={{ justifyContent: "flex-start", alignItems: "center", maxWidth: "960px" }}  >
-      <Box sx={{marginTop: "20px"}}>
-      <PageHeader value={"Your shopping cart: " + shopCart.length + " items"} />
-      </Box>
+    <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column"  }} className="center-content"  key="a0">
+    <Box sx={{ justifyContent: "flex-start", alignItems: "center", maxWidth: "960px" }} key="a1" >
+      
+      <PageHeader value={"Your shopping cart: " + shopCart.length + " items"} key="b2" />
 
     <Box sx={{ 
       display: "grid", 
@@ -343,7 +340,8 @@ const makeOrder = async (event) => {
       columnGap: "5px",
       rowGap: "10px",
       fontSize: "13px",
-      alignItems: "center" }}>
+      alignItems: "center" }}
+      key="a2">
 
       <Grid item><Header text="Photo"></Header></Grid>
       <Grid item><Header text="Item name"></Header></Grid>
@@ -385,10 +383,9 @@ const makeOrder = async (event) => {
 
         <Box sx={{display: "flex", flexDirection: "row", justifyContent: "flex-end"}} >
         <ShortPrice value={fined(computeTotalPrice(data.product, data.quantity, data.unit=="rolls", data.colorVar))} />
-        <IconButton aria-label="delete" sx={{backgroundColor: "#fff", borderRadius: "8px", margin: "0", padding: "0" }}>
+        <IconButton aria-label="delete" sx={{backgroundColor: "#fff", borderRadius: "8px", margin: "0", padding: "0" }} onClick={(e)=>{deleteFromCart(index)}}>
           <DeleteOutlineIcon
-            sx={{ color: "#888", fontSize: 26}}
-            onClick={(e)=>{deleteFromCart(index)}} >
+            sx={{ color: "#888", fontSize: 26}} >
           </DeleteOutlineIcon>
         </IconButton>
         </Box>

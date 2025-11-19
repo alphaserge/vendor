@@ -61,7 +61,7 @@ export default function Selector(props) {
               {/* <span class="material-symbols-outlined" style={{fontSize: "18px", textAlign: "center", transform: "rotate(0.5turn)"}} >stat_minus_1</span>
               <span class="material-symbols-outlined" style={{fontSize: "18px", textAlign: "center" }} >stat_minus_1</span> */}
               <div 
-                class="material-symbols-outlined" 
+                className="material-symbols-outlined" 
                 onMouseDown={e => e.preventDefault()} 
                 onClick={(e) => { buttonClick(1 )}} 
                 style={{ 
@@ -72,7 +72,7 @@ export default function Selector(props) {
                   cursor: "pointer", 
                   transform: "rotate(0.5turn)"}}>stat_minus_1</div>
               <div 
-                class="material-symbols-outlined" 
+                className="material-symbols-outlined" 
                 onMouseDown={e => e.preventDefault()} 
                 onClick={(e) => { buttonClick(-1)}} 
                 style={{ 

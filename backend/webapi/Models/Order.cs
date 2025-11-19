@@ -63,7 +63,6 @@
         public int? ColorNo { get; set; }
         public string? ColorNames { get; set; }
         public string? Unit { get; set; }
-        public string? Uuid { get; set; }
     }
 
 }

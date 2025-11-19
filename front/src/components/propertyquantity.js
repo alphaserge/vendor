@@ -117,7 +117,7 @@ export default function PropertyQuantity(props) {
         </Select>
         {/* &nbsp;-&nbsp;{help} */}
     
-      <span class="item-label">&nbsp;&nbsp; {" ("}</span></td><td><span class="item-label">{help}&nbsp;{")"}</span>
+      <span className="item-label">&nbsp;&nbsp; {" ("}</span></td><td><span className="item-label">{help}&nbsp;{")"}</span>
     </td>
   </tr>
  </>

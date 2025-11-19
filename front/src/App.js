@@ -197,7 +197,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
     <div style={{ width: "100%" }} >
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_relativeSplatPath: true, v7_startTransition: true }}>
         <Routes>
           <Route path="/" element={<Home data={data} />} />
           <Route path="/login" element={<Login data={data} setData={setData} />} />

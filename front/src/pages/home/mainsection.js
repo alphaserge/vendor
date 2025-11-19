@@ -143,6 +143,13 @@ export default function MainSection(props) {
 useEffect(() => {
   }, []);
 
+
+  // Custom component that needs to forward its ref
+  const MyIconButton = React.forwardRef((props, ref) => (
+    <IconButton ref={ref} {...props}>
+      My Custom Button
+    </IconButton>
+  ));
   const age = getYearsFull(new Date() , new Date(2013,1,1,0,0,0,0))
 
   const { classes } = props;
@@ -173,45 +180,67 @@ useEffect(() => {
 
           <Grid item sx={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", minWidth: "260px"}}>
 
-            <Tooltip title={"Home page"}>
-              <IconButton onClick={(e)=>{navigate("/")}} sx={{ p: 0, ml: 2, mr: "10px" }}>
-                <HomeOutlinedIcon fontSize="26px" sx={buttonStyle} />
-              </IconButton>
-            </Tooltip>
+            <Link to="/" style={{ textDecoration: 'none' }} >
+              <React.Fragment>
+              <Tooltip title={"Home page"}>
+                <IconButton onClick={(e)=>{navigate("/")}} sx={{ p: 0, ml: 2, mr: "10px" }}>
+                  <HomeOutlinedIcon fontSize="26px" sx={buttonStyle} />
+                </IconButton>
+              </Tooltip>
+              </React.Fragment>
+            </Link>
 
             <Link to="/orders" style={{ textDecoration: 'none' }} >
-              <Tooltip title="Your orders"  >
+              <React.Fragment>
+              <Tooltip title="Your orders" >
                 <IconButton onClick={(e)=>{navigate("/orders")}} sx={{ p: 0, ml: 0, mr: "10px" }}>
                   <PersonOutlineOutlinedIcon fontSize="large" sx={buttonStyle} />
               </IconButton>
               </Tooltip>
+              </React.Fragment>
             </Link>
         
-            <Tooltip title={shopCart && shopCart.length>0  ? shopCart + " items" : "Shopping cart is empty"}>
-              <Box className="cart-label" onClick={(e)=>{ handleShowShoppingCart(true) }} >{shopCart && shopCart.length}</Box>
-                <IconButton onClick={(e)=>{ navigate("/shoppingcart?what=cart") /*props.openShoppingCart(true)*/ }} sx={{ p: 0, ml: "-16px", mr: "10px" }}>
-                  <ShoppingCartOutlinedIcon fontSize="large" sx={buttonStyle} />
-                </IconButton>
-            </Tooltip>
+            <Link to="/shoppingcart?what=cart" style={{ textDecoration: 'none' }} >
+              <React.Fragment>
+              <Tooltip title={shopCart && shopCart.length>0  ? shopCart + " items" : "Shopping cart is empty"}>
+                <React.Fragment>
+                <Box className="cart-label" onClick={(e)=>{ handleShowShoppingCart(true) }} >{shopCart && shopCart.length}</Box>
+                  <IconButton onClick={(e)=>{ navigate("/shoppingcart?what=cart") /*props.openShoppingCart(true)*/ }} sx={{ p: 0, ml: "-16px", mr: "10px" }}>
+                    <ShoppingCartOutlinedIcon fontSize="large" sx={buttonStyle} />
+                  </IconButton>
+                </React.Fragment>
+              </Tooltip>
+              </React.Fragment>
+            </Link>
 
+            <Link to="/shoppingcart?what=samples" style={{ textDecoration: 'none' }} >
+            <React.Fragment>
             <Tooltip title={shopCart && shopCart.length>0  ? shopCart + " items" : "Shopping cart is empty"}>
+              <React.Fragment>
               <Box className="cart-label" onClick={(e)=>{ handleShowShoppingCart(true) }} >{shopCart && shopCart.length}</Box>
                 <IconButton onClick={(e)=>{ navigate("/shoppingcart?what=samples") /*props.openShoppingCart(true)*/ }} sx={{ p: 0, ml: "-16px", mr: "10px" }}>
                   <ApiIcon fontSize="large" sx={buttonStyle} />
                 </IconButton>
+              </React.Fragment>
             </Tooltip>
+            </React.Fragment>
+            </Link>
 
+            <Link to="/" style={{ textDecoration: 'none' }} >
+            <React.Fragment>
             <Tooltip title={props.favorites != undefined ? props.favorites.amount : "Your favorite list is empty"}>
               <IconButton onClick={props.openFavorites} sx={{ p: 0, ml: 0, mr: "10px" }}>
                 <FavoriteBorderOutlinedIcon fontSize="large" sx={buttonStyle} />
               </IconButton>
             </Tooltip>
+            </React.Fragment>
+            </Link>
             
           </Grid>
 
 
           <Grid item sx={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", minWidth: "260px"}}>
-            <picture class="header-logo-picture" onClick={(e)=>{ navigate("/") }}>
+            <picture className="header-logo-picture" onClick={(e)=>{ navigate("/") }}>
             <img src="/afm.png" alt="Вернуться на главную" style={{padding: "10px 0", height: "88px"}}>
             </img>
             </picture>
@@ -231,7 +260,7 @@ useEffect(() => {
               onChange={ev => { setSearch(ev.target.value); props.searchProducts(ev.target.value)}}
               // variant="standard"
               InputProps={{
-                disableUnderline: true,
+                disableunderline: 1,
                 sx: { fontSize: "13px"},
                 endAdornment: (
                   <InputAdornment position="end">
@@ -269,50 +298,53 @@ useEffect(() => {
 <Box sx={{ background: "linear-gradient(135deg, #733b89 0%, #6f4b93 17%, #6475af 50%, #52b8da 95%, #50c0df 100%)", color: "#fff", fontSize: "15px", height: "60px"}}>
 <nav>
   <ul className="mainmenu">
-    <li>
+    <li key="mainmenu-1">
       <a href="#0">Textile type <ExpandDown /></a>
-      <ul class="columns-2">
-        {props.data.textileTypes && props.data.textileTypes.map((item) => { return (
-          <li><a href="#0" onClick={() => handleFilter(item,"textileType")}>{item.value}</a></li>); })}
+      <ul className="columns-2">
+        {props.data.textileTypes && props.data.textileTypes.map((item, index) => { return (
+          <li key={"mainmenu-1-"+index}><a href="#0" onClick={() => handleFilter(item,"textileType")}>{item.value}</a></li>); })}
       </ul>
     </li>
-    <li>
+    <li key="mainmenu-2">
       <a href="#0">Design type <ExpandDown /></a>
-      <ul class="columns-2">
-        {props.data.designTypes && props.data.designTypes.map((item) => { return (
-          <li><a href="#0" onClick={() => handleFilter(item,"designType")}>{item.value}</a></li>); })}
+      <ul className="columns-2">
+        {props.data.designTypes && props.data.designTypes.map((item, index) => { return (
+          <li key={"mainmenu-2-"+index}><a href="#0" onClick={() => handleFilter(item,"designType")}>{item.value}</a></li>); })}
       </ul>
     </li>
-    <li>
+    <li key="mainmenu-3">
       <a href="#0">Color <ExpandDown /></a>
-      <ul class="columns-3">
-        {props.data.colors && props.data.colors.map((item) => { return (
-          <li><a href="#0" onClick={() => handleFilter(item,"color")}>{item.value}</a></li>); })}
+      <ul className="columns-3">
+        {props.data.colors && props.data.colors.map((item, index) => { return (
+          <li key={"mainmenu-3-"+index}><a href="#0" onClick={() => handleFilter(item,"color")}>{item.value}</a></li>); })}
       </ul>
     </li>
-    <li>
+    <li key="mainmenu-4">
       <a href="#0">Season <ExpandDown /></a>
       <ul>
-        {props.data.seasons && props.data.seasons.map((item) => { return (
-          <li><a href="#0" onClick={() => handleFilter(item,"season")}>{item.value}</a></li>); })}
+        {props.data.seasons && props.data.seasons.map((item, index) => { return (
+          <li key={"mainmenu-4-"+index}><a href="#0" onClick={() => handleFilter(item,"season")}>{item.value}</a></li>); })}
       </ul>
     </li>
-    <li><a href="#0">Print type <ExpandDown /></a>
-    <ul>
-        {props.data.printTypes && props.data.printTypes.map((item) => { return (
-          <li><a href="#0" onClick={() => handleFilter(item,"printType")}>{item.value}</a></li>); })}
-      </ul>
-    </li>
-
-    <li><a href="#0">Product type <ExpandDown /></a>
-    <ul>
-        {props.data.printTypes && props.data.productTypes.map((item) => { return (
-          <li><a href="#0" onClick={() => handleFilter(item,"productType")}>{item.value}</a></li>); })}
+    <li key="mainmenu-5">
+      <a href="#0">Print type <ExpandDown /></a>
+      <ul>
+        {props.data.printTypes && props.data.printTypes.map((item, index) => { return (
+          <li key={"mainmenu-5-"+index}><a href="#0" onClick={() => handleFilter(item,"printType")}>{item.value}</a></li>); })}
       </ul>
     </li>
 
-    <li><a href="#0">Contacts <ExpandDown /></a>
-    <ul style={{ minWidth: "200px" }} >
+    <li key="mainmenu-6">
+      <a href="#0">Product type <ExpandDown /></a>
+      <ul>
+        {props.data.printTypes && props.data.productTypes.map((item, index) => { return (
+          <li key={"mainmenu-6-"+index}><a href="#0" onClick={() => handleFilter(item,"productType")}>{item.value}</a></li>); })}
+      </ul>
+    </li>
+
+    <li key="mainmenu-7">
+      <a href="#0">Contacts <ExpandDown /></a>
+      <ul style={{ minWidth: "200px" }} >
       <Box sx={{ minWidth: "200px" }} >
       <b>Showroom address:</b><br/>
       <Box sx={{margin: "5px 0 0 10px"}}>Yaroslavskoe shosse, possession 1 building 1, Mytishchi, Moscow region, Russia<br/>
@@ -322,12 +354,13 @@ useEffect(() => {
       <Box sx={{padding: "5px 0 0 10px"}}>
       Bolshaya Gruzinskaya, 20, 3A/P Moscow, Russia<br/>
       Postal code: 123242</Box>
-    </Box>
+      </Box>
       </ul>
     </li>
 
   </ul>
 </nav>
+
 </Box>
 </Box>
   );

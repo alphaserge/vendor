@@ -137,7 +137,7 @@ return <>
     </Box>
 
     <Box>
-    <table class="shopping-items" cellPadding={0} cellSpacing={0}>
+    <table className="shopping-items" cellPadding={0} cellSpacing={0}>
     <tbody>
     {shopCart.map((data, index) => (
       <tr style={{ height : "100px", cursor: "pointer"}} onClick={(e) => { navigate("/product?id=" + data.product.id) }}>
