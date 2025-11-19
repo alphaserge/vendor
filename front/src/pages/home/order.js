@@ -177,6 +177,11 @@ export default function Order(props) {
   console.log('order:')
   console.log(order)
   
+  var readyForPayment = false
+  if (!order && order.items.length>0 && order.items.findIndex(it => !it.details)==-1) {
+    readyForPayment = true
+  }
+
   // orderTotal = 0
   // if (!!order && !!order.items && order.items.length>0) {
   //   total = order.items.reduce((n, {price}) => n + price, 0)
@@ -235,8 +240,8 @@ export default function Order(props) {
                   <Grid item></Grid>
                 ))}
                 <Grid item sx={{textAlign: "right", fontWeight: 600, gridColumn: "span 2", marginRight: "20px", marginTop: "10px"}}>
-                  <Box sx={{display: "grid", gridTemplateColumns: "100px 90px", justifyContent: "flex-end"}}>
-                    <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>Total USD:</Typography>
+                  <Box sx={{display: "grid", gridTemplateColumns: "auto 90px", justifyContent: "flex-end"}}>
+                    <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>Total ordered USD:</Typography>
                     <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>{(!!order.total ? (toFixed2(order.total) + " $") : "-")}</Typography>
                     {/* <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>Total RUR:</Typography>
                     <Typography sx={{fontSize: "14px", fontWeight: "500", marginTop: "5px"}}>{(!!orderTotal && !!courseRur ? (fined((orderTotal*courseRur).toLocaleString('ru-RU', {minimumFractionDigits: 2, maximumFractionDigits: 2})) + " ₽") : "-")}</Typography>
@@ -277,15 +282,15 @@ export default function Order(props) {
                   <Grid item></Grid>
                 ))}
                 <Grid item sx={{textAlign: "right", fontSize: "14px", gridColumn: "span 2", mt: 1}}>
-                  <Box sx={{display: "grid", gridTemplateColumns: "100px 90px", justifyContent: "flex-end"}}>
-                    <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>Total USD:</Typography>
+                  <Box sx={{display: "grid", gridTemplateColumns: "auto 90px", justifyContent: "flex-end", marginTop: "10px", marginRight: "24px"}}>
+                    <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>Total paid USD:</Typography>
                     <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>{(!!order.totalPaid ? (toFixed2(order.totalPaid)) : "")}&nbsp;$</Typography>
                   </Box>
                 </Grid>
       </Box></Box> }
 
 
-        { !!order && order.totalPaid+0.1 < order.total && <Box sx={{display: "flex", alignItems: "flex-start", mt: 3}}>
+        { !!order && order.totalPaid+0.1 < order.total && readyForPayment && <Box sx={{display: "flex", alignItems: "flex-start", mt: 3}}>
           <IconButtonWhite aria-label="expand" onClick={toggleExpand} >
           <KeyboardArrowDownIcon sx={{ color: "#3d694a", fontSize: 26 }} >
           </KeyboardArrowDownIcon>
