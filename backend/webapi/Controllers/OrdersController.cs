@@ -5,6 +5,8 @@ using chiffon_back.Models;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Vml;
+using DocumentFormat.OpenXml.Wordprocessing;
+
 
 
 //using Microsoft.AspNetCore.Cors;
@@ -1298,7 +1300,7 @@ namespace chiffon_back.Controllers
                         if (cv != null && cv.Price != null)
                             item.Price = cv.Price.Value;
                         
-                        total += item.Price  * newItem.Quantity;
+                        total += (item.Price != null ? item.Price.Value : 0m) * newItem.Quantity;
                     }
                 }
                 itemsBody += "</table>";
@@ -1407,6 +1409,9 @@ namespace chiffon_back.Controllers
         {
             try
             {
+                string? frontendUrl = _configuration.GetValue<string>("Url:Frontend");
+                string? ordersManager = _configuration.GetValue<string>("Orders:Manager");
+
                 Context.OrderItem? oi = ctx.OrderItems.FirstOrDefault(x => x.Id == cd.Id);
                 if (oi != null)
                 {
@@ -1414,6 +1419,24 @@ namespace chiffon_back.Controllers
                     oi.DeliveryCompany = cd.DeliveryCompany;
                     oi.DeliveryNo = cd.DeliveryNo;
                     ctx.SaveChanges();
+
+                    if (cd.Details != null)
+                    {
+                        int nullDetailsItems = ctx.OrderItems.Count(x => x.OrderId == oi.OrderId && String.IsNullOrWhiteSpace(x.Details));
+                        if (nullDetailsItems == 0)
+                        {
+                            Context.Order? order = ctx.Orders.FirstOrDefault(x => x.Id == oi.OrderId);
+                            if (order != null)
+                            {
+                                // inform client
+                                SendMessage(order.ClientEmail,
+                                    order.ClientName,
+                                    $"The contents of your order number {order.Number} dated {order.Created} have been confirmed by the supplier. To further complete your order, you must make payment; to do this, please follow the link below.",
+                                    $"{frontendUrl}/orders?id={order.Id}",
+                                    $"Changes to your order number {order.Number}");
+                            }
+                        }
+                    }
                 }
 
                 return Ok();// CreatedAtAction(nameof(Context.OrderItem), new { id = cd.Id }, "");
@@ -1473,6 +1496,65 @@ namespace chiffon_back.Controllers
             catch (Exception ex)
             {
                 Log("DeliveryInfo", ex); return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
+            }
+        }
+
+        public void SendMessage(string email, string clientName, string text, string url, string subject)
+        {
+            string label = "'font-weight: normal; font-size: 100%; padding: 5px 12px;'";
+            string cell = "'padding: 10px 20px;'";
+            string rightAlign = "'text-align: right;padding: 10px 20px;'";
+            string none = "''";
+            string header = "'font-weight: #400; color: #66f;'";
+            string width600 = "'max-width: 600px;'";
+            string headerBlack = "'font-weight: bold; color: #000;'";
+
+            using (MailMessage mess = new MailMessage())
+            {
+
+                string? frontendUrl = _configuration.GetValue<string>("Url:Frontend");
+                string? ordersManager = _configuration.GetValue<string>("Orders:Manager");
+
+                string body = $"<p>Dear {clientName}!</p>"; // ..style={header}
+                body += $"<p style={width600}>{text}</p>";
+                if (!String.IsNullOrWhiteSpace(url))
+                {
+                    body += $"<p>Your order link <a href='{url}'>here</a> </p>";
+                }
+
+                body += $"<p>Best regards, textile company Angelika</p>";
+                body += $"<p>Our contacts:</p>";
+                body += "<p>Showroom address:<br/>Yaroslavskoe shosse, possession 1 building 1, Mytishchi, Moscow region, Russia.<br/>Postal code: 141009<br/>Phones: +7(926)018-01-25, +7(916)876-20-08";
+                body += "<p>Headquarters:<br/>Bolshaya Gruzinskaya, 20, 3A/P Moscow, Russia.<br/>Postal code: 123242</p>";
+
+                SmtpClient client = new SmtpClient("smtp.mail.ru", Convert.ToInt32(587))
+                {
+                    Credentials = new NetworkCredential("elizarov.sa@mail.ru", "5nwKmZ2SpintVmFRQVZV"), //"KZswYNWrd9eY1xVfvkre"),
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network,
+                    Timeout = 5000
+                };
+
+                mess.From = new MailAddress("elizarov.sa@mail.ru");
+                mess.To.Add(new MailAddress(email));
+                mess.To.Add(new MailAddress(ordersManager));
+                mess.Subject = subject;
+                mess.SubjectEncoding = Encoding.UTF8;
+
+                // !! to do - add link to order !!
+                mess.Body = body;
+                //mess.AlternateViews.Add(AV);
+                mess.IsBodyHtml = true;
+                /* try
+                {
+                    mess.Attachments.Add(new Attachment(какой файл добавлять для отправки));
+                }
+                catch { } */
+                client.Send(mess);
+                mess.Dispose();
+                client.Dispose();
+                Console.WriteLine("A new order confirmation email was sended");
+
             }
         }
 
