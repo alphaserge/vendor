@@ -56,7 +56,7 @@ const theme = createTheme({
     },
   },
   typography: {
-      fontFamily: ['Poppins', 'Noto Sans Japanese', 'Arial'].join(','),
+      fontFamily: ['Open Sans', 'Arial'].join(','),
   },  
 });
 

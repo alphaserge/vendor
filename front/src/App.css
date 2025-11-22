@@ -1,6 +1,6 @@
 
  :root {
---font: '"Poppins", "Noto Sans Japanese", Arial !important';
+  --font: '"Open Sans", "Arial", "system-ui"';
 }
 
 body {
@@ -16,7 +16,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Poppins', 'Noto Sans Japanese', 'Arial' !important;
+  font-family: 'Open Sans', 'Arial' !important;
   font-size: 15px;
   background-color: #fafafa;
   font-weight: 100;
@@ -39,7 +39,7 @@ body {
 }
 
 .MuiTypography-root {
- font-family: 'Poppins', 'Noto Sans Japanese', 'Arial' !important;
+ font-family: 'Open Sans', 'Arial' !important;
  /*font-size: 14px !important;*/
 }
 
@@ -52,7 +52,7 @@ label.MuiFormLabel-root,
 label.MuiInputLabel-root,
 button.MuiButtonBase-root,
 button.MuiButton-root {
-  font-family: 'Poppins', 'Noto Sans Japanese', 'Arial' !important;
+  font-family: 'Open Sans', 'Arial' !important;
 }
 
 /* for remove blue background in TextField, input: */
@@ -192,31 +192,22 @@ div.product-img {
 
 
 .product-item {
-  font-size: 15px;
-  padding: 8px 0 0 0;
-  color: #000;
+  font-size: 14px;
+  padding: 0px 0 0 0;
+  color: #222;
 }
 
 .price {
-  color: #80398d;
-  /* font-size: 14px; */
-}
-
-
-.product-item .label {
-  font-size: 15px;
-  font-weight: bold;
-  color: #000;
-  min-width: 112px; 
-}
-
-@media (max-width: 900px) {
- .product-item .label {
-  font-size: 14px;
-} 
-.product-item {
+  color: #a34ab3;
+  font-weight: 500;
   font-size: 14px;
 }
+
+
+.product-item.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
 }
 
 div.quantity input[type=text]  {

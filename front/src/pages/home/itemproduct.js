@@ -46,7 +46,7 @@ export default function ItemProduct(props) {
         <Box className="product-quickview" onClick={(e)=>{ props.quickView(e, props.data)}} >Quick view</Box>
 
           <Swiper className="swiper" >
-            {props.data.colors.map((cv, index) => {
+            {!!props.data.colors && props.data.colors.map((cv, index) => {
               return <Box key={"product-box-"+index} >
               <SwiperSlide key={"product-swiper-"+index} sx={{ display: "flex", justifyContent: "center", width: "240px" }} >
                 <Box className="product-img-holder" ><Box component={"img"} key={"product-swiper-"+index} 
@@ -56,11 +56,24 @@ export default function ItemProduct(props) {
               </Box>
           })}
           </Swiper>
-        
-      <Box sx={{ display: "flex", flexDirection: "column", marginLeft: "5px", marginTop: "10px"}}> 
-        <Box className="product-item">{props.data.itemName}</Box>
-        <Box className="product-item price">From {fined(computePrice(props.data, 1000, false))} $ per meter</Box>
-      </Box> 
+
+      <Box sx={{ display: "grid", gridTemplateColumns: "48px 10px auto", marginLeft: "5px", marginTop: "5px", alignItems: "center"}}>   
+          {/* <Box className="product-item" sx={{gridColumn: "1 / -1", fontWeight: "600"}}>{props.data.itemName}</Box>
+          <Box className="product-item" sx={{gridColumn: "1 / -1"}}>Art. no&nbsp;:&nbsp;&nbsp;{props.data.artNo}</Box>
+          <Box className="product-item" sx={{gridColumn: "1 / -1"}}>Design&nbsp;:&nbsp;&nbsp;{props.data.design}</Box>
+          <Box className="product-item" sx={{gridColumn: "1 / -1"}}>Price&nbsp;from&nbsp;:&nbsp;&nbsp; {fined(computePrice(props.data, 1000, false))}$</Box> */}
+          
+          <Box className="product-item" sx={{gridColumn: "1 / -1", fontWeight: "600", minHeight: "40px"}}>{props.data.itemName}</Box>
+          <Box className="product-item label" >Art. no</Box>
+          <Box className="product-item label" >:</Box>
+          <Box className="product-item" >{props.data.artNo}</Box>
+          <Box className="product-item label" >Design</Box>
+          <Box className="product-item label" >:</Box>
+          <Box className="product-item" >{props.data.design}</Box> 
+          <Box className="product-item label" sx={{textAlign: "left"}}>Price</Box>
+          <Box className="product-item label" >:</Box>
+          <Box><span class="product-item price">from&nbsp;</span><span class="product-item price">{fined(computePrice(props.data, 1000, false))}$</span></Box>
+      </Box>
       
       <div style={{ clear: "left" }} >
       </div>

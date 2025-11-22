@@ -102,6 +102,7 @@ export default function Order(props) {
       email: props.data.user.email,
       phones: props.data.user.phones,
       customer: payerName,
+      payAmount: payAmount
     }
 
     await axios.post(
@@ -178,10 +179,11 @@ export default function Order(props) {
   console.log(order)
   
   var readyForPayment = false
-  if (!order && order.items.length>0 && order.items.findIndex(it => !it.details)==-1) {
+  if (!!order && order.items && order.items.length>0 && order.items.findIndex(it => !it.details)==-1) {
     readyForPayment = true
   }
 
+  console.log(readyForPayment)
   // orderTotal = 0
   // if (!!order && !!order.items && order.items.length>0) {
   //   total = order.items.reduce((n, {price}) => n + price, 0)
@@ -333,7 +335,7 @@ export default function Order(props) {
                   margin="normal"
                   required
                   id="pay-amount"
-                  label="Amount"
+                  label="Amount $"
                   name="pay-amount"
                   value={payAmount}
                   onChange={handlePayAmount} /></Grid>

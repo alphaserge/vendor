@@ -31,6 +31,7 @@ namespace chiffon_back.Models
         public string? Email { get; set; }
         public string? Phones { get; set; }
         public string? Customer { get; set; }
+        public decimal PayAmount { get; set; }
     }
 
     public class Invoice

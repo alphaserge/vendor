@@ -1715,9 +1715,13 @@ namespace chiffon_back.Controllers
                     bool knitt = true;
                     var product = ctx.Products.FirstOrDefault(x=>x.Id == it.ProductId);
                     if (product == null) throw new Exception("Product not found");
-                    
+
+                    string productTypeName = "knitting";
                     var productType = ctx.ProductTypes.FirstOrDefault(x=>x.Id==product.ProductTypeId);
-                    if (productType == null) throw new Exception("Product type not found");
+                    if (productType != null)
+                    {
+                        productTypeName = productType!.TypeName!.ToLower().Trim();
+                    }
 
                     decimal amount = 0; 
                     amount = it.Quantity;
@@ -1730,14 +1734,23 @@ namespace chiffon_back.Controllers
                         catch (Exception ex) { throw new Exception($"Invalid details {it.Details}. Error:{ex.Message}"); }
                     }
 
-                    if (productType!.TypeName!.ToLower().Trim() == "knitting") {
+                    if (productTypeName == "knitting") {
                         knittingLeng += amount;
-                        knittingCost += it.Price;
+                        knittingCost += it.Price * amount;
                     } else
                     {
                         wovenLeng += amount;
-                        wovenCost += it.Price;
+                        wovenCost += it.Price * amount;
                     }
+                }
+
+                decimal rate = 0m;
+                decimal total = knittingCost + wovenCost;
+                if (total > 0m)
+                {
+                    rate = inv.PayAmount / total;
+                    knittingCost *= rate;
+                    wovenCost *= rate;
                 }
 
                 Invoice invoice = new Invoice()
