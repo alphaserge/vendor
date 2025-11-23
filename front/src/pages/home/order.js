@@ -155,6 +155,10 @@ export default function Order(props) {
     })
   }
 
+  const deleteOrderItem = (e) => {
+    console.log(e)
+  }
+
   useEffect(() => {
     loadOrder()
     setCourseRur(getCourse(setCourseRur,'rur'))
@@ -235,8 +239,8 @@ export default function Order(props) {
                     <GridItem link={link} center text={data.colorNo}/>
                     <GridItem link={link} center text={quantity}/>
                     <GridItem link={link} center text={data.details}/>
-                    <GridItem link={link} center text={data.total+"m"}/>
-                    <GridItem link={link} center text={formattedPrice(data.price)}/>
+                    <GridItem link={link} center text={!!data.total ? data.total+"m" : "-"}/>
+                    <GridItem             center text={formattedPrice(data.price)} onDelete={deleteOrderItem}/>
                 </React.Fragment> )})}
                 {[1,2,3,4,5,6].map((data, index) => (
                   <Grid item></Grid>
