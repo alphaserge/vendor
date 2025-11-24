@@ -199,15 +199,16 @@ div.product-img {
 
 .price {
   color: #a34ab3;
-  font-weight: 500;
+  font-weight: 700;
   font-size: 14px;
 }
 
 
 .product-item.label {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   color: #333;
+  color: #616881;
 }
 
 div.quantity input[type=text]  {
