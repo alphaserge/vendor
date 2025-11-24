@@ -1142,6 +1142,22 @@ namespace chiffon_back.Controllers
             return order;
         }
 
+        [HttpDelete("OrderItem")]
+        public ActionResult<int> DeleteOrderItem([FromBody] int id)
+        {
+            try
+            {
+                ctx.OrderItems.Remove(ctx.OrderItems.FirstOrDefault(x => x.Id == id));
+                ctx.SaveChanges();
+                return Ok();
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpPost("Create")]
         public ActionResult<Models.OrderPost> Post([FromBody]Models.OrderPost order)
         {

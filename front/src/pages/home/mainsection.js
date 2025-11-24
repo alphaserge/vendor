@@ -21,7 +21,7 @@ import ApiIcon from '@mui/icons-material/Api';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-import HomeIcon from '@mui/icons-material/Home';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 
 import axios from 'axios'
@@ -194,7 +194,7 @@ useEffect(() => {
               <React.Fragment>
               <Tooltip title="Your orders" >
                 <IconButton onClick={(e)=>{navigate("/orders")}} sx={{ p: 0, ml: 0, mr: "10px" }}>
-                  <PersonOutlineOutlinedIcon fontSize="large" sx={buttonStyle} />
+                  <ListAltIcon fontSize="large" sx={buttonStyle} />
               </IconButton>
               </Tooltip>
               </React.Fragment>

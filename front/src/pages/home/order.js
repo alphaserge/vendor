@@ -24,6 +24,7 @@ import config from "../../config.json"
 import Footer from './footer';
 import { Button  } from "@mui/material";
 
+import { deleteOrderItem } from '../../api/orders'
 import { getCourse } from '../../api/currencies'
 import { getPayments } from '../../api/payments'
 import PageHeader from '../../components/pageheader';
@@ -95,6 +96,13 @@ export default function Order(props) {
     setPayAmount(value)
   }
 
+  const removeOrderItem = (id) => {
+
+    deleteOrderItem(id)
+    loadOrder(fromUrl("uuid"))
+
+  }
+
   const sendInvoice = async (order) => {
 
     let data = { 
@@ -155,9 +163,6 @@ export default function Order(props) {
     })
   }
 
-  const deleteOrderItem = (e) => {
-    console.log(e)
-  }
 
   useEffect(() => {
     loadOrder()
@@ -240,7 +245,7 @@ export default function Order(props) {
                     <GridItem link={link} center text={quantity}/>
                     <GridItem link={link} center text={data.details}/>
                     <GridItem link={link} center text={!!data.total ? data.total+"m" : "-"}/>
-                    <GridItem             center text={formattedPrice(data.price)} onDelete={deleteOrderItem}/>
+                    <GridItem             center text={formattedPrice(data.price)} onDelete={(e) => removeOrderItem(data.id)}/>
                 </React.Fragment> )})}
                 {[1,2,3,4,5,6].map((data, index) => (
                   <Grid item></Grid>

@@ -17,7 +17,7 @@ export const getOrders = (setFn) => {
 
     const error = {
       ok: true,
-      message: "Order has been added"
+      message: "Order not added"
     }
   
     //console.log(order)
@@ -33,6 +33,27 @@ export const getOrders = (setFn) => {
     return {
       ok: true,
       message: "The new order has been added"
+    }
+};
+
+export const deleteOrderItem = async (id) => {
+
+    const error = {
+      ok: true,
+      message: "Order item not removed"
+    }
+  
+    const responce = await fetch(config.api + '/OrderItem', {
+      method: "DELETE",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(id)
+    })
+
+    console.log(responce);
+
+    return {
+      ok: true,
+      message: "The order item has been removed"
     }
 };
 
