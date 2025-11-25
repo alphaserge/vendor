@@ -59,7 +59,7 @@ export default function ItemProduct(props) {
           })}
           </Swiper>
 
-      <Box sx={{ display: "grid", gridTemplateColumns: "55px 10px auto", marginLeft: "5px", marginTop: "5px", alignItems: "center", justifyContent: "flex-start"}}>   
+      <Box sx={{ display: "grid", gridTemplateColumns: "55px 15px auto", marginLeft: "5px", marginTop: "5px", alignItems: "center", justifyContent: "flex-start"}}>   
           {/* <Box className="product-item" sx={{gridColumn: "1 / -1", fontWeight: "600"}}>{props.data.itemName}</Box>
           <Box className="product-item" sx={{gridColumn: "1 / -1"}}>Art. no&nbsp;:&nbsp;&nbsp;{props.data.artNo}</Box>
           <Box className="product-item" sx={{gridColumn: "1 / -1"}}>Design&nbsp;:&nbsp;&nbsp;{props.data.design}</Box>

@@ -12,11 +12,8 @@ import FormLabel from '@mui/material/FormLabel';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
-import Checkbox from '@mui/material/Checkbox';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import LogoutIcon from '@mui/icons-material/Logout';
+import Modal from '@mui/material/Modal'
 
 import axios from 'axios'
 
@@ -38,6 +35,7 @@ import IconButtonWhite from "../../components/iconbuttonwhite";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import StyledTextField from '../../components/styledtextfield';
 import GridItem from "../../components/griditem";
+import ConfirmationDialog from '../../components/confirmationdialog';
 
 const defaultTheme = createTheme()
 
@@ -63,6 +61,7 @@ export default function Order(props) {
   const [agree, setAgree] = useState(false)
   const [invoiceUrl, setInvoiceUrl] = useState("")
   const [expand, setExpand] = useState(false)
+  const [showConfirmation, setShowConfirmation] = useState(false)
   const [courseRur, setCourseRur] = useState(0)
   const [payOption, setPayOption] = React.useState("")
   const [payerName, setPayerName] = useState( !props.data.user.payerName ? "" : props.data.user.payerName )
@@ -96,11 +95,10 @@ export default function Order(props) {
     setPayAmount(value)
   }
 
-  const removeOrderItem = (id) => {
+  const removeOrderItem = async (id) => {
 
-    deleteOrderItem(id)
+    await deleteOrderItem(id)
     loadOrder(fromUrl("uuid"))
-
   }
 
   const sendInvoice = async (order) => {
@@ -163,12 +161,33 @@ export default function Order(props) {
     })
   }
 
+  const handleDeleteClick = () => {
+    setShowConfirmation(true);
+  };
+
+  const handleConfirmDelete = (id) => {
+    // Perform the deletion logic here
+    console.log('Item deleted!');
+    setShowConfirmation(false);
+    removeOrderItem(id)
+  };
+
+  const handleCancelDelete = () => {
+    console.log('Deletion cancelled.');
+    setShowConfirmation(false);
+  };
+
 
   useEffect(() => {
     loadOrder()
     setCourseRur(getCourse(setCourseRur,'rur'))
-    //getPayments(setPayments, orders[orderIndex].id)
   }, [])
+
+  // useEffect(() => {
+  //   loadOrder()
+  //   setCourseRur(getCourse(setCourseRur,'rur'))
+  // }, [reload])
+
 
   if (!props.data.user || props.data.user.Id === 0) {
     navigate("/login")
@@ -179,7 +198,6 @@ export default function Order(props) {
       navigate("/?q=" + encodeURIComponent(param))
     //}
   }
-
 
   let total = 0;
   let orderTotal = 0;
@@ -203,6 +221,25 @@ export default function Order(props) {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
+
+        {/* <Modal
+          open={showConfirmation}
+          onClose={function() { setShowConfirmation(false) }}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+          sx={{ width: "auto"}} >
+        <Box component="div" >
+          <Typography>Are you sure?<br/>Continue?</Typography>
+        </Box>
+        </Modal> */}
+
+         <ConfirmationDialog
+        message="Are you sure you want to delete this item?"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        isVisible={showConfirmation}
+      />
+
 
       <MainSection
         searchProducts={searchProducts}
@@ -245,7 +282,7 @@ export default function Order(props) {
                     <GridItem link={link} center text={quantity}/>
                     <GridItem link={link} center text={data.details}/>
                     <GridItem link={link} center text={!!data.total ? data.total+"m" : "-"}/>
-                    <GridItem             center text={formattedPrice(data.price)} onDelete={(e) => removeOrderItem(data.id)}/>
+                    <GridItem             center text={formattedPrice(data.price)} onDelete={(e) => handleDeleteClick(data.id)}/>
                 </React.Fragment> )})}
                 {[1,2,3,4,5,6].map((data, index) => (
                   <Grid item></Grid>
