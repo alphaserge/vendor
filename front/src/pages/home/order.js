@@ -66,6 +66,7 @@ export default function Order(props) {
   const [payOption, setPayOption] = React.useState("")
   const [payerName, setPayerName] = useState( !props.data.user.payerName ? "" : props.data.user.payerName )
   const [payAmount, setPayAmount] = useState(null)
+  const [deleteId, setDeleteId] = useState(null)
   
   const toggleExpand = (e) => {
     setExpand(!expand)
@@ -111,8 +112,12 @@ export default function Order(props) {
       payAmount: payAmount
     }
 
+    if (payOption=="payment") {
+      data.payAmount = order.total
+    }
+
     await axios.post(
-      config.api + '/SendInvoice', 
+      config.api + '/SendInvoice',
       JSON.stringify(data), 
       { headers: { "Content-Type" : "application/json" }})
         .then(function (response) {
@@ -158,18 +163,20 @@ export default function Order(props) {
     axios.get(config.api + '/Order?uuid=' + uuid) 
     .then(function (res) {
         setOrder(res.data)
+        //setPayAmount()
     })
   }
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = (id) => {
+    setDeleteId(id)
     setShowConfirmation(true);
   };
 
-  const handleConfirmDelete = (id) => {
+  const handleConfirmDelete = () => {
     // Perform the deletion logic here
     console.log('Item deleted!');
     setShowConfirmation(false);
-    removeOrderItem(id)
+    removeOrderItem(deleteId)
   };
 
   const handleCancelDelete = () => {
@@ -235,7 +242,7 @@ export default function Order(props) {
 
          <ConfirmationDialog
         message="Are you sure you want to delete this item?"
-        onConfirm={handleConfirmDelete}
+        onConfirm={(e)=>handleConfirmDelete(order.id)}
         onCancel={handleCancelDelete}
         isVisible={showConfirmation}
       />

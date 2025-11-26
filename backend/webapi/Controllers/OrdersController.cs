@@ -1147,8 +1147,16 @@ namespace chiffon_back.Controllers
         {
             try
             {
-                ctx.OrderItems.Remove(ctx.OrderItems.FirstOrDefault(x => x.Id == id));
+                int? orderId = ctx.OrderItems.FirstOrDefault(x => x.Id == id)!.OrderId;
+                ctx.OrderItems.Remove(ctx.OrderItems.FirstOrDefault(x => x.Id == id)!);
                 ctx.SaveChanges();
+                var itemsExist = ctx.OrderItems.Where(x => x.OrderId == orderId).Count() > 0;
+                var paymentsExist = ctx.Payments.Where(x => x.OrderId == orderId).Count() > 0;
+                if (!itemsExist && !paymentsExist)
+                {
+                    ctx.Orders.Remove(ctx.Orders.FirstOrDefault(x => x.Id == orderId)!);
+                    ctx.SaveChanges();
+                }
                 return Ok();
 
             }
@@ -1752,11 +1760,11 @@ namespace chiffon_back.Controllers
 
                     if (productTypeName == "knitting") {
                         knittingLeng += amount;
-                        knittingCost += it.Price * amount;
+                        knittingCost += it.Price;// * amount;
                     } else
                     {
                         wovenLeng += amount;
-                        wovenCost += it.Price * amount;
+                        wovenCost += it.Price;// * amount;
                     }
                 }
 
@@ -1790,6 +1798,11 @@ namespace chiffon_back.Controllers
                     WovenCost = wovenCost,
                     courseUSD = Helper.GetCurrencyCourse("USD", DateTime.Now)
                 };
+
+                if (invoice.courseUSD <=0 )
+                {
+                    throw new Exception("Course USD not available. Please try later.");
+                }
 
                 new InvoiceReports().CreateInvoice(invoice, path, fileName, "Russian");
                 
