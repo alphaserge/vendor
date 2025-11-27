@@ -125,7 +125,7 @@ export default function Order(props) {
           return true;
         })
         .catch(function (error) {
-          setInvoiceUrl("")
+          setInvoiceUrl("error")
           return false;
         })
   };
@@ -209,8 +209,8 @@ export default function Order(props) {
   let total = 0;
   let orderTotal = 0;
 
-  console.log('order:')
-  console.log(order)
+  console.log('invoiceUrl:')
+  console.log(invoiceUrl)
   
   var readyForPayment = false
   if (!!order && order.items && order.items.length>0 && order.items.findIndex(it => !it.details)==-1) {
@@ -406,19 +406,22 @@ export default function Order(props) {
 
           { invoiceUrl.length > 0 && <Box sx={{display: "flex", flexDirection: "column", gap: "20px",  alignItems: "center", mt: 4 }} className="product-item" >
             
+            {invoiceUrl != "error" && <>
               <Box>Your invoice is ready</Box>
-              
               <Box><Link to={invoiceUrl} sx={{pt: 2}} style={{ textDecoration: 'none' }} >
                 Please <span style={{color: "#44f", backgroundColor: "#ddd", padding: "1px 8px", borderRadius: "12px"}}>click this link</span> to download document
               </Link></Box>
-            
+            </>}
+            {invoiceUrl == "error" && <>
+              <Box>An error occured while generating the document. Please try later.</Box>
+            </>}
                 <StyledIconButton 
                   size="small" 
                   aria-label="pay" 
                   sx={{backgroundColor: "#222", color: "#fff", width: "90px", mt: 2}} 
                   onClick={(e)=> { setInvoiceUrl("") }} >
                   Back
-                </StyledIconButton>                          
+                </StyledIconButton>                    
         </Box> }
 
         </React.Fragment>

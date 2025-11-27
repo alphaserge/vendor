@@ -216,15 +216,15 @@ namespace chiffon_back.Models
             {
                 if (lens[i] <= 0) continue;
 
-                int a = (int)lens[i];
+                decimal a = lens[i];
                 int d = 0;// it.DiscountedRate == null ? 0 : it.DiscountedRate.Value;
-                decimal p = costs[i] * inv.courseUSD; //it.Price == null ? 0 : Math.Round(it.Price.Value * inv.courseUSD, 2, MidpointRounding.ToZero);
+                decimal p = a > 0m ? costs[i]/a * inv.courseUSD : 0m; //it.Price == null ? 0 : Math.Round(it.Price.Value * inv.courseUSD, 2, MidpointRounding.ToZero);
                 decimal t = p*a;
 
-                string price  = p == null ? string.Empty : p.ToString("n", f) + " руб.";
-                string rate   = d == null ? string.Empty : d.ToString("n", f) + " руб.";
-                string total  = t == null ? string.Empty : t.ToString("n", f) + " руб.";
-                string amount = a == null ? string.Empty : a.ToString("n", f);
+                string price  = p.ToString("n", f) + " руб.";
+                string rate   = d.ToString("n", f) + " руб.";
+                string total  = t.ToString("n", f) + " руб.";
+                string amount = a.ToString("n", f);
                 summ += t;
                 oxRow = new OXSimpleWordTableRow();
                 oxRow.Cells.Add(new OXSimpleWordTableCell("&" + numpp.ToString() + "&", "700", JustificationValues.Center, "18", "240"));

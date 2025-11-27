@@ -1717,7 +1717,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost("SendInvoice")]
-        public string SendInvoice([FromBody]Models.InvoiceData inv)
+        public ActionResult<string> SendInvoice([FromBody]Models.InvoiceData inv)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
 
@@ -1760,11 +1760,11 @@ namespace chiffon_back.Controllers
 
                     if (productTypeName == "knitting") {
                         knittingLeng += amount;
-                        knittingCost += it.Price;// * amount;
+                        knittingCost += it.Price * amount;
                     } else
                     {
                         wovenLeng += amount;
-                        wovenCost += it.Price;// * amount;
+                        wovenCost += it.Price * amount;
                     }
                 }
 
@@ -1773,8 +1773,9 @@ namespace chiffon_back.Controllers
                 if (total > 0m)
                 {
                     rate = inv.PayAmount / total;
-                    knittingCost *= rate;
-                    wovenCost *= rate;
+                    //!show total price when partial payment!
+                    //!knittingCost *= rate;
+                    //!wovenCost *= rate;
                 }
 
                 Invoice invoice = new Invoice()
@@ -1806,12 +1807,12 @@ namespace chiffon_back.Controllers
 
                 new InvoiceReports().CreateInvoice(invoice, path, fileName, "Russian");
                 
-                return System.IO.Path.Combine(@"files", fileName);
+                return Ok(System.IO.Path.Combine(@"files", fileName));
             }
             catch (Exception ex)
             {
                 Log("SendInvoice", ex);
-                return "error"; //BadRequest(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
