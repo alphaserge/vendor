@@ -26,7 +26,7 @@
     "react-markdown": "^9.0.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.22.3",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-slick": "^0.30.3",
     "redux": "^5.0.1",
     "styled-components": "^6.1.19",
@@ -36,7 +36,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "set PORT=3010 && react-scripts start",
+    "ssl": "node set-ssl.js",
+    "start": "set HTTPS=true && set PORT=3010 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

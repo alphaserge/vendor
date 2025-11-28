@@ -298,6 +298,9 @@ useEffect(() => {
 <Box sx={{ background: "linear-gradient(135deg, #733b89 0%, #6f4b93 17%, #6475af 50%, #52b8da 95%, #50c0df 100%)", color: "#fff", fontSize: "15px", height: "60px"}}>
 <nav>
   <ul className="mainmenu">
+    <li key="mainmenu-0">
+      <Link to="/" style={{margin: "0 5px", color: "#fff"}} onClick={() => { if (props.setFilter) { props.setFilter("clear", [])}}} >All fabrics</Link>
+    </li>
     <li key="mainmenu-1">
       <a href="#0">Textile type <ExpandDown /></a>
       <ul className="columns-2">
@@ -342,7 +345,7 @@ useEffect(() => {
       </ul>
     </li>
 
-    <li key="mainmenu-7">
+    {/* <li key="mainmenu-7">
       <a href="#0">Contacts <ExpandDown /></a>
       <ul style={{ minWidth: "200px" }} >
       <Box sx={{ minWidth: "200px" }} >
@@ -356,7 +359,7 @@ useEffect(() => {
       Postal code: 123242</Box>
       </Box>
       </ul>
-    </li>
+    </li> */}
 
   </ul>
 </nav>
