@@ -37,7 +37,7 @@
   },
   "scripts": {
     "ssl": "node set-ssl.js",
-    "start": "set HTTPS=true && set PORT=3010 && react-scripts start",
+    "start": "set PORT=3010 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

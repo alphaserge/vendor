@@ -1793,10 +1793,10 @@ namespace chiffon_back.Controllers
                     SupplierINN = "7706270562",
                     SupplierKPP = "770601001",
                     Phones = "",
-                    Knitting = knittingLeng,
-                    KnittingCost = knittingCost,
-                    Woven = wovenLeng,
-                    WovenCost = wovenCost,
+                    Knitting = knittingLeng*rate,
+                    KnittingCost = knittingCost * rate,
+                    Woven = wovenLeng * rate,
+                    WovenCost = wovenCost * rate,
                     courseUSD = Helper.GetCurrencyCourse("USD", DateTime.Now)
                 };
 
