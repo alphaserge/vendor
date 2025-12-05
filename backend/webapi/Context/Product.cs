@@ -34,7 +34,7 @@
         public int? PrintTypeId { get; set; }
         public int? ProductStyleId { get; set; }
         public int? ProductTypeId { get; set; }
-        public int? VendorId { get; set; }
+        public int VendorId { get; set; }
 
 
         public virtual ProductStyle? ProductStyle { get; set; }

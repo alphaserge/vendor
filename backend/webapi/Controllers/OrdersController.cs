@@ -7,8 +7,6 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Vml;
 using DocumentFormat.OpenXml.Wordprocessing;
 
-
-
 //using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -33,6 +31,14 @@ namespace chiffon_back.Controllers
         public string value { get; set; }
         public string id { get; set; }
     }
+
+    public class VendorInfo
+    {
+        public string email { get; set; }
+        public string vendorName { get; set; }
+        public string text { get; set; }
+    }
+
 
     public class OrdersController : ControllerBase
     {
@@ -1242,6 +1248,7 @@ namespace chiffon_back.Controllers
                     $"<th style={label}><b>Design/Color</b></th><th style={label}><b>Quantity</b></th>" + 
                     $"<th style={label}><b>Price (per 1 m.)</b></th></thead>";
 
+                Dictionary<int, VendorInfo> info = new Dictionary<int, VendorInfo>();
                 List<LinkedResource> linkedRes = new List<LinkedResource>();
                 foreach(var item in order.Items)
                 {
@@ -1275,8 +1282,6 @@ namespace chiffon_back.Controllers
                     if (product != null)
                     {
                         string img = String.Empty;
-                        
-
                         if (cv != null)
                         {
                             var imageFiles = DirectoryHelper.GetImageFiles(cv?.Uuid!);
@@ -1330,6 +1335,21 @@ namespace chiffon_back.Controllers
                             item.Price = cv.Price.Value;
                         
                         total += (item.Price != null ? item.Price.Value : 0m) * newItem.Quantity;
+
+                        VendorInfo vi = info.ContainsKey(product.VendorId) ? info[product.VendorId] : new VendorInfo();
+                        if (!info.ContainsKey(product.VendorId))
+                        {
+                            var vendor = ctx.Vendors.FirstOrDefault(x => x.Id == product.VendorId);
+                            if (vendor != null)
+                            {
+                                vi.email = vendor.Email;
+                                vi.vendorName = vendor.VendorName;
+                                vi.text = "";
+                            }
+                        }
+                        vi.text += $"<p>{product.ArtNo} : {product.ItemName} </p>";
+
+                        info[product.VendorId] = vi;
                     }
                 }
                 itemsBody += "</table>";

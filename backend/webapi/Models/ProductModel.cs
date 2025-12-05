@@ -563,7 +563,7 @@ namespace chiffon_back.Models
                     prod.RollLength = product.RollLength;
                     prod.ProductStyleId = product.ProductStyleId;
                     prod.ProductTypeId = product.ProductTypeId;
-                    prod.VendorId = product.VendorId;
+                    prod.VendorId = product.VendorId != null ? product.VendorId.Value : -1;
                     prod.Weight = product.Weight;
                     prod.Width = product.Width;
                     prod.RollLength = product.RollLength;
