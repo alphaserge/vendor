@@ -190,9 +190,10 @@ export default function ListOrder(props) {
         <table className="orders">
           <tr className="table-header sticky">
             <th>Photo</th>
-            <th>Art / Ref no.</th>
+            <th>Art / Ref</th>
             <th>Design /&nbsp;Color</th>
             <th>Item name</th>
+            <th>Price</th>
             <th>Logistic</th>
             {/* <th>Stock</th> */}
             <th>Delivery</th>
@@ -237,6 +238,11 @@ export default function ListOrder(props) {
                           (&nbsp;{data.vendorName}&nbsp;)</span>
                           </Link>
                         </td>        
+                        <td style={{textAlign: "center"}}>
+                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+                          <span className="my-val">{data.price}&nbsp;$</span>
+                          </Link>
+                        </td>        
                         {/* <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
                           <span className="my-val">{quantityInfo(data)}</span>
@@ -250,7 +256,7 @@ export default function ListOrder(props) {
                           { !!data.details && <span>{data.details}</span> }
                           { !data.details && <span style={{backgroundColor: "#ddd", width: "16px", textAlign: "center", fontSize: "11px", borderRadius: "3px"}}>?</span> }
                           <span style={styleLabel}>total:</span>
-                          { !!data.total && <span>{data.total}</span> }
+                          { !!data.total && <span>{data.total}&nbsp;m</span> }
                           { !data.total && <span style={{backgroundColor: "#ddd", width: "16px", textAlign: "center", fontSize: "11px", borderRadius: "3px"}}>?</span> }
                           
                           </Box>

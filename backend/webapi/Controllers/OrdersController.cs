@@ -349,14 +349,15 @@ namespace chiffon_back.Controllers
                 var payQuery = ctx.Payments.Where(x => x.OrderId == item.oi.OrderId);
                 decimal? paySumm = payQuery.Sum(x => x.Amount != null ? x.Amount : 0m);
                 decimal? totalSumm = 0m;
+                decimal totalDetails = 0m;
                 foreach (var oi in ctx.OrderItems.Where(x => x.OrderId == item.oi.OrderId))
                 {
                     decimal t = 0m;
-                    if (!String.IsNullOrEmpty(item.oi.Details))
+                    if (!String.IsNullOrEmpty(oi.Details))
                     {
                         try
                         {
-                            t = Convert.ToDecimal(dt.Compute(item.oi.Details, ""));
+                            t = Convert.ToDecimal(dt.Compute(oi.Details, ""));
                         }
                         catch (Exception ex)
                         {
@@ -368,7 +369,10 @@ namespace chiffon_back.Controllers
                     }
 
                     totalSumm += t * oi.Price;
+                    if (oi.Id == item.oi.Id)
+                        totalDetails = t;
                 }
+
 
                 Models.OrderItem orderItem = new Models.OrderItem()
                 {
@@ -380,7 +384,7 @@ namespace chiffon_back.Controllers
                     ItemName = item.j.ItemName,
                     //Composition = item.j.Composition,
                     Design = item.j.Design,
-                    Price = item.oi.Price,
+                    Price = item.j.Price != null ? item.j.Price.Value : 0,
                     Quantity = item.oi.Quantity,
                     Unit = item.oi.Unit,
                     Details = item.oi.Details,
@@ -397,6 +401,7 @@ namespace chiffon_back.Controllers
                     VendorId = item.j.VendorId,
                     VendorName = ctx.Vendors.FirstOrDefault(x=>x.Id==item.j.VendorId)?.VendorName,
                     PaidShare = paySumm != null && totalSumm > 0m ? paySumm / totalSumm : 0m,
+                    Total = totalDetails,
                 };
 
                 string imagePath = @"colors\nopicture.png";

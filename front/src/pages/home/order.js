@@ -67,6 +67,10 @@ export default function Order(props) {
   const [payerName, setPayerName] = useState( !props.data.user.payerName ? "" : props.data.user.payerName )
   const [payAmount, setPayAmount] = useState(null)
   const [deleteId, setDeleteId] = useState(null)
+
+  const totalPaid = (!!order.totalPaid ? order.totalPaid : 0)
+  const totalPaidStr = (!!order.totalPaid ? (toFixed2(order.totalPaid) + "$") : "")
+  const totalPaidPart = (!!order.totalPaid && !!order.total && order.total > 0 ? (" (" + toFixed2(100*order.totalPaid/order.total) + "%)") : "")
   
   const toggleExpand = (e) => {
     setExpand(!expand)
@@ -113,7 +117,7 @@ export default function Order(props) {
     }
 
     if (payOption=="payment") {
-      data.payAmount = order.total
+      data.payAmount = order.total - totalPaid
     }
 
     await axios.post(
@@ -217,7 +221,6 @@ export default function Order(props) {
     readyForPayment = true
   }
 
-  console.log(readyForPayment)
   // orderTotal = 0
   // if (!!order && !!order.items && order.items.length>0) {
   //   total = order.items.reduce((n, {price}) => n + price, 0)
@@ -315,14 +318,14 @@ export default function Order(props) {
         <Box><Typography  sx={{fontSize: "16px", fontWeight: "500", margin: "20px 0"}}>Order payments</Typography>
         <Box sx={{ 
           display: "grid", 
-          gridTemplateColumns: "120px 120px 140px 120px",
+          gridTemplateColumns: "120px 150px 100px 100px",
           columnGap: "8px",
           rowGap: "6px",
           fontSize: "16px",
           alignItems: "center" }}>
                   <Grid item sx={{mb: 1}}><Header text="Date"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Amount"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Amount (USD)"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Currency amount"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="In USD"></Header></Grid>
                   <Grid item sx={{mb: 1}}><Header text="Exch. rate "></Header></Grid>
             
                 { order.payments.map((data, index) => { 
@@ -333,13 +336,13 @@ export default function Order(props) {
                     <GridItem center text={toFixed2(data.amount)}/>
                     <GridItem center text={toFixed2(data.exchangeRate)}/>
                 </React.Fragment> )})}
-                {[1,2].map((data, index) => (
-                  <Grid item></Grid>
-                ))}
-                <Grid item sx={{textAlign: "right", fontSize: "14px", gridColumn: "span 2", mt: 1}}>
-                  <Box sx={{display: "grid", gridTemplateColumns: "auto 90px", justifyContent: "flex-end", marginTop: "10px", marginRight: "24px"}}>
-                    <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>Total paid USD:</Typography>
-                    <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>{(!!order.totalPaid ? (toFixed2(order.totalPaid)) : "")}&nbsp;$</Typography>
+                
+                <Grid item></Grid>
+                
+                <Grid item sx={{textAlign: "right", fontSize: "14px", gridColumn: "span 3", mt: 1}}>
+                  <Box sx={{display: "grid", gridTemplateColumns: "auto auto", justifyContent: "flex-end", marginTop: "10px", marginRight: "24px"}}>
+                    <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>Total paid USD:&nbsp;&nbsp;</Typography>
+                    <Typography sx={{fontSize: "16px", fontWeight: "500", marginTop: "0px"}}>{totalPaid}&nbsp;{totalPaidPart}</Typography>
                   </Box>
                 </Grid>
       </Box></Box> }
@@ -403,11 +406,10 @@ export default function Order(props) {
             </Box>
         </Box> }
         
-
           { invoiceUrl.length > 0 && <Box sx={{display: "flex", flexDirection: "column", gap: "20px",  alignItems: "center", mt: 4 }} className="product-item" >
             
             {invoiceUrl != "error" && <>
-              <Box>Your invoice is ready</Box>
+              <Box sx={{fontSize: "15px"}}>Your invoice is ready</Box>
               <Box><Link to={invoiceUrl} sx={{pt: 2}} style={{ textDecoration: 'none' }} >
                 Please <span style={{color: "#44f", backgroundColor: "#ddd", padding: "1px 8px", borderRadius: "12px"}}>click this link</span> to download document
               </Link></Box>

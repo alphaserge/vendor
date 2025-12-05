@@ -74,7 +74,7 @@ export default function OrderLogistic(props) {
           </div>
 
           <span style={styleLabel}>details:</span>
-          { !!props.data.details && <span>{props.data.details + (!props.data.total ? "" : " (total " + props.data.total + ")")}</span> }
+          { !!props.data.details && <span>{props.data.details + (!props.data.total ? "" : " (total " + props.data.total + "m)")}</span> }
           { !props.data.details && <span style={{backgroundColor: "#ddd", width: "16px", textAlign: "center", fontSize: "11px", borderRadius: "3px"}}>?</span> }
           
           <span style={{backgroundColor: "#fff", borderRadius: "3px", padding: "0px 4px", fontSize: "12px", fontWeight: "500", color: "#777"}}>shipment by:</span>

@@ -121,6 +121,7 @@ export default function ListOrderV(props) {
             <th>Art / Ref no.</th>
             <th>Design /&nbsp;Color</th>
             <th>Item name</th>
+            <th>Price</th>
             <th>Logistic</th>
             <th>Paid</th>
           </tr>
@@ -151,6 +152,11 @@ export default function ListOrderV(props) {
                         <td style={{textAlign: "center"}}>
                           <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
                           <span className="my-val">{data.itemName}</span>
+                          </Link>
+                        </td>        
+                        <td style={{textAlign: "center"}}>
+                          <Link to={"/updateproduct?id=" + data.productId} className="my-link" >
+                          <span className="my-val">{toFixed2(data.price)}&nbsp;$</span>
                           </Link>
                         </td>        
                         <td style={{textAlign: "left", width: "auto"}}>
