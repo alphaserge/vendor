@@ -145,7 +145,8 @@ export default function ListProduct(props) {
       axios.get(config.api + '/Products/Products?id='+props.user.id, 
         { params: 
             { 
-              vendorId: null
+              vendorId: null,
+              shownullprice: "true",
             }})
       .then(function (res) {
           var result = res.data;
@@ -178,7 +179,8 @@ export default function ListProduct(props) {
       axios.get(config.api + '/Products/Products?id='+props.user.id, 
         { params: 
             { 
-              search: e
+              search: e,
+              shownullprice: "true",
             }})
       .then(function (res) {
           var result = res.data;
@@ -206,7 +208,8 @@ export default function ListProduct(props) {
               seasons: JSON.stringify(season),
               overworks: JSON.stringify(overworkType),
               designtypes: JSON.stringify(designType),
-              search: search
+              search: search,
+              shownullprice: "true",
             }})
       .then(function (res) {
           var result = res.data;

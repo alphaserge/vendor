@@ -28,6 +28,7 @@
     "zustand": "^5.0.4"
   },
   "scripts": {
+    "ssl": "node set-ssl.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

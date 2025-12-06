@@ -115,6 +115,7 @@ namespace chiffon_back.Controllers
                     PrintTypes = HttpContext.Request.Query["printypes"].ToString(),
                     ProductTypes = HttpContext.Request.Query["producttypes"].ToString(),
                     TextileTypes = HttpContext.Request.Query["textiletypes"].ToString(),
+                    ShowNullPrice = HttpContext.Request.Query["shownullprice"].ToString().ToLower()=="true",
                 });
 
                 return prods;

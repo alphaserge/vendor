@@ -3,6 +3,7 @@ using chiffon_back.Code;
 using chiffon_back.Context;
 using chiffon_back.Models;
 using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Vml;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -1182,6 +1183,9 @@ namespace chiffon_back.Controllers
         {
             try
             {
+                string? frontendUrl = _configuration.GetValue<string>("Url:Frontend");
+                string? clientFrontendUrl = _configuration.GetValue<string>("Url:ClientFrontend");
+                string? ordersManager = _configuration.GetValue<string>("Orders:Manager");
                 string informPassword = "";
 
                 // create user first if not exists
@@ -1234,6 +1238,7 @@ namespace chiffon_back.Controllers
 
                 ctx.SaveChanges();
 
+                string stl = " style='text-align: center; padding: 5px 10px;'";
                 string label = "'font-weight: normal; font-size: 100%; padding: 5px 12px;'";
                 string cell = "'padding: 10px 20px;'";
                 string rightAlign = "'text-align: right;padding: 10px 20px;'";
@@ -1248,7 +1253,8 @@ namespace chiffon_back.Controllers
                     $"<th style={label}><b>Design/Color</b></th><th style={label}><b>Quantity</b></th>" + 
                     $"<th style={label}><b>Price (per 1 m.)</b></th></thead>";
 
-                Dictionary<int, VendorInfo> info = new Dictionary<int, VendorInfo>();
+                int num = 1;
+                Dictionary<int, VendorInfo> infos = new Dictionary<int, VendorInfo>();
                 List<LinkedResource> linkedRes = new List<LinkedResource>();
                 foreach(var item in order.Items)
                 {
@@ -1256,8 +1262,7 @@ namespace chiffon_back.Controllers
 
                     Context.ColorVariant cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.ColorVariantId);
 
-                    Context.OrderItem newItem = config.CreateMapper()
-                        .Map<Context.OrderItem>(item);
+                    Context.OrderItem newItem = config.CreateMapper().Map<Context.OrderItem>(item);
                     
                     newItem.OrderId = newOrder.Id;
 
@@ -1336,8 +1341,8 @@ namespace chiffon_back.Controllers
                         
                         total += (item.Price != null ? item.Price.Value : 0m) * newItem.Quantity;
 
-                        VendorInfo vi = info.ContainsKey(product.VendorId) ? info[product.VendorId] : new VendorInfo();
-                        if (!info.ContainsKey(product.VendorId))
+                        VendorInfo vi = infos.ContainsKey(product.VendorId) ? infos[product.VendorId] : new VendorInfo();
+                        if (!infos.ContainsKey(product.VendorId))
                         {
                             var vendor = ctx.Vendors.FirstOrDefault(x => x.Id == product.VendorId);
                             if (vendor != null)
@@ -1347,20 +1352,26 @@ namespace chiffon_back.Controllers
                                 vi.text = "";
                             }
                         }
-                        vi.text += $"<p>{product.ArtNo} : {product.ItemName} </p>";
 
-                        info[product.VendorId] = vi;
+                        vi.text += $"<tr>"
+                            + $"<td {stl}>{num++}</td>"
+                            + $"<td {stl}>{product.ArtNo}</td>"
+                            + $"<td {stl}>{product.ItemName}</td>"
+                            + $"<td {stl}>{product.Design}</td>"
+                            + $"<td {stl}>{newItem.ColorNo}</td>"
+                            + $"<td {stl}>{newItem.ColorNames}</td>"
+                            + $"<td {stl}>{item.Quantity} {(item.Unit!=null?item.Unit:"").Replace("rolls", "r").Replace("meters", "m")}</td></tr>";
+
+                        infos[product.VendorId] = vi;
                     }
                 }
                 itemsBody += "</table>";
 
                 ctx.SaveChanges();
 
-                //------------------------------mail
+                // 1) Inform client by email
                 using (MailMessage mess = new MailMessage())
                 {
-                    string? frontendUrl = _configuration.GetValue<string>("Url:Website");
-                    string? ordersManager = _configuration.GetValue<string>("Orders:Manager");
 
                     string body = $"<p style={header}>Dear {newOrder.ClientName}!</p><p style={header}>You have successfully created a new order with number " + newOrder.Number + "</p>";
                     body += "<table cellspacing=2>";
@@ -1372,7 +1383,7 @@ namespace chiffon_back.Controllers
                     body += $"<tr><td style={label}>Delivery address:</td><td>{newOrder.ClientAddress}</td></tr></table>";
                     body += $"<p style={headerBlack}>Your order composition:</p>{itemsBody}";
                     body += $"<p><b>Total price: {total} $</b></p>";
-                    body += $"<p>Your order link <a href='{frontendUrl}/orders?id={newOrder.Id}'>here</a> </p>";
+                    body += $"<p>Your order link <a href='{clientFrontendUrl}/order?uuid={newOrder.Uuid}'>here</a> </p>";
                     if (!informPassword.IsNullOrEmpty())
                     {
                         body += $"<p>Your email is login, the password is: {informPassword} </p>";
@@ -1398,7 +1409,7 @@ namespace chiffon_back.Controllers
 
                     mess.From = new MailAddress("elizarov.sa@mail.ru");
                     mess.To.Add(new MailAddress(newOrder.ClientEmail));
-                    mess.To.Add(new MailAddress(ordersManager));
+                    //mess.To.Add(new MailAddress(ordersManager));  // see below
                     mess.Subject = "A new order has been created in the company Angelika";
                     mess.SubjectEncoding = Encoding.UTF8;
                     
@@ -1418,6 +1429,20 @@ namespace chiffon_back.Controllers
                     Console.WriteLine("New order created and email was sended");
                 }
                 //------------------------------
+
+                
+                // 2) Inform vendor by email
+                foreach (var info in infos)
+                {
+                    string html = "<p>We're informing you about a new order from Angelika.<br/>Order contents:</p><table>";
+                    html += $"<tr><td {stl}>Item number</td><td {stl}>Art no.</td><td {stl}>Item name</td><td {stl}>Design</td><td {stl}>Color no.</td><td {stl}>Color name</td><td {stl}>Quantity</td></tr>";
+                    html += info.Value.text;
+                    html += "</table>";
+                    Helper.SendMessage(info.Value.email, info.Value.vendorName, html, $"{frontendUrl}/listorderv", "New order was created");
+                }
+
+                // 3) Inform Angelika manager by email
+                Helper.SendMessage(ordersManager, "manager", $"Order number {newOrder.Number} was created", $"{frontendUrl}/listorder", "New order was created");
 
                 return CreatedAtAction(nameof(Get), new { id = newOrder.Id }, newOrder);
             }
@@ -1459,32 +1484,46 @@ namespace chiffon_back.Controllers
             try
             {
                 string? frontendUrl = _configuration.GetValue<string>("Url:Frontend");
+                string? clientUrl = _configuration.GetValue<string>("Url:ClientFrontend");
                 string? ordersManager = _configuration.GetValue<string>("Orders:Manager");
 
+                bool changeDelivery = false;
                 Context.OrderItem? oi = ctx.OrderItems.FirstOrDefault(x => x.Id == cd.Id);
                 if (oi != null)
                 {
+                    changeDelivery = oi.DeliveryCompany != cd.DeliveryCompany || oi.DeliveryNo != cd.DeliveryNo;
                     oi.Details = cd.Details;
                     oi.DeliveryCompany = cd.DeliveryCompany;
                     oi.DeliveryNo = cd.DeliveryNo;
                     ctx.SaveChanges();
 
+                    Context.Order? order = ctx.Orders.FirstOrDefault(x => x.Id == oi.OrderId);
                     if (cd.Details != null)
                     {
                         int nullDetailsItems = ctx.OrderItems.Count(x => x.OrderId == oi.OrderId && String.IsNullOrWhiteSpace(x.Details));
                         if (nullDetailsItems == 0)
                         {
-                            Context.Order? order = ctx.Orders.FirstOrDefault(x => x.Id == oi.OrderId);
                             if (order != null)
                             {
                                 // inform client
-                                SendMessage(order.ClientEmail,
+                                Helper.SendMessage(order.ClientEmail,
                                     order.ClientName,
                                     $"The contents of your order number {order.Number} dated {order.Created} have been confirmed by the supplier. To further complete your order, you must make payment; to do this, please follow the link below.",
-                                    $"{frontendUrl}/orders?id={order.Id}",
+                                    $"{clientUrl}/order?uuid={order.Uuid}",
                                     $"Changes to your order number {order.Number}");
                             }
                         }
+                    }
+
+                    if (changeDelivery)
+                    {
+                        Context.Product product = ctx.Products.FirstOrDefault(x => x.Id == oi.ProductId);
+                        // Inform Angelika manager
+                        Helper.SendMessage(ordersManager,
+                                    "manager",
+                                    $"The delivery information have been changed: Order no. {order.Number} dated {order.Created}, product: {product.ItemName}, art no: {product.ArtNo}",
+                                    $"{frontendUrl}/listorder",
+                                    $"Changes to your order number {order.Number}");
                     }
                 }
 
@@ -1545,65 +1584,6 @@ namespace chiffon_back.Controllers
             catch (Exception ex)
             {
                 Log("DeliveryInfo", ex); return CreatedAtAction(nameof(Context.OrderItem), new { id = -1 }, null);
-            }
-        }
-
-        public void SendMessage(string email, string clientName, string text, string url, string subject)
-        {
-            string label = "'font-weight: normal; font-size: 100%; padding: 5px 12px;'";
-            string cell = "'padding: 10px 20px;'";
-            string rightAlign = "'text-align: right;padding: 10px 20px;'";
-            string none = "''";
-            string header = "'font-weight: #400; color: #66f;'";
-            string width600 = "'max-width: 600px;'";
-            string headerBlack = "'font-weight: bold; color: #000;'";
-
-            using (MailMessage mess = new MailMessage())
-            {
-
-                string? frontendUrl = _configuration.GetValue<string>("Url:Frontend");
-                string? ordersManager = _configuration.GetValue<string>("Orders:Manager");
-
-                string body = $"<p>Dear {clientName}!</p>"; // ..style={header}
-                body += $"<p style={width600}>{text}</p>";
-                if (!String.IsNullOrWhiteSpace(url))
-                {
-                    body += $"<p>Your order link <a href='{url}'>here</a> </p>";
-                }
-
-                body += $"<p>Best regards, textile company Angelika</p>";
-                body += $"<p>Our contacts:</p>";
-                body += "<p>Showroom address:<br/>Yaroslavskoe shosse, possession 1 building 1, Mytishchi, Moscow region, Russia.<br/>Postal code: 141009<br/>Phones: +7(926)018-01-25, +7(916)876-20-08";
-                body += "<p>Headquarters:<br/>Bolshaya Gruzinskaya, 20, 3A/P Moscow, Russia.<br/>Postal code: 123242</p>";
-
-                SmtpClient client = new SmtpClient("smtp.mail.ru", Convert.ToInt32(587))
-                {
-                    Credentials = new NetworkCredential("elizarov.sa@mail.ru", "5nwKmZ2SpintVmFRQVZV"), //"KZswYNWrd9eY1xVfvkre"),
-                    EnableSsl = true,
-                    DeliveryMethod = SmtpDeliveryMethod.Network,
-                    Timeout = 5000
-                };
-
-                mess.From = new MailAddress("elizarov.sa@mail.ru");
-                mess.To.Add(new MailAddress(email));
-                mess.To.Add(new MailAddress(ordersManager));
-                mess.Subject = subject;
-                mess.SubjectEncoding = Encoding.UTF8;
-
-                // !! to do - add link to order !!
-                mess.Body = body;
-                //mess.AlternateViews.Add(AV);
-                mess.IsBodyHtml = true;
-                /* try
-                {
-                    mess.Attachments.Add(new Attachment(какой файл добавлять для отправки));
-                }
-                catch { } */
-                client.Send(mess);
-                mess.Dispose();
-                client.Dispose();
-                Console.WriteLine("A new order confirmation email was sended");
-
             }
         }
 

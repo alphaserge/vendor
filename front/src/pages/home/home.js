@@ -141,7 +141,8 @@ export default function Home(props) {
               textiletypes: JSON.stringify(selectedTextileType),
               printypes: JSON.stringify(selectedPrintType),
               producttypes: JSON.stringify(selectedProductType),
-              search: search
+              search: search,
+              shownullprice: "false"
             }})
       .then(function (result) {
           setProducts(result.data)

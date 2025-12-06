@@ -31,6 +31,7 @@ namespace chiffon_back.Models
         public string Overworks { get; set; }
         public string TextileTypes { get; set; }
         public string Search { get; set; }
+        public bool? ShowNullPrice { get; set; }
         public ProductFilter()
         {
             VendorId = 0;
@@ -50,6 +51,7 @@ namespace chiffon_back.Models
             Price = Array.Empty<decimal>();
             Weight = Array.Empty<int>();
             Width = Array.Empty<int>();
+            ShowNullPrice = true;
         }
     }
 
@@ -111,7 +113,7 @@ namespace chiffon_back.Models
             ChiffonDbContext ctx = ContextHelper.ChiffonContext();
 
             //var query = from p in ctx.Products select p;
-            var query = from p in ctx.Products
+            var query = from p in ctx.Products.Where(x => filter.ShowNullPrice == true ? true : x.Price != null)
                         select new Models.Product
                         {
                             Id = p.Id,

@@ -2,6 +2,7 @@
 using chiffon_back.Code;
 using chiffon_back.Context;
 using chiffon_back.Models;
+using DocumentFormat.OpenXml.EMMA;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -104,6 +105,10 @@ namespace chiffon_back.Controllers
         {
             try
             {
+                string? frontendUrl = _configuration.GetValue<string>("Url:ClientFrontend");
+                string? vendorUrl = _configuration.GetValue<string>("Url:Frontend");
+                string? ordersManager = _configuration.GetValue<string>("Orders:Manager");
+
                 if (payment.Date == null) { payment.Date = DateTime.Now; }
 
                 Context.Currency currency = ctx.Currencies.FirstOrDefault(x => x.Id == payment.CurrencyId);
@@ -144,12 +149,9 @@ namespace chiffon_back.Controllers
                 //------------------------------mail
                 using (MailMessage mess = new MailMessage())
                 {
-                    string? frontendUrl = _configuration.GetValue<string>("Url:Website");
-                    string? ordersManager = _configuration.GetValue<string>("Orders:Manager");
-
                     string body = $"<p style={header}>Dear {clientName}!</p><p style={header}>You have successfully paid a order with number " + number + "</p>";
-                    body += $"<p>Payment summ is {payment.Amount} {currency.ShortName}</p>";
-                    body += $"<p>Your order link <a href='{frontendUrl}/orders?id={payment.OrderId}'>here</a> </p>";
+                    body += $"<p>Payment summ is {newPay.CurrencyAmount} {currency.ShortName}</p>";
+                    body += $"<p>Your order link <a href='{frontendUrl}/order?uuid={order.Uuid}'>here</a> </p>";
                     body += $"<p style={header}>Best regards, textile company Angelika</p>";
                     body += $"<p style={headerBlack}>Our contacts:</p>";
                     body += "<p>Showroom address:<br/>Yaroslavskoe shosse, possession 1 building 1, Mytishchi, Moscow region, Russia.<br/>Postal code: 141009<br/>Phones: +7(926)018-01-25, +7(916)876-20-08";
@@ -167,7 +169,7 @@ namespace chiffon_back.Controllers
                     
                     mess.From = new MailAddress("elizarov.sa@mail.ru");
                     mess.To.Add(new MailAddress(clientEmail));
-                    mess.To.Add(new MailAddress(ordersManager));
+                    //mess.To.Add(new MailAddress(ordersManager));
                     mess.Subject = "A new payment has been made in the company Angelika";
                     mess.SubjectEncoding = Encoding.UTF8;
                     mess.Body = body;
@@ -185,7 +187,30 @@ namespace chiffon_back.Controllers
                 }
                 //------------------------------
 
+                Helper.SendMessage(order.ClientEmail,
+                    order.ClientName,
+                    $"The contents of your order number {order.Number} dated {order.Created} have been confirmed by the supplier. To further complete your order, you must make payment; to do this, please follow the link below.",
+                    $"{frontendUrl}/order?uuid={order.Uuid}",
+                    $"Changes to your order number {order.Number}");
 
+
+                List<string[]> vendors = new List<string[]>();
+                foreach(var oi in ctx.OrderItems.Where(x => x.OrderId == payment.OrderId).ToList())
+                {
+                    var prod = ctx.Products.FirstOrDefault(x=>x.Id == oi.ProductId);
+                    var vend = ctx.Vendors.FirstOrDefault(x => x.Id == prod.VendorId);
+                    if (vendors.FirstOrDefault(x => x[0] == vend.Email) == null)
+                    {
+                        vendors.Add(new string[] { vend.Email, vend.VendorName });
+                    }
+                }
+
+                foreach (var v in vendors)
+                {
+                    Helper.SendMessage(v[0], v[1], "Your goods ordered by the company Angelika have been paid for.", $"{vendorUrl}/listorderv", "Your goods ordered by the company Angelika have been paid for.");
+                }
+
+                
                 return CreatedAtAction(nameof(Get), new { id = newPay.Id }, newPay);
             }
             catch (Exception ex)

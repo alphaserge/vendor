@@ -101,11 +101,11 @@ export default function OrderItemStatus1(props) {
   <Box width="100%" sx={{display:"flex"}}>
     <Box sx={{ display: "grid", gridTemplateColumns: "auto auto" , alignItems: "center", columnGap: 1, cursor: "pointer" }} onClick={handleClick}>
       <span style={styleLabel}>shipment:</span>
-      <span>{props.data.deliveryCompany}</span>
+      <span>{props.data.deliveryCompany} {props.data.deliveryNo}</span>
       <span style={styleLabel}>on stock:</span>
       <span>{props.data.stockName}</span>
       <span style={styleLabel}>delivery:</span>
-      <span>{props.data.clientDeliveryCompany}</span>
+      <span>{props.data.clientDeliveryCompany} {props.data.clientDeliveryNo}</span>
     </Box>
     <Box style={{marginLeft:"auto"}} justifyContent="flex-end" >
       <Button style={{border: "1px solid #aaa",border:"none",
