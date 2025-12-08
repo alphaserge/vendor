@@ -736,6 +736,9 @@ useEffect(() => {
   getTextileTypes(setTextileTypes)
   }, []);
 
+  console.log('overworkTypes:')
+  console.log(overworkTypes)
+
   const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
 
   return (

@@ -1280,6 +1280,12 @@ namespace chiffon_back.Controllers
                         newItem.ColorNames = "custom color";
                     }
 
+                    var deliveryCompany = ctx.Vendors.FirstOrDefault(x => x.Id == order.ClientDeliveryCompanyId);
+                    if (deliveryCompany != null)
+                    {
+                        newItem.ClientDeliveryCompany = deliveryCompany.VendorName;
+                    }
+
                     ctx.OrderItems.Add(newItem);
 
                     Context.Product? product = ctx.Products.FirstOrDefault(x => x.Id == newItem.ProductId);

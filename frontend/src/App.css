@@ -531,18 +531,18 @@ table.orders {
 }
 
 table.orders th {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   height: 60px;
   padding: 14px 6px;
-  background-color: #fff;
+  background-color: #ddd;
   border: 1px solid #ccc; /* Sets a 1px solid black border */
-  color: #777;
+  color: #222;
   /* text-decoration: underline; */
   z-index: 10;
 }
 
-table.orders, table.orders td {
+table.orders, table.orders  tr  td {
   border: 1px solid #ccc; /* Sets a 1px solid black border */
   padding: 4px 6px;
   /* background-color: #eaf0ff; */
@@ -551,7 +551,6 @@ table.orders, table.orders td {
   /* padding: 6px 8px; */
   background-color: #fff;
   color: hsl(0, 0%, 20%);
-  /* font-weight: 600; */
   font-size: 13px;
 }
 
@@ -572,8 +571,10 @@ table.orders, table.orders td {
 
 tr.orderrow td{
   /* height: 50px; */
-  background-color: #eee; 
-  padding: 12px 24px;
+  background-color: #777 ! important; 
+  color: #fff ! important;
+  padding: 12px 24px ! important;
+  font-weight: 400;
   /* background-color: none; */
 }
 

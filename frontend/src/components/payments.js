@@ -80,7 +80,7 @@ export default function Payments(props) {
     <Button style={{border: "1px solid #aaa",
     backgroundColor: "#none",
     border: "none",
-              color: "#555", 
+              color: "#fff", 
               maxWidth: "24px",
               minWidth: "24px",
               maxHeight: "20px",

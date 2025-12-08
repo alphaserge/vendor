@@ -38,65 +38,73 @@ export default function MySelect(props) {
     const [selectedValue, setSelectedValue] = useState([])
     const theme = useTheme();
 
-    const dataChange = (event) => {
-        const { target: { value } } = event;
+    const dataChange = (event, i) => {
+        const { target: { id, value } } = event;
 
         // processing of 'ALL' (-1) item (select all items)
         if (Array.isArray(value) && value.indexOf(-1) != -1) {
           let all = props.data.map(x => x.id).filter(x => x > -1)
           setSelectedValue(all)
-          props.setValueFn(all)
+          props.setValue(all)
           return
         }
 
         if (Array.isArray(value) && value && value.indexOf(-2) != -1) {
-          props.addNewFn()
+          props.addNew()
           return
         }
 
         if (!Array.isArray(value) && value == -2) {
-          props.addNewFn()
+          props.addNew()
         }
 
         setSelectedValue(value);
-        props.setValueFn(value);
+        props.setValue(value, props.option);
       };
 
     useEffect(() => {
       var a = 0;
     }, []);
   
+/*console.log('props.keys')
+console.log(props.keys)
+console.log(props.values)
+console.log(props.value)*/
+
 return (
-  <FormControl error={ false } required sx={{ ...props.itemStyle,  ...{width: "100%", height: "40px", display: "flex" } }} > 
-    <InputLabel 
+  <FormControl error={ false } required sx={{ ...props.itemStyle,  ...{display: "flex" } }} > 
+    {!props.hideLabel && <InputLabel 
         id={props.id + "-label"}
         size="small" 
         sx={props.labelStyle} >
         {props.title}
-    </InputLabel>
+    </InputLabel>}
     <Select
         labelId={props.id + "-label"}
         id={props.id}
         size="small" 
         label={props.title}
-        multiple = {Array.isArray(props.valueVariable)}
-        value={props.valueVariable ? props.valueVariable : ""}
-        sx = {props.itemStyle}
+        multiple = {Array.isArray(props.value)}
+        disabled={props.disabled ? props.disabled : false}
+        value={!!props.value ? props.value : ""}
+        sx = {{height: "37px", padding: "0", margin: "0"  }}
         onChange={dataChange}
-        input={<OutlinedInput label={props.title} />}
+        /*inputProps={{ backgroundColor: "#fff"}}
+        input={<OutlinedInput label={props.title} sx={{ backgroundColor: "#fff" }} />}*/
         MenuProps={props.MenuProps}
     >
-    { props.data && props.data.map((elem) => (
+    { props.values && props.values.map((value, index) => (
         <MenuItem 
-            key={elem.id} 
-            value={elem.id}
-            style={getStyles(elem.id, selectedValue, theme)}>  
-               {elem.id != -2 && elem.rgb &&
-                 <Box component="span" className="color_select_item" sx={{ backgroundColor: "#" + elem.rgb, border: "1px solid #bbb", height: "24px", width: "24px",  mr: 2 }}>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                 </Box>} 
-                 {elem.id == -2 && <AddIcon sx={{ mr: 2 }} />} 
-                 { elem.value } 
+            key={!!props.key ? props.key+'_'+index : "key_"+index} 
+            value={!!props.keys ? props.keys[index] : value} > 
+            {/* value={value} > */}
+            {/* style={getStyles(elem.id, selectedValue, theme)}>  
+              //  {elem.id != -2 && elem.rgb &&
+              //    <Box component="span" className="color_select_item" sx={{ backgroundColor: "#" + elem.rgb, border: "1px solid #bbb", height: "24px", width: "24px",  mr: 2 }}>
+              //       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              //    </Box>} 
+                 {elem.id == -2 && <AddIcon sx={{ mr: 2 }} />}  */}
+                 {value}
         </MenuItem>
     ))}
     </Select>

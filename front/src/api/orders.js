@@ -75,3 +75,18 @@ export const sendToVendor = async (vendorId) => {
   }
 }
 
+  export const getDeliveryNo = async (company) => {
+    try {
+      const res = await axios.get(config.api + '/DeliveryNo', { params: 
+      {
+        deliveryCompany: company
+      }})
+      return res.data
+    } 
+    catch (e) 
+    { 
+      console.log(e)
+    }
+  }
+
+

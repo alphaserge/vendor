@@ -36,8 +36,12 @@ import Property from '../../components/property';
 import ShortPrice from '../../components/shortprice';
 import StyledButton from '../../components/styledbutton';
 import Header from '../../components/header';
+import MySelect from "../../components/myselect";
 import { Fieldset } from '../../functions/fieldset';
+
 import { getCurrencies, getCourse } from '../../api/currencies'
+import { getTransportCompanies } from '../../api/vendors'
+import { getDeliveryNo } from '../../api/orders'
 
 import { fined, computePrice, computeTotalPrice, fromUrl, toFixed2 } from "../../functions/helper"
 
@@ -168,7 +172,9 @@ export default function ShoppingCart(props) {
     const [code, setCode] = useState(randomInt(1001,9999))
     const [counter, setCounter] = useState(1)
     const [courseRur, setCourseRur] = useState(0)
-
+    const [deliveryCompanies, setDeliveryCompanies] = useState([])
+    const [clientDeliveryCompanyId, setClientDeliveryCompanyId] = useState(null)
+    
     const [orderError, setOrderError] = useState(false)
 
     const what = fromUrl('what')
@@ -288,6 +294,7 @@ const makeOrder = async (event) => {
       clientPhone : clientPhone,
       clientEmail : clientEmail,
       clientAddress : clientAddress,
+      clientDeliveryCompanyId: clientDeliveryCompanyId,
       hash: hash,
       password: password,
       items : items
@@ -318,8 +325,14 @@ const makeOrder = async (event) => {
 
   useEffect(()=>{ 
     setCourseRur(getCourse(setCourseRur,'rur'))
+    getTransportCompanies(-1, -1, setDeliveryCompanies)
    }, [])
   
+
+console.log('transportCompanies')
+console.log(deliveryCompanies)
+
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -470,7 +483,7 @@ const makeOrder = async (event) => {
 
     <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column" }} className="center-content" >
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", minWidth: "600px", marginTop: "20px" }}  >
-      <Typography sx={{fontSize: "16px", fontWeight: 700, color: "#444", margin: "20px 0 20px"}} >Delivery information:</Typography>
+      <Typography sx={{fontSize: "16px", fontWeight: 600, color: "#444", margin: "20px 0 20px"}} >Delivery information:</Typography>
 
       {/* <Typography sx={{fontSize: "15px", fontWeight: 600, color: "#333", margin: "20px 0 10px"}} >Delivery Information</Typography> */}
       {/* <Fieldset title="Delivery Information"> */}
@@ -486,6 +499,7 @@ const makeOrder = async (event) => {
                   value={clientName}
                   onChange={ev => { setClientName(ev.target.value); checkName(ev.target.value);  } }
                 />
+
                 <StyledTextField
                   margin="normal"
                   size="small"
@@ -496,6 +510,7 @@ const makeOrder = async (event) => {
                   value={clientPhone}
                   onChange={ev => { setClientPhone(ev.target.value); checkPhone(ev.target.value);  } }
                 />
+
                 <StyledTextField
                   margin="normal"
                   size="small"
@@ -506,6 +521,19 @@ const makeOrder = async (event) => {
                   value={clientEmail}
                   onChange={ev => { setClientEmail(ev.target.value); checkEmail(ev.target.value);  } }
                 />
+
+                <MySelect 
+                  title="Delivery company"
+                  labelStyle={labelStyle1}
+                  MenuProps={MenuProps}
+                  itemStyle={{...textStyle, ...{width: "200px"}}}
+                  valueName="vendorName"
+                  value={clientDeliveryCompanyId}
+                  setValue={setClientDeliveryCompanyId}
+                  values={deliveryCompanies.map(e => { return e.vendorName })}
+                  keys={deliveryCompanies.map(e => { return e.id}).push(-1)}
+                  addNew={(e) => {  }} />
+
                 <StyledTextField
                   margin="normal"
                   size="small"
@@ -516,6 +544,7 @@ const makeOrder = async (event) => {
                   value={clientAddress}
                   onChange={ev => { setClientAddress(ev.target.value); checkAddress(ev.target.value); } }
                 />
+
               { true && <Box sx={{display: "flex"}}>
                 <StyledTextField
                   disabled={!fieldsValid}
@@ -528,6 +557,7 @@ const makeOrder = async (event) => {
                   value={sms}
                   onChange={ev => { setSms(ev.target.value)  } }
                 />
+
             <Button onClick={sendEmail} sx={{ 
               display: fieldsValid && ( counter>=0 ? "block":"none" ),
               p: "3px 8px", 

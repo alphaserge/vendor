@@ -48,6 +48,7 @@
         public string? ClientPhone { get; set; }
         public string? ClientEmail { get; set; }
         public string? ClientAddress { get; set; }
+        public int? ClientDeliveryCompanyId { get; set; }
         public string? Password { get; set; }
         public int? Hash { get; set; }
         public OrderItemPost[]? Items { get; set; }
