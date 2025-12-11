@@ -2,6 +2,12 @@ import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { propsToClassKey } from '@mui/styles';
 
+import React from 'react';
+import InnerImageZoom from 'react-inner-image-zoom';
+import '../css/InnerImageZoom/styles.css'; // Import the styles
+
+
+
 const fixUrl = (s) => {
     return s.replace(/\\/g, '/')
 }
@@ -86,28 +92,15 @@ const ImageMagnifier = ({
      }, [colVarId]);*/
 
     return <Box sx={{ width: width, height: height+80, display: "flex", flexDirection: "row" }}>
-        {/*<Box sx={{display: "flex", flexDirection: "column", float: "left" }}>
-            { 
-                images.map((item, index) => { return (
-                <img
-                    src={item.src}
-                    style={{width: "50px", height: "50px", marginBottom: "15px", borderRadius: "0px", cursor: "pointer", backgroundColor: "#ccc", padding: "1px"}}
-                    //alt={alt}
-                    onClick={(e) => thumbImageClick(e,item)}
-                    />) } ) 
-            }
-        </Box>*/}
         <Box sx={{display: "flex", flexDirection: "column", float: "left" }}>
-        <img
-            src={imgSrc}
-            className={className}
-            width={width}
-            height={height}
-            style={{maxWidth: width + "px", marginLeft: "15px", display: "block", float: "left"}}
-            alt={alt}
-            onMouseEnter={(e) => mouseEnter(e)}
-            onMouseLeave={(e) => mouseLeave(e)}
-            onMouseMove={(e) => mouseMove(e)} />
+
+    <InnerImageZoom
+      src={imgSrc}
+      width={width}
+      height={height}
+      zoomSrc={imgSrc} // Optional: A higher resolution image for the zoom
+      zoomScale={2.0} // Optional: Magnification level
+    />
         <Box sx={{display: "flex", flexDirection: "row", marginTop: "10px", marginLeft: "15px" }}>
             { 
                 fi.map((item, index) => { return (
@@ -120,37 +113,6 @@ const ImageMagnifier = ({
             }
         </Box>
         </Box>
-        <div
-            style={{
-                display: showMagnifier ? '' : 'none',
-                zIndex: 10,
-                position: 'absolute',
-                left: `${magnifierLeft}px`,
-                top: `${magnifierTop}px`,
-                pointerEvents: 'none',
-                height: `${magnifierHeight}px`,
-                width: `${magnifierWidth}px`,
-                //width:  "800px",
-                //height: "600px",
-                opacity: '1',
-                border: '1px solid lightgrey',
-                backgroundColor: 'white',
-                borderRadius: '5px',
-                backgroundImage: `url('${imgSrc}')`,
-                backgroundRepeat: 'no-repeat',
-                // top: `${y - magnifierHeight / 2}px`,
-                // left: `${x - magnifierWidth / 2}px`,
-                backgroundSize: `${imgWidth * zoomLevel}px ${imgHeight * zoomLevel}px`,
-                backgroundPositionX: `${bgPosX}px`,
-                backgroundPositionY: `${bgPosY}px`,
-                //backgroundPositionX: `${-x * zoomLevel + magnifierWidth/2}px`,
-
-                //backgroundPositionX: `${(1-zoomLevel)*x +kx*magnifierWidth}px`,
-                //backgroundPositionY: `${(1-zoomLevel)*y +ky*magnifierHeight}px`,
-
-                //backgroundPositionY: `${-y * zoomLevel + magnifierHeight/2}px`,
-            }}
-        />
     </Box>
 
 
