@@ -6,6 +6,13 @@ import React from 'react';
 import InnerImageZoom from 'react-inner-image-zoom';
 import '../css/InnerImageZoom/styles.css'; // Import the styles
 
+import { Magnifier,
+  GlassMagnifier,
+  SideBySideMagnifier,
+  PictureInPictureMagnifier,
+  MOUSE_ACTIVATION,
+  TOUCH_ACTIVATION } from 'react-image-magnifiers';
+
 
 
 const fixUrl = (s) => {
@@ -94,13 +101,22 @@ const ImageMagnifier = ({
     return <Box sx={{ width: width, height: height+80, display: "flex", flexDirection: "row" }}>
         <Box sx={{display: "flex", flexDirection: "column", float: "left" }}>
 
-    <InnerImageZoom
+<GlassMagnifier
+      imageSrc={imgSrc}
+      largeImageSrc={imgSrc} // Optional
+      magnifierSize={200}
+      square={false} // Creates a circular magnifier
+      //mouseActivation={MOUSE_ACTIVATION.DOUBLE_CLICK} // Optional
+      //touchActivation={TOUCH_ACTIVATION.DOUBLE_TAP} // Optional
+    />
+
+    {/* <InnerImageZoom
       src={imgSrc}
       width={width}
       height={height}
       zoomSrc={imgSrc} // Optional: A higher resolution image for the zoom
       zoomScale={2.0} // Optional: Magnification level
-    />
+    /> */}
         <Box sx={{display: "flex", flexDirection: "row", marginTop: "10px", marginLeft: "15px" }}>
             { 
                 fi.map((item, index) => { return (
