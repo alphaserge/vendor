@@ -419,11 +419,12 @@ console.log(productInSamples)
 
      <Box className="center-content" sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "row", pt: 4 }}  >  {/* height: "calc(100vh - 330px)" */}
      <Grid container sx={{ marginTop: "20px" }}>
-      <Grid item xs={12} md={6} sx={{display: "flex", minWidth: "400px", paddingRight: "30px"}} justifyContent={{ md: "flex-end", xs: "space-around" }} >
+        <Grid item xs={12} md={6} sx={{display: "flex", minWidth: "400px", paddingRight: "30px"}} justifyContent={{ md: "flex-end", xs: "space-around" }} >
             {( product.colors && product.colors.length>0 && 
               <ImageMagnifier 
                 //src={config.api + "/" + product.colors[0].imagePath[0]}
                 sx={{padding: "0 10px"}}
+                labels={colorVarId == -1 ? product.colors.map((it, ix) => { return it.colorNo }) : product.colors.filter((i)=> { return i.colorVariantId == colorVarId}).map((it, ix) => { return it.colorNo })}
                 images={colorVarId == -1 ? 
                   product.colors.map((it, ix) => { return { 
                     label: "Picture " + ix, 
@@ -443,15 +444,15 @@ console.log(productInSamples)
                     }}})
                 }
                 colorVarId={colorVarId}
-                width={330}
-                height={330}
+                width={400}
+                height={400}
                 magnifierHeight={500}
                 magnifierWidth={600}
                 zoomLevel={6}
                 alt={product.itemName + " photo"}
             /> )}
-            </Grid>
-            <Grid item xs={12} md={6} sx={{ display: "flex", minWidth: "400px" }} justifyContent={{ md: "flex-start", xs: "space-around" }} >
+        </Grid>
+        <Grid item xs={12} md={6} sx={{ display: "flex", minWidth: "400px" }} justifyContent={{ md: "flex-start", xs: "space-around" }} >
             <Box sx={{width: "400px", marginLeft: "70px"}}>
             <Box sx={{ display: "flex", flexDirection: "column"}} >
         <Box sx={{

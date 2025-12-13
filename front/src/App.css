@@ -612,3 +612,9 @@ a.no-link {
   padding: 8px 15px;
   cursor: pointer;
 }
+
+.animated-image-slider {
+  /*transition-property: margin-top;
+  transition-duration: 0.33s; */
+  transition: margin-top 0.5s ease-in-out;
+}
