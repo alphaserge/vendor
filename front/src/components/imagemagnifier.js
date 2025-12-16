@@ -38,6 +38,7 @@ const ImageMagnifier = ({
     //src,
     images,
     labels,
+    imageSelect,
     className,
     colorVarId,
     width,
@@ -59,8 +60,11 @@ const ImageMagnifier = ({
     
     //const [colVarId, setColVarId] = useState(colorVarId)
 
-    const thumbImageClick = (item) => {
+    const thumbImageClick = (item, index) => {
         setImgSrc(fixUrl(item))
+        if (!!imageSelect) {
+            imageSelect(index);
+        }
     }
 
     const mouseEnter = (e) => {
@@ -159,12 +163,16 @@ const ImageMagnifier = ({
                             src={src}
                             style={{ display: "block", zIndex: 1, width: "100%", height: "100%", borderRadius: "0px", position: "absolute", top: "0", left: "0",
                                 cursor: "pointer", backgroundColor: "#ccc", padding: "0px", borderRadius: "0px" }}
-                            onClick={(e) => thumbImageClick(src)}
+                            onClick={(e) => thumbImageClick(src, index)}
                         />
                         { !!labs[index] && <div style={{display: "block", zIndex: 12, width: "26px", height: "26px", lineHeight: "26px", position: "absolute", backgroundColor: "#fff", color: "#222",
-                            fontSize: "14px", fontWeight: "600", borderRadius: "16px",  top: "22px", left: "22px", textAlign: "center", cursor: "pointer" }}
-                            onClick={(e) => thumbImageClick(src)}> {labs[index]} </div> }
-                              
+                            fontSize: "14px", fontWeight: "600", borderRadius: "16px",  top: "22px", left: "22px", textAlign: "center", cursor: "pointer", opacity: 0.6 }}
+                            onClick={(e) => thumbImageClick(src, index)}> {labs[index]} </div> }
+
+                        { src==imgSrc && <div 
+                                style={{display: "block", zIndex: 12, width: "10px", height: "10px", position: "absolute", backgroundColor: "#444", borderRadius: "5px", border: "2px solid #fff",  top: "4px", left: "4px", cursor: "pointer" }}
+                                onClick={(e) => thumbImageClick(src, index)}>&nbsp;</div> }
+
                     </div>
                     </React.Fragment>
                 } )  

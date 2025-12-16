@@ -386,6 +386,10 @@ export default function Product(props) {
     //}
   }
 
+  const imageSelect = (e) => {
+    console.log(e)
+  }
+
 const productInCart = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity != -1) >= 0 : false;
 const productInSamples = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity == -1) >= 0 : false;
 console.log('shopCart:')
@@ -427,6 +431,7 @@ console.log(productInSamples)
                 labels={colorVarId == -1 ? product.colors.map((it, ix) => { return it.colorNo }) : product.colors.filter((i)=> { return i.colorVariantId == colorVarId}).map((it, ix) => { return it.colorNo })}
                 images={colorVarId == -1 ? 
                   product.colors.map((it, ix) => { return { 
+                    index: ix,
                     label: "Picture " + ix, 
                     src: config.api + "/" + it.imagePath[0],
                     colorVar: {
@@ -435,6 +440,7 @@ console.log(productInSamples)
                         colorVariantId: it.colorVariantId
                     }}})
                 : product.colors.filter((i)=> { return i.colorVariantId == colorVarId}).map((it, ix) => { return { 
+                    index: ix,
                     label: "Picture " + ix, 
                     src: config.api + "/" + it.imagePath[0],
                     colorVar: {
@@ -450,6 +456,7 @@ console.log(productInSamples)
                 magnifierWidth={600}
                 zoomLevel={6}
                 alt={product.itemName + " photo"}
+                imageSelect={imageSelect}
             /> )}
         </Grid>
         <Grid item xs={12} md={6} sx={{ display: "flex", minWidth: "400px" }} justifyContent={{ md: "flex-start", xs: "space-around" }} >
