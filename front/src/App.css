@@ -281,21 +281,54 @@ table.shopping-cart  td img {
 }
 
 span.item-label  {
-  color: #777;
   display: inline-block;
-  font-size: 15px;
+  padding-right: 8px;
+  color: #555; 
+  font-size: 14px;
+  font-weight: 300;
+
+  color: #777;
+  outline-color: rgb(143, 143, 163);
+  font-size: 13px;
   font-weight: 400;
-  padding-right: 10px;
-  /* 
-  /*text-transform: uppercase;
-  text-align: right;*/
+
+}
+
+.item-dots {
+  /*border-bottom: 1px dotted #ccc;  Создает пунктир */
+    flex-grow: 1;
+    height: 16px;
+    margin-bottom: 1px;
+
+      background-image: linear-gradient(90deg, #d4d5db 50%, #fff 0%);
+  background-position: bottom;
+  background-repeat: repeat-x;
+  background-size: 2px 2px;
+    
+  /* flex-grow: 1;
+  background-image: linear-gradient(90deg, #d3d4dd 50%, #fff 0%);
+  background-position: bottom;
+  background-repeat: repeat-x;
+  background-size: 2px 1px; */
+  /* margin-bottom: 13px; */
+  
+    /* content: "";
+     width: 100%; 
+     height: 20px;  */
+    /* display: block; */
+    /* position: absolute; */
+    /* bottom: 4px; */
+    /* left: 0; */
 }
 
 span.item-value  {
   color: #222;
   display: inline-block;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 400;
+  padding-left: 8px;
+  width: 150px;
+  overflow: hidden;
 }
 
 span.order-item-label  {
@@ -312,6 +345,8 @@ span.order-item-value  {
   font-size: 14px;
   font-weight: 400;
 }
+
+
 
 
 div.item-name  {

@@ -151,7 +151,7 @@ export default function Product(props) {
   const [cartIsRolls, setCartIsRolls] = useState(false)
   const [cartHelp, setCartHelp] = useState(false)
   const [filteredImages, setFilteredImages] = useState(null)
-  const [colorVarId, setColorVarId] = useState(-1)
+  const [selectedColorNo, setSelectedColorNo] = useState(null)
 
   const [domReady, setDomReady] = React.useState(false)
   
@@ -191,11 +191,7 @@ export default function Product(props) {
     };
 
     const handleAddToCart = (event) => {
-      if (colorVarId ==- 1 && !manualColor) 
-      {
-        return 
-      }
-
+      /*if (colorVarId ==- 1 && !manualColor) { return } */
       _addToCart(false);
       setCartQuantity(1)
       setCartIsRolls(false)
@@ -203,15 +199,6 @@ export default function Product(props) {
   
     const handleOpenCart = (what) => {
       navigate("/shoppingcart?what=" + what)
-    }
-
-    const handleColorVarChange = (e, it) => {
-      //setCartColorVar({colorNames: e.target.value.colorNames, colorVariantId: e.target.value.colorVariantId})
-      setCartColor(e.target.value)
-      setColorVarId(e.target.value.colorVariantId)
-      if (!!e.target.value.colorNo) {
-        setManualColor("")
-      }
     }
 
     var selectColors = product.colors.filter((it,ix) => { return it.colorNames != "PRODUCT"})
@@ -352,10 +339,9 @@ export default function Product(props) {
       }
     }, []);
 
-    React.useEffect(() => {
-    setDomReady(true)
+    useEffect(() => {
+      setDomReady(true)
     }, [])
-
 
     useEffect(() => {
       loadProduct()
@@ -392,10 +378,8 @@ export default function Product(props) {
 
 const productInCart = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity != -1) >= 0 : false;
 const productInSamples = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity == -1) >= 0 : false;
-console.log('shopCart:')
-console.log(shopCart)
-console.log(productInCart)
-console.log(productInSamples)
+console.log('product.colors.:')
+console.log(product.colors)
 
 //new ImageZoom(document.getElementById("img-container"), options);
 
@@ -423,51 +407,67 @@ console.log(productInSamples)
 
      <Box className="center-content" sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "row", pt: 4 }}  >  {/* height: "calc(100vh - 330px)" */}
      <Grid container sx={{ marginTop: "20px" }}>
-        <Grid item xs={12} md={6} sx={{display: "flex", minWidth: "400px", paddingRight: "30px"}} justifyContent={{ md: "flex-end", xs: "space-around" }} >
+        <Grid item xs={12} md={6} sx={{display: "flex", flexDirection: "column", minWidth: "400px", paddingRight: "30px"}} justifyContent={{ md: "flex-start", xs: "space-around" }} >
             {( product.colors && product.colors.length>0 && 
               <ImageMagnifier 
-                //src={config.api + "/" + product.colors[0].imagePath[0]}
                 sx={{padding: "0 10px"}}
-                labels={colorVarId == -1 ? product.colors.map((it, ix) => { return it.colorNo }) : product.colors.filter((i)=> { return i.colorVariantId == colorVarId}).map((it, ix) => { return it.colorNo })}
-                images={colorVarId == -1 ? 
+                images={
                   product.colors.map((it, ix) => { return { 
-                    index: ix,
-                    label: "Picture " + ix, 
-                    src: config.api + "/" + it.imagePath[0],
-                    colorVar: {
-                        colorNo: it.colorNo,
-                        colorNames: it.colorNames,
-                        colorVariantId: it.colorVariantId
-                    }}})
-                : product.colors.filter((i)=> { return i.colorVariantId == colorVarId}).map((it, ix) => { return { 
-                    index: ix,
-                    label: "Picture " + ix, 
-                    src: config.api + "/" + it.imagePath[0],
-                    colorVar: {
-                        colorNo: it.colorNo,
-                        colorNames: it.colorNames,
-                        colorVariantId: it.colorVariantId
-                    }}})
-                }
-                colorVarId={colorVarId}
-                width={400}
-                height={400}
-                magnifierHeight={500}
-                magnifierWidth={600}
-                zoomLevel={6}
+                        index: ix,
+                        label: !it.colorNo ? "all" : it.colorNo+"",
+                        src: config.api + "/" + it.imagePath[0],
+                        colorVar: 
+                        {
+                            colorNo: it.colorNo,
+                            colorNames: it.colorNames,
+                            colorVariantId: it.colorVariantId,
+                        }
+                      }
+                    })}
+                width={476}
+                height={476}
                 alt={product.itemName + " photo"}
                 imageSelect={imageSelect}
             /> )}
+            <Box sx={{ padding: "5px 0 0 0"}}>Color no. 1: red, blue, chocolate. </Box>
         </Grid>
         <Grid item xs={12} md={6} sx={{ display: "flex", minWidth: "400px" }} justifyContent={{ md: "flex-start", xs: "space-around" }} >
-            <Box sx={{width: "400px", marginLeft: "70px"}}>
-            <Box sx={{ display: "flex", flexDirection: "column"}} >
-        <Box sx={{
-            pl: "20px",
-            pr: "20px" }}>
-        <ItemName label="Item name" value={product.itemName} />
-        <Price label="Price per meter :" product={product} />
-       </Box>
+        <Box sx={{width: "400px", marginLeft: "70px"}}>
+        <Box sx={{ display: "flex", flexDirection: "column"}} >
+          <Box sx={{
+              pl: "0px",
+              pr: "0px" }}>
+          <ItemName label="Item name" value={product.itemName} />
+          <div style={{height: "15px"}}>&nbsp;</div>
+          <PropertyItem label="Art no" value={fined(product.artNo)} />
+          <PropertyItem label="Ref no" value={fined(product.refNo)} />
+          <PropertyItem label="Design" value={fined(product.design)} />
+          <PropertyItem label="Composition" value={fined(product.composition)} />
+          
+          <PropertyItem label="Product type" value={fined(product.productType)} />
+          <PropertyItem label="Product style" value={fined(product.productStyle)} />
+          <PropertyItem label="Print style" value={fined(product.printType)} />
+
+          {/* <Box sx={{ padding: "0px 0px", fontSize: "16px" }} >{!!selectedColorNo ? "Color: " + selectedColorNo : "please select color"}</Box> */}
+          {/* <Price label="Price per meter :" product={product} /> */}
+        </Box>
+
+        <Box sx={{ display: "flex", marginTop: "18px" }}>
+          <FormControl>
+          {!cartColor.colorNo && <Typography sx={{marginTop: "15px"}}>please enter the color number:</Typography> }
+          {!cartColor.colorNo && <StyledTextField margin="normal"
+                    //required
+                    fullWidth
+                    id="manualColor"
+                    label="Your color, e.g. 1, 2, 8.. :"
+                    name="manualColor"
+                    value={manualColor}
+                    onChange={ev => setManualColor(ev.target.value)}
+                    //autoComplete="email"
+                    // style={itemStyle}
+                    autoFocus /> }
+          </FormControl>
+        </Box>
 
           <Box sx={{
             pl: "20px",
@@ -483,52 +483,16 @@ console.log(productInSamples)
                   <Property value={product.rollLength + " meters in roll"} />
                 </Box>}
 
-                <Box sx={{ display: "flex", marginTop: "18px" }}>
-                
-                <FormControl>
-                {/*<InputLabel id="demo-simple-select-label">color</InputLabel>*/}
-                <StyledSelect
-                  //labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  //value={cartColorVar.colorNames}
-                  value={cartColor}
-                  //label="color"
-                  sx={{width: "250px", borderRadius: "0px"}}
-                  displayEmpty
-                  renderValue={(value) => {
-                    if (!value) {
-                      return <Typography color="gray">your label here</Typography>;
-                    }
-                    return <>{value.colorNames}</>;
-                  }}
-                  onChange={handleColorVarChange} >
-                  { selectColors.map((it, ix) => (
-                      <MenuItem key={"sh_"+ix}  value={it}>{it.colorNames}</MenuItem> )) }
-                </StyledSelect>
-                {!cartColor.colorNo && <Typography sx={{marginTop: "15px"}}>please enter the color number:</Typography> }
-                {!cartColor.colorNo && <StyledTextField margin="normal"
-                          //required
-                          fullWidth
-                          id="manualColor"
-                          label="Your color, e.g. 1, 2, 8.. :"
-                          name="manualColor"
-                          value={manualColor}
-                          onChange={ev => setManualColor(ev.target.value)}
-                          //autoComplete="email"
-                          // style={itemStyle}
-                          autoFocus /> }
-                </FormControl>
-              </Box>
 
                 <StyledButton
                   startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
                   onClick={handleAddToCart}
-                  disabled={colorVarId==-1 && !manualColor}
+                  //disabled={colorVarId==-1 && !manualColor}
                   sx={{ mt: 3 }} >Add to cart</StyledButton>
                 <StyledButton
                   startIcon={<ShopIcon sx={{ color: "#fff"}} />}
                   onClick={handleBuySample}
-                  disabled={colorVarId==-1}
+                  //disabled={colorVarId==-1}
                   sx={{ mt: 3, ml: 2 }} >Buy a sample</StyledButton> 
 
               </>)}
@@ -550,7 +514,8 @@ console.log(productInSamples)
               </Box>)}
           </Box>
 
-        <Box sx={{ justifyContent: "flex-start", display: "flex", alignItems: "flex-start", flexDirection: "row", margin: "25px 20px 20px 20px" }}  >  {/* height: "calc(100vh - 330px)" */}
+        {/* height: "calc(100vh - 330px)" */}
+        {/* <Box sx={{ justifyContent: "flex-start", display: "flex", alignItems: "flex-start", flexDirection: "row", margin: "25px 20px 20px 20px" }}  > 
           <Accordion defaultExpanded={false} disableGutters sx={{ boxShadow: "none", backgroundColor: "transparent" }} >
 
           <AccordionSummary 
@@ -571,7 +536,7 @@ console.log(productInSamples)
         <PropertyItem label="Print style :" value={fined(product.printType)} />
         </AccordionDetails>
         </Accordion>
-        </Box>
+        </Box> */}
         </Box>
         </Box>
         </Grid>

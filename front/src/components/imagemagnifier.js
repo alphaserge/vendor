@@ -21,8 +21,8 @@ import { Magnifier,
     width: "26px",
     height: "26px",
     position: "absolute",
-    backgroundColor: "#ddd",
-    color: "#222",
+    backgroundColor: "#fff",
+    color: "#777",
     fontSize: "14px",
     fontWeight: "600",
     left: "22px",
@@ -121,21 +121,21 @@ const ImageMagnifier = ({
 
     var fi = imags.map((item, index) => { return fixUrl(item.src) })
 
-    if (colorVarId != -1 ) {
-        fi = imags.filter((i)=> {return i.colorVar.colorVariantId==colorVarId}).map((item, index) => { return fixUrl(item.src) })
-    }
-
     if (fi.length > 0 && !fi.includes(imgSrc)) {
         setImgSrc(fi[0])
     }
 
     const labs = []
     fi.forEach((e,i) => {
-        if (!!labels && labels.length >= i+1) { labs.push(labels[i]) } 
+
+        if (!!imags && imags.length >= i+1) { labs.push(imags[i].label) } 
         else { labs.push("")}
     });
 
-    return <Box sx={{ width: width+100, height: height, display: "grid", gridTemplateColumns: "auto 90px", columnGap: "12px", overflowY: "hidden" }}>
+    console.log('imags')
+    console.log(imags)
+
+    return <Box sx={{ width: width+120, height: height, display: "grid", gridTemplateColumns: "auto 115px", columnGap: "12px", overflowY: "hidden" }}>
 
     <GlassMagnifier
       imageSrc={imgSrc}
@@ -143,11 +143,10 @@ const ImageMagnifier = ({
       magnifierSize={200}
       square={false} />
 
-        <Box 
-            className="animated-image-slider" sx={{display: "block", overflow: "hidden", flexDirection: "column", marginTop: (-80*(startImageIndex))+"px", position: "relative" }} 
+        <Box className="animated-image-slider" sx={{display: "block", overflow: "hidden", flexDirection: "column", marginTop: (-80*(startImageIndex))+"px", position: "relative" }} 
             onMouseOver={()=> setUpDownVisible(true)} onMouseOut={()=> setUpDownVisible(false)} >
                     
-             {/* <div style={{ marginBottom: "10px", position: "relative", width: "70px", height: "70px" }}> */}
+            {/* <div style={{ marginBottom: "10px", position: "relative", width: "70px", height: "70px" }}> */}
                         {/* <div style={{display: "block", zIndex: 122, width: "26px", height: "26px", lineHeight: "26px", position: "absolute", backgroundColor: "#fff", color: "#222",
                             fontSize: "14px", fontWeight: "600", borderRadius: "16px",  top: "22px", left: "22px", textAlign: "center", cursor: "pointer" }}
                             onClick={(e) => {}}>^</div>     */}
@@ -158,20 +157,25 @@ const ImageMagnifier = ({
                             {/* </div> */}
 
                  { fi.map((src, index) => { return <React.Fragment>
-                    <div style={{ marginBottom: "10px", position: "relative", width: "70px", height: "70px", top: "0" }}>
+                    <div style={{ marginBottom: "10px", position: "relative", width: "132px", height: "70px", top: "0", display: "flex" }}>
                         <img
                             src={src}
-                            style={{ display: "block", zIndex: 1, width: "100%", height: "100%", borderRadius: "0px", position: "absolute", top: "0", left: "0",
-                                cursor: "pointer", backgroundColor: "#ccc", padding: "0px", borderRadius: "0px" }}
+                            style={{ display: "block", width: "70px", height: "100%", cursor: "pointer" }}
                             onClick={(e) => thumbImageClick(src, index)}
                         />
-                        { !!labs[index] && <div style={{display: "block", zIndex: 12, width: "26px", height: "26px", lineHeight: "26px", position: "absolute", backgroundColor: "#fff", color: "#222",
-                            fontSize: "14px", fontWeight: "600", borderRadius: "16px",  top: "22px", left: "22px", textAlign: "center", cursor: "pointer", opacity: 0.6 }}
+                        { false && !!labs[index] && <div style={{width: "20px", height: "20px",  backgroundColor: imgSrc==src?"#444":"#bbb", color: "#fff", 
+                            border: "2px solid #444",  marginTop: "25px", marginLeft: "6px", border: "none", lineHeight: "19px",
+                            fontSize: "12px", fontWeight: "400", borderRadius: "10px", textAlign: "center", cursor: "pointer"}}
                             onClick={(e) => thumbImageClick(src, index)}> {labs[index]} </div> }
 
-                        { src==imgSrc && <div 
-                                style={{display: "block", zIndex: 12, width: "10px", height: "10px", position: "absolute", backgroundColor: "#444", borderRadius: "5px", border: "2px solid #fff",  top: "4px", left: "4px", cursor: "pointer" }}
-                                onClick={(e) => thumbImageClick(src, index)}>&nbsp;</div> }
+                        { true && labs[index] && <div style={{width: "32px", height: "32px",  color: "#555555", backgroundColor: imgSrc==src?"#e4e4e4":"#e4e4e4",
+                            border: "none", border: imgSrc==src? "1px solid #ccc":"1px solid #d8d8d8", marginTop: "19px", marginLeft: "10px", lineHeight: imgSrc==src?"27px": "29px",
+                            fontSize: "14px", fontWeight: "400", borderRadius: "16px", textAlign: "center", cursor: "pointer"}}
+                            onClick={(e) => thumbImageClick(src, index)}> {labs[index]} </div> }    
+
+                        {/* { src==imgSrc && <div 
+                                style={{display: "block", zIndex: 12, width: "10px", height: "10px", position: "absolute", backgroundColor: "#222", borderRadius: "5px", border: "3px solid #fff",  top: "4px", left: "56px", cursor: "pointer" }}
+                                onClick={(e) => thumbImageClick(src, index)}>&nbsp;</div> } */}
 
                     </div>
                     </React.Fragment>
