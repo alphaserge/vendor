@@ -181,8 +181,6 @@ export default function Home(props) {
 
 
     let passwordhash1 = stringToHash('Aa123456')
-    //console.log('passwhash')
-    //console.log(passwordhash1)
 
   return (
     <ThemeProvider theme={defaultTheme}>

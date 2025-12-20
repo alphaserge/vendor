@@ -95,9 +95,6 @@ export default function Orders(props) {
     //}
   }
 
-  console.log("ords:")
-console.log(orders)
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />

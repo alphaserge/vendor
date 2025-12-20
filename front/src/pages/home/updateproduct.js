@@ -540,7 +540,6 @@ const addColorVariant = async (cv) => {
       isVideo: false,
     })
     .then(function (response) {
-      console.log(response);
       return response;
     })
     .catch(function (error) {
@@ -735,9 +734,6 @@ useEffect(() => {
   getPrintTypes(setPrintTypes)
   getTextileTypes(setTextileTypes)
   }, []);
-
-  console.log('overworkTypes:')
-  console.log(overworkTypes)
 
   const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
 

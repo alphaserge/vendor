@@ -22,15 +22,13 @@ export default function Amount(props) {
     props.setValue(value)
   }
 
-  return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center", margin: "0 14px 0 0 ", padding: 0 }}> 
+  return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center", fontSize: "inherit" }}> 
   {(props.label && <Box style={{
                 fontSize: "inherit",
                 fontFamily: "inherit",
                 fontWeight: "400",
                 lineHeight: 1.375,
                 color: "#333",
-                margin: "0 8px 0 0",
-                padding: "0px 0px",
                 outline: 0,
                 minWidth: 0,
                 width: props.labelWidth ? props.labelWidth : "4rem",
@@ -44,6 +42,7 @@ export default function Amount(props) {
               value={props.value+""}
               onChange={inputChange}
               style={{
+                fontSize: "inherit",
                 fontFamily: "inherit",
                 fontWeight: "400",
                 lineHeight: 1.075,
@@ -51,7 +50,7 @@ export default function Amount(props) {
                 border: "1px solid #bbb",
                 boxShadow: "0 2px 4px rgba(0,0,0, 0.05)" ,
                 borderRadius: "0px",
-                margin: "0 8px 0 2px",
+                margin: "0 8px 0 0",
                 padding: (props.size && props.size=="small" ? "4px 6px" : "10px 12px"),
                 outline: 0,
                 minWidth: 0,

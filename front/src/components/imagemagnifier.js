@@ -35,17 +35,10 @@ const fixUrl = (s) => {
 }
 
 const ImageMagnifier = ({
-    //src,
-    images,
-    labels,
-    imageSelect,
-    className,
-    colorVarId,
-    width,
-    height,
-    alt,
-    magnifierHeight = 100,
-    magnifierWidth = 100,
+    images = [],
+    imageSelect = null,
+    width = 400,
+    height = 400,
     zoomLevel = 3
 }) => {
     const [showMagnifier, setShowMagnifier] = useState(false);
@@ -61,50 +54,11 @@ const ImageMagnifier = ({
     //const [colVarId, setColVarId] = useState(colorVarId)
 
     const thumbImageClick = (item, index) => {
-        setImgSrc(fixUrl(item))
+        setImgSrc(fixUrl(item.src))
         if (!!imageSelect) {
-            imageSelect(index);
+            imageSelect(item,index);
         }
     }
-
-    const mouseEnter = (e) => {
-        const el = e.currentTarget;
-        const { top, left } = el.getBoundingClientRect();
-        const { width, height } = el.getBoundingClientRect();
-        
-        setSize([width, height]);
-        setShowMagnifier(true);
-        setMagnifierTop(top)
-        setMagnifierLeft(left + width + 10)
-    }
-
-    const mouseLeave = (e) => {
-        e.preventDefault();
-        setShowMagnifier(false);
-    }
-
-    const mouseMove = (e) => {
-        const el = e.currentTarget;
-        const { top, left } = el.getBoundingClientRect();
-        const { width, height } = el.getBoundingClientRect();
-
-        /* local cursor coordinates in img */
-        let x = e.pageX - left - window.scrollX;
-        let y = e.pageY - top - window.scrollY;
-
-        let x1 = x - magnifierWidth/(2*zoomLevel);
-        let bg_x = -x1*zoomLevel > 0 ? 0 : -x1*zoomLevel;
-        if (bg_x < -width*zoomLevel + magnifierWidth) {
-            bg_x = -width*zoomLevel + magnifierWidth;
-        }
-        let y1 = y - magnifierHeight/(2*zoomLevel);
-        let bg_y = -y1*zoomLevel > 0 ? 0 : -y1*zoomLevel;
-        if (bg_y < -height*zoomLevel + magnifierHeight) {
-            bg_y = -height*zoomLevel + magnifierHeight;
-        }
- 
-        setBgPos([bg_x, bg_y]);
-    };
 
     const imagesUp = () => {
         if (startImageIndex > 0) {
@@ -119,10 +73,10 @@ const ImageMagnifier = ({
         }
     }
 
-    var fi = imags.map((item, index) => { return fixUrl(item.src) })
+    var fi = imags.map((item, index) => { return {...item, src: fixUrl(item.src) }})
 
-    if (fi.length > 0 && !fi.includes(imgSrc)) {
-        setImgSrc(fi[0])
+    if (fi.length > 0 && !fi.map(e => e.src).includes(imgSrc)) {
+        setImgSrc(fi[0].src)
     }
 
     const labs = []
@@ -132,10 +86,10 @@ const ImageMagnifier = ({
         else { labs.push("")}
     });
 
-    console.log('imags')
-    console.log(imags)
+    console.log('fi')
+    console.log(fi)
 
-    return <Box sx={{ width: width+120, height: height, display: "grid", gridTemplateColumns: "auto 115px", columnGap: "12px", overflowY: "hidden" }}>
+    return <Box sx={{ width: width+120, height: height, display: "grid", gridTemplateColumns: "auto 115px", columnGap: "12px", overflowY: "hidden" }} key="kk1">
 
     <GlassMagnifier
       imageSrc={imgSrc}
@@ -150,28 +104,28 @@ const ImageMagnifier = ({
                         {/* <div style={{display: "block", zIndex: 122, width: "26px", height: "26px", lineHeight: "26px", position: "absolute", backgroundColor: "#fff", color: "#222",
                             fontSize: "14px", fontWeight: "600", borderRadius: "16px",  top: "22px", left: "22px", textAlign: "center", cursor: "pointer" }}
                             onClick={(e) => {}}>^</div>     */}
-                <IconButton aria-label="delete" size="small" onClick={imagesUp} sx={{ ...buttonSx, ...{ top: (startImageIndex*80+22)+"px", display: upDownVisible? "block":"none" } }}>
+                <IconButton aria-label="delete" size="small" onClick={imagesUp} sx={{ ...buttonSx, ...{ top: (startImageIndex*80+22)+"px", display: upDownVisible? "block":"none"} }} >
                     <KeyboardArrowUpIcon sx={{fontSize: 24}} />
                 </IconButton>
 
                             {/* </div> */}
 
-                 { fi.map((src, index) => { return <React.Fragment>
-                    <div style={{ marginBottom: "10px", position: "relative", width: "132px", height: "70px", top: "0", display: "flex" }}>
+                 { fi.map((it, index) => { return <React.Fragment key = {"kfi"+index}>
+                    <div style={{ marginBottom: "10px", position: "relative", width: "132px", height: "70px", top: "0", display: "flex" }} onClick={(e) => thumbImageClick(it, index)} >
                         <img
-                            src={src}
+                            src={it.src}
                             style={{ display: "block", width: "70px", height: "100%", cursor: "pointer" }}
-                            onClick={(e) => thumbImageClick(src, index)}
+                            
                         />
-                        { false && !!labs[index] && <div style={{width: "20px", height: "20px",  backgroundColor: imgSrc==src?"#444":"#bbb", color: "#fff", 
+                        { false && !!labs[index] && <div style={{width: "20px", height: "20px",  backgroundColor: imgSrc==it.src?"#444":"#bbb", color: "#fff", 
                             border: "2px solid #444",  marginTop: "25px", marginLeft: "6px", border: "none", lineHeight: "19px",
                             fontSize: "12px", fontWeight: "400", borderRadius: "10px", textAlign: "center", cursor: "pointer"}}
-                            onClick={(e) => thumbImageClick(src, index)}> {labs[index]} </div> }
+                            > {labs[index]} </div> }
 
-                        { true && labs[index] && <div style={{width: "32px", height: "32px",  color: "#555555", backgroundColor: imgSrc==src?"#e4e4e4":"#e4e4e4",
-                            border: "none", border: imgSrc==src? "1px solid #ccc":"1px solid #d8d8d8", marginTop: "19px", marginLeft: "10px", lineHeight: imgSrc==src?"27px": "29px",
+                        { true && labs[index] && <div style={{width: "32px", height: "32px",  color: "#555555", backgroundColor: imgSrc==it.src?"#e4e4e4":"#e4e4e4",
+                            border: "none", border: imgSrc==it.src? "2px solid #555":"1px solid #d8d8d8", marginTop: "19px", marginLeft: "10px", lineHeight: imgSrc==it.src?"27px": "29px",
                             fontSize: "14px", fontWeight: "400", borderRadius: "16px", textAlign: "center", cursor: "pointer"}}
-                            onClick={(e) => thumbImageClick(src, index)}> {labs[index]} </div> }    
+                            > {labs[index]} </div> }    
 
                         {/* { src==imgSrc && <div 
                                 style={{display: "block", zIndex: 12, width: "10px", height: "10px", position: "absolute", backgroundColor: "#222", borderRadius: "5px", border: "3px solid #fff",  top: "4px", left: "56px", cursor: "pointer" }}
@@ -181,7 +135,7 @@ const ImageMagnifier = ({
                     </React.Fragment>
                 } )  
             }
-                <IconButton aria-label="delete" size="small" onClick={imagesDown} sx={{ ...buttonSx, ...{ top: (startImageIndex*80+height-58)+"px"}, display: upDownVisible? "block":"none"  }} >
+                <IconButton aria-label="delete" size="small" onClick={imagesDown} sx={{ ...buttonSx, ...{ top: (startImageIndex*80+height-58)+"px"}, display: upDownVisible? "block":"none"}} >
                     <KeyboardArrowUpIcon sx={{fontSize: 24, transform: "rotate(180deg)"  }} />
                 </IconButton>
 

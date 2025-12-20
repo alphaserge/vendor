@@ -234,7 +234,6 @@ export default function ShoppingCart(props) {
         email: clientEmail
     })
     .then(function (response) {
-      console.log(response);
       //const json = await response.json();    
       //setEmailSended(true)
       setInfo("Please check your email and enter the code from the letter and click Confirm button")
@@ -242,7 +241,6 @@ export default function ShoppingCart(props) {
       setTimeout(() => {
         setCounter(1)
       }, 1000*30);
-      console.log(response)
     })
     .catch(function (error) {
       console.log(error);
@@ -328,10 +326,6 @@ const makeOrder = async (event) => {
     getTransportCompanies(-1, -1, setDeliveryCompanies)
    }, [])
   
-
-console.log('transportCompanies')
-console.log(deliveryCompanies)
-
 
   return (
     <ThemeProvider theme={defaultTheme}>

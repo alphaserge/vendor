@@ -8,7 +8,7 @@ export default function Price(props) {
   const price = computePrice(props.product, 1000, false)
   const value = !!price ? price.toLocaleString('ru-RU', {minimumFractionDigits: 2}) : "";
 
-  return <Box sx={{ ml: "2px", color: (props.color ? props : "#222") }}>
-      from $ {fined( value )} per meter
+  return <Box sx={{ color: (!!props.color ? props.color : "#222"), padding: (!!props.padding ? props.padding : "0") }}>
+      Price: from $ <b>{fined(value)}</b> per meter
   </Box>
 }

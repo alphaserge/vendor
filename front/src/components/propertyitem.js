@@ -8,7 +8,7 @@ export default function PropertyItem(props) {
             <Box component="span" className="item-value" 
               sx={{ 
                 maxWidth: props.maxWidth? props.maxWidth: "320px", 
-                width: props.width? props.width: "220px" 
+                width: props.width? props.width: "280px" 
                  }} title={props.value}>{!!props.value ? props.value : "none"}</Box>
          </Box>
 }

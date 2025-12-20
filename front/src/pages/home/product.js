@@ -26,7 +26,6 @@ import config from "../../config.json"
 
 import ImageMagnifier from '../../components/imagemagnifier';
 import MainSection from './mainsection';
-import ShoppingCart from '../../components/shoppingcartmodal';
 import Footer from './footer';
 
 import { addToCart, removeFromCart, updateQuantity, flushCart } from './../../store/cartSlice' 
@@ -40,7 +39,7 @@ import Property from '../../components/property';
 import StyledButton from '../../components/styledbutton';
 import StyledTextField from '../../components/styledtextfield';
 
-import { fined } from "../../functions/helper"
+import { fined, round2, computePrice } from "../../functions/helper"
 import Styledtextfield from "../../components/styledtextfield";
 
 const useStyles = makeStyles((theme) => ({
@@ -148,6 +147,10 @@ export default function Product(props) {
   const [cartUnit, setCartUnit] = useState("meters")
   const [cartColor, setCartColor] = useState({colorNames: "custom color", colorVariantId: -1})
   const [manualColor, setManualColor] = useState("")
+  const [isGlobPhoto, setIsGlobPhoto] = useState(true)
+  const [price, setPrice] = useState(0)
+  const [onStock, setOnStock] = useState(0)
+
   const [cartIsRolls, setCartIsRolls] = useState(false)
   const [cartHelp, setCartHelp] = useState(false)
   const [filteredImages, setFilteredImages] = useState(null)
@@ -155,15 +158,7 @@ export default function Product(props) {
 
   const [domReady, setDomReady] = React.useState(false)
   
-  const shoppingCartRef = useRef()
-
-  const handleShowShoppingCart = (event) => {
-    if (shoppingCartRef.current) {
-      shoppingCartRef.current.displayWindow(true);
-    }
-  }
-
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
     const _addToCart = (is_sample) => {
       if (!cartColor.colorNo && !!manualColor) {
@@ -317,6 +312,7 @@ export default function Product(props) {
         const _product = result.data
         const colVar = _product.colors.find(x => !x.colorNo)
         setProduct(_product)
+        setPrice(computePrice(_product, 1000, false))
         if (colVar) {
           setCartColor(colVar)
         }
@@ -372,13 +368,21 @@ export default function Product(props) {
     //}
   }
 
-  const imageSelect = (e) => {
-    console.log(e)
+  const imageSelect = (item, index) => {
+    setIsGlobPhoto(item.colorVar.colorNo == null)
+    if (!!item.colorVar.price) {
+      setPrice(computePrice(product, 1000, false, item.colorVar))
+    } else {
+      setPrice(computePrice(product, 1000, false, null))
+    }
+    
+     //!! todo !!
+    setOnStock(item.colorVar.quantity)
   }
 
 const productInCart = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity != -1) >= 0 : false;
 const productInSamples = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity == -1) >= 0 : false;
-console.log('product.colors.:')
+console.log('product.colors:')
 console.log(product.colors)
 
 //new ImageZoom(document.getElementById("img-container"), options);
@@ -386,13 +390,6 @@ console.log(product.colors)
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-
-      {/* Shopping cart modal */}
-        <ShoppingCart 
-          ref={shoppingCartRef}
-          closeDialog={(text) => { 
-            setInfo(text);
-          }} /> 
 
       <Container sx={{padding: 0 }} className="header-container" >
       </Container>
@@ -421,6 +418,8 @@ console.log(product.colors)
                             colorNo: it.colorNo,
                             colorNames: it.colorNames,
                             colorVariantId: it.colorVariantId,
+                            price: it.price,
+                            quantity: it.quantity
                         }
                       }
                     })}
@@ -448,41 +447,38 @@ console.log(product.colors)
           <PropertyItem label="Product style" value={fined(product.productStyle)} />
           <PropertyItem label="Print style" value={fined(product.printType)} />
 
+          <PropertyItem label="Meters in roll" value={fined(product.rollLength)} />
+          <PropertyItem label="Stock available" value={ (!!onStock ? onStock : "?") + " (meters)"} />
+          <PropertyItem label="Price" value={"from $" + price + " per meter"} />
+
           {/* <Box sx={{ padding: "0px 0px", fontSize: "16px" }} >{!!selectedColorNo ? "Color: " + selectedColorNo : "please select color"}</Box> */}
-          {/* <Price label="Price per meter :" product={product} /> */}
+          {/* <Box sx={{ color: "#222", margin: "15px 0 0 0" }}>Price: from $ <b>{fined(price)}</b> per meter</Box> */}
         </Box>
 
-        <Box sx={{ display: "flex", marginTop: "18px" }}>
+        <Box sx={{ display: "flex", marginTop: "10px" }}>
           <FormControl>
-          {!cartColor.colorNo && <Typography sx={{marginTop: "15px"}}>please enter the color number:</Typography> }
-          {!cartColor.colorNo && <StyledTextField margin="normal"
+          {isGlobPhoto && <StyledTextField margin="normal"
                     //required
                     fullWidth
                     id="manualColor"
-                    label="Your color, e.g. 1, 2, 8.. :"
+                    label="color number"
                     name="manualColor"
                     value={manualColor}
                     onChange={ev => setManualColor(ev.target.value)}
+                    size="small"
                     //autoComplete="email"
-                    // style={itemStyle}
+                    //style={itemStyle}
                     autoFocus /> }
           </FormControl>
         </Box>
 
-          <Box sx={{
-            pl: "20px",
-            pr: "20px" }}>
+          <Box >
               {(productInCart!==true && productInSamples!==true && 
               <> 
-                <Box sx={{ display: "flex", marginTop: "20px", width: "930px" }} >
+                <Box sx={{ display: "flex", margin: "10px 0 0 0", fontSize: "15px" }} >
                   <Amount value={cartQuantity} setValue={(e)=>{setQuantity(0,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
                   <Selector value={cartUnit} list={["meters","rolls"]} setValue={setCartUnit} /> 
                 </Box>
-
-                {product.rollLength && <Box sx={{ display: "flex", marginTop: "18px" }}>
-                  <Property value={product.rollLength + " meters in roll"} />
-                </Box>}
-
 
                 <StyledButton
                   startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}

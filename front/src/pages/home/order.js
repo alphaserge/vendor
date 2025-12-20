@@ -213,9 +213,6 @@ export default function Order(props) {
   let total = 0;
   let orderTotal = 0;
 
-  console.log('invoiceUrl:')
-  console.log(invoiceUrl)
-  
   var readyForPayment = false
   if (!!order && order.items && order.items.length>0 && order.items.findIndex(it => !it.details)==-1) {
     readyForPayment = true

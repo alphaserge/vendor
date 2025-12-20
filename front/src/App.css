@@ -289,7 +289,7 @@ span.item-label  {
 
   color: #777;
   outline-color: rgb(143, 143, 163);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
 
 }
@@ -324,10 +324,10 @@ span.item-label  {
 span.item-value  {
   color: #222;
   display: inline-block;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 400;
   padding-left: 8px;
-  width: 150px;
+  width: 250px;
   overflow: hidden;
 }
 
