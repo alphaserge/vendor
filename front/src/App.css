@@ -283,14 +283,14 @@ table.shopping-cart  td img {
 span.item-label  {
   display: inline-block;
   padding-right: 8px;
-  color: #555; 
+  color: #333;
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 500;
 
-  color: #777;
+  color: #888;
   outline-color: rgb(143, 143, 163);
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 15px;
+  font-weight: 500;
 
 }
 
@@ -321,8 +321,8 @@ span.item-label  {
     /* left: 0; */
 }
 
-span.item-value  {
-  color: #222;
+span.item-value, div.item-value  {
+  color: #444;
   display: inline-block;
   font-size: 15px;
   font-weight: 400;
@@ -346,7 +346,13 @@ span.order-item-value  {
   font-weight: 400;
 }
 
+.property-item .selected {
+  font-weight: 700;
+}
 
+.property-item {
+  padding: 2px 0;
+}
 
 
 div.item-name  {

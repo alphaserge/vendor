@@ -18,6 +18,7 @@ import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import FormGroup from '@mui/material/FormGroup';
 import styled from 'styled-components'
 
 import axios from 'axios'
@@ -29,13 +30,10 @@ import MainSection from './mainsection';
 import Footer from './footer';
 
 import { addToCart, removeFromCart, updateQuantity, flushCart } from './../../store/cartSlice' 
-import PropertyQuantity from "../../components/propertyquantity";
 import PropertyItem from '../../components/propertyitem';
-import Price from '../../components/price';
 import ItemName from '../../components/itemname';
 import Amount from '../../components/amount';
 import Selector from '../../components/selector';
-import Property from '../../components/property';
 import StyledButton from '../../components/styledbutton';
 import StyledTextField from '../../components/styledtextfield';
 
@@ -147,7 +145,7 @@ export default function Product(props) {
   const [cartUnit, setCartUnit] = useState("meters")
   const [cartColor, setCartColor] = useState({colorNames: "custom color", colorVariantId: -1})
   const [manualColor, setManualColor] = useState("")
-  const [isGlobPhoto, setIsGlobPhoto] = useState(true)
+  const [colorVar, setColorVar] = useState(null)
   const [price, setPrice] = useState(0)
   const [onStock, setOnStock] = useState(0)
 
@@ -369,7 +367,8 @@ export default function Product(props) {
   }
 
   const imageSelect = (item, index) => {
-    setIsGlobPhoto(item.colorVar.colorNo == null)
+    setColorVar(item.colorVar)
+    console.log(item.colorVar)
     if (!!item.colorVar.price) {
       setPrice(computePrice(product, 1000, false, item.colorVar))
     } else {
@@ -380,10 +379,18 @@ export default function Product(props) {
     setOnStock(item.colorVar.quantity)
   }
 
+  const handleManualColor = (e) => {
+    const col = e.target.value
+    //setManualColorVar({colorNo: col})
+    setManualColor(e.target.value)
+  }
+
 const productInCart = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity != -1) >= 0 : false;
 const productInSamples = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity == -1) >= 0 : false;
-console.log('product.colors:')
-console.log(product.colors)
+//console.log('product.colors:')
+//console.log(product.colors)
+console.log('colorVar:') 
+console.log(colorVar) 
 
 //new ImageZoom(document.getElementById("img-container"), options);
 
@@ -448,8 +455,11 @@ console.log(product.colors)
           <PropertyItem label="Print style" value={fined(product.printType)} />
 
           <PropertyItem label="Meters in roll" value={fined(product.rollLength)} />
-          <PropertyItem label="Stock available" value={ (!!onStock ? onStock : "?") + " (meters)"} />
-          <PropertyItem label="Price" value={"from $" + price + " per meter"} />
+          <PropertyItem label="Stock available" value={!!onStock ? onStock + " (meters)" : "no information, please contact us"} />
+          <PropertyItem label="Price" value={"from"} valueBold={" $" +price} valueEnd ={" per meter"} />
+          {!!colorVar && colorVar.colorNo != null && <PropertyItem label="Color no." value={colorVar.colorNo} /> }
+          {!!manualColor && <PropertyItem label="Color no." value={manualColor} /> }
+          {/* <PropertyItem label="Price" value={"from <b>$" + price + "</b> per meter"} /> */}
 
           {/* <Box sx={{ padding: "0px 0px", fontSize: "16px" }} >{!!selectedColorNo ? "Color: " + selectedColorNo : "please select color"}</Box> */}
           {/* <Box sx={{ color: "#222", margin: "15px 0 0 0" }}>Price: from $ <b>{fined(price)}</b> per meter</Box> */}
@@ -457,25 +467,30 @@ console.log(product.colors)
 
         <Box sx={{ display: "flex", marginTop: "10px" }}>
           <FormControl>
-          {isGlobPhoto && <StyledTextField margin="normal"
-                    //required
-                    fullWidth
-                    id="manualColor"
-                    label="color number"
-                    name="manualColor"
-                    value={manualColor}
-                    onChange={ev => setManualColor(ev.target.value)}
-                    size="small"
-                    //autoComplete="email"
-                    //style={itemStyle}
-                    autoFocus /> }
+          {(!colorVar || (!!colorVar && colorVar.colorNo==null)) && <Box sx={{display: "flex", alignItems: "center"}}>
+              <Box sx={{width: "90px"}}>Color no:</Box>
+              <StyledTextField margin="normal"
+                  //required
+                  //fullWidth
+                  id="manualColor"
+                  //label="color no"
+                  name="manualColor"
+                  value={manualColor}
+                  onChange={handleManualColor}
+                  size="small"
+                  sx={{width: "80px", margin: "0"}}
+                  //autoComplete="email"
+                  //style={itemStyle}
+                  autoFocus /> 
+            </Box> }
           </FormControl>
         </Box>
 
-          <Box >
+          <Box>
               {(productInCart!==true && productInSamples!==true && 
               <> 
                 <Box sx={{ display: "flex", margin: "10px 0 0 0", fontSize: "15px" }} >
+                  <Box sx={{width: "90px"}}>Quantity:</Box>
                   <Amount value={cartQuantity} setValue={(e)=>{setQuantity(0,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
                   <Selector value={cartUnit} list={["meters","rolls"]} setValue={setCartUnit} /> 
                 </Box>
