@@ -368,6 +368,7 @@ export default function Product(props) {
 
   const imageSelect = (item, index) => {
     setColorVar(item.colorVar)
+    setManualColor(null)
     console.log(item.colorVar)
     if (!!item.colorVar.price) {
       setPrice(computePrice(product, 1000, false, item.colorVar))
@@ -383,14 +384,22 @@ export default function Product(props) {
     const col = e.target.value
     //setManualColorVar({colorNo: col})
     setManualColor(e.target.value)
+
+    const color = product.colors.find(p => p.colorNo+'' == col)
+    if (!color) {
+      setOnStock(null)
+    } else {
+      setOnStock(color.quantity)
+    }
   }
 
 const productInCart = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity != -1) >= 0 : false;
 const productInSamples = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity == -1) >= 0 : false;
+const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
 //console.log('product.colors:')
 //console.log(product.colors)
-console.log('colorVar:') 
-console.log(colorVar) 
+//console.log('colorVar:') 
+//console.log(colorVar) 
 
 //new ImageZoom(document.getElementById("img-container"), options);
 
@@ -432,6 +441,7 @@ console.log(colorVar)
                     })}
                 width={476}
                 height={476}
+                highlightColor={manualColor}
                 alt={product.itemName + " photo"}
                 imageSelect={imageSelect}
             /> )}
@@ -457,8 +467,8 @@ console.log(colorVar)
           <PropertyItem label="Meters in roll" value={fined(product.rollLength)} />
           <PropertyItem label="Stock available" value={!!onStock ? onStock + " (meters)" : "no information, please contact us"} />
           <PropertyItem label="Price" value={"from"} valueBold={" $" +price} valueEnd ={" per meter"} />
-          {!!colorVar && colorVar.colorNo != null && <PropertyItem label="Color no." value={colorVar.colorNo} /> }
-          {!!manualColor && <PropertyItem label="Color no." value={manualColor} /> }
+          {!showColorEditor && <PropertyItem label="Color no." value={colorVar.colorNo} /> }
+          {/* {!!manualColor && <PropertyItem label="Color no." value={manualColor} /> } */}
           {/* <PropertyItem label="Price" value={"from <b>$" + price + "</b> per meter"} /> */}
 
           {/* <Box sx={{ padding: "0px 0px", fontSize: "16px" }} >{!!selectedColorNo ? "Color: " + selectedColorNo : "please select color"}</Box> */}
@@ -467,7 +477,7 @@ console.log(colorVar)
 
         <Box sx={{ display: "flex", marginTop: "10px" }}>
           <FormControl>
-          {(!colorVar || (!!colorVar && colorVar.colorNo==null)) && <Box sx={{display: "flex", alignItems: "center"}}>
+          {showColorEditor && <Box sx={{display: "flex", alignItems: "center"}}>
               <Box sx={{width: "90px"}}>Color no:</Box>
               <StyledTextField margin="normal"
                   //required
@@ -479,6 +489,7 @@ console.log(colorVar)
                   onChange={handleManualColor}
                   size="small"
                   sx={{width: "80px", margin: "0"}}
+                  inputProps={{ style: { textAlign: "center" } }}
                   //autoComplete="email"
                   //style={itemStyle}
                   autoFocus /> 
@@ -487,43 +498,30 @@ console.log(colorVar)
         </Box>
 
           <Box>
-              {(productInCart!==true && productInSamples!==true && 
-              <> 
                 <Box sx={{ display: "flex", margin: "10px 0 0 0", fontSize: "15px" }} >
                   <Box sx={{width: "90px"}}>Quantity:</Box>
                   <Amount value={cartQuantity} setValue={(e)=>{setQuantity(0,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
                   <Selector value={cartUnit} list={["meters","rolls"]} setValue={setCartUnit} /> 
                 </Box>
 
+            <Box sx={{width: "930px"}}>
                 <StyledButton
-                  startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
+                  startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#222"}} />}
                   onClick={handleAddToCart}
                   //disabled={colorVarId==-1 && !manualColor}
                   sx={{ mt: 3 }} >Add to cart</StyledButton>
                 <StyledButton
-                  startIcon={<ShopIcon sx={{ color: "#fff"}} />}
+                  startIcon={<ShopIcon sx={{ color: "#222"}} />}
                   onClick={handleBuySample}
                   //disabled={colorVarId==-1}
                   sx={{ mt: 3, ml: 2 }} >Buy a sample</StyledButton> 
 
-              </>)}
-
-              {(productInCart===true && 
-              <Box sx={{ width: "930px" }}> 
-                {(productInCart===true && <StyledButton
-                  startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
+                <StyledButton
+                  startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#222"}} />}
                   onClick={e => handleOpenCart('cart')}
-                  sx={{ mt: 3 }}>In cart</StyledButton> )}
-              </Box>)}
-
-              {(productInSamples===true && 
-              <Box sx={{ width: "930px" }}> 
-                {(productInSamples===true && <StyledButton
-                  startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
-                  onClick={e => handleOpenCart('samples')}
-                  sx={{ mt: 3 }}>In samples</StyledButton> )}
-              </Box>)}
-          </Box>
+                  sx={{ mt: 3, ml: 2 }}>Open cart</StyledButton>
+              </Box>
+          </Box>  
 
         {/* height: "calc(100vh - 330px)" */}
         {/* <Box sx={{ justifyContent: "flex-start", display: "flex", alignItems: "flex-start", flexDirection: "row", margin: "25px 20px 20px 20px" }}  > 

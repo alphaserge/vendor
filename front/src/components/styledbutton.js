@@ -5,12 +5,13 @@ import { Button } from "@mui/material";
 
 export default withStyles({
   root: {
-    borderRadius: '0!important',
-    backgroundColor: '#222!important',
-    color: '#fff!important',
-    fontSize: "15px!important",
-    textTransform: "none!important",
-    padding: "6px 12px!important",
+    borderRadius: '18px ! important',
+    backgroundColor: '#fff ! important',
+    color: '#222 ! important',
+    fontSize: '15px ! important',
+    textTransform: 'none ! important',
+    padding: '6px 20px ! important',
+    border: '1px solid #222 ! important',
     '&:hover': {
       backgroundColor: '#fd8bb5!important',
       color: '#fff',

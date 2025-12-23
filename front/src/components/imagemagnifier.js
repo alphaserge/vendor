@@ -39,7 +39,8 @@ const ImageMagnifier = ({
     imageSelect = null,
     width = 400,
     height = 400,
-    zoomLevel = 3
+    zoomLevel = 3,
+    highlightColor = ""
 }) => {
     const [showMagnifier, setShowMagnifier] = useState(false);
     const [[imgWidth, imgHeight], setSize] = useState([0, 0]);
@@ -86,6 +87,9 @@ const ImageMagnifier = ({
         else { labs.push("")}
     });
 
+
+    console.log(fi)
+
     return <Box sx={{ width: width+120, height: height, display: "grid", gridTemplateColumns: "auto 115px", columnGap: "12px", overflowY: "hidden" }} key="kk1">
 
     <GlassMagnifier
@@ -119,8 +123,8 @@ const ImageMagnifier = ({
                             fontSize: "12px", fontWeight: "400", borderRadius: "10px", textAlign: "center", cursor: "pointer"}}
                             > {labs[index]} </div> }
 
-                        { true && labs[index] && <div style={{width: "32px", height: "32px",  color: "#555555", backgroundColor: imgSrc==it.src?"#e4e4e4":"#e4e4e4",
-                            border: "none", border: imgSrc==it.src? "2px solid #555":"1px solid #d8d8d8", marginTop: "19px", marginLeft: "10px", lineHeight: imgSrc==it.src?"27px": "29px",
+                        { true && labs[index] && <div style={{width: "32px", height: "32px",  color: "#555555", backgroundColor: it.colorVar.colorNo==highlightColor?"#ddd":"#fff",
+                            border: "none", border: imgSrc==it.src? "2px solid #555":"1px solid #555", marginTop: "19px", marginLeft: "10px", lineHeight: imgSrc==it.src?"27px": "29px",
                             fontSize: "14px", fontWeight: "400", borderRadius: "16px", textAlign: "center", cursor: "pointer"}}
                             > {labs[index]} </div> }    
 
