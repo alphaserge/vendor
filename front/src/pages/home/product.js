@@ -11,16 +11,14 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
-import { Button, FormControl, Typography } from "@mui/material";
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import ShopIcon from '@mui/icons-material/Shop';
-import { Accordion, AccordionSummary, AccordionDetails, InputLabel } from "@mui/material"
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import FormGroup from '@mui/material/FormGroup';
-import styled from 'styled-components'
-
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 import axios from 'axios'
 
 import config from "../../config.json"
@@ -466,7 +464,7 @@ const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
 
           <PropertyItem label="Meters in roll" value={fined(product.rollLength)} />
           <PropertyItem label="Stock available" value={!!onStock ? onStock + " (meters)" : "no information, please contact us"} />
-          <PropertyItem label="Price" value={"from"} valueBold={" $" +price} valueEnd ={" per meter"} />
+          <PropertyItem label="Price" value={"from"} valueBold={" $" + price} valueEnd ={" per meter"} />
           {!showColorEditor && <PropertyItem label="Color no." value={colorVar.colorNo} /> }
           {/* {!!manualColor && <PropertyItem label="Color no." value={manualColor} /> } */}
           {/* <PropertyItem label="Price" value={"from <b>$" + price + "</b> per meter"} /> */}
@@ -475,10 +473,11 @@ const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
           {/* <Box sx={{ color: "#222", margin: "15px 0 0 0" }}>Price: from $ <b>{fined(price)}</b> per meter</Box> */}
         </Box>
 
-        <Box sx={{ display: "flex", marginTop: "10px" }}>
+        <Box sx={{ display: "flex", width: "930px", marginTop: "15px" }}>
           <FormControl>
-          {showColorEditor && <Box sx={{display: "flex", alignItems: "center"}}>
-              <Box sx={{width: "90px"}}>Color no:</Box>
+          {showColorEditor && <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", rowGap: "10px"}}>
+              <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
+              <Box sx={{width: "85px"}}>Color no:</Box>
               <StyledTextField margin="normal"
                   //required
                   //fullWidth
@@ -493,18 +492,34 @@ const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
                   //autoComplete="email"
                   //style={itemStyle}
                   autoFocus /> 
-            </Box> }
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
+                  <Box sx={{width: "85px"}}>Quantity:</Box>
+                  <Amount value={cartQuantity} labelWidth="10px ! important" setValue={(e)=>{setQuantity(0,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
+                  <FormControl sx={{marginLeft: "20px"}}>
+                    {/* <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel> */}
+                    <RadioGroup
+                      sx={{display: "flex", flexDirection: "row"}}
+                      aria-labelledby="demo-radio-buttons-group-label"
+                      defaultValue="meters"
+                      name="radio-buttons-group" >
+                      <FormControlLabel value="meters" control={<Radio />} label="meters" />
+                      <FormControlLabel value="rolls" control={<Radio />} label="rolls" />
+                    </RadioGroup>
+                  </FormControl>
+
+              </Box>
+
+                  {/* <Selector value={cartUnit} list={["meters","rolls"]} setValue={setCartUnit} />  */}
+</Box> }
           </FormControl>
         </Box>
 
           <Box>
                 <Box sx={{ display: "flex", margin: "10px 0 0 0", fontSize: "15px" }} >
-                  <Box sx={{width: "90px"}}>Quantity:</Box>
-                  <Amount value={cartQuantity} setValue={(e)=>{setQuantity(0,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
-                  <Selector value={cartUnit} list={["meters","rolls"]} setValue={setCartUnit} /> 
                 </Box>
 
-            <Box sx={{width: "930px"}}>
+            <Box sx={{width: "930px", marginTop: "10px"}}>
                 <StyledButton
                   startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#222"}} />}
                   onClick={handleAddToCart}

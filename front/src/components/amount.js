@@ -23,7 +23,7 @@ export default function Amount(props) {
   }
 
   return <Box sx={{display: "flex", flexDirection: "row", alignItems: "center", fontSize: "inherit" }}> 
-  {(props.label && <Box style={{
+  {(props.label && <Box sx={{
                 fontSize: "inherit",
                 fontFamily: "inherit",
                 fontWeight: "400",
