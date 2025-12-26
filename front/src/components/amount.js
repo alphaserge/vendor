@@ -58,6 +58,8 @@ export default function Amount(props) {
                 textAlign: "center"
               }}
               /> 
+
+    {(!!props.showUpDown && 
             <Box sx={{display: "flex", flexDirection: "column", width: "32px", height: "38px", fontSize: "18px"}}> 
               {/* <span class="material-symbols-outlined" style={{fontSize: "18px", textAlign: "center", transform: "rotate(0.5turn)"}} >stat_minus_1</span>
               <span class="material-symbols-outlined" style={{fontSize: "18px", textAlign: "center" }} >stat_minus_1</span> */}
@@ -83,7 +85,8 @@ export default function Amount(props) {
                   textAlign: "center", 
                   cursor: "pointer"}}>stat_minus_1</div>
               {/* &#0708; &#8743; */}
-            </Box>
+            </Box> 
+            )}              
         </Box>
   
   // <NumberInput aria-label="Quantity Input" min={1} max={100000} step={props.step} onChange={props.onChange} defaultValue={props.defaultValue} />;

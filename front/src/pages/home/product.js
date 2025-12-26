@@ -19,6 +19,10 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import PropTypes from 'prop-types';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+
 import axios from 'axios'
 
 import config from "../../config.json"
@@ -110,6 +114,35 @@ const StyledSelect = withStyles({
           }
   })(Select);
 
+function CustomTabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
+CustomTabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
 
 const getFromUrl = (name) => {
   const search = window.location.search
@@ -151,6 +184,7 @@ export default function Product(props) {
   const [cartHelp, setCartHelp] = useState(false)
   const [filteredImages, setFilteredImages] = useState(null)
   const [selectedColorNo, setSelectedColorNo] = useState(null)
+  const [tabValue, setTabValue] = React.useState(0);
 
   const [domReady, setDomReady] = React.useState(false)
   
@@ -191,6 +225,10 @@ export default function Product(props) {
     const handleOpenCart = (what) => {
       navigate("/shoppingcart?what=" + what)
     }
+
+    const handleTabChange = (event, newValue) => {
+      setTabValue(newValue);
+    };
 
     var selectColors = product.colors.filter((it,ix) => { return it.colorNames != "PRODUCT"})
 
@@ -473,103 +511,73 @@ const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
           {/* <Box sx={{ color: "#222", margin: "15px 0 0 0" }}>Price: from $ <b>{fined(price)}</b> per meter</Box> */}
         </Box>
 
-        <Box sx={{ display: "flex", width: "930px", marginTop: "15px" }}>
-          <FormControl>
-          {showColorEditor && <Box sx={{display: "flex", flexDirection: "column", alignItems: "flex-start", rowGap: "10px"}}>
-              <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
-              <Box sx={{width: "85px"}}>Color no:</Box>
-              <StyledTextField margin="normal"
-                  //required
-                  //fullWidth
-                  id="manualColor"
-                  //label="color no"
-                  name="manualColor"
-                  value={manualColor}
-                  onChange={handleManualColor}
-                  size="small"
-                  sx={{width: "80px", margin: "0"}}
-                  inputProps={{ style: { textAlign: "center" } }}
-                  //autoComplete="email"
-                  //style={itemStyle}
-                  autoFocus /> 
-              </Box>
-              <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
-                  <Box sx={{width: "85px"}}>Quantity:</Box>
-                  <Amount value={cartQuantity} labelWidth="10px ! important" setValue={(e)=>{setQuantity(0,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
-                  <FormControl sx={{marginLeft: "20px"}}>
-                    {/* <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel> */}
-                    <RadioGroup
-                      sx={{display: "flex", flexDirection: "row"}}
-                      aria-labelledby="demo-radio-buttons-group-label"
-                      defaultValue="meters"
-                      name="radio-buttons-group" >
-                      <FormControlLabel value="meters" control={<Radio />} label="meters" />
-                      <FormControlLabel value="rolls" control={<Radio />} label="rolls" />
-                    </RadioGroup>
-                  </FormControl>
-
-              </Box>
-
-                  {/* <Selector value={cartUnit} list={["meters","rolls"]} setValue={setCartUnit} />  */}
-</Box> }
-          </FormControl>
-        </Box>
-
-          <Box>
-                <Box sx={{ display: "flex", margin: "10px 0 0 0", fontSize: "15px" }} >
+        <Box sx={{ display: "flex", flexDirection: "column", width: "930px", marginTop: "15px" }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={tabValue} onChange={handleTabChange} aria-label="basic tabs example">
+                  <Tab label="Add to cart" {...a11yProps(0)} />
+                  <Tab label="Buy a sample" {...a11yProps(1)} />
+                </Tabs>
+            </Box>
+            <CustomTabPanel value={tabValue} index={0}>
+            <FormControl>
+            {showColorEditor && <Box sx={{display: "flex", flexDirection: "row", alignItems: "flex-start", columnGap: "20px"}}>
+                
+                <Box sx={{ display: "flex", flexDirection: "column", rowGap: "10px"}}>
+                <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
+                <Box sx={{width: "85px"}}>Color no:</Box>
+                <StyledTextField margin="normal"
+                    //required
+                    //fullWidth
+                    id="manualColor"
+                    //label="color no"
+                    name="manualColor"
+                    value={manualColor}
+                    onChange={handleManualColor}
+                    size="small"
+                    sx={{width: "80px", margin: "0"}}
+                    inputProps={{ style: { textAlign: "center" } }}
+                    //autoComplete="email"
+                    //style={itemStyle}
+                    autoFocus /> 
                 </Box>
 
-            <Box sx={{width: "930px", marginTop: "10px"}}>
-                <StyledButton
+                <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
+                    <Box sx={{width: "85px"}}>Quantity:</Box>
+                    <Amount value={cartQuantity} labelWidth="10px ! important" setValue={(e)=>{setQuantity(0,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
+                </Box>
+                </Box>
+
+                    <FormControl sx={{marginLeft: "20px"}}>
+                      {/* <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel> */}
+                      <RadioGroup
+                        //sx={{display: "flex", flexDirection: "row"}}
+                        aria-labelledby="demo-radio-buttons-group-label"
+                        defaultValue="meters"
+                        name="radio-buttons-group" >
+                        <FormControlLabel value="meters" control={<Radio />} label="meters" />
+                        <FormControlLabel value="rolls" control={<Radio />} label="rolls" />
+                      </RadioGroup>
+                    </FormControl>
+
+                 <StyledButton
                   startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#222"}} />}
                   onClick={handleAddToCart}
                   //disabled={colorVarId==-1 && !manualColor}
                   sx={{ mt: 3 }} >Add to cart</StyledButton>
-                <StyledButton
-                  startIcon={<ShopIcon sx={{ color: "#222"}} />}
-                  onClick={handleBuySample}
-                  //disabled={colorVarId==-1}
-                  sx={{ mt: 3, ml: 2 }} >Buy a sample</StyledButton> 
+              </Box> }
+            </FormControl>
+            </CustomTabPanel>
+            <CustomTabPanel value={tabValue} index={1}>
+                Item Two
+            </CustomTabPanel>
+        </Box>
 
-                <StyledButton
-                  startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#222"}} />}
-                  onClick={e => handleOpenCart('cart')}
-                  sx={{ mt: 3, ml: 2 }}>Open cart</StyledButton>
-              </Box>
-          </Box>  
-
-        {/* height: "calc(100vh - 330px)" */}
-        {/* <Box sx={{ justifyContent: "flex-start", display: "flex", alignItems: "flex-start", flexDirection: "row", margin: "25px 20px 20px 20px" }}  > 
-          <Accordion defaultExpanded={false} disableGutters sx={{ boxShadow: "none", backgroundColor: "transparent" }} >
-
-          <AccordionSummary 
-            classes={{ content: classes.noexpand, expanded: classes.noexpand }} 
-            expandIcon={<ExpandMoreIcon sx={{marginLeft: "0"}} />} 
-            sx={{ maxWidth: "744px", padding: "0 3px", flexGrow: 0, justifyContent: "flex-start" }} >
-            <Typography sx={{ margin: 0, fontSize: "16px", fontWeight: "400", flexGrow: 0, paddingRight: "4px" }} >More information</Typography>
-          </AccordionSummary>
-
-          <AccordionDetails sx={{ maxWidth: "744px", margin: "0 auto", padding: "0 0px", overflowX: "hidden", overflowY: "auto"  }}>
-        <PropertyItem label="Article No :" value={fined(product.artNo)} />
-        <PropertyItem label="Ref No :" value={fined(product.refNo)} />
-        <PropertyItem label="Design :" value={fined(product.design)} />
-        <PropertyItem label="Composition :" value={fined(product.composition)} />
-        
-        <PropertyItem label="Product type :" value={fined(product.productType)} />
-        <PropertyItem label="Product style :" value={fined(product.productStyle)} />
-        <PropertyItem label="Print style :" value={fined(product.printType)} />
-        </AccordionDetails>
-        </Accordion>
-        </Box> */}
         </Box>
         </Box>
         </Grid>
         </Grid>
         </Box>
     )}
-    {/* ----- */}
-
-    {/* </Box> */}
 <br/>
 <br/>
     <Footer sx={{ mt: 2, mb: 2 }} />
