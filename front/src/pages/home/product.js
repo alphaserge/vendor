@@ -125,7 +125,7 @@ function CustomTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box sx={{ paddingTop: 3 }}>{children}</Box>}
     </div>
   );
 }
@@ -518,8 +518,8 @@ const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
                   <Tab label="Buy a sample" {...a11yProps(1)} />
                 </Tabs>
             </Box>
-            <CustomTabPanel value={tabValue} index={0}>
-            <FormControl>
+            <CustomTabPanel value={tabValue} index={0} sx={{padding: "0"}} padding="0" >
+            <FormControl id="dd0" sx={{padding: "0"}}>
             {showColorEditor && <Box sx={{display: "flex", flexDirection: "row", alignItems: "flex-start", columnGap: "20px"}}>
                 
                 <Box sx={{ display: "flex", flexDirection: "column", rowGap: "10px"}}>
@@ -547,7 +547,7 @@ const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
                 </Box>
                 </Box>
 
-                    <FormControl sx={{marginLeft: "20px"}}>
+                    <FormControl id="dd1" sx={{marginLeft: "20px"}}>
                       {/* <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel> */}
                       <RadioGroup
                         //sx={{display: "flex", flexDirection: "row"}}
