@@ -513,9 +513,9 @@ const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
 
         <Box sx={{ display: "flex", flexDirection: "column", width: "930px", marginTop: "15px" }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={tabValue} onChange={handleTabChange} aria-label="basic tabs example">
-                  <Tab label="Add to cart" {...a11yProps(0)} />
-                  <Tab label="Buy a sample" {...a11yProps(1)} />
+                <Tabs value={tabValue} onChange={handleTabChange} aria-label="" TabIndicatorProps={{sx: {display: 'none'},}}>
+                  <Tab label="Add to cart" {...a11yProps(0)} sx={{textTransform: "none", fontSize: "15px", fontWeight: tabValue==0 ? "600":"400", color: "#222 ! important"}} />
+                  <Tab label="Buy a sample" {...a11yProps(1)} sx={{textTransform: "none", fontSize: "15px", fontWeight: tabValue==1 ? "600":"400", color: "#222 ! important"}} />
                 </Tabs>
             </Box>
             <CustomTabPanel value={tabValue} index={0} sx={{padding: "0"}} padding="0" >
