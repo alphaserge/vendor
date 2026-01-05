@@ -269,8 +269,8 @@ export default function Order(props) {
                   {/* <Grid item sx={{mb: 1}}><Header text="Art No."></Header></Grid> */}
                   <Grid item sx={{mb: 1}}><Header text="Item name"></Header></Grid>
                   <Grid item sx={{mb: 1}}><Header text="Design"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Color No"></Header></Grid>
-                  <Grid item sx={{mb: 1}}><Header text="Order qty"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Colors"></Header></Grid>
+                  <Grid item sx={{mb: 1}}><Header text="Ordered"></Header></Grid>
                   <Grid item sx={{mb: 1}}><Header text="Roll details"></Header></Grid>
                   <Grid item sx={{mb: 1}}><Header text="Total qty"></Header></Grid>
                   <Grid item sx={{mb: 1}}><Header text="Price"></Header></Grid>
@@ -279,13 +279,15 @@ export default function Order(props) {
                 { !!order && !!order.items && order.items.map((data, index) => { 
                   const link = "/product?id=" + data.productId
                   const src = !!data.imagePath ? config.api + "/" + data.imagePath : config.api + "/public/noimage.jpg"
-                  const quantity = data.quantity + data.unit.replace('rolls','r').replace('meters','m')
+                  const quantity = data.quantity + " " + data.unit//.replace('rolls','r').replace('meters','m')
                   return (
                   <React.Fragment>
                     <GridItem link={link} center img src={src} />
-                    <GridItem link={link} text={(!!data.artNo ? "Art. " + data.artNo + " " : "") + data.itemName}/>
+                    {/* <GridItem link={link} text={(!!data.artNo ? "Art. " + data.artNo + " " : "") + data.itemName}/> */}
+                    <Grid item sx={{verticalAlign:"middle", display: "flex", justifyContent: "flex-end"}} ><Box>{data.itemName}<br/>{data.artNo}</Box></Grid>
                     <GridItem link={link} center text={data.design}/>
-                    <GridItem link={link} center text={data.colorNo}/>
+                    <Grid item sx={{verticalAlign:"middle"}} ><Box sx={{display: "flex", textAlign: "center", justifyContent: "center"}}>{"No. " + data.colorNo}<br/>{data.colorNames}</Box></Grid>
+                    {/* <GridItem link={link} center text={data.colorNo}/> */}
                     <GridItem link={link} center text={quantity}/>
                     <GridItem link={link} center text={data.details}/>
                     <GridItem link={link} center text={!!data.total ? data.total+"m" : "-"}/>

@@ -113,6 +113,28 @@ export const computePrice = (product, quantity, isRolls, colorVar) => {
     return round2(sum)
 }
 
+export const calculatePrice = (price, quantity) => {
+
+    price = price * 1.15
+
+    let sum = 0
+
+    if (!quantity) {
+        sum = price*1.1
+    } 
+        
+    if (quantity >= 500) {
+        sum = price
+    } else if (quantity >= 300) {
+        sum = price*1.05
+    } else {
+        sum = price*1.1
+    }
+
+    return round2(sum)
+}
+
+
 export const computeTotalPrice = (product, quantity, isRolls, colorVar) => {
     
     let qty = isRolls ? quantity * product.rollLength : quantity

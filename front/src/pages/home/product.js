@@ -39,7 +39,7 @@ import Selector from '../../components/selector';
 import StyledButton from '../../components/styledbutton';
 import StyledTextField from '../../components/styledtextfield';
 
-import { fined, round2, computePrice } from "../../functions/helper"
+import { fined, round2, computePrice, calculatePrice } from "../../functions/helper"
 import Styledtextfield from "../../components/styledtextfield";
 
 const useStyles = makeStyles((theme) => ({
@@ -176,6 +176,7 @@ export default function Product(props) {
   const [cartUnit, setCartUnit] = useState("meters")
   const [cartColor, setCartColor] = useState({colorNames: "custom color", colorVariantId: -1})
   const [manualColor, setManualColor] = useState("")
+  const [manualColorInCart, setManualColorInCart] = useState(false)
   const [colorVar, setColorVar] = useState(null)
   const [price, setPrice] = useState(0)
   const [onStock, setOnStock] = useState(0)
@@ -187,12 +188,21 @@ export default function Product(props) {
   const [tabValue, setTabValue] = React.useState(0);
 
   const [domReady, setDomReady] = React.useState(false)
-  
+
   const dispatch = useDispatch();
 
-    const _addToCart = (is_sample) => {
+    const add2Cart = (is_sample) => {
       if (!cartColor.colorNo && !!manualColor) {
         cartColor.colorNo = parseInt(manualColor)
+        const color = product.colors.find(x => x.colorVariantId!=-1 && x.colorNo + '' == manualColor)
+        if (!!color) {
+          cartColor.colorNames = color.colorNames;
+          cartColor.colorIds  = color.colorIds;
+          cartColor.isProduct = color.isProduct;
+          cartColor.imagePath = color.imagePath;
+          cartColor.price     = color.price;
+          cartColor.colorVariantId = color.colorVariantId;
+        }
       }
       let qty = is_sample ? -1 : cartQuantity
       dispatch(addToCart({ product, cartColor, cartQuantity: qty, cartUnit }));
@@ -211,15 +221,20 @@ export default function Product(props) {
     }
   
     const handleBuySample = (event) => {
-      _addToCart(true);
+      add2Cart(true);
       //navigate("/buysample")
     };
 
     const handleAddToCart = (event) => {
       /*if (colorVarId ==- 1 && !manualColor) { return } */
-      _addToCart(false);
-      setCartQuantity(1)
-      setCartIsRolls(false)
+
+      if (productInCart) {
+        navigate("/shoppingcart?what=cart")
+      } else {
+        add2Cart(false);
+        setCartQuantity(1)
+        setCartIsRolls(false)
+      }
     };
   
     const handleOpenCart = (what) => {
@@ -344,12 +359,18 @@ export default function Product(props) {
       axios.get(config.api + '/Products/Product?id=' + getFromUrl('id'))
       .then(function (result) {
         const _product = result.data
+        // set colVar to global photo:
         const colVar = _product.colors.find(x => !x.colorNo)
         setProduct(_product)
+        
         setPrice(computePrice(_product, 1000, false))
         if (colVar) {
           setCartColor(colVar)
-        }
+        } 
+          const prices = _product.colors.map(x=>x.price)
+          const priceMin = Math.min(...prices) //?(...prices)
+          setPrice(calculatePrice(priceMin, 1000))
+        
       })
       .catch (error => {
         console.log(error)
@@ -404,6 +425,7 @@ export default function Product(props) {
 
   const imageSelect = (item, index) => {
     setColorVar(item.colorVar)
+    setCartColor(item.colorVar)
     setManualColor(null)
     console.log(item.colorVar)
     if (!!item.colorVar.price) {
@@ -420,22 +442,49 @@ export default function Product(props) {
     const col = e.target.value
     //setManualColorVar({colorNo: col})
     setManualColor(e.target.value)
+    const manInCart = shopCart.findIndex(x => 
+      x.product.id == product.id &&
+      x.quantity != -1 &&
+      x.colorVar.colorNo == e.target.value) >= 0
+    setManualColorInCart( manInCart )
 
     const color = product.colors.find(p => p.colorNo+'' == col)
     if (!color) {
       setOnStock(null)
     } else {
       setOnStock(color.quantity)
+      //!!setColorVar(color)
     }
+
+    if (!!color && !!color.price) {
+      setPrice(computePrice(product, 1000, false, color))
+    } else {
+      setPrice(computePrice(product, 1000, false, null))
+    }
+
   }
 
-const productInCart = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity != -1) >= 0 : false;
 const productInSamples = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity == -1) >= 0 : false;
 const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
+
+var productInCart = false;
+if (!!shopCart && !!colorVar) {
+   productInCart = shopCart.findIndex(x => 
+    x.product.id == product.id &&
+    x.quantity != -1 &&
+    (x.colorVar.colorNo == colorVar.colorNo || x.colorVar.colorNo == manualColor)) >= 0;
+}
+
 //console.log('product.colors:')
 //console.log(product.colors)
-//console.log('colorVar:') 
-//console.log(colorVar) 
+console.log('product:') 
+console.log(product) 
+console.log('colorVar:') 
+console.log(colorVar) 
+console.log('shopCart:') 
+console.log(shopCart) 
+console.log('productInCart:');
+console.log(productInCart);
 
 //new ImageZoom(document.getElementById("img-container"), options);
 
@@ -471,7 +520,8 @@ const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
                             colorNames: it.colorNames,
                             colorVariantId: it.colorVariantId,
                             price: it.price,
-                            quantity: it.quantity
+                            quantity: it.quantity,
+                            imagePath: it.imagePath
                         }
                       }
                     })}
@@ -484,7 +534,7 @@ const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
             <Box sx={{ padding: "5px 0 0 0"}}>Color no. 1: red, blue, chocolate. </Box>
         </Grid>
         <Grid item xs={12} md={6} sx={{ display: "flex", minWidth: "400px" }} justifyContent={{ md: "flex-start", xs: "space-around" }} >
-        <Box sx={{width: "400px", marginLeft: "70px"}}>
+        <Box sx={{width: "400px", marginLeft: "30px"}}>
         <Box sx={{ display: "flex", flexDirection: "column"}} >
           <Box sx={{
               pl: "0px",
@@ -520,10 +570,10 @@ const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
             </Box>
             <CustomTabPanel value={tabValue} index={0} sx={{padding: "0"}} padding="0" >
             <FormControl id="dd0" sx={{padding: "0"}}>
-            {showColorEditor && <Box sx={{display: "flex", flexDirection: "row", alignItems: "flex-start", columnGap: "20px"}}>
+            <Box sx={{display: "flex", flexDirection: "row", alignItems: "flex-start", columnGap: "10px"}}>
                 
                 <Box sx={{ display: "flex", flexDirection: "column", rowGap: "10px"}}>
-                <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
+                { showColorEditor && <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
                 <Box sx={{width: "85px"}}>Color no:</Box>
                 <StyledTextField margin="normal"
                     //required
@@ -539,18 +589,24 @@ const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
                     //autoComplete="email"
                     //style={itemStyle}
                     autoFocus /> 
-                </Box>
+                </Box> }
 
                 <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
                     <Box sx={{width: "85px"}}>Quantity:</Box>
                     <Amount value={cartQuantity} labelWidth="10px ! important" setValue={(e)=>{setQuantity(0,e)}} />   {/* label="Meters" labelWidth="3.2rem" */}
                 </Box>
+                { !showColorEditor && <Box sx={{ width: "140px" }}><StyledButton
+                  startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
+                  onClick={handleAddToCart}
+                  disabled={ (!colorVar || (!!colorVar && !colorVar.colorNo)) && !manualColor}
+                  sx={{ mt: 3 }} >{ productInCart ? "In cart" : "Add to cart" } </StyledButton></Box>}
+
                 </Box>
 
                     <FormControl id="dd1" sx={{marginLeft: "20px"}}>
                       {/* <FormLabel id="demo-radio-buttons-group-label">Gender</FormLabel> */}
                       <RadioGroup
-                        //sx={{display: "flex", flexDirection: "row"}}
+                        sx={{display: "flex", flexDirection: showColorEditor ? "column" : "row"}}
                         aria-labelledby="demo-radio-buttons-group-label"
                         defaultValue="meters"
                         name="radio-buttons-group" >
@@ -559,12 +615,12 @@ const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
                       </RadioGroup>
                     </FormControl>
 
-                 <StyledButton
-                  startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#222"}} />}
+                 { showColorEditor &&<StyledButton
+                  startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
                   onClick={handleAddToCart}
-                  //disabled={colorVarId==-1 && !manualColor}
-                  sx={{ mt: 3 }} >Add to cart</StyledButton>
-              </Box> }
+                  disabled={ (!colorVar || (!!colorVar && !colorVar.colorNo)) && !manualColor}
+                  sx={{ mt: 3 }} >{ productInCart || manualColorInCart ? "In cart" : "Add to cart" } </StyledButton>}
+              </Box>
             </FormControl>
             </CustomTabPanel>
             <CustomTabPanel value={tabValue} index={1}>

@@ -278,7 +278,7 @@ const makeOrder = async (event) => {
       refNo: it.product.refNo,
       artNo: it.product.artNo,
       design: it.product.design,
-      price: computePrice(it.product, it.quantity, it.unit=="rolls"), //(it.quantity > 500 ? it.product.price : ( it.quantity > 300 ? it.product.price1 : it.product.price2 )),
+      price: computePrice(it.product, it.quantity, it.unit=="rolls", it.colorVar), //(it.quantity > 500 ? it.product.price : ( it.quantity > 300 ? it.product.price1 : it.product.price2 )),
       colorVariantId: it.colorVar.colorVariantId,
       colorNames: it.colorVar.colorNames,
       colorNo: it.colorVar.colorNo,
@@ -326,7 +326,6 @@ const makeOrder = async (event) => {
     getTransportCompanies(-1, -1, setDeliveryCompanies)
    }, [])
   
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -339,9 +338,12 @@ const makeOrder = async (event) => {
     <Box id="id0" sx={{ justifyContent: "center", display: "flex", alignItems: "center", flexDirection: "column"  }} className="center-content"  key="a0">
     <Box sx={{ justifyContent: "flex-start", alignItems: "center", maxWidth: "960px" }} key="a1" >
       
-      <PageHeader value={"Your shopping cart: " + shopCart.length + " items"} key="b2" />
+    { shopCart.length==0 && 
+        <Box sx={{padding: "40px 0 0 0"}}><PageHeader value={"Your shopping cart is empty"} key="b211" /></Box> }
+    { shopCart.length!=0 && 
+        <PageHeader value={"Your shopping cart: " + shopCart.length + " items"} key="b2" /> }
 
-    <Box sx={{ 
+    { shopCart.length!=0 && <Box sx={{ 
       display: "grid", 
       gridTemplateColumns: "66px 1fr 70px 110px 120px 130px",
       columnGap: "5px",
@@ -421,12 +423,13 @@ const makeOrder = async (event) => {
       <Grid item sx={{textAlign: "right", fontSize: "14px", fontWeight: 600, gridColumn: "span 2"}}>
         <StyledButton
             startIcon={<ShoppingCartOutlinedIcon sx={{ color: "#fff"}} />}
+            disabled={shopCart.length==0}
             onClick={(e) => { setStep("delivery")} }
             sx={{ mt: 2, width: "160px" }}>Create order</StyledButton>
       </Grid>
       <Grid item></Grid>
 
-    </Box>
+    </Box> }
     </Box>
     </Box> )}
 
@@ -547,7 +550,7 @@ const makeOrder = async (event) => {
                   id="smscode"
                   name="sms-code"
                   label="Code from email"
-                  sx = {{...textStyle, ...{width: "140px"}}}
+                  sx = {{...textStyle, ...{width: "200px"}}}
                   value={sms}
                   onChange={ev => { setSms(ev.target.value)  } }
                 />

@@ -112,6 +112,7 @@ namespace chiffon_back.Controllers
                         ItemName = item.j.ItemName,
                         ColorNo = item.oi.ColorNo,
                         ColorNames = item.oi.ColorNames,
+                        ColorVariantId = item.oi.ColorVariantId,
                         //Composition = item.j.Composition,
                         Design = item.j.Design,
                         Price = item.oi.Price,
@@ -130,22 +131,36 @@ namespace chiffon_back.Controllers
                     };
 
                     string imagePath = string.Empty;
-                    if (!String.IsNullOrEmpty(item.j.PhotoUuids))
+
+                    if (orderItem.ColorVariantId != -1)
                     {
-                        foreach (string photoUuid in PhotoHelper.GetPhotoUuids(item.j.PhotoUuids))
+                        var cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == orderItem.ColorVariantId);
+                        if (cv != null)
                         {
-                            var imageFiles = DirectoryHelper.GetImageFiles(photoUuid);
+                            var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
                             if (imageFiles.Count > 0)
                             {
                                 imagePath = imageFiles[0];
-                                break;
                             }
                         }
                     }
 
                     if (String.IsNullOrEmpty(imagePath))
                     {
-                        foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == item.j.Id).ToList())
+                        if (!String.IsNullOrEmpty(item.j.PhotoUuids))
+                        {
+                            foreach (string photoUuid in PhotoHelper.GetPhotoUuids(item.j.PhotoUuids))
+                            {
+                                var imageFiles = DirectoryHelper.GetImageFiles(photoUuid);
+                                if (imageFiles.Count > 0)
+                                {
+                                    imagePath = imageFiles[0];
+                                    break;
+                                }
+                            }
+                        }
+
+                        /*foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == item.j.Id).ToList())
                         {
                             var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
                             if (imageFiles.Count > 0)
@@ -153,7 +168,12 @@ namespace chiffon_back.Controllers
                                 imagePath = imageFiles[0];
                                 break;
                             }
-                        }
+                        }*/
+                    }
+
+                    if (String.IsNullOrEmpty(imagePath))
+                    {
+                        imagePath = @"colors\nopicture.png";
                     }
 
                     object obj = dt.Compute(orderItem.Details, "");
@@ -183,149 +203,6 @@ namespace chiffon_back.Controllers
                 Log("Order", ex);
             }
             return new Models.Order();
-        }
-
-        [HttpGet("OrdersOld")]
-        public IEnumerable<Models.Order> Get(string type, string value, string id)
-        {
-            bool save = false;
-            foreach(var c in ctx.Currencies)
-            {
-                decimal course = Helper.GetCurrencyCourse(c.ShortName!.ToUpper(), DateTime.Now);
-                if (course > 0 && course != c.Rate)
-                {
-                    c.Rate = course;
-                    save = true;
-                }
-            }
-            if (save)
-            {
-                ctx.SaveChanges();
-            }
-
-            System.Data.DataTable dt = new System.Data.DataTable();
-
-            var mapper = config.CreateMapper();
-            List <Models.Vendor> vendorList = ctx.Vendors.Select(x => mapper.Map<Models.Vendor>(x)).ToList();
-
-            var ordersQuery = ctx.Orders.AsQueryable();
-
-            if (!id.IsNullOrEmpty())
-            {
-                ordersQuery = ordersQuery.Where(x => x.Id.ToString() == id);
-            }
-            else
-            {
-                switch (type)
-                {
-                    case "client":
-                        if (!value.IsNullOrEmpty())
-                        {
-                            ordersQuery = ordersQuery.Where(x => x.ClientEmail!.Trim().ToLower() == value.Trim().ToLower());
-                        }
-                        break;
-                    case "vendor":
-                        if (!value.IsNullOrEmpty())
-                        {
-                            ordersQuery = ordersQuery.Where(x => x.VendorId.ToString() == value);
-                        }
-                        break;
-
-                }
-            }
-
-            List<Models.Order> orders = ordersQuery.OrderByDescending(x => x.Created)
-                .Select(x => mapper.Map<Models.Order>(x))
-                .ToList();
-
-            foreach (var o in orders) {
-                o.VendorName = ctx.Vendors.FirstOrDefault(x => x.Id == o.VendorId)?.VendorName;
-
-                var payQuery = from p in ctx.Payments.Where(x => x.OrderId == o.Id)
-                               join c in ctx.Currencies on p.CurrencyId equals c.Id into jointable
-                               from j in jointable.DefaultIfEmpty()
-                               select new { j, p };
-
-                o.PaySumm = payQuery.Sum(x => x.j.Rate != null && x.j.Rate> 0m ? x.j.Rate * x.p.Amount : 0m);
-                //o.PaySumm = ctx.Payments.Where(x => x.OrderId == o.Id).Sum(x => x.Amount); //TODO: Course!!!!
-
-                var query = from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
-                            join p in ctx.Products on oi.ProductId equals p.Id into jointable
-                            from j in jointable.DefaultIfEmpty()
-                            join v in ctx.ColorVariants on oi.ColorVariantId equals v.Id into joincv
-                            from cv in joincv.DefaultIfEmpty()
-                            select new { oi, j, cv };
-
-                var items = query.ToList();
-
-                if (items.Count == 0) {
-                    continue;
-                }
-
-                decimal total = 0m;
-                List<Models.OrderItem> orderItems = new List<Models.OrderItem>();
-                foreach (var item in items) {
-                    
-                    total += item.oi.Quantity * item.oi.Price;
-
-                    Models.OrderItem orderItem = new Models.OrderItem()
-                    {
-                        OrderId = o.Id,
-                        ProductId = item.oi.ProductId,
-                        ColorVariantId = item.cv.Id,
-                        Id = item.oi.Id,
-                        ArtNo = item.j.ArtNo,
-                        RefNo = item.j.RefNo,
-                        ItemName = item.j.ItemName,
-                        //Composition = item.j.Composition,
-                        Design = item.j.Design,
-                        Price = item.oi.Price,
-                        Quantity = item.oi.Quantity,
-                        Unit = item.oi.Unit,
-                        Details = item.oi.Details,
-                        Shipped = item.oi.Shipped,
-                        Delivered = item.oi.Delivered,
-                        DeliveryCompany = item.oi.DeliveryCompany,
-                        DeliveryNo = item.oi.DeliveryNo,
-                        ColorNo = item.oi.ColorNo,
-                        ColorNames = item.oi.ColorNames,
-                        StockId = item.oi.StockId,
-                        StockName = ctx.Stocks.FirstOrDefault(x => x.Id == item.oi.StockId)?.StockName,
-                        VendorId = item.j.VendorId,
-                        VendorName = vendorList.FirstOrDefault(x=>x.Id==item.j.VendorId)?.VendorName,
-                        //Paid = item.oi.Paid // (ctx.Payments.FirstOrDefault(x => x.Amount > 0m && x.What == "order" && x.WhatId == item.oi.OrderId)) != null,
-                    };
-
-                    string imagePath = string.Empty;
-                    var imageFiles = DirectoryHelper.GetImageFiles(item.cv.Uuid!);
-                    if (imageFiles.Count > 0)
-                    {
-                        orderItem.imagePath = imageFiles[0];
-                    }
-                    else
-                    {
-                        orderItem.imagePath = @"colors\nopicture.png";
-                    }
-                    orderItems.Add(orderItem);
-
-                    if (!String.IsNullOrEmpty(item.oi.Details))
-                    {
-                        try
-                        {
-                            orderItem.Total = Convert.ToDecimal(dt.Compute(item.oi.Details, ""));
-                        }
-                        catch (Exception ex)
-                        {
-
-                        }
-                    }
-
-                }
-                o.Total = total;
-                o.Items = orderItems.ToArray();
-            }
-
-            return orders.AsEnumerable();
         }
 
         // method for Vendor managers
@@ -613,105 +490,6 @@ namespace chiffon_back.Controllers
             return orders.AsEnumerable();
         }
 
-
-        [HttpGet("ClientOrder")]
-        public Models.ClientOrder GetClientOrder(string uuid)
-        {
-            Models.ClientOrder? order = ctx.Orders.Where(x => x.Uuid == uuid)
-                .Select(x => config.CreateMapper().Map<Models.ClientOrder>(x)).FirstOrDefault();
-
-            System.Data.DataTable dt = new System.Data.DataTable();
-
-            var query =
-                from oi in ctx.OrderItems.Where(x => x.OrderId == order.Id)
-                join p in ctx.Products
-                    on oi.ProductId equals p.Id into jointable
-                from j in jointable.DefaultIfEmpty()
-                orderby oi.OrderId, j.ItemName
-                select new { oi, j };
-
-            var items = query.ToList();
-
-            foreach (var item in items)
-            {
-                decimal actualQuantity = String.IsNullOrWhiteSpace(item.oi.Details) ? item.oi.Quantity : Convert.ToDecimal(dt.Compute(item.oi.Details, ""));
-                decimal totalCost = item.oi.Price * actualQuantity;
-
-                Models.ClientOrderItem orderItem = new Models.ClientOrderItem()
-                {
-                    ProductId = item.oi.ProductId,
-                    Id = item.oi.Id,
-                    ArtNo = item.j.ArtNo,
-                    RefNo = item.j.RefNo,
-                    ItemName = item.j.ItemName,
-                    //Composition = item.j.Composition,
-                    Design = item.j.Design,
-                    Price = item.oi.Price,
-                    Quantity = item.oi.Quantity,
-                    Unit = item.oi.Unit,
-                    Details = item.oi.Details,
-                    Shipped = item.oi.Shipped,
-                    Delivered = item.oi.Delivered,
-                    DeliveryCompany = item.oi.DeliveryCompany,
-                    DeliveryNo = item.oi.DeliveryNo,
-                    ClientDeliveryCompany = item.oi.ClientDeliveryCompany,
-                    ClientDeliveryNo = item.oi.ClientDeliveryNo,
-                    ColorNo = item.oi.ColorNo,
-                    ColorNames = item.oi.ColorNames,
-                    StockId = item.oi.StockId,
-                    StockName = ctx.Stocks.FirstOrDefault(x => x.Id == item.oi.StockId)?.StockName,
-                    VendorId = item.j.VendorId,
-                    VendorName = ctx.Vendors.FirstOrDefault(x => x.Id == item.j.VendorId)?.VendorName,
-                    TotalCost = totalCost
-                    //PaidShare = paySumm != null && totalSumm > 0m ? paySumm / totalSumm : 0m,
-                };
-
-                string imagePath = @"colors\nopicture.png";
-                if (item.oi.ColorVariantId != null && item.oi.ColorVariantId != -1)
-                {
-                    Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.oi.ColorVariantId);
-                    if (cv != null)
-                    {
-                        var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
-                        if (imageFiles.Count > 0)
-                        {
-                            imagePath = imageFiles[0];
-                        }
-                    }
-                }
-                else
-                {
-                    var product = ctx.Products.FirstOrDefault(x => x.Id == item.j.Id);
-                    if (product != null)
-                    {
-                        string[] uuids = PhotoHelper.GetPhotoUuids(product.PhotoUuids);
-                        if (uuids.Length > 0)
-                        {
-                            var imageFiles = DirectoryHelper.GetImageFiles(uuids[0]);
-                            imagePath = imageFiles[0];
-                        }
-                    }
-                }
-
-                orderItem.imagePath = imagePath;
-                order.Items.Add(orderItem);
-            }
-
-            order.Payments = ctx.Payments
-                .Where(x => x.OrderId == order.Id)
-                .Select(x => config.CreateMapper().Map<Models.Payment>(x)).ToList();
-
-            foreach (Models.Payment p in order.Payments)
-            {
-                p.Currency = ctx.Currencies.FirstOrDefault(c => c.Id == p.CurrencyId).ShortName;
-            }
-
-            decimal? paid = order.Payments.Sum(x => x.Amount);
-            order.TotalPaid = paid != null ? paid.Value : 0m;
-
-            return order;
-        }
-
         [HttpGet("ClientOrders")]
         public IEnumerable<Models.ClientOrder> GetClientOrders(string email, bool isSamples)
         {
@@ -733,6 +511,7 @@ namespace chiffon_back.Controllers
                         ProductId = i.ProductId,
                         Details = i.Details,
                         Price = i.Price,
+                        ColorVariantId = i.ColorVariantId,
                         Quantity = i.Quantity}).ToList()
             }).ToList();
 
@@ -747,8 +526,55 @@ namespace chiffon_back.Controllers
                     decimal actualQuantity = String.IsNullOrWhiteSpace(oi.Details) ? oi.Quantity : Convert.ToDecimal(dt.Compute(oi.Details, ""));
                     total += oi.Price * actualQuantity;
 
-                    string imagePath = @"colors\nopicture.png";
-                    if (oi.ColorVariantId != null && oi.ColorVariantId != -1)
+                    string imagePath = string.Empty;
+
+                    if (oi.ColorVariantId != -1)
+                    {
+                        var cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == oi.ColorVariantId);
+                        if (cv != null)
+                        {
+                            var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                            if (imageFiles.Count > 0)
+                            {
+                                imagePath = imageFiles[0];
+                            }
+                        }
+                    }
+
+                    if (String.IsNullOrEmpty(imagePath))
+                    {
+                        var product = ctx.Products.FirstOrDefault(x => x.Id == oi.ProductId);
+                        if (!String.IsNullOrEmpty(product.PhotoUuids))
+                        {
+                            foreach (string photoUuid in PhotoHelper.GetPhotoUuids(product.PhotoUuids))
+                            {
+                                var imageFiles = DirectoryHelper.GetImageFiles(photoUuid);
+                                if (imageFiles.Count > 0)
+                                {
+                                    imagePath = imageFiles[0];
+                                    break;
+                                }
+                            }
+                        }
+
+                        /*foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == item.j.Id).ToList())
+                        {
+                            var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
+                            if (imageFiles.Count > 0)
+                            {
+                                imagePath = imageFiles[0];
+                                break;
+                            }
+                        }*/
+                    }
+
+                    if (String.IsNullOrEmpty(imagePath))
+                    {
+                        imagePath = @"colors\nopicture.png";
+                    }
+
+                    /////string imagePath = @"colors\nopicture.png";
+                    /*if (oi.ColorVariantId != null && oi.ColorVariantId != -1)
                     {
                         Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == oi.ColorVariantId);
                         if (cv != null)
@@ -772,7 +598,7 @@ namespace chiffon_back.Controllers
                                 imagePath = imageFiles[0];
                             }
                         }
-                    }
+                    }*/
                     order.Photos.Add(imagePath);
 
                 }
@@ -1266,8 +1092,8 @@ namespace chiffon_back.Controllers
                     
                     newItem.OrderId = newOrder.Id;
 
-                    string colorNames = "";
-                    if (cv != null)
+                    //string colorNames = newItem.ColorNames;
+                    /*if (cv != null)
                     {
                         if (cv.Price != null)
                         {
@@ -1278,7 +1104,7 @@ namespace chiffon_back.Controllers
                     } else
                     {
                         newItem.ColorNames = "custom color";
-                    }
+                    }*/
 
                     var deliveryCompany = ctx.Vendors.FirstOrDefault(x => x.Id == order.ClientDeliveryCompanyId);
                     if (deliveryCompany != null)
@@ -1337,7 +1163,7 @@ namespace chiffon_back.Controllers
                             + product.ItemName + $"</td><td style={cell}>" 
                             + product.RefNo + $"</td style={cell}><td>" 
                             + product.ArtNo + $"</td><td style={cell}>" 
-                            + product.Design + "<br/>" + colorNames + $"</td><td style={rightAlign}>" 
+                            + product.Design + "<br/>" + newItem.ColorNames + $"</td><td style={rightAlign}>" 
                             + newItem.Quantity + $" m </td><td style={rightAlign}>" 
                             + String.Format("{0:0.0#}", item.Price) + " $</td></tr>";
                         linkedRes.Add(LinkedImg);
@@ -1450,12 +1276,12 @@ namespace chiffon_back.Controllers
                 // 3) Inform Angelika manager by email
                 Helper.SendMessage(ordersManager, "manager", $"Order number {newOrder.Number} was created", $"{frontendUrl}/listorder", "New order was created");
 
-                return CreatedAtAction(nameof(Get), new { id = newOrder.Id }, newOrder);
+                return CreatedAtAction("Orders", new { id = newOrder.Id }, newOrder);
             }
             catch (Exception ex)
             {
                 Log("Post", ex);
-                return CreatedAtAction(nameof(Get), new { id = -1 }, null);
+                return CreatedAtAction("Orders", new { id = -1 }, null);
             }
         }
 
@@ -1476,11 +1302,11 @@ namespace chiffon_back.Controllers
                 }
                 ctx.SaveChanges();
 
-                return CreatedAtAction(nameof(Get), new { id = order.Id }, rc);
+                return CreatedAtAction("Orders", new { id = order.Id }, rc);
             }
             catch (Exception ex)
             {
-                return CreatedAtAction(nameof(Get), new { id = -1 }, null);
+                return CreatedAtAction("Orders", new { id = -1 }, null);
             }
         }
 

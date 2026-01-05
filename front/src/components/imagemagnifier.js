@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef, useRef, useImperativeHandle } from 'react';
 import Box from '@mui/material/Box';
 import { propsToClassKey } from '@mui/styles';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -34,14 +34,14 @@ const fixUrl = (s) => {
     return s.replace(/\\/g, '/')
 }
 
-const ImageMagnifier = ({
+const ImageMagnifier = forwardRef(({
     images = [],
     imageSelect = null,
     width = 400,
     height = 400,
     zoomLevel = 3,
     highlightColor = ""
-}) => {
+}, ref) => {
     const [showMagnifier, setShowMagnifier] = useState(false);
     const [[imgWidth, imgHeight], setSize] = useState([0, 0]);
     const [[bgPosX, bgPosY], setBgPos] = useState([0, 0]);
@@ -54,10 +54,22 @@ const ImageMagnifier = ({
     
     //const [colVarId, setColVarId] = useState(colorVarId)
 
+    useImperativeHandle(ref, () => ({
+        
+        getAlert(colorNo) {
+            const img = imags.find(e => e.colorVar.colorNo==colorNo)
+            if (!!img) {
+                setImgSrc(fixUrl(img.src))
+                //alert(img.src)
+            }
+        }
+    }));
+
     const thumbImageClick = (item, index) => {
         setImgSrc(fixUrl(item.src))
         if (!!imageSelect) {
-            imageSelect(item,index);
+            //const item1 = { ...item, imagePath: item.src }
+            imageSelect(item, index);
         }
     }
 
@@ -87,7 +99,7 @@ const ImageMagnifier = ({
         else { labs.push("")}
     });
 
-
+    console.log('fi:')
     console.log(fi)
 
     return <Box sx={{ width: width+120, height: height, display: "grid", gridTemplateColumns: "auto 115px", columnGap: "12px", overflowY: "hidden" }} key="kk1">
@@ -113,7 +125,7 @@ const ImageMagnifier = ({
 
                  { fi.map((it, index) => { return <React.Fragment key = {"kfi"+index}>
                     <div style={{ marginBottom: "10px", position: "relative", width: "132px", height: "70px", top: "0", display: "flex" }} onClick={(e) => thumbImageClick(it, index)} >
-                        <img
+                        <img 
                             src={it.src}
                             style={{ display: "block", width: "70px", height: "100%", cursor: "pointer" }}
                             
@@ -123,8 +135,8 @@ const ImageMagnifier = ({
                             fontSize: "12px", fontWeight: "400", borderRadius: "10px", textAlign: "center", cursor: "pointer"}}
                             > {labs[index]} </div> }
 
-                        { true && labs[index] && <div style={{width: "32px", height: "32px",  color: "#555555", backgroundColor: it.colorVar.colorNo==highlightColor?"#ddd":"#fff",
-                            border: "none", border: imgSrc==it.src? "2px solid #555":"1px solid #555", marginTop: "19px", marginLeft: "10px", lineHeight: imgSrc==it.src?"27px": "29px",
+                        { true && labs[index] && <div style={{width: "28px", height: "28px",  color:imgSrc==it.src?"#fff": "#222", backgroundColor: imgSrc==it.src?"#444":"#fff",
+                            border: "none", border: imgSrc==it.src? "2px solid #555":"1px solid #555", marginTop: "19px", marginLeft: "11px", lineHeight: imgSrc==it.src?"22px": "24px",
                             fontSize: "14px", fontWeight: "400", borderRadius: "16px", textAlign: "center", cursor: "pointer"}}
                             > {labs[index]} </div> }    
 
@@ -145,6 +157,6 @@ const ImageMagnifier = ({
     </Box>
 
 
-};
+});
 
 export default ImageMagnifier;
