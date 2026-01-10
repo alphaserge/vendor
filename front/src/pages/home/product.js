@@ -171,6 +171,7 @@ export default function Product(props) {
   const [productStyles, setProductStyles] = useState([])
 
   const [info, setInfo] = React.useState("");
+  const [colorInfo, setColorInfo] = React.useState("");
 
   const [cartQuantity, setCartQuantity] = useState(1)
   const [cartUnit, setCartUnit] = useState("meters")
@@ -427,6 +428,11 @@ export default function Product(props) {
     setColorVar(item.colorVar)
     setCartColor(item.colorVar)
     setManualColor(null)
+    if (!item.colorVar.colorNo) {
+      setColorInfo("Global photo of product")
+    } else {
+      setColorInfo("Color " + item.colorVar.colorNo + ":  " + item.colorVar.colorNames)
+    }
     console.log(item.colorVar)
     if (!!item.colorVar.price) {
       setPrice(computePrice(product, 1000, false, item.colorVar))
@@ -467,6 +473,8 @@ export default function Product(props) {
 const productInSamples = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity == -1) >= 0 : false;
 const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
 
+const allPhotos =  Array.isArray(product.productPhotos) ? [...product.productPhotos, ...product.colorPhotos] : product.colorPhotos;
+
 var productInCart = false;
 if (!!shopCart && !!colorVar) {
    productInCart = shopCart.findIndex(x => 
@@ -479,12 +487,15 @@ if (!!shopCart && !!colorVar) {
 //console.log(product.colors)
 console.log('product:') 
 console.log(product) 
-console.log('colorVar:') 
-console.log(colorVar) 
-console.log('shopCart:') 
-console.log(shopCart) 
-console.log('productInCart:');
-console.log(productInCart);
+console.log('product.productPhotos:') 
+console.log(product.productPhotos) 
+
+//console.log('colorVar:') 
+//console.log(colorVar) 
+//console.log('shopCart:') 
+//console.log(shopCart) 
+//console.log('productInCart:');
+//console.log(productInCart);
 
 //new ImageZoom(document.getElementById("img-container"), options);
 
@@ -510,7 +521,7 @@ console.log(productInCart);
               <ImageMagnifier 
                 sx={{padding: "0 10px"}}
                 images={
-                  product.colorPhotos.map((it, ix) => { return { 
+                  allPhotos.map((it, ix) => { return { 
                         index: ix,
                         label: !it.colorNo ? "all" : it.colorNo+"",
                         src: config.api + "/" + it.imagePath[0],
@@ -531,7 +542,7 @@ console.log(productInCart);
                 alt={product.itemName + " photo"}
                 imageSelect={imageSelect}
             /> )}
-            <Box sx={{ padding: "5px 0 0 0"}}>Color no. 1: red, blue, chocolate. </Box>
+            <Box sx={{ padding: "5px 75px 0 0", textAlign: "center", fontWeight: "500" }}>{colorInfo}</Box>
         </Grid>
         <Grid item xs={12} md={6} sx={{ display: "flex", minWidth: "400px" }} justifyContent={{ md: "flex-start", xs: "space-around" }} >
         <Box sx={{width: "400px", marginLeft: "30px"}}>

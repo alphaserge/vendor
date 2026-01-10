@@ -99,8 +99,8 @@ const ImageMagnifier = forwardRef(({
         else { labs.push("")}
     });
 
-    console.log('fi:')
-    console.log(fi)
+    //console.log('fi:')
+    //console.log(fi)
 
     return <Box sx={{ width: width+120, height: height, display: "grid", gridTemplateColumns: "auto 115px", columnGap: "12px", overflowY: "hidden" }} key="kk1">
 
