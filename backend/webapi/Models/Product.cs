@@ -55,7 +55,9 @@ namespace chiffon_back.Models
         public string? ProductType { get; set; }
         public string? Vendor { get; set; }
 
-        public List<ProductColor> Colors { get; set; }
+        public List<ProductColor> ProductPhotos { get; set; }
+        public List<ProductColor> ColorPhotos { get; set; }
+        public List<ProductColor> ProductVideos { get; set; }
 
         public CompositionValue[]? CompositionValues { get; set; }
         public int[]? DesignTypeIds { get; set; }

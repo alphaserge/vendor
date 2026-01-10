@@ -50,7 +50,7 @@ export default function ItemProduct(props) {
     <FormControl  sx={{ mb: 2, width: 340 }} > 
           <Link href={"/updateproduct?id=" + props.data.id} className="no-link" >
           <Swiper className="mySwiper" >
-            {props.data.colors.map((cv, index) => {
+            {props.data.colorPhotos.map((cv, index) => {
               //console.log('cv.imagePath[0]')
               //console.log(config.api + "/" + cv.imagePath[0])
               return <Box key={"product-box-"+index} >

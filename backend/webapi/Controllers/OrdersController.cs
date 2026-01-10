@@ -1100,7 +1100,7 @@ namespace chiffon_back.Controllers
                             newItem.Price = cv.Price.Value;
                         }
                         var colorIds = ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == cv.Id).Select(x => x.ColorId).ToList();
-                        newItem.ColorNames = String.Join(", ", ctx.Colors.Where(x => colorIds.Contains(x.Id)).Select(x => x.ColorName));
+                        newItem.ColorNames = String.Join(", ", ctx.ColorPhotos.Where(x => colorIds.Contains(x.Id)).Select(x => x.ColorName));
                     } else
                     {
                         newItem.ColorNames = "custom color";

@@ -236,7 +236,7 @@ namespace chiffon_back.Code
                             {
                                 foreach (string colorName in colorNames)
                                 {
-                                    int? colorId = ctx.Colors.FirstOrDefault(x => x.ColorName != null && x.ColorName.ToLower() == colorName).Id;
+                                    int? colorId = ctx.ColorPhotos.FirstOrDefault(x => x.ColorName != null && x.ColorName.ToLower() == colorName).Id;
                                     if (colorId != null)
                                     {
                                         ColorVariantsInColors? colVarInColors = ctx.ColorVariantsInColors.FirstOrDefault(x => x.ColorVariantId == existedColorVar.Id && x.ColorId == colorId);

@@ -160,7 +160,7 @@ export default function Product(props) {
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const [product, setProduct] = useState({colors: []})
+  const [product, setProduct] = useState({colorPhotos: []})
   const [colors, setColors] = useState([])
   const [seasons, setSeasons] = useState([])
   const [designTypes, setDesignTypes] = useState([])
@@ -194,7 +194,7 @@ export default function Product(props) {
     const add2Cart = (is_sample) => {
       if (!cartColor.colorNo && !!manualColor) {
         cartColor.colorNo = parseInt(manualColor)
-        const color = product.colors.find(x => x.colorVariantId!=-1 && x.colorNo + '' == manualColor)
+        const color = product.colorPhotos.find(x => x.colorVariantId!=-1 && x.colorNo + '' == manualColor)
         if (!!color) {
           cartColor.colorNames = color.colorNames;
           cartColor.colorIds  = color.colorIds;
@@ -245,10 +245,10 @@ export default function Product(props) {
       setTabValue(newValue);
     };
 
-    var selectColors = product.colors.filter((it,ix) => { return it.colorNames != "PRODUCT"})
+    var selectColors = product.colorPhotos.filter((it,ix) => { return it.colorNames != "PRODUCT"})
 
      //!! I'm change :
-    selectColors =  product.colors
+    selectColors =  product.colorPhotos
     // ?  product.colors.map((it) => { return it.colorNames == "PRODUCT" ? "custom color" : it.colorNames } ) : []
 
     selectColors.forEach((e) => {
@@ -360,14 +360,14 @@ export default function Product(props) {
       .then(function (result) {
         const _product = result.data
         // set colVar to global photo:
-        const colVar = _product.colors.find(x => !x.colorNo)
+        const colVar = _product.colorPhotos.find(x => !x.colorNo)
         setProduct(_product)
         
         setPrice(computePrice(_product, 1000, false))
         if (colVar) {
           setCartColor(colVar)
         } 
-          const prices = _product.colors.map(x=>x.price)
+          const prices = _product.colorPhotos.map(x=>x.price)
           const priceMin = Math.min(...prices) //?(...prices)
           setPrice(calculatePrice(priceMin, 1000))
         
@@ -448,7 +448,7 @@ export default function Product(props) {
       x.colorVar.colorNo == e.target.value) >= 0
     setManualColorInCart( manInCart )
 
-    const color = product.colors.find(p => p.colorNo+'' == col)
+    const color = product.colorPhotos.find(p => p.colorNo+'' == col)
     if (!color) {
       setOnStock(null)
     } else {
@@ -506,11 +506,11 @@ console.log(productInCart);
      <Box className="center-content" sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "row", pt: 4 }}  >  {/* height: "calc(100vh - 330px)" */}
      <Grid container sx={{ marginTop: "20px" }}>
         <Grid item xs={12} md={6} sx={{display: "flex", flexDirection: "column", minWidth: "400px", paddingRight: "30px"}} justifyContent={{ md: "flex-start", xs: "space-around" }} >
-            {( product.colors && product.colors.length>0 && 
+            {( product.colorPhotos && product.colorPhotos.length>0 && 
               <ImageMagnifier 
                 sx={{padding: "0 10px"}}
                 images={
-                  product.colors.map((it, ix) => { return { 
+                  product.colorPhotos.map((it, ix) => { return { 
                         index: ix,
                         label: !it.colorNo ? "all" : it.colorNo+"",
                         src: config.api + "/" + it.imagePath[0],

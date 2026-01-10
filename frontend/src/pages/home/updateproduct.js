@@ -15,6 +15,7 @@ import Select from '@mui/material/Select';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import AddIcon from '@mui/icons-material/Add';
 //import AddIcon from '@mui/icons-material/Add';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import MenuItem from '@mui/material/MenuItem';
@@ -190,7 +191,8 @@ export default function UpdateProduct(props) {
 
     const [colorVariantsAdd, setColorVariantsAdd] = useState([])
     const [colorVariants, setColorVariants] = useState([])
-    const [productColors, setProductColors] = useState([])
+    const [productPhotos, setProductPhotos] = useState([])
+    const [productVideos, setProductVideos] = useState([])
 
     const [windowColorVariant, setWindowColorVariant] = useState(false)
     const [addColorIds, setAddColorIds] = useState([])
@@ -218,8 +220,8 @@ export default function UpdateProduct(props) {
     }
 
     const setProductColorItem = (uuid, item) => {
-      let cv = productColors.map(el=>el.uuid==uuid? item:el)
-      setProductColors(cv)
+      let cv = productPhotos.map(el=>el.uuid==uuid? item:el)
+      //setProductColors(cv)
     }
 
     const weightChanged = (e) => {
@@ -429,7 +431,7 @@ export default function UpdateProduct(props) {
       finishingId: finishingId,
       plainDyedTypeId: plainDyedTypeId,
       colorVariants: cvars,
-      globalPhotos: productColors.filter(it => !!it.SelectedFile)
+      globalPhotos: productPhotos.filter(it => !!it.SelectedFile)
     }
 
     let id = idFromUrl()
@@ -565,6 +567,7 @@ const addColorVariant = async (cv) => {
 };
 
 const uploadProductColor = async (event, type) => {
+
 
   const file = event.target.files[0]
   const id = idFromUrl()
@@ -740,10 +743,12 @@ const setProduct = (prod) => {
   let cvNums = prod.colors.filter(it => (!it.isProduct && !it.isVideo)).map(x => x.colorNo)
   let max = cvNums.length > 0 ?  Math.max(...cvNums) : 0
 
-  setProductColors(moreProductColors(2,prod.id))
+  //setProductColors(moreProductColors(2,prod.id))
   prod.colors = prod.colors
-  setColorVariants(prod.colors)
+  setColorVariants(prod.colorPhotos)
   setColorVariantsAdd(moreVariants(2/*add*/,max))
+  setProductPhotos(prod.productPhotos)
+  setProductVideos(prod.productVideos)
 
   wChanged(prod.width, prod.weight)
 }
@@ -1331,10 +1336,89 @@ useEffect(() => {
           <AccordionDetails sx={accordionDetailsStyle}>
             <Grid container spacing={2} sx={{...accordionSummaryStyle, ...{height: "auto"}}}>
             
-              { colorVariants && colorVariants.sort((a, b) => a.isVideo > b.isVideo ? 1 : -1).map((cv, index) => {
-                return <Grid item xs={4} md={3} sx={{}} className="product-img-holder-item" key={"color-item-"+index} >
+              { productPhotos && productPhotos.map((cv, index) => {
+                return <React.Fragment> 
+                  {index==0 && <Box sx={{flexBasis: "100%", 
+                    height: 0, /* Optional: keeps the break from adding visible vertical space */
+                    margin: "20px 20px 30px 20px", /* Optional: removes default margins */
+                    display: "flex",
+                    fontWeight: "600"}}> 
+                    <Box>General product photos:</Box> 
+                    <Box sx={{marginLeft: "10px"}}>
+                      <label htmlFor={"icon-button-file-global"} sx={{ ml: 2 }}>
+                      <Input accept="image/*" id={"icon-button-file-global"} type="file" onChange={(e) => { saveProduct(); uploadProductColor(e,'PRODUCT'); }} />
+                      <Button 
+                            aria-label="upload color photo" 
+                            variant="contained"
+                            component={"div"}
+                            sx={{color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, ml: 1, pl: 1, textAlign: "center"}}
+                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}><AddIcon sx={{ml: 0, mr: 1}} /></Button>
+                      </label>
+                    </Box>
+                  </Box> }
+                  <Grid item xs={4} md={3} sx={{}} className="product-img-holder-item" key={"color-item-"+index} >
                   <Box className="product-img-holder-thumb" key={"color-item-1-"+index}>
-                  { cv.isVideo!=true && <Box 
+                  <Box 
+                      component={"img"} 
+                      key={index} 
+                      src={config.api + "/" + cv.imagePath} 
+                      alt={"photo"+(index+1)} 
+                      className="product-img" 
+                      onClick={(e)=>{ setOpenPhoto(true); setPhotoPath(config.api + "/" + cv.imagePath); }}
+                  />
+
+                    <Box 
+                      key={"toolbox" + index} 
+                      className="product-img-buttons" >
+                          <Button
+                            variant="contained"
+                            component={"div"}
+                            aria-label="delete picture"
+                            sx={{color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, pl: 1.5, ml: 1}}
+                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}
+                            onClick={ function() { setOpenConfirmDelete(true); setColorVariantUuid(cv.uuid)}} 
+                            startIcon={<DeleteIcon/>}>  
+                          </Button>
+                    </Box>
+                    <br/>
+                  </Box>
+                  <Box component={"div"} 
+                    sx={{ m: 0, mt: 1, ml: 0, p: 0, height: "auto", width: "135px", 
+                    wordBreak: "normal", wordWrap: "break-word", 
+                    display: "flex", fontSize:"12px", fontWeight: "600"}} > 
+                    <Box sx={{width: "100%", height: "auto", padding: "5px 3px", borderRadius: 3, textAlign: "center"}}>
+                    General photo {index+1}
+                    </Box>
+                  </Box>
+                    </Grid>    
+                    </React.Fragment>
+            })}
+
+            { productPhotos && productPhotos.length == 0 && <Box sx={{padding: "20px 20px", textAlign: "center"}}> The product does not have global photo </Box> }
+
+              { colorVariants && colorVariants.map((cv, index) => {
+                return <React.Fragment> 
+                  {index==0 && <Box sx={{flexBasis: "100%", 
+                    height: 0, /* Optional: keeps the break from adding visible vertical space */
+                    margin: "30px 20px 30px 20px", /* Optional: removes default margins */
+                    display: "flex",
+                    fontWeight: "600"}}> 
+                    <Box> Photos of product colors:</Box> 
+                    <Box sx={{marginLeft: "10px"}}>
+                      <label htmlFor={"icon-button-file-cv"} sx={{ ml: 2 }}>
+                      <Input accept="image/*" id={"icon-button-file-cv"} type="file" onChange={(e) => { saveProduct(); uploadColorVariant(e); }} />
+                      <Button 
+                            aria-label="upload color photo" 
+                            variant="contained"
+                            component={"div"}
+                            sx={{color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, ml: 1, pl: 1, textAlign: "center"}}
+                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}><AddIcon sx={{ml: 0, mr: 1}}  /></Button>
+                      </label>
+                    </Box>
+                  </Box> }
+                  <Grid item xs={4} md={3} sx={{}} className="product-img-holder-item" key={"color-item-"+index} >
+                  <Box className="product-img-holder-thumb" key={"color-item-1-"+index} >
+                  <Box 
                       component={"img"} 
                       key={index} 
                       src={config.api + "/" + cv.imagePath} 
@@ -1342,24 +1426,10 @@ useEffect(() => {
                       className="product-img" 
                       onClick={(e)=>{ setOpenPhoto(true); setPhotoPath(config.api + "/" + cv.imagePath); }}
                       />
-                  }
-                  { cv.isVideo==true && <CardMedia 
-                      component={"video"}
-                      autoPlay={"autoplay"}
-                      muted
-                      key={index} 
-                      src={config.api + "/" + cv.imagePath} 
-                      alt={"photo"+(index+1)} 
-                      sx={{ width: "180%", height:"auto"}}
-                      className="product-img"
-                      onClick={(e)=>{ setOpenVideo(true); setVideoPath(config.api + "/" + cv.imagePath); }}
-                       />
-                  }
 
                     <Box 
                       key={"toolbox" + index} 
                       className="product-img-buttons" >
-                        { cv.isProduct!=true && cv.isVideo!=true &&
                           <Button
                             variant="contained"
                             component={"div"}
@@ -1370,8 +1440,7 @@ useEffect(() => {
                             startIcon={<EditNoteIcon/>}>
                             {/* <EditNoteIcon sx={{color: APPEARANCE.BLACK2, pt: 0, m: 0}}/> */}
                           </Button>
-                          }
-
+                        
                           <Button
                             variant="contained"
                             component={"div"}
@@ -1389,65 +1458,88 @@ useEffect(() => {
                     wordBreak: "normal", wordWrap: "break-word", 
                     display: "flex", fontSize:"11px", fontWeight: "600"}} > 
                     
-                    { cv.isProduct==false && cv.isVideo==false &&
+                    
                     <Box sx={{ width: "100%", height: "auto", padding: "5px 3px", borderRadius: 3, textAlign: "left"}}>
                       { 'COLOR ' + (cv.colorNo ? cv.colorNo + ': ' : '? ') + fined(cv.quantity,"-") + ' m ' + fined(toFixed2(cv.price),"-") + '$'}
                       <br/>{ cv.colorNames }
                     </Box>
-                    }
-                    { cv.isProduct==true &&
-                    <Box sx={{width: "100%", height: "auto", padding: "5px 3px", borderRadius: 3, textAlign: "left"}}>
-                    GLOBAL PHOTO
-                    </Box>
-                    }
-                    { cv.isVideo==true &&
-                    <Box sx={{width: "100%", height: "auto", padding: "5px 3px", borderRadius: 3, textAlign: "left"}}>
-                    VIDEO
-                    </Box>
-                    }
+                    
                     </Box>
                     </Grid>    
+                    </React.Fragment>
             })}
-            </Grid>
 
-            <Box sx={{mb: 3}}>
-            <label htmlFor={"icon-button-file-prod"}>
-              <Input accept="image/*" id={"icon-button-file-prod"} type="file" onChange={(e) => { saveProduct(); uploadProductColor(e,'PRODUCT');}} />
-              <Button aria-label="upload global photo" style={smallButtonStyle} component="span">
-                    <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
-                    Add global photo
-              </Button>
-            </label>
-            
-            <label htmlFor={"icon-button-file-video"}>
-              <Input accept="video/*" id={"icon-button-file-video"} type="file" onChange={(e) => { saveProduct(); uploadProductColor(e,'VIDEO');}} />
-              <Button aria-label="upload video" style={smallButtonStyle} component="span">
-                    <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
-                    Add video
-              </Button>
-            </label>
 
-            <label htmlFor={"icon-button-file-cv"} sx={{ ml: 2 }}>
-              <Input accept="image/*" id={"icon-button-file-cv"} type="file" onChange={(e) => { saveProduct(); uploadColorVariant(e); }} />
-              <Button aria-label="upload color photo" style={smallButtonStyle} component="span">
-                    <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
-                    Add&nbsp;
-                    <span style={{color: "#f66", m:0, p:0}}>c</span>
-                    <span style={{color: "#aaf", m:0, p:0}}>o</span>
-                    <span style={{color: "#6f6", m:0, p:0}}>l</span>
-                    <span style={{color: "#ff6", m:0, p:0}}>o</span>
-                    <span style={{color: "#6ff", m:0, p:0}}>r</span>
-                    &nbsp;
-                    <span style={{color: "#f66", m:0, p:0}}>p</span>
-                    <span style={{color: "#aaf", m:0, p:0}}>h</span>
-                    <span style={{color: "#6f6", m:0, p:0}}>o</span>
-                    <span style={{color: "#ff6", m:0, p:0}}>t</span>
-                    <span style={{color: "#6ff", m:0, p:0}}>o</span>
-                    
-              </Button>
-            </label>
-            </Box>
+            { colorVariants && colorVariants.length == 0 && <Box sx={{padding: "20px 20px", textAlign: "center"}}> The product does not have a color's photo </Box> }
 
+              { productVideos && productVideos.map((cv, index) => {
+                return <React.Fragment> 
+                  {index==0 && <Box sx={{flexBasis: "100%", 
+                    height: 0, /* Optional: keeps the break from adding visible vertical space */
+                    margin: "30px 20px 30px 20px", /* Optional: removes default margins */
+                    display: "flex",
+                    fontWeight: "600"}}> 
+                    <Box> Product videos:</Box> 
+                    <Box sx={{marginLeft: "10px"}}>
+                      <label htmlFor={"icon-button-file-video"} sx={{ ml: 2 }}>
+                      <Input accept="image/*" id={"icon-button-file-video"} type="file" onChange={(e) => { saveProduct(); uploadColorVariant(e, 'VIDEO'); }} />
+                      <Button 
+                            aria-label="upload color photo" 
+                            variant="contained"
+                            component={"div"}
+                            sx={{color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, ml: 1, pl: 1, textAlign: "center"}}
+                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}><AddIcon sx={{ml: 0, mr: 1}}  /></Button>
+                      </label>
+                    </Box>
+                  </Box> }
+                  <Grid item xs={4} md={3} sx={{}} className="product-img-holder-item" key={"color-item-"+index} >
+                  <Box className="product-img-holder-thumb" key={"color-item-1-"+index}>
+                  
+                  <CardMedia 
+                      component={"video"}
+                      autoPlay={"autoplay"}
+                      muted
+                      key={index} 
+                      src={config.api + "/" + cv.imagePath} 
+                      alt={"photo"+(index+1)} 
+                      sx={{ width: "180%", height:"auto"}}
+                      className="product-img"
+                      onClick={(e)=>{ setOpenVideo(true); setVideoPath(config.api + "/" + cv.imagePath); }}
+                       />
+
+                    <Box 
+                      key={"toolbox" + index} 
+                      className="product-img-buttons" >
+                        
+                          <Button
+                            variant="contained"
+                            component={"div"}
+                            aria-label="delete picture"
+                            sx={{color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, pl: 1.5, ml: 1}}
+                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}
+                            onClick={ function() { setOpenConfirmDelete(true); setColorVariantUuid(cv.uuid)}} 
+                            startIcon={<DeleteIcon/>}>  
+                          </Button>
+                    </Box>
+                    <br/>
+                  </Box>
+                  <Box component={"div"} 
+                    sx={{ m: 0, mt: 1, ml: 0, pb: 1, height: "auto", width: "135px", 
+                    wordBreak: "normal", wordWrap: "break-word", 
+                    display: "flex", fontSize:"12px", fontWeight: "600"}} > 
+                    <Box sx={{width: "100%", height: "auto", padding: "5px 3px", borderRadius: 3, textAlign: "center"}}>Product video {index+1}</Box>
+                    </Box>
+                </Grid>    
+                </React.Fragment>    
+
+            })}
+
+            { productVideos && productVideos.length == 0 && <Box sx={{padding: "20px 20px", textAlign: "center"}}> The product does not have a video </Box> }
+
+            <React.Fragment>
+
+            <Box sx={{flexBasis: "100%", p: 2}}>
+            <Box sx={{mb: 3, mt: 0, textAlign: "left", fontWeight: "600"}}>Quick add a photos of product colors:</Box>
             <Grid container spacing={2} >
                 { colorVariantsAdd && colorVariantsAdd.map((cv,index) => (
                   <Grid item xs={12} md={6} sx={{ ...flexStyle}} key={"color-var-"+index} >
@@ -1463,6 +1555,41 @@ useEffect(() => {
                     }
                     </Grid> ))}
             </Grid>
+             </Box>
+            </React.Fragment>
+
+
+            </Grid>
+
+            {/* <Box sx={{mb: 3}}>
+            <label htmlFor={"icon-button-file-prod"}>
+              <Input accept="image/*" id={"icon-button-file-prod"} type="file" onChange={(e) => { saveProduct(); uploadProductColor(e,'PRODUCT');}} />
+              <Button aria-label="upload global photo" style={smallButtonStyle} component="span">
+                    <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
+                    Add photo
+              </Button>
+            </label>
+            </Box> */}
+
+            
+
+            <br/>
+
+              <Grid container spacing={2} sx={{...accordionSummaryStyle, ...{height: "auto"}}}>
+            
+            </Grid>
+
+            {/* <Box sx={{mb: 3}}>
+            <label htmlFor={"icon-button-file-video"}>
+              <Input accept="video/*" id={"icon-button-file-video"} type="file" onChange={(e) => { saveProduct(); uploadProductColor(e,'VIDEO');}} />
+              <Button aria-label="upload video" style={smallButtonStyle} component="span">
+                    <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
+                    Add video
+              </Button>
+            </label>
+            </Box> */}
+
+
           </AccordionDetails>
           </Accordion>
 

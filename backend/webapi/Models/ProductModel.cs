@@ -158,7 +158,9 @@ namespace chiffon_back.Models
                             DesignTypes = p.ProductsInDesignTypes!.Select(x => new Models.DesignType { Id = x.DesignTypeId, DesignName = x.DesignType.DesignName }).ToArray(),
                             OverWorkTypes = p.ProductsInOverWorkTypes!.Select(x => new Models.OverWorkType { Id = x.OverWorkTypeId, OverWorkName = x.OverWorkType.OverWorkName }).ToArray(),
                             Seasons = p.ProductsInSeasons!.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
-                            Colors = new List<ProductColor>(),
+                            ColorPhotos = new List<ProductColor>(),
+                            ProductPhotos = new List<ProductColor>(),
+                            ProductVideos = new List<ProductColor>(),
                             //Composition = p.Composition
                         };
 
@@ -269,7 +271,7 @@ namespace chiffon_back.Models
                     foreach (string uuid in PhotoHelper.GetPhotoUuids(p.PhotoUuids))
                     {
                         var imageFiles = DirectoryHelper.GetImageFiles(uuid);
-                        p.Colors.Add(new ProductColor()
+                        p.ColorPhotos.Add(new ProductColor()
                         {
                             ColorNames = "ALL COLORS",
                             ColorVariantId = -id,
@@ -286,7 +288,7 @@ namespace chiffon_back.Models
                     foreach (string uuid in PhotoHelper.GetPhotoUuids(p.VideoUuids))
                     {
                         var imageFiles = DirectoryHelper.GetImageFiles(uuid);
-                        p.Colors.Add(new ProductColor()
+                        p.ColorPhotos.Add(new ProductColor()
                         {
                             ColorNames = "VIDEO",
                             ColorVariantId = -id,
@@ -305,7 +307,7 @@ namespace chiffon_back.Models
                     var colors = ctx.Colors.Where(x => colorsIds.Contains(x.Id)).OrderBy(x => x.ColorName).ToList();
                     string colorNames = String.Join(", ", colors.Select(col => col.ColorName));
 
-                    p.Colors.Add(new ProductColor()
+                    p.ColorPhotos.Add(new ProductColor()
                     {
                         ColorNames = colorNames,
                         ColorVariantId = cv.Id,
@@ -320,9 +322,9 @@ namespace chiffon_back.Models
                     });
                 }
 
-                if (p.Colors.Count == 0)
+                if (p.ColorPhotos.Count == 0)
                 {
-                    p.Colors.Add(new ProductColor()
+                    p.ColorPhotos.Add(new ProductColor()
                     {
                         ColorNames = "ALL COLORS",
                         ColorVariantId = -id,
@@ -375,7 +377,11 @@ namespace chiffon_back.Models
                             CompositionValues = p.ProductsInTextileTypes!.Select(x => new CompositionValue { TextileTypeId = x.TextileTypeId, Value = x.Value }).ToArray(),
                             OverWorkTypeIds = p.ProductsInOverWorkTypes!.Select(x => x.OverWorkTypeId).ToArray(),
                             SeasonIds = p.ProductsInSeasons!.Select(x => x.SeasonId).ToArray(),
-                            Colors = new List<ProductColor>(),
+
+                            ColorPhotos = new List<ProductColor>(),
+                            ProductPhotos = new List<ProductColor>(),
+                            ProductVideos = new List<ProductColor>(),
+
                             Findings = p.Findings,
                             GSM = p.GSM,
                             MetersInKG = p.MetersInKG,
@@ -395,7 +401,7 @@ namespace chiffon_back.Models
                 foreach (string uuid in PhotoHelper.GetPhotoUuids(prod.PhotoUuids))
                 {
                     var imageFiles = DirectoryHelper.GetImageFiles(uuid);
-                    prod.Colors.Add(new ProductColor()
+                    prod.ProductPhotos.Add(new ProductColor()
                     {
                         ColorNames = "PRODUCT",
                         ColorVariantId = -colorId,
@@ -414,7 +420,7 @@ namespace chiffon_back.Models
                 foreach (string uuid in PhotoHelper.GetPhotoUuids(prod.VideoUuids))
                 {
                     var imageFiles = DirectoryHelper.GetImageFiles(uuid);
-                    prod.Colors.Add(new ProductColor()
+                    prod.ProductVideos.Add(new ProductColor()
                     {
                         ColorNames = "VIDEO",
                         ColorVariantId = -colorId,
@@ -434,7 +440,7 @@ namespace chiffon_back.Models
                     var colorsIds = ctx.ColorVariantsInColors.Where(cvc => cvc.ColorVariantId == cv.Id).Select(x => (int?)x.ColorId).ToList();
                     var colors = ctx.Colors.Where(x=>colorsIds.Contains(x.Id)).OrderBy(x => x.ColorName).ToList();
                     string colorNames = String.Join(", ", colors.Select(col => col.ColorName));
-                    prod!.Colors.Add(new ProductColor()
+                    prod!.ColorPhotos.Add(new ProductColor()
                     {
                         ColorNames = colorNames,
                         ColorVariantId = cv.Id,

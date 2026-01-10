@@ -48,7 +48,7 @@ export default function ItemProduct(props) {
         <Box className="product-quickview" onClick={(e)=>{ props.quickView(e, props.data)}} >Quick view</Box>
 
           <Swiper className="swiper" >
-            {!!props.data.colors && props.data.colors.map((cv, index) => {
+            {!!props.data.colorPhotos && props.data.colorPhotos.map((cv, index) => {
               return <Box key={"product-box-"+index} >
               <SwiperSlide key={"product-swiper-"+index} sx={{ display: "flex", justifyContent: "center", width: "240px" }} >
                 <Box className="product-img-holder" ><Box component={"img"} key={"product-swiper-"+index} 
