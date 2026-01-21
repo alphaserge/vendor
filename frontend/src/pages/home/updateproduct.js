@@ -1351,8 +1351,10 @@ useEffect(() => {
                             aria-label="upload color photo" 
                             variant="contained"
                             component={"div"}
-                            sx={{color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, ml: 1, pl: 1, textAlign: "center"}}
-                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}><AddIcon sx={{ml: 0, mr: 1}} /></Button>
+                            sx={{ color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, ml: 1, pl: 1, textAlign: "center"}}
+                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}>
+                              <AddIcon sx={{ml: 0, mr: 1}} />
+                      </Button>
                       </label>
                     </Box>
                   </Box> }
@@ -1394,7 +1396,17 @@ useEffect(() => {
                     </React.Fragment>
             })}
 
-            { productPhotos && productPhotos.length == 0 && <Box sx={{padding: "20px 20px", textAlign: "center"}}> The product does not have global photo </Box> }
+            { productPhotos && productPhotos.length == 0 && <Box sx={{padding: "20px 20px", textAlign: "center"}}> The product does not have global photo <label htmlFor={"icon-button-file-global"} sx={{ ml: 2 }}>
+                      <Input accept="image/*" id={"icon-button-file-global"} type="file" onChange={(e) => { saveProduct(); uploadProductColor(e,'PRODUCT'); }} />
+                      <Button 
+                            aria-label="upload color photo" 
+                            variant="contained"
+                            component={"div"}
+                            sx={{ color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, ml: 1, pl: 1, textAlign: "center"}}
+                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}>
+                              <AddIcon sx={{ml: 0, mr: 1}} />
+                      </Button>
+                      </label></Box> }
 
               { colorVariants && colorVariants.map((cv, index) => {
                 return <React.Fragment> 
@@ -1411,8 +1423,10 @@ useEffect(() => {
                             aria-label="upload color photo" 
                             variant="contained"
                             component={"div"}
-                            sx={{color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, ml: 1, pl: 1, textAlign: "center"}}
-                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}><AddIcon sx={{ml: 0, mr: 1}}  /></Button>
+                            sx={{ color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, ml: 1, pl: 1, textAlign: "center"}}
+                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}>
+                              <AddIcon sx={{ml: 0, mr: 1}} />
+                      </Button>
                       </label>
                     </Box>
                   </Box> }
@@ -1434,7 +1448,7 @@ useEffect(() => {
                             variant="contained"
                             component={"div"}
                             aria-label="upload picture"
-                            sx={{color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, pl: 2}}
+                            sx={{ color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, pl: 2}}
                             style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}
                             onClick={ function() { handleEditColor(cv.uuid)}}
                             startIcon={<EditNoteIcon/>}>
@@ -1469,8 +1483,17 @@ useEffect(() => {
                     </React.Fragment>
             })}
 
-
-            { colorVariants && colorVariants.length == 0 && <Box sx={{padding: "20px 20px", textAlign: "center"}}> The product does not have a color's photo </Box> }
+            { colorVariants && colorVariants.length == 0 && <Box sx={{padding: "20px 20px", textAlign: "center"}}> The product does not have a color's photo <label htmlFor={"icon-button-file-cv"} sx={{ ml: 2 }}>
+                      <Input accept="image/*" id={"icon-button-file-cv"} type="file" onChange={(e) => { saveProduct(); uploadColorVariant(e); }} />
+                      <Button 
+                            aria-label="upload color photo" 
+                            variant="contained"
+                            component={"div"}
+                            sx={{ color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, ml: 1, pl: 1, textAlign: "center"}}
+                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}>
+                              <AddIcon sx={{ml: 0, mr: 1}} />
+                      </Button>
+                      </label></Box> }
 
               { productVideos && productVideos.map((cv, index) => {
                 return <React.Fragment> 
@@ -1487,8 +1510,10 @@ useEffect(() => {
                             aria-label="upload color photo" 
                             variant="contained"
                             component={"div"}
-                            sx={{color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, ml: 1, pl: 1, textAlign: "center"}}
-                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}><AddIcon sx={{ml: 0, mr: 1}}  /></Button>
+                            sx={{ color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, ml: 1, pl: 1, textAlign: "center"}}
+                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}>
+                              <AddIcon sx={{ml: 0, mr: 1}}  />
+                      </Button>
                       </label>
                     </Box>
                   </Box> }
@@ -1534,7 +1559,17 @@ useEffect(() => {
 
             })}
 
-            { productVideos && productVideos.length == 0 && <Box sx={{padding: "20px 20px", textAlign: "center"}}> The product does not have a video </Box> }
+            { productVideos && productVideos.length == 0 && <Box sx={{padding: "20px 20px", textAlign: "center"}}> The product does not have a video <label htmlFor={"icon-button-file-video"} sx={{ ml: 2 }}>
+                      <Input accept="image/*" id={"icon-button-file-video"} type="file" onChange={(e) => { saveProduct(); uploadColorVariant(e, 'VIDEO'); }} />
+                      <Button 
+                            aria-label="upload color photo" 
+                            variant="contained"
+                            component={"div"}
+                            sx={{ color: APPEARANCE.BLACK2, backgroundColor: APPEARANCE.WHITE2, p: 0, m: 0, ml: 1, pl: 1, textAlign: "center"}}
+                            style={{maxWidth: '30px', maxHeight: '24px', minWidth: '30px', minHeight: '24px'}}>
+                              <AddIcon sx={{ml: 0, mr: 1}}  />
+                      </Button>
+                      </label></Box> }
 
             <React.Fragment>
 
