@@ -82,9 +82,10 @@ export default function ColorVariant(props) {
     }
 
     const setSelectedFile = (value) => {
-      props.cv.SelectedFile = value
-      props.cv.colorNo = props.cv.colorNo
-      props.setColorItem(props.cv.uuid, props.cv)
+      let cv1 = props.cv;
+      cv1.SelectedFile = value
+      cv1.colorNo = props.cv.colorNo
+      props.setColorItem(cv1.uuid, cv1)
     }
     
     const onFileChange = (event) => {
@@ -101,9 +102,6 @@ export default function ColorVariant(props) {
     }, []);
 
    const existingStyle = (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
-
-   console.log('props.values')
-   console.log( props.values)
 
   return (
     
@@ -162,8 +160,8 @@ export default function ColorVariant(props) {
         values={props.values}
         keys={props.keys}
       />
-      <label htmlFor={"icon-button-file-" + props.cv.colorVariantId}>
-      <Input accept="image/*" id={"icon-button-file-"+props.cv.colorVariantId} type="file" onChange={onFileChange} value={""}  />
+      <label htmlFor={"icon-button-file-" + props.cv.uuid}>
+      <Input accept="image/*" id={"icon-button-file-"+props.cv.uuid} type="file" onChange={onFileChange} value={""}  />
       <IconButton
         color="success"
         aria-label="upload picture"

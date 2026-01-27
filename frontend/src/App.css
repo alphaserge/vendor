@@ -170,11 +170,36 @@ img.product-img {
   padding: 4px;
 }
 
+.photos-title {
+  font-weight: 900;
+  font-size: 14px;
+} 
+
+.width40 {
+  width: 90px;
+}
+
+.width50 {
+  width: 90px;
+}
+
+.width60 {
+  width: 90px;
+}
+
+.width70 {
+  width: 90px;
+}
+
 .width80 {
   width: 80px;
 }
 
 .width90 {
+  width: 90px;
+}
+
+.width100 {
   width: 90px;
 }
 

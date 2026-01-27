@@ -215,8 +215,8 @@ export default function UpdateProduct(props) {
 
 
     const setColorVariantItem = (uuid, item) => {
-      let cv = colorVariants.map(el=>el.uuid==uuid? item:el)
-      setColorVariants(cv)
+      let cv = colorVariantsAdd.map(el=>el.uuid==uuid? item:el)
+      setColorVariantsAdd(cv)
     }
 
     const setProductColorItem = (uuid, item) => {
@@ -1334,8 +1334,9 @@ useEffect(() => {
           </AccordionSummary>
 
           <AccordionDetails sx={accordionDetailsStyle}>
-            <Grid container spacing={2} sx={{...accordionSummaryStyle, ...{height: "auto"}}}>
+            <Box sx={{...accordionSummaryStyle, ...{height: "auto"}}}>
             
+            <Grid container spacing={2} sx={{padding: "10px 20px"}}>
               { productPhotos && productPhotos.map((cv, index) => {
                 return <React.Fragment> 
                   {index==0 && <Box sx={{flexBasis: "100%", 
@@ -1343,7 +1344,7 @@ useEffect(() => {
                     margin: "20px 20px 30px 20px", /* Optional: removes default margins */
                     display: "flex",
                     fontWeight: "600"}}> 
-                    <Box>General product photos:</Box> 
+                    <Box className="photos-title">General product photos:</Box> 
                     <Box sx={{marginLeft: "10px"}}>
                       <label htmlFor={"icon-button-file-global"} sx={{ ml: 2 }}>
                       <Input accept="image/*" id={"icon-button-file-global"} type="file" onChange={(e) => { saveProduct(); uploadProductColor(e,'PRODUCT'); }} />
@@ -1395,8 +1396,9 @@ useEffect(() => {
                     </Grid>    
                     </React.Fragment>
             })}
+            </Grid>
 
-            { productPhotos && productPhotos.length == 0 && <Box sx={{padding: "20px 20px", textAlign: "center"}}> The product does not have global photo <label htmlFor={"icon-button-file-global"} sx={{ ml: 2 }}>
+            { productPhotos && productPhotos.length == 0 && <Box className="photos-title" sx={{padding: "30px 16px", textAlign: "left"}}> The product does not have global photo <label htmlFor={"icon-button-file-global"} sx={{ ml: 2 }}>
                       <Input accept="image/*" id={"icon-button-file-global"} type="file" onChange={(e) => { saveProduct(); uploadProductColor(e,'PRODUCT'); }} />
                       <Button 
                             aria-label="upload color photo" 
@@ -1407,7 +1409,7 @@ useEffect(() => {
                               <AddIcon sx={{ml: 0, mr: 1}} />
                       </Button>
                       </label></Box> }
-
+              <Grid container spacing={2} sx={{padding: "0 20px"}}>
               { colorVariants && colorVariants.map((cv, index) => {
                 return <React.Fragment> 
                   {index==0 && <Box sx={{flexBasis: "100%", 
@@ -1415,7 +1417,7 @@ useEffect(() => {
                     margin: "30px 20px 30px 20px", /* Optional: removes default margins */
                     display: "flex",
                     fontWeight: "600"}}> 
-                    <Box> Photos of product colors:</Box> 
+                    <Box className="photos-title"> Photos of product colors:</Box> 
                     <Box sx={{marginLeft: "10px"}}>
                       <label htmlFor={"icon-button-file-cv"} sx={{ ml: 2 }}>
                       <Input accept="image/*" id={"icon-button-file-cv"} type="file" onChange={(e) => { saveProduct(); uploadColorVariant(e); }} />
@@ -1482,8 +1484,9 @@ useEffect(() => {
                     </Grid>    
                     </React.Fragment>
             })}
+            </Grid>
 
-            { colorVariants && colorVariants.length == 0 && <Box sx={{padding: "20px 20px", textAlign: "center"}}> The product does not have a color's photo <label htmlFor={"icon-button-file-cv"} sx={{ ml: 2 }}>
+            { colorVariants && colorVariants.length == 0 && <Box className="photos-title" sx={{padding: "30px 16px", textAlign: "left"}}> The product does not have a color's photo <label htmlFor={"icon-button-file-cv"} sx={{ ml: 2 }}>
                       <Input accept="image/*" id={"icon-button-file-cv"} type="file" onChange={(e) => { saveProduct(); uploadColorVariant(e); }} />
                       <Button 
                             aria-label="upload color photo" 
@@ -1495,6 +1498,7 @@ useEffect(() => {
                       </Button>
                       </label></Box> }
 
+              <Grid container spacing={2} sx={{padding: "0 20px"}}>
               { productVideos && productVideos.map((cv, index) => {
                 return <React.Fragment> 
                   {index==0 && <Box sx={{flexBasis: "100%", 
@@ -1502,7 +1506,7 @@ useEffect(() => {
                     margin: "30px 20px 30px 20px", /* Optional: removes default margins */
                     display: "flex",
                     fontWeight: "600"}}> 
-                    <Box> Product videos:</Box> 
+                    <Box className="photos-title"> Product videos:</Box> 
                     <Box sx={{marginLeft: "10px"}}>
                       <label htmlFor={"icon-button-file-video"} sx={{ ml: 2 }}>
                       <Input accept="image/*" id={"icon-button-file-video"} type="file" onChange={(e) => { saveProduct(); uploadColorVariant(e, 'VIDEO'); }} />
@@ -1556,10 +1560,10 @@ useEffect(() => {
                     </Box>
                 </Grid>    
                 </React.Fragment>    
-
             })}
+            </Grid>
 
-            { productVideos && productVideos.length == 0 && <Box sx={{padding: "20px 20px", textAlign: "center"}}> The product does not have a video <label htmlFor={"icon-button-file-video"} sx={{ ml: 2 }}>
+            { productVideos && productVideos.length == 0 && <Box className="photos-title" sx={{padding: "30px 16px", textAlign: "left"}}> The product does not have a video <label htmlFor={"icon-button-file-video"} sx={{ ml: 2 }}>
                       <Input accept="image/*" id={"icon-button-file-video"} type="file" onChange={(e) => { saveProduct(); uploadColorVariant(e, 'VIDEO'); }} />
                       <Button 
                             aria-label="upload color photo" 
@@ -1594,7 +1598,7 @@ useEffect(() => {
             </React.Fragment>
 
 
-            </Grid>
+            </Box>
 
             {/* <Box sx={{mb: 3}}>
             <label htmlFor={"icon-button-file-prod"}>
