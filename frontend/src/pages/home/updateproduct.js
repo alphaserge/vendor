@@ -1564,7 +1564,7 @@ useEffect(() => {
             </Grid>
 
             { productVideos && productVideos.length == 0 && <Box className="photos-title" sx={{padding: "30px 16px", textAlign: "left"}}> The product does not have a video <label htmlFor={"icon-button-file-video"} sx={{ ml: 2 }}>
-                      <Input accept="image/*" id={"icon-button-file-video"} type="file" onChange={(e) => { saveProduct(); uploadColorVariant(e, 'VIDEO'); }} />
+                      <Input accept="video/*" id={"icon-button-file-video"} type="file" onChange={(e) => { saveProduct(); uploadProductColor(e, 'VIDEO'); }} />
                       <Button 
                             aria-label="upload color photo" 
                             variant="contained"

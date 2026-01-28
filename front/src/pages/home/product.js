@@ -473,7 +473,8 @@ export default function Product(props) {
 const productInSamples = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity == -1) >= 0 : false;
 const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
 
-const allPhotos =  Array.isArray(product.productPhotos) ? [...product.productPhotos, ...product.colorPhotos] : product.colorPhotos;
+//const allPhotos =  Array.isArray(product.productPhotos) ? [...product.productPhotos, ...product.colorPhotos] : product.colorPhotos;
+const allPhotos =  product.productVideos
 
 var productInCart = false;
 if (!!shopCart && !!colorVar) {
@@ -489,6 +490,8 @@ console.log('product:')
 console.log(product) 
 console.log('product.productPhotos:') 
 console.log(product.productPhotos) 
+console.log('product.productVideos:') 
+console.log(product.productVideos) 
 
 //console.log('colorVar:') 
 //console.log(colorVar) 
@@ -537,7 +540,7 @@ console.log(product.productPhotos)
                       }
                     })}
                 width={476}
-                height={476}
+                height={462}
                 highlightColor={manualColor}
                 alt={product.itemName + " photo"}
                 imageSelect={imageSelect}
