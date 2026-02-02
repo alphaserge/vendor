@@ -271,12 +271,15 @@ namespace chiffon_back.Models
                     foreach (string uuid in PhotoHelper.GetPhotoUuids(p.PhotoUuids))
                     {
                         var imageFiles = DirectoryHelper.GetImageFiles(uuid);
-                        p.ColorPhotos.Add(new ProductColor()
+                        p.ProductPhotos.Add(new ProductColor()
                         {
                             ColorNames = "ALL COLORS",
                             ColorVariantId = -id,
                             ColorNo = null,
-                            ImagePath = imageFiles
+                            ImagePath = imageFiles,
+                            IsProduct = true,
+                            IsVideo = false,
+
                         });
                         id++;
                     }
@@ -288,12 +291,14 @@ namespace chiffon_back.Models
                     foreach (string uuid in PhotoHelper.GetPhotoUuids(p.VideoUuids))
                     {
                         var imageFiles = DirectoryHelper.GetImageFiles(uuid);
-                        p.ColorPhotos.Add(new ProductColor()
+                        p.ProductVideos.Add(new ProductColor()
                         {
                             ColorNames = "VIDEO",
                             ColorVariantId = -id,
                             ColorNo = null,
-                            ImagePath = imageFiles
+                            ImagePath = imageFiles,
+                            IsProduct = false,
+                            IsVideo = true,
                         });
                         id++;
                     }
@@ -318,11 +323,11 @@ namespace chiffon_back.Models
                         IsVideo = false,
                         ColorIds = colorsIds,
                         ImagePath = imageFiles,
-                        Uuid = cv.Uuid
+                        Uuid = cv.Uuid,
                     });
                 }
 
-                if (p.ColorPhotos.Count == 0)
+                /*if (p.ColorPhotos.Count == 0)
                 {
                     p.ColorPhotos.Add(new ProductColor()
                     {
@@ -331,7 +336,7 @@ namespace chiffon_back.Models
                         ColorNo = null,
                         ImagePath = new List<string>() { @"colors\nopicture.png" }
                     });
-                }
+                }*/
             }
 
             return prods;

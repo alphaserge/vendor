@@ -53,6 +53,7 @@ const ImageMagnifier = forwardRef(({
     const [magnifierLeft, setMagnifierLeft] = useState(0);
     const [imgSrc, setImgSrc] = useState(fixUrl(images[0].src));
     const [imags, setImags] = useState(images)
+    const [video, setVideo] = useState(false)
     const [upDownVisible, setUpDownVisible] = useState(false)
     const [startImageIndex, setStartImageIndex] = useState(0)
     
@@ -70,6 +71,7 @@ const ImageMagnifier = forwardRef(({
     }));
 
     const thumbImageClick = (item, index) => {
+        setVideo(item.isVideo)
         setImgSrc(fixUrl(item.src))
         if (!!imageSelect) {
             //const item1 = { ...item, imagePath: item.src }
@@ -103,16 +105,25 @@ const ImageMagnifier = forwardRef(({
         else { labs.push("")}
     });
 
-    //console.log('fi:')
-    //console.log(fi)
+    console.log('fi:')
+    console.log(fi)
 
     return <Box sx={{ width: width+120, height: height, display: "grid", gridTemplateColumns: "auto 115px", columnGap: "12px", overflowY: "hidden" }} key="kk1">
 
-    <GlassMagnifier
+    { !video && <GlassMagnifier
       imageSrc={imgSrc}
       largeImageSrc={imgSrc}
       magnifierSize={200}
-      square={false} />
+      square={false} /> }
+
+      { video && <CardMedia 
+        component={"video"}
+        autoPlay={"autoplay"}
+        muted
+        key={"card-video"} 
+        src={imgSrc} 
+        alt={"Product video"} 
+        sx={{ display: "block", width: "100%", height: "100%", cursor: "pointer" }} /> }
 
         <Box className="animated-image-slider" sx={{display: "block", overflow: "hidden", flexDirection: "column", marginTop: (-80*(startImageIndex))+"px", position: "relative" }} 
             onMouseOver={()=> setUpDownVisible(true)} onMouseOut={()=> setUpDownVisible(false)} >
@@ -130,7 +141,7 @@ const ImageMagnifier = forwardRef(({
                  { fi.map((it, index) => { return <React.Fragment key = {"kfi"+index}>
                     <div style={{ marginBottom: "8px", position: "relative", width: "132px", height: "71px", top: "0", display: "flex" }} onClick={(e) => thumbImageClick(it, index)} >
 
-                            <CardMedia 
+                            { it.isVideo && <CardMedia 
                             component={"video"}
                             autoPlay={"autoplay"}
                             muted
@@ -138,13 +149,13 @@ const ImageMagnifier = forwardRef(({
                             src={it.src} 
                             alt={"Product video"} 
                             sx={{ display: "block", width: "70px", height: "100%", cursor: "pointer" }}
-                        /> 
+                            /> }
 
                         
-                        {/* <img 
+                        { !it.isVideo && <img 
                             src={it.src}
                             style={{ display: "block", width: "70px", height: "100%", cursor: "pointer" }}
-                        /> */}
+                        /> }
 
                         { true && !!labs[index] && <div style={{width: "28px", height: "28px",  backgroundColor: imgSrc==it.src?"#444":"#ccc", color: "#fff", 
                             border: "2px solid #ccc",  marginTop: "22px", marginLeft: "8px", border: "none", lineHeight: "26px",

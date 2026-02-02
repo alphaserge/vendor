@@ -428,10 +428,12 @@ export default function Product(props) {
     setColorVar(item.colorVar)
     setCartColor(item.colorVar)
     setManualColor(null)
-    if (!item.colorVar.colorNo) {
-      setColorInfo("Global photo of product")
-    } else {
+    if (!!item.colorVar.colorNo) {
       setColorInfo("Color " + item.colorVar.colorNo + ":  " + item.colorVar.colorNames)
+    } else if (item.isVideo) {
+      setColorInfo("Video of product")
+    } else {
+      setColorInfo("Global photo of product")
     }
     console.log(item.colorVar)
     if (!!item.colorVar.price) {
@@ -474,7 +476,16 @@ const productInSamples = shopCart ? shopCart.findIndex(x => x.product.id == prod
 const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
 
 //const allPhotos =  Array.isArray(product.productPhotos) ? [...product.productPhotos, ...product.colorPhotos] : product.colorPhotos;
-const allPhotos =  product.productVideos
+
+let allPhotos =  Array.isArray(product.productPhotos) ? [...product.productPhotos] : [] // product.productPhotos.slice() : []
+
+if (Array.isArray(product.colorPhotos)) {
+  allPhotos = allPhotos.concat(product.colorPhotos)
+}
+
+if (Array.isArray(product.productVideos)) {
+  allPhotos = allPhotos.concat(product.productVideos)
+}
 
 var productInCart = false;
 if (!!shopCart && !!colorVar) {
@@ -484,23 +495,8 @@ if (!!shopCart && !!colorVar) {
     (x.colorVar.colorNo == colorVar.colorNo || x.colorVar.colorNo == manualColor)) >= 0;
 }
 
-//console.log('product.colors:')
-//console.log(product.colors)
-console.log('product:') 
-console.log(product) 
-console.log('product.productPhotos:') 
-console.log(product.productPhotos) 
-console.log('product.productVideos:') 
-console.log(product.productVideos) 
-
-//console.log('colorVar:') 
-//console.log(colorVar) 
-//console.log('shopCart:') 
-//console.log(shopCart) 
-//console.log('productInCart:');
-//console.log(productInCart);
-
-//new ImageZoom(document.getElementById("img-container"), options);
+console.log('allPhotos::')
+console.log(allPhotos)
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -528,6 +524,8 @@ console.log(product.productVideos)
                         index: ix,
                         label: !it.colorNo ? "all" : it.colorNo+"",
                         src: config.api + "/" + it.imagePath[0],
+                        isProduct: it.isProduct,
+                        isVideo: it.isVideo,
                         colorVar: 
                         {
                             colorNo: it.colorNo,
