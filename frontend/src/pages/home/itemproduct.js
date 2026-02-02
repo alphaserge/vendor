@@ -17,6 +17,7 @@ import "swiper/css";
 import { APPEARANCE } from '../../appearance';
 import { Link } from "@mui/material";
 
+import { collectProductPhotos } from "../../functions/helper"
 import config from "../../config.json"
 
 const defaultTheme = createTheme()
@@ -45,12 +46,14 @@ export default function ItemProduct(props) {
     useEffect(() => {
     }, []);
 
+  const allPhotos  =  collectProductPhotos(props.data)
+
   return (
     
     <FormControl  sx={{ mb: 2, width: 340 }} > 
           <Link href={"/updateproduct?id=" + props.data.id} className="no-link" >
           <Swiper className="mySwiper" >
-            {props.data.colorPhotos.map((cv, index) => {
+            {allPhotos.map((cv, index) => {
               //console.log('cv.imagePath[0]')
               //console.log(config.api + "/" + cv.imagePath[0])
               return <Box key={"product-box-"+index} >

@@ -209,3 +209,18 @@ export const orderStatusString2 = (item) => {
 
     return "waiting of vendor"
 }
+
+export const collectProductPhotos = (product) => {
+    
+    var allPhotos =  Array.isArray(product.productPhotos) ? [...product.productPhotos] : []
+
+    if (Array.isArray(product.colorPhotos)) {
+        allPhotos = allPhotos.concat(product.colorPhotos)
+    }
+
+    if (Array.isArray(product.productVideos)) {
+        allPhotos = allPhotos.concat(product.productVideos)
+    }
+
+    return allPhotos
+}

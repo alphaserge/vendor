@@ -105,8 +105,8 @@ const ImageMagnifier = forwardRef(({
         else { labs.push("")}
     });
 
-    console.log('fi:')
-    console.log(fi)
+    // console.log('fi:')
+    // console.log(fi)
 
     return <Box sx={{ width: width+120, height: height, display: "grid", gridTemplateColumns: "auto 115px", columnGap: "12px", overflowY: "hidden" }} key="kk1">
 
@@ -132,9 +132,9 @@ const ImageMagnifier = forwardRef(({
                         {/* <div style={{display: "block", zIndex: 122, width: "26px", height: "26px", lineHeight: "26px", position: "absolute", backgroundColor: "#fff", color: "#222",
                             fontSize: "14px", fontWeight: "600", borderRadius: "16px",  top: "22px", left: "22px", textAlign: "center", cursor: "pointer" }}
                             onClick={(e) => {}}>^</div>     */}
-                <IconButton aria-label="delete" size="small" onClick={imagesUp} sx={{ ...buttonSx, ...{ left: "17px", top: (startImageIndex*80+18)+"px", display: upDownVisible? "block":"none", width: "36px",  height: "36px"} }} >
+                { (fi.length > 6) && <IconButton aria-label="delete" size="small" onClick={imagesUp} sx={{ ...buttonSx, ...{ left: "17px", top: (startImageIndex*80+18)+"px", display: upDownVisible? "block":"none", width: "36px",  height: "36px"} }} >
                     <ArrowUpward sx={{fontSize: 24}} />
-                </IconButton>
+                </IconButton> }
 
                             {/* </div> */}
 
@@ -175,9 +175,9 @@ const ImageMagnifier = forwardRef(({
                     </React.Fragment>
                 } )  
             }
-                <IconButton aria-label="delete" size="small" onClick={imagesDown} sx={{ ...buttonSx, ...{ left: "17px", top: (startImageIndex*80+height-55)+"px"}, display: upDownVisible? "block":"none", width: "36px",  height: "36px" }} >
+                { (fi.length > 6) && <IconButton aria-label="delete" size="small" onClick={imagesDown} sx={{ ...buttonSx, ...{ left: "17px", top: (startImageIndex*80+height-55)+"px"}, display: upDownVisible? "block":"none", width: "36px",  height: "36px" }} >
                     <ArrowUpward sx={{fontSize: 24, transform: "rotate(180deg)"  }} />
-                </IconButton>
+                </IconButton> }
 
         </Box>
         

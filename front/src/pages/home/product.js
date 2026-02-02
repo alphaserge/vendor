@@ -39,7 +39,7 @@ import Selector from '../../components/selector';
 import StyledButton from '../../components/styledbutton';
 import StyledTextField from '../../components/styledtextfield';
 
-import { fined, round2, computePrice, calculatePrice } from "../../functions/helper"
+import { fined, collectProductPhotos, computePrice, calculatePrice } from "../../functions/helper"
 import Styledtextfield from "../../components/styledtextfield";
 
 const useStyles = makeStyles((theme) => ({
@@ -475,18 +475,6 @@ export default function Product(props) {
 const productInSamples = shopCart ? shopCart.findIndex(x => x.product.id == product.id && x.quantity == -1) >= 0 : false;
 const showColorEditor = (!colorVar || (!!colorVar && colorVar.colorNo==null))
 
-//const allPhotos =  Array.isArray(product.productPhotos) ? [...product.productPhotos, ...product.colorPhotos] : product.colorPhotos;
-
-let allPhotos =  Array.isArray(product.productPhotos) ? [...product.productPhotos] : [] // product.productPhotos.slice() : []
-
-if (Array.isArray(product.colorPhotos)) {
-  allPhotos = allPhotos.concat(product.colorPhotos)
-}
-
-if (Array.isArray(product.productVideos)) {
-  allPhotos = allPhotos.concat(product.productVideos)
-}
-
 var productInCart = false;
 if (!!shopCart && !!colorVar) {
    productInCart = shopCart.findIndex(x => 
@@ -494,6 +482,8 @@ if (!!shopCart && !!colorVar) {
     x.quantity != -1 &&
     (x.colorVar.colorNo == colorVar.colorNo || x.colorVar.colorNo == manualColor)) >= 0;
 }
+
+const allPhotos  =  collectProductPhotos(product)
 
 console.log('allPhotos::')
 console.log(allPhotos)
@@ -516,7 +506,7 @@ console.log(allPhotos)
      <Box className="center-content" sx={{ justifyContent: "center", display: "flex", alignItems: "flex-start", flexDirection: "row", pt: 4 }}  >  {/* height: "calc(100vh - 330px)" */}
      <Grid container sx={{ marginTop: "20px" }}>
         <Grid item xs={12} md={6} sx={{display: "flex", flexDirection: "column", minWidth: "400px", paddingRight: "30px"}} justifyContent={{ md: "flex-start", xs: "space-around" }} >
-            {( product.colorPhotos && product.colorPhotos.length>0 && 
+            {( allPhotos && allPhotos.length>0 && 
               <ImageMagnifier 
                 sx={{padding: "0 10px"}}
                 images={

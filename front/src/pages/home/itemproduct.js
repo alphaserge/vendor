@@ -11,7 +11,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 
 import config from "../../config.json"
-import { fined, computePrice, fromUrl } from "../../functions/helper"
+import { fined, computePrice, collectProductPhotos } from "../../functions/helper"
 
 const defaultTheme = createTheme()
 const itemStyle = { width: 265 }
@@ -29,6 +29,7 @@ const Input = styled('input')({
   display: 'none',
 });
 
+
 export default function ItemProduct(props) {
 
     const navigate = useNavigate();
@@ -36,6 +37,8 @@ export default function ItemProduct(props) {
 
     useEffect(() => {
     }, []);
+
+  const allPhotos  =  collectProductPhotos(props.data)
 
   return (
     
@@ -48,7 +51,7 @@ export default function ItemProduct(props) {
         <Box className="product-quickview" onClick={(e)=>{ props.quickView(e, props.data)}} >Quick view</Box>
 
           <Swiper className="swiper" >
-            {!!props.data.colorPhotos && props.data.colorPhotos.map((cv, index) => {
+            {!!allPhotos && allPhotos.map((cv, index) => {
               return <Box key={"product-box-"+index} >
               <SwiperSlide key={"product-swiper-"+index} sx={{ display: "flex", justifyContent: "center", width: "240px" }} >
                 <Box className="product-img-holder" ><Box component={"img"} key={"product-swiper-"+index} 
