@@ -1509,7 +1509,7 @@ useEffect(() => {
                     <Box className="photos-title"> Product videos:</Box> 
                     <Box sx={{marginLeft: "10px"}}>
                       <label htmlFor={"icon-button-file-video"} sx={{ ml: 2 }}>
-                      <Input accept="image/*" id={"icon-button-file-video"} type="file" onChange={(e) => { saveProduct(); uploadColorVariant(e, 'VIDEO'); }} />
+                      <Input accept="video/*" id={"icon-button-file-video"} type="file" onChange={(e) => { saveProduct(); uploadProductColor(e, 'VIDEO'); }} />
                       <Button 
                             aria-label="upload color photo" 
                             variant="contained"
