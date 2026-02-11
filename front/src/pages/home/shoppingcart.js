@@ -325,7 +325,11 @@ const makeOrder = async (event) => {
     setCourseRur(getCourse(setCourseRur,'rur'))
     getTransportCompanies(-1, -1, setDeliveryCompanies)
    }, [])
-  
+
+   
+console.log('deliveryCompanies')
+console.log(deliveryCompanies)
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -519,7 +523,7 @@ const makeOrder = async (event) => {
                   onChange={ev => { setClientEmail(ev.target.value); checkEmail(ev.target.value);  } }
                 />
 
-                <MySelect 
+                {/* <MySelect 
                   title="Delivery company"
                   labelStyle={labelStyle1}
                   MenuProps={MenuProps}
@@ -529,7 +533,7 @@ const makeOrder = async (event) => {
                   setValue={setClientDeliveryCompanyId}
                   values={deliveryCompanies.map(e => { return e.vendorName })}
                   keys={deliveryCompanies.map(e => { return e.id}).push(-1)}
-                  addNew={(e) => {  }} />
+                  addNew={(e) => {  }} /> */}
 
                 <StyledTextField
                   margin="normal"
