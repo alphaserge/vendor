@@ -523,7 +523,7 @@ console.log(deliveryCompanies)
                   onChange={ev => { setClientEmail(ev.target.value); checkEmail(ev.target.value);  } }
                 />
 
-                {/* <MySelect 
+                <MySelect 
                   title="Delivery company"
                   labelStyle={labelStyle1}
                   MenuProps={MenuProps}
@@ -532,8 +532,8 @@ console.log(deliveryCompanies)
                   value={clientDeliveryCompanyId}
                   setValue={setClientDeliveryCompanyId}
                   values={deliveryCompanies.map(e => { return e.vendorName })}
-                  keys={deliveryCompanies.map(e => { return e.id}).push(-1)}
-                  addNew={(e) => {  }} /> */}
+                  keys={deliveryCompanies.map(e => { return e.id})}
+                  addNew={(e) => {  }} />
 
                 <StyledTextField
                   margin="normal"

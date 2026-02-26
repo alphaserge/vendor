@@ -831,9 +831,9 @@ useEffect(() => {
 
   const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
 
-  console.log('plain_dyed_type:')
-  console.log(plainDyedTypeId)
-   console.log(config.product.plain_dyed_type)
+  console.log('productTypes:')
+  console.log(productTypes)
+   //console.log(config.product.plain_dyed_type)
 
   return (
     <ThemeProvider theme={defaultTheme}>
