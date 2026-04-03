@@ -5,7 +5,7 @@ export const getTextileTypes = (setFn) => {
     axios.get(config.api + '/TextileTypes')
     .then(function (res) {
         let items = res.data.map((item)=>({ id:item.id, value:item.textileTypeName }))
-        items.push({ id:-2, value:"Add new.." })
+        items.unshift({ id:-2, value:"add custom value" })
         setFn(items)
     })
     .catch (error => {

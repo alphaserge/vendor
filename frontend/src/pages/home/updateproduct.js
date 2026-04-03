@@ -12,12 +12,9 @@ import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import AddIcon from '@mui/icons-material/Add';
-//import AddIcon from '@mui/icons-material/Add';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import MenuItem from '@mui/material/MenuItem';
 import { HexColorPicker } from "react-colorful";
 import CardMedia from '@mui/material/CardMedia';
@@ -27,10 +24,7 @@ import { v4 as uuid } from 'uuid'
 import config from "../../config.json"
 import ColorVariant from './colorvariant';
 import MySelect from '../../components/myselect';
-import MyAutocomplete from '../../components/myautocomplete';
 import Composition from '../../components/composition';
-import Header from '../../components/header';
-import {APPEARANCE as ap} from '../../appearance';
 import { getColors, postColor } from '../../api/colors'
 import { getDesignTypes, postDesignType } from '../../api/designtypes'
 import { getDyeStaffs, postDyeStaff } from '../../api/dyestaffs'
@@ -711,9 +705,7 @@ const setProduct = (prod) => {
     }
   })
 
-  let vals = [...prod.compositionValues]
-  vals = []
-
+  let vals = []
   for (let i=0; i<prod.compositionValues.length; i++) {
     vals.push({id: prod.compositionValues[i].textileTypeId, value: prod.compositionValues[i].value})
   }
@@ -729,10 +721,6 @@ const setProduct = (prod) => {
     vals.push({id: null, value: null})
   }
 
-  /*for (let i=0; i<5; i++) {
-    vals.push(i<prod.compositionValues.length ?
-        {id: prod.compositionValues[i].textileTypeId, value: prod.compositionValues[i].value} : {id: null, value: null})
-  }*/
   setCompositionValues(vals)
   setProductTextileTypes(prod.textileTypes)
 
@@ -1035,7 +1023,6 @@ useEffect(() => {
           </Box>
         </Box>
       </Modal>
-
 
       {/* what is a window ??? */}
       {/* <Modal
@@ -1868,70 +1855,19 @@ useEffect(() => {
               </FormControl> 
               </Grid>
 
-              {/* <Grid item xs={12} md={6} >
-              <MyAutocomplete
-                  title="Composition"
-                  labelStyle={labelStyle}
-                  itemStyle={itemStyle1}
-                  MenuProps={MySelectProps}
-                  value={textileTypeId}
-                  setValue={setTextileTypeId}
-                  addNew={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
-                  values={ textileTypes.map((e) => { return e.value }) }
-                />
-              </Grid> */}
-
             <Grid item xs={12} md={6} >
               <Composition 
                 value={compositionValues} 
                 idChanged={compositionIdChanged} 
                 valueChanged={compositionValueChanged} 
                 setComposition={setCompositionValues} 
-                //valueList={textileTypes}
                 values={textileTypes.map(e => { return e.value})}
                 keys={textileTypes.map(e => { return e.id})} 
-
-                delete={compositionDelete}/>
-                {/* <Box 
-                            sx={{ 
-                              display: "grid",
-                              gridTemplateColumns: "1fr 90px",
-                              columnGap: "5px",
-                              rowGap: "5px",
-                              color: "#222", 
-                              fontFamily: ap.FONTFAMILY,
-                              fontSize: ap.FONTSIZE
-                              }}>
-                              <div style={{gridColumn: "span 2"}}><Header text="Composition" /></div>
-                              { compositionValues.map((data, index) => (  
-                              <React.Fragment>
-                                 <MySelect 
-                                    id={"comps-" + index}
-                                    url="TextileTypes"
-                                    title="Textile type"
-                                    valueName="value"
-                                    labelStyle={labelStyle}
-                                    //itemStyle={halfItemStyle}
-                                    MenuProps={MySelectProps}
-                                    value={compositionValues[index].textileTypeId}
-                                    setValue={compositionIdChanged}
-                                    values={textileTypes}
-                                    option={index}
-                                    //addNew={props.addNew}
-                                  />
-                                  <TextField
-                                    margin="normal"
-                                    size="small" 
-                                    id={"compv-" + index}
-                                    label="%"
-                                    name={"compv-" + index}
-                                    value={compositionValues[index].value}
-                                    sx = {{ m: 0 }}
-                                    onChange={ev => compositionValueChanged(ev.target.value, index)}
-                                  />
-                               </React.Fragment>  ))} 
-                        </Box> */}
-
+                delete={compositionDelete}
+                addNewValue={ 
+                  async (e) => { 
+                    await postTextileType(e) 
+                    } } />
             </Grid>
           </Grid>
           </AccordionDetails>

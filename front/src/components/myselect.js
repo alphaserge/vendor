@@ -49,12 +49,12 @@ export default function MySelect(props) {
           return
         }
 
-        if (Array.isArray(value) && value && value.indexOf(-2) != -1) {
+        if (Array.isArray(value) && value && value.indexOf(-2) != -1 && props.addNew) {
           props.addNew()
           return
         }
 
-        if (!Array.isArray(value) && value == -2) {
+        if (!Array.isArray(value) && value == -2 && props.addNew) {
           props.addNew()
         }
 

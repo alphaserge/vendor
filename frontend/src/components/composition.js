@@ -29,66 +29,55 @@ const MySelectProps = {
 
 export default function Composition(props) {
 
-  /*const [textileTypes, setTextileTypes] = useState([])
-  
-  useEffect(() => {
-    getTextileTypes(setTextileTypes)
-  }, [])*/
-
-//console.log('comp.values')
-//console.log(props.values)
-console.log('props.value:')
-console.log(props.value)
-  
-  return                 <Box 
-                              sx={{ 
-                                display: "grid",
-                                gridTemplateColumns: "1fr 50px 32px",
-                                columnGap: "5px",
-                                rowGap: "10px",
-                                color: "#222", 
-                                fontFamily: ap.FONTFAMILY,
-                                fontSize: ap.FONTSIZE
-                                }}>
-                                <div style={{gridColumn: "span 3"}}> <Typography align="center" sx={{ width: "100%", fontWeight: "bold", fontSize: "11pt", backgroundColor: "#ddd", padding: "20px 20px" }}>Composition</Typography></div>
-                                { props.value.map((data, index) => (  
-                                <React.Fragment>
-                                   <MySelect 
-                                      id={"comps-" + index}
-                                      key={"compsk-" + props.value[index].id}
-                                      url="TextileTypes"
-                                      title="Textile type"
-                                      //valueName="value"
-                                      labelStyle={labelStyle}
-                                      //itemStyle={halfItemStyle}
-                                      MenuProps={MySelectProps}
-                                      value={props.value[index].id}
-                                      setValue={props.idChanged}
-                                      values={props.values}
-                                      keys={props.keys}
-                                      option={index}
-                                      //addNew={props.addNew}
-                                    />
-                                    <TextField
-                                      margin="normal"
-                                      size="small" 
-                                      id={"compv-" + props.value[index].id}
-                                      key={"compvk-" + props.value[index].id}
-                                      label="%"
-                                      name={"compv-" + index}
-                                      value={props.value[index].value}
-                                      sx = {{ m: 0, textAlign: "center" }}
-                                      onChange={ev => props.valueChanged(ev.target.value, index)}
-                                    />
-                                    <IconButton aria-label="delete" >
-                                    <DeleteIcon 
-                                      sx={{ color: "#222", fontSize: 26, mt: "-3px" }}
-                                      onClick={(e)=>{props.delete(index)}} 
-                                      >
-                                    </DeleteIcon>
-                                  </IconButton> 
-                                 </React.Fragment>  ))} 
-                          </Box>
+  return <Box 
+      sx={{ display: "grid",
+        gridTemplateColumns: "1fr 50px 32px",
+        columnGap: "5px",
+        rowGap: "10px",
+        color: "#222", 
+        fontFamily: ap.FONTFAMILY,
+        fontSize: ap.FONTSIZE }}>
+        <div style={{gridColumn: "span 3"}}> 
+          <Typography align="center" sx={{ width: "100%", fontWeight: "bold", fontSize: "11pt", backgroundColor: "#ddd", padding: "20px 20px" }}>
+            Composition
+          </Typography>
+          </div>
+        { props.value.map((data, index) => (  
+        <React.Fragment>
+            <MySelect 
+              id={"comps-" + index}
+              key={"compsk-" + props.value[index].id}
+              url="TextileTypes"
+              title="Textile type"
+              labelStyle={labelStyle}
+              MenuProps={MySelectProps}
+              value={props.value[index].id}
+              setValue={props.idChanged}
+              values={props.values}
+              keys={props.keys}
+              option={index}
+              addNewValue={props.addNewValue}
+            />
+            <TextField
+              margin="normal"
+              size="small" 
+              id={"compv-" + props.value[index].id}
+              key={"compvk-" + props.value[index].id}
+              label="%"
+              name={"compv-" + index}
+              value={props.value[index].value}
+              sx = {{ m: 0, textAlign: "center" }}
+              onChange={ev => props.valueChanged(ev.target.value, index)}
+            />
+            <IconButton aria-label="delete" >
+            <DeleteIcon 
+              sx={{ color: "#222", fontSize: 26, mt: "-3px" }}
+              onClick={(e)=>{props.delete(index)}} 
+              >
+            </DeleteIcon>
+          </IconButton> 
+          </React.Fragment>  ))} 
+    </Box>
   
          
 }

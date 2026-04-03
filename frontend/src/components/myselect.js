@@ -3,40 +3,26 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import OutlinedInput from '@mui/material/OutlinedInput';
+import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import AddIcon from '@mui/icons-material/Add';
+import TextField from '@mui/material/TextField';
 import { useTheme } from '@mui/material/styles';
+import Modal from '@mui/material/Modal';
+import { IconButton } from "@mui/material";
+import DoneIcon from '@mui/icons-material/Done';
+import CloseIcon from '@mui/icons-material/Close';
 
-import axios from 'axios'
-import config from "../config.json"
-
-function getStyles(name, values, theme) {
-  try 
-  {
-    if (Array.isArray(values)) {
-      return {
-        fontWeight:
-        values.indexOf(name) === -1
-            ? theme.typography.fontWeightRegular
-            : theme.typography.fontWeightBold,
-            /*backgroundColor: names.indexOf(name) === -1 ? "#F00" : "#F0F"*/
-      }
-    } else {
-      return {}
-    }
-  }
-  catch(exc)
-  {
-    let a = exc
-  }
-}
+const itemStyle1 = { width: "calc( 100% - 0px )", mt: "0 !important", ml: 0, mr: 0, mb: "0 !important" }
+const buttonStyle = { mt: "auto", ml: "3px", mr: 0, mb: "auto", pt: 0, pl: 0, pr: 0, pb: 0, height: "26px", width: "36px", color: "#fff", backgroundColor: "#242a35", border: "solid 1px #e8e8e82d", borderRadius: "4px" }
 
 export default function MySelect(props) {
 
     let multiple = props.multiple;
     const [selectedValue, setSelectedValue] = useState([])
+    const [newValue, setNewValue] = useState(null)
+    const [openNew, setOpenNew] = useState(false)
     const theme = useTheme();
+
 
     const dataChange = (event, i) => {
         const { target: { id, value } } = event;
@@ -50,12 +36,19 @@ export default function MySelect(props) {
         }
 
         if (Array.isArray(value) && value && value.indexOf(-2) != -1) {
-          props.addNew()
+          setOpenNew(true)
+          /* if (props.addNewValue) {
+            props.addNewValue()
+          } */
           return
         }
 
         if (!Array.isArray(value) && value == -2) {
-          props.addNew()
+          setOpenNew(true)
+          /* if (props.addNewValue) {
+            props.addNewValue()
+          } */
+          return
         }
 
         setSelectedValue(value);
@@ -66,12 +59,54 @@ export default function MySelect(props) {
       var a = 0;
     }, []);
   
-/*console.log('props.keys')
-console.log(props.keys)
-console.log(props.values)
-console.log(props.value)*/
-
 return (
+  <>
+  <Modal
+    open={openNew}
+    onClose={function() { setOpenNew(false) }}
+    aria-labelledby="modal-modal-title"
+    aria-describedby="modal-modal-description"
+    sx={{ width: "auto", outline: "none" }} >
+
+    <Box sx={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: "330px",
+        boxShadow: 24,
+        padding: "25px",
+        outline: "none",
+        bgcolor: 'background.paper',
+        display: "flex",
+        flexDirection: "column"
+        }}>
+        <Typography sx={{ fontSize: "13px", fontWeight: "400" }}>New value:</Typography>
+        <Box sx={{ display: "flex" }}>
+        <TextField
+            margin="normal"
+            size="small" 
+            id="addnewvalue"
+            name="addnewvalue"
+            sx = {{ my: 2 }}
+            value={newValue}
+            onChange={ev => setNewValue(ev.target.value)}
+        />
+        <IconButton sx={ buttonStyle } onClick={ () => { 
+            if (props.addNewValue) {
+                props.addNewValue(newValue)
+            }
+            setOpenNew(false) }} 
+          >
+          <DoneIcon />
+        </IconButton>
+        <IconButton sx={ buttonStyle } onClick={ () => { setOpenNew(false) }} >
+          <CloseIcon />
+        </IconButton>
+        </Box>
+    </Box>
+  </Modal>
+
   <FormControl error={ false } required sx={{ ...props.itemStyle,  ...{width: "100%", display: "flex" } }} > 
     {!props.hideLabel && <InputLabel 
         id={props.id + "-label"}
@@ -86,29 +121,21 @@ return (
         label={props.title}
         multiple = {Array.isArray(props.value)}
         disabled={props.disabled ? props.disabled : false}
-        value={!!props.value ? props.value : ""}
-        sx = {{height: "37px", padding: "0", margin: "0"  }}
+        value={ !!props.value ? props.value : "" }
+        sx = {{ height: "37px", padding: "0", margin: "0" }}
         onChange={dataChange}
-        /*inputProps={{ backgroundColor: "#fff"}}
-        input={<OutlinedInput label={props.title} sx={{ backgroundColor: "#fff" }} />}*/
-        MenuProps={props.MenuProps}
-    >
+        MenuProps={props.MenuProps} >
+
     { props.values && props.values.map((value, index) => (
-        <MenuItem 
+        <MenuItem sx = {!!props.keys && props.keys[index] == -2 ? { fontWeight: 600 } : {}}
             key={!!props.key ? props.key+'_'+index : "key_"+index} 
             value={!!props.keys ? props.keys[index] : value} > 
-            {/* value={value} > */}
-            {/* style={getStyles(elem.id, selectedValue, theme)}>  
-              //  {elem.id != -2 && elem.rgb &&
-              //    <Box component="span" className="color_select_item" sx={{ backgroundColor: "#" + elem.rgb, border: "1px solid #bbb", height: "24px", width: "24px",  mr: 2 }}>
-              //       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              //    </Box>} 
-                 {elem.id == -2 && <AddIcon sx={{ mr: 2 }} />}  */}
                  {value}
         </MenuItem>
     ))}
     </Select>
     
   </FormControl>
+  </>
 );
 }
