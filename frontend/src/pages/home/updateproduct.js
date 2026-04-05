@@ -663,6 +663,7 @@ const addNewColor = () => {
 }
 
 const setProduct = (prod) => {
+
   setItemName(non(prod.itemName))
   setArtNo(non(prod.artNo))
   setRefNo(non(prod.refNo))
@@ -1865,8 +1866,11 @@ useEffect(() => {
                 keys={textileTypes.map(e => { return e.id})} 
                 delete={compositionDelete}
                 addNewValue={ 
-                  async (e) => { 
-                    await postTextileType(e) 
+                  async (value) => { 
+                    const id = idFromUrl()
+                    await postTextileType(value, id) 
+                    getTextileTypes(setTextileTypes)
+                    setTextileTypeValue(value)
                     } } />
             </Grid>
           </Grid>

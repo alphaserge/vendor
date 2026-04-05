@@ -14,7 +14,9 @@ export const getTextileTypes = (setFn) => {
     })
   }
   
-  export const postTextileType = async (name) => {
+  /* productId - not required, if not null, then backend
+     adding record to ProductsInDesignTypes with productId value */
+  export const postTextileType = async (name, productId) => {
 
     const responce = await fetch(config.api + '/TextileTypes', {
       method: "POST",
@@ -22,6 +24,7 @@ export const getTextileTypes = (setFn) => {
       body: JSON.stringify({
         textileTypeName: name,
         textileTypeNameRu: "",
+        productId: parseInt(productId)
       })
     })
 

@@ -19,6 +19,8 @@ namespace chiffon_back.Controllers
             {
                 cfg.CreateMap<Models.TextileType, Context.TextileType>();
                 cfg.CreateMap<Context.TextileType, Models.TextileType>();
+                cfg.CreateMap<Context.TextileType, Models.PostTextileType>();
+                cfg.CreateMap<Models.PostTextileType, Context.TextileType>();
                 cfg.CreateMap<Models.ProductsInTextileTypes, Context.ProductsInTextileTypes>();
                 cfg.CreateMap<Context.ProductsInTextileTypes, Models.ProductsInTextileTypes>();
             });
@@ -46,7 +48,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost(Name = "TextileTypes")]
-        public ActionResult<Models.TextileType> Post(Models.TextileType textileType)
+        public ActionResult<Models.PostTextileType> Post(Models.PostTextileType textileType)
         {
             try
             {
@@ -55,6 +57,17 @@ namespace chiffon_back.Controllers
 
                 ctx.TextileTypes.Add(textile);
                 ctx.SaveChanges();
+
+                if (textileType.ProductId != null)
+                {
+                    ctx.ProductsInTextileTypes.Add(
+                        new Context.ProductsInTextileTypes() 
+                        { 
+                            ProductId = textileType.ProductId.Value, 
+                            TextileTypeId = textile.Id 
+                        });
+                    ctx.SaveChanges();
+                }
 
                 return CreatedAtAction(nameof(Get), new { id = textile.Id }, textile);
             }

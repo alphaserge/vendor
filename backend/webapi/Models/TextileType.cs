@@ -7,6 +7,14 @@
         public string? TextileTypeNameRu { get; set; }
     }
 
+    public class PostTextileType
+    {
+        public int Id { get; set; }
+        public int? ProductId { get; set; }
+        public string? TextileTypeName { get; set; }
+        public string? TextileTypeNameRu { get; set; }
+    }
+
     public class ProductAddTextileType
     {
         public int ProductId { get; set; }
