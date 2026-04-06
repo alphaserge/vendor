@@ -15,6 +15,7 @@ namespace chiffon_back.Controllers
             {
                 cfg.CreateMap<Models.DesignType, Context.DesignType>();
                 cfg.CreateMap<Context.DesignType, Models.DesignType>();
+                cfg.CreateMap<Models.PostDesignType, Context.DesignType>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
@@ -35,12 +36,11 @@ namespace chiffon_back.Controllers
                         .Map<Models.DesignType>(x))
             .ToList();
 
-            //!!list.Add(new Models.DesignType() { Id = -2, DesignName = "ADD NEW" });
             return list.AsEnumerable();
         }
 
         [HttpPost(Name = "DesignTypes")]
-        public ActionResult<Models.DesignType> Post(Models.DesignType designType)
+        public ActionResult<Models.DesignType> Post(Models.PostDesignType designType)
         {
             try
             {
@@ -49,6 +49,17 @@ namespace chiffon_back.Controllers
 
                 ctx.DesignTypes.Add(item);
                 ctx.SaveChanges();
+
+                if (designType.ProductId != null)
+                {
+                    ctx.ProductsInDesignTypes.Add(
+                        new Context.ProductsInDesignTypes()
+                        {
+                            ProductId = designType.ProductId.Value,
+                            DesignTypeId = designType.Id
+                        });
+                    ctx.SaveChanges();
+                }
 
                 return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }

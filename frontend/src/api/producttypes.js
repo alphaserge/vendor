@@ -14,17 +14,18 @@ export const getProductTypes = (setFn) => {
     })
   }
   
-  export const postProductType = async (name) => {
+  /* productId - not required, if not null, then backend
+     adding record to ProductsInDesignTypes with productId value */
+  export const postProductType = async (name, productId) => {
 
     const responce = await fetch(config.api + '/ProductTypes', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         typeName: name,
+        productId: parseInt(productId)
       })
     })
-
-    console.log(responce);
 
     return {
       ok: true,

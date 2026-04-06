@@ -15,17 +15,18 @@ export const getPlainDyedTypes = (setFn) => {
   }
   
   
-  export const postPlainDyedType = async (name) => {
+    /* productId - not required, if not null, then backend
+     adding record to ProductsInDesignTypes with productId value */
+    export const postPlainDyedType = async (name, productId) => {
 
     const responce = await fetch(config.api + '/PlainDyedTypes', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         plainDyedTypeName: name,
+        productId: parseInt(productId)
       })
     })
-
-    console.log(responce);
 
     return {
       ok: true,

@@ -14,17 +14,18 @@ export const getDyeStaffs = (setFn) => {
     })
   }
   
-  export const postDyeStaff = async (name) => {
+  /* productId - not required, if not null - then backend
+     set PrintTypeId field for product */
+  export const postDyeStaff = async (name, productId) => {
 
     const responce = await fetch(config.api + '/DyeStaffs', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         dyeStaffName: name,
+        productId: parseInt(productId)
       })
     })
-
-    console.log(responce);
 
     return {
       ok: true,

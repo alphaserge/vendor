@@ -15,13 +15,16 @@ export const getFinishings= (setFn) => {
   }
   
   
-  export const postFinishing = async (name) => {
+  /* productId - not required, if not null - then backend
+     set FinishingId field for product */
+  export const postFinishing = async (name, productId) => {
 
     const responce = await fetch(config.api + '/Finishings', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         finishingName: name,
+        productId: parseInt(productId)
       })
     })
 

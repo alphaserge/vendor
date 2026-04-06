@@ -16,6 +16,7 @@ namespace chiffon_back.Controllers
             {
                 cfg.CreateMap<Models.ProductType, Context.ProductType>();
                 cfg.CreateMap<Context.ProductType, Models.ProductType>();
+                cfg.CreateMap<Models.PostProductType, Context.ProductType>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
@@ -38,7 +39,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost(Name = "ProductTypes")]
-        public ActionResult<Models.ProductType> Post(Models.ProductType productType)
+        public ActionResult<Models.ProductType> Post(Models.PostProductType productType)
         {
             try
             {
@@ -47,6 +48,16 @@ namespace chiffon_back.Controllers
 
                 ctx.ProductTypes.Add(item);
                 ctx.SaveChanges();
+
+                if (productType.ProductId != null)
+                {
+                    Context.Product? prod = ctx.Products.FirstOrDefault(x => x.Id == productType.ProductId.Value);
+                    if (prod != null)
+                    {
+                        prod.ProductTypeId = productType.Id;
+                    }
+                    ctx.SaveChanges();
+                }
 
                 return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }

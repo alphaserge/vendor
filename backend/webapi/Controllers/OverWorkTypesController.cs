@@ -16,6 +16,7 @@ namespace chiffon_back.Controllers
             {
                 cfg.CreateMap<Models.OverWorkType, Context.OverWorkType>();
                 cfg.CreateMap<Context.OverWorkType, Models.OverWorkType>();
+                cfg.CreateMap<Models.PostOverWorkType, Context.OverWorkType>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
@@ -36,13 +37,11 @@ namespace chiffon_back.Controllers
                         .Map<Models.OverWorkType>(x))
                 .ToList();
 
-            //!!overworks.Add(new Models.OverWorkType() { Id = -2, OverWorkName = "ADD NEW" });
-
             return overworks.AsEnumerable();
         }
 
         [HttpPost(Name = "OverWorkTypes")]
-        public ActionResult<Models.OverWorkType> Post(Models.OverWorkType overwork)
+        public ActionResult<Models.OverWorkType> Post(Models.PostOverWorkType overwork)
         {
             try
             {
@@ -51,6 +50,17 @@ namespace chiffon_back.Controllers
 
                 ctx.OverWorkTypes.Add(item);
                 ctx.SaveChanges();
+
+                if (overwork.ProductId != null)
+                {
+                    ctx.ProductsInOverWorkTypes.Add(
+                        new Context.ProductsInOverWorkTypes()
+                        {
+                            ProductId = overwork.ProductId.Value,
+                            OverWorkTypeId = overwork.Id
+                        });
+                    ctx.SaveChanges();
+                }
 
                 return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }

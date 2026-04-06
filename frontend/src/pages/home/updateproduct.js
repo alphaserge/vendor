@@ -200,13 +200,13 @@ export default function UpdateProduct(props) {
     const [photoPath, setPhotoPath] = useState("")
 
     let loc = useLocation()
+    const id = idFromUrl()
 
     const idFromUrl = () => {
       const search = window.location.search
       const params = new URLSearchParams(search)
       return params.get('id')
     }
-
 
     const setColorVariantItem = (uuid, item) => {
       let cv = colorVariantsAdd.map(el=>el.uuid==uuid? item:el)
@@ -266,15 +266,6 @@ export default function UpdateProduct(props) {
       setPrice2((value*1.05).toFixed(2))
       setPrice3((value*1.10).toFixed(2))
     }
-
-
-    /*const productStyleChanged = (value) => {
-      //setTimeout( function() { setProductStyle(value); }, 200 )
-      setProductStyleId(value)
-
-      //setWeight(value)
-      //wChanged(width, value)
-    }*/
 
     const addVariants = () => {
       let cv = [...colorVariantsAdd]
@@ -470,76 +461,6 @@ export default function UpdateProduct(props) {
     }
   };
 
-  const addNewValue = async (e) => {
-
-    setOpenedNewValue(false);
-
-    var r = null
-    switch(newValueEntity) {
-      case 'overwork':
-          r = await postOverworkType(newValue)
-          break;
-      case 'design type':
-        r = await postDesignType(newValue)
-        break;
-      case 'textile type':
-        r = await postTextileType(newValue)
-        break;
-      case 'finishing':
-        r = await postFinishing(newValue)
-        break;
-      case 'plain dyed type':
-        r = await postPlainDyedType(newValue)
-        break;
-      case 'print type':
-        r = await postPrintType(newValue)
-        break;
-      case 'product type':
-        r = await postProductType(newValue)
-        break;
-        case 'dye staff':
-          r = await postDyeStaff(newValue)
-          break;
-        }
-
-    if (!r.ok) {
-      setErrorNewValue(r.message)
-      return
-    }
-
-    if (r.ok == true) {
-      props.setLastAction(r.message)
-      switch(newValueEntity) {
-        case 'overwork':
-          getOverworkTypes(setOverworkTypes)
-            break;
-            case 'design type':
-              getDesignTypes(setDesignTypes)
-              break;
-            case 'textile type':
-              getTextileTypes(setTextileTypes)
-              break;
-            case 'finishing':
-              getFinishings(setFinishings)
-              break;
-            case 'plain dyed type':
-              getPlainDyedTypes(setPlainDyedTypes)
-              break;
-            case 'print type':
-              getPrintTypes(setPrintTypes)
-              break;
-            case 'product type':
-              getProductTypes(setPlainDyedTypes)
-              break;
-              case 'dye staff':
-                getDyeStaffs(setDyeStaffs)
-                break;
-                }
-    } else {
-      setErrorNewValue(r.message)
-    }
-  };
-
 const addColorVariant = async (cv) => {
 
   await axios.post(config.api + '/Products/ProductAddCV', 
@@ -561,8 +482,6 @@ const addColorVariant = async (cv) => {
 };
 
 const uploadProductColor = async (event, type) => {
-
-
   const file = event.target.files[0]
   const id = idFromUrl()
   const cv = 
@@ -624,34 +543,9 @@ const uploadColorVariant = async (event) => {
   });
 }
 
-const setColorNo = (value) => {
-  setAddColorNo(parseInt(value))
-}
-
-const setQuantity = (value) => {
-  setAddQuantity(parseInt(value))
-}
-
-
-//?
-const setColorIds = (value) => {
-  setAddColorIds(value)
-}
-
-//?
-const setSelectedFile = (value) => {
-  setAddSelectedFile(value)
-}
-
-const onFileChange = (event) => {
-  setSelectedFile(event.target.files[0])
-}
-
 const [openNewColor, setOpenNewColor] = React.useState(false);
 const [openEditColor, setOpenEditColor] = React.useState(false);
-const [openedNewValue, setOpenedNewValue] = React.useState(false);
 const [errorNewValue, setErrorNewValue] = React.useState("");
-const [newValueEntity, setNewValueEntity] = React.useState("");
 const [openConfirmDelete, setOpenConfirmDelete] = React.useState(false);
 const [openVideo, setOpenVideo] = React.useState(false);
 const [openPhoto, setOpenPhoto] = React.useState(false);
@@ -784,14 +678,9 @@ const setProduct = (prod) => {
   }
 
   return comps
-  }
-
+}
 
 useEffect(() => {
-
-  // >>> moved to setTextileTypesFunc()
-  //let id = idFromUrl()
-  //loadProduct(id, setProduct)
 
   getColors(setColors)
   getDesignTypes(setDesignTypes)
@@ -799,7 +688,6 @@ useEffect(() => {
   getProductStyles(setProductStyles)
   getProductTypes(setProductTypes)
   getSeasons(setSeasons)
-  // in bottom part of page, so can load later:
   getDyeStaffs(setDyeStaffs)
   getFinishings(setFinishings)
   getPlainDyedTypes(setPlainDyedTypes)
@@ -814,15 +702,6 @@ useEffect(() => {
   loadProduct(id, setProduct)
 
   }, [textileTypes]);
-
-
-
-
-  const existingStyle = {} // (props.cv.colorVariantId != null ? {backgroundColor: "#eee"} : {})
-
-  console.log('productTypes:')
-  console.log(productTypes)
-   //console.log(config.product.plain_dyed_type)
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -896,7 +775,6 @@ useEffect(() => {
           </Box>
         </Box>
       </Modal>
-
 
       <Modal
         open={openVideo}
@@ -1018,112 +896,6 @@ useEffect(() => {
               variant="contained"
               style={buttonStyle}
               onClick={handleClose} >
-                  Cancel
-          </Button>
-          </Box>
-          </Box>
-        </Box>
-      </Modal>
-
-      {/* what is a window ??? */}
-      {/* <Modal
-        open={windowColorVariant}
-        onClose={function() { setWindowColorVariant(false) }}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        sx={{ width: "auto"}} >
-
-      <Box component="div" style={flexStyle}>
-      <TextField
-        margin="normal"
-        size="small" 
-        id="colorNo"
-        name="colorNo"
-        label="No."
-        sx = {{...textStyle, ...{width: "85px"}, ...existingStyle}}
-        value={addColorNo}
-        onChange={ev => setColorNo(ev.target.value) }
-        InputLabelProps={{ shrink: true }}
-      />
-      <TextField
-        margin="normal"
-        size="small" 
-        id="colorQuantity"
-        name="colorQuantity"
-        label="Qty."
-        sx = {{...textStyle, ...{width: "120px"}, ...existingStyle}}
-        value={addQuantity}
-        onChange={ev => setQuantity(ev.target.value) }
-        InputLabelProps={{ shrink: true }} />
-
-      <MySelect 
-        id="addproduct-colorvariant"
-        url="Colors"
-        title="Color"
-        labelStyle={labelStyle}
-        itemStyle={{...itemStyle, ...existingStyle}}
-        MenuProps={MySelectProps}
-        value={addColorIds}
-        setValue={setAddColorIds}
-        addNew={props.addNew}
-        values={props.data} /> 
-
-//</ThemeProvider> values={designTypes.map(e => { return e.designName})}
-  //  keys={designTypes.map(e => { return e.id})}  }
-
-      <label htmlFor={"icon-button-file-111"}>
-      <Input accept="image/*" id={"icon-button-file-111"} type="file" onChange={onFileChange} />
-      <IconButton
-        color="success"
-        aria-label="upload picture"
-        sx={{color: APPEARANCE.BLACK2}}
-        component="span">
-            {!addSelectedFile && <AddAPhotoIcon />}
-            { addSelectedFile && <DoneIcon />}
-      </IconButton>
-      </label>      
-      </Box>
-      </Modal>*/}
-
-      <Modal
-        open={openedNewValue}
-        onClose={(e)=>{ setOpenedNewValue(false); }}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description" >
-
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-                width: 475, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Adding a new {newValueEntity}
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', flex: 3 }}>
-            <TextField
-                  margin="normal"
-                  size="small" 
-                  id="newValue"
-                  label={"New value of " + newValueEntity}
-                  name="newValue"
-                  value={newValue}
-                  onChange={ev => setNewValue(ev.target.value)}
-                /> 
-                <InputLabel
-                component={"div"}
-                  shrink={true}
-                  sx={{ wordBreak: "break-word", whiteSpace: "pre-line" }} >
-                    {errorNewValue}
-                  </InputLabel>
-          <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'top' }}>
-          <Button 
-              variant="contained"
-              style={buttonStyle}
-              sx={{marginTop: "40px"}}
-              onClick={addNewValue} >
-                  Save
-          </Button>
-          <Button 
-              variant="contained"
-              style={buttonStyle}
-              onClick={(e)=>{ setOpenedNewValue(false); }} >
                   Cancel
           </Button>
           </Box>
@@ -1491,7 +1263,7 @@ useEffect(() => {
                 return <React.Fragment> 
                   {index==0 && <Box sx={{flexBasis: "100%", 
                     height: 0, /* Optional: keeps the break from adding visible vertical space */
-                    margin: "30px 20px 30px 20px", /* Optional: removes default margins */
+                    margin: "30px 20px 30px 20px", 
                     display: "flex",
                     fontWeight: "600"}}> 
                     <Box className="photos-title"> Product videos:</Box> 
@@ -1584,39 +1356,7 @@ useEffect(() => {
             </Grid>
              </Box>
             </React.Fragment>
-
-
             </Box>
-
-            {/* <Box sx={{mb: 3}}>
-            <label htmlFor={"icon-button-file-prod"}>
-              <Input accept="image/*" id={"icon-button-file-prod"} type="file" onChange={(e) => { saveProduct(); uploadProductColor(e,'PRODUCT');}} />
-              <Button aria-label="upload global photo" style={smallButtonStyle} component="span">
-                    <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
-                    Add photo
-              </Button>
-            </label>
-            </Box> */}
-
-            
-
-            <br/>
-
-              <Grid container spacing={2} sx={{...accordionSummaryStyle, ...{height: "auto"}}}>
-            
-            </Grid>
-
-            {/* <Box sx={{mb: 3}}>
-            <label htmlFor={"icon-button-file-video"}>
-              <Input accept="video/*" id={"icon-button-file-video"} type="file" onChange={(e) => { saveProduct(); uploadProductColor(e,'VIDEO');}} />
-              <Button aria-label="upload video" style={smallButtonStyle} component="span">
-                    <AddAPhotoIcon sx={{ml: 0, mr: 1}} /> 
-                    Add video
-              </Button>
-            </label>
-            </Box> */}
-
-
           </AccordionDetails>
           </Accordion>
 
@@ -1641,9 +1381,12 @@ useEffect(() => {
                   MenuProps={MySelectProps1}
                   value={productTypeId}
                   setValue={setProductTypeId}
-                  addNew={(e) => { setNewValueEntity("product type"); setOpenedNewValue(true); }}
                   values={productTypes.map(e => { return e.typeName})}
                   keys={productTypes.map(e => { return e.id})}
+                  addNewValue={ async (value) => { 
+                    await postProductType(value, id) 
+                    getProductTypes(setProductTypes)
+                    loadProduct(id, setProduct) }} 
                 />
                 </Grid>
 
@@ -1674,9 +1417,12 @@ useEffect(() => {
                   MenuProps={MySelectProps}
                   value={designType}
                   setValue={setDesignType}
-                  addNew={(e) => { setNewValueEntity("design type"); setOpenedNewValue(true); }}
                   values={designTypes.map(e => { return e.designName})}
                   keys={designTypes.map(e => { return e.id})} />
+                  addNewValue={ async (value) => { 
+                    await postDesignType(value, id) 
+                    getDesignTypes(setDesignTypes)
+                    loadProduct(id, setProduct) }}
               </Grid>)}
               
               { (productStyleId == config.product.plain_dyed_type) && (
@@ -1691,9 +1437,12 @@ useEffect(() => {
                   MenuProps={MySelectProps}
                   value={plainDyedTypeId}
                   setValue={setPlainDyedTypeId}
-                  addNew={(e) => { setNewValueEntity("plain dyed type"); setOpenedNewValue(true); }}
                   values={plainDyedTypes.map(e => { return e.plainDyedTypeName})}
                   keys={plainDyedTypes.map(e => { return e.id})}
+                  addNewValue={ async (value) => { 
+                    await postPlainDyedType(value, id) 
+                    getPlainDyedTypes(setPlainDyedTypes)
+                    loadProduct(id, setProduct) }}
                 /> </Grid> )}
 
                 <Grid item xs={12} md={6}  >
@@ -1707,9 +1456,12 @@ useEffect(() => {
                   MenuProps={MySelectProps}
                   value={overworkType}
                   setValue={setOverworkType}
-                  addNew={(e) => { setNewValueEntity("overwork"); setOpenedNewValue(true); }}
                   values={overworkTypes.map(e => { return e.overWorkName})}
                   keys={overworkTypes.map(e => { return e.id})}
+                  addNewValue={ async (value) => { 
+                    await postOverworkType(value, id) 
+                    getOverworkTypes(setOverworkTypes)
+                    loadProduct(id, setProduct) }}
                 />
             </Grid>
           </Grid>
@@ -1799,10 +1551,13 @@ useEffect(() => {
                   MenuProps={MySelectProps}
                   value={finishingId}
                   setValue={setFinishingId}
-                  addNew={(e) => { setNewValueEntity("finishing"); setOpenedNewValue(true); }}
                   values={finishings.map(e => { return e.finishingName})}
                   keys={finishings.map(e => { return e.id})} 
-                />
+                  addNewValue={ async (value) => { 
+                    await postFinishing(value, id) 
+                    getFinishings(setFinishings)
+                    loadProduct(id, setProduct) }}
+                  />
               </FormControl> &nbsp;
                 
               <FormControl sx = {halfItemStyle1}>
@@ -1823,7 +1578,7 @@ useEffect(() => {
             <Grid item xs={12} md={6} sx={{...flexStyle}} >
               <FormControl sx = {halfItemStyle1}>
                <MySelect 
-                id="addproduct-printttype"
+                id="addproduct-printtype"
                 url="PrintTypes"
                 title="Print Type"
                 valueName="typeName"
@@ -1832,9 +1587,12 @@ useEffect(() => {
                 MenuProps={MySelectProps}
                 value={printTypeId}
                 setValue={setPrintTypeId}
-                addNew={(e) => { setNewValueEntity("print type"); setOpenedNewValue(true); }}
                 values={printTypes.map(e => { return e.typeName})}
                 keys={printTypes.map(e => { return e.id})} 
+                addNewValue={ async (value) => { 
+                  await postPrintType(value, id) 
+                  getPrintTypes(setPrintTypes)
+                  loadProduct(id, setProduct) }}
               />
               </FormControl>
 
@@ -1849,9 +1607,12 @@ useEffect(() => {
                 MenuProps={MySelectProps}
                 value={dyeStaffId}
                 setValue={setDyeStaffId}
-                addNew={(e) => { setNewValueEntity("dye staff"); setOpenedNewValue(true); }}
                 values={dyeStaffs.map(e => { return e.dyeStaffName})}
                 keys={dyeStaffs.map(e => { return e.id})} 
+                addNewValue={ async (value) => { 
+                  await postDyeStaff(value, id) 
+                  getDyeStaffs(setDyeStaffs)
+                  loadProduct(id, setProduct) }}                
               />
               </FormControl> 
               </Grid>
@@ -1865,12 +1626,11 @@ useEffect(() => {
                 values={textileTypes.map(e => { return e.value})}
                 keys={textileTypes.map(e => { return e.id})} 
                 delete={compositionDelete}
-                addNewValue={ 
-                  async (value) => { 
+                addNewValue={ async (value) => { 
                     const id = idFromUrl()
                     await postTextileType(value, id) 
                     getTextileTypes(setTextileTypes)
-                    setTextileTypeValue(value)
+                    loadProduct(id, setProduct)
                     } } />
             </Grid>
           </Grid>

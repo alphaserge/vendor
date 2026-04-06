@@ -17,6 +17,7 @@ namespace chiffon_back.Controllers
             {
                 cfg.CreateMap<Models.PlainDyedType, Context.PlainDyedType>();
                 cfg.CreateMap<Context.PlainDyedType, Models.PlainDyedType>();
+                cfg.CreateMap<Models.PostPlainDyedType, Context.PlainDyedType>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
@@ -36,12 +37,12 @@ namespace chiffon_back.Controllers
                     config.CreateMapper()
                         .Map<Models.PlainDyedType>(x))
                 .ToList();
-            //!!list.Add(new Models.PlainDyedType() { Id = -2, PlainDyedTypeName = "ADD NEW" });
+
             return list.AsEnumerable();
         }
 
         [HttpPost(Name = "PlainDyedTypes")]
-        public ActionResult<Models.PlainDyedType> Post(Models.PlainDyedType plainDyedType)
+        public ActionResult<Models.PlainDyedType> Post(Models.PostPlainDyedType plainDyedType)
         {
             try
             {
@@ -50,6 +51,16 @@ namespace chiffon_back.Controllers
 
                 ctx.PlainDyedTypes.Add(item);
                 ctx.SaveChanges();
+
+                if (plainDyedType.ProductId != null)
+                {
+                    Context.Product? prod = ctx.Products.FirstOrDefault(x => x.Id == plainDyedType.ProductId.Value);
+                    if (prod != null)
+                    {
+                        prod.PlainDyedTypeId = plainDyedType.Id;
+                    }
+                    ctx.SaveChanges();
+                }
 
                 return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }

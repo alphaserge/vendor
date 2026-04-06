@@ -14,17 +14,18 @@ export const getOverworkTypes = (setFn) => {
     })
   }
   
-  export const postOverworkType = async (name) => {
+  /* productId - not required, if not null - then backend
+     adding record to ProductsInOverwork with productId value */
+  export const postOverworkType = async (name, productId) => {
 
     const responce = await fetch(config.api + '/OverWorkTypes', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         overWorkName: name,
+        productId: parseInt(productId)
       })
     })
-
-    console.log(responce);
 
     return {
       ok: true,

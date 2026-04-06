@@ -14,17 +14,18 @@ export const getPrintTypes = (setFn) => {
     })
   }
   
-  export const postPrintType = async (name) => {
+  /* productId - not required, if not null - then backend
+     set PrintTypeId field for product */
+  export const postPrintType = async (name, productId) => {
 
     const responce = await fetch(config.api + '/PrintTypes', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         typeName: name,
+        productId: parseInt(productId)
       })
     })
-
-    console.log(responce);
 
     return {
       ok: true,

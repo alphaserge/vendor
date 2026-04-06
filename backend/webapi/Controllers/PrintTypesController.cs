@@ -17,6 +17,7 @@ namespace chiffon_back.Controllers
             {
                 cfg.CreateMap<Models.PrintType, Context.PrintType>();
                 cfg.CreateMap<Context.PrintType, Models.PrintType>();
+                cfg.CreateMap<Models.PostPrintType, Context.PrintType>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
@@ -37,12 +38,11 @@ namespace chiffon_back.Controllers
                         .Map<Models.PrintType>(x))
             .ToList();
 
-            //!!list.Add(new Models.PrintType() { Id = -2, TypeName = "ADD NEW" });
             return list.AsEnumerable();
         }
 
         [HttpPost(Name = "PrintTypes")]
-        public ActionResult<Models.PrintType> Post(Models.PrintType printType)
+        public ActionResult<Models.PrintType> Post(Models.PostPrintType printType)
         {
             try
             {
@@ -51,6 +51,15 @@ namespace chiffon_back.Controllers
 
                 ctx.PrintTypes.Add(item);
                 ctx.SaveChanges();
+
+                if (printType.ProductId != null)
+                {
+                    Context.Product? prod = ctx.Products.FirstOrDefault(x => x.Id == printType.ProductId.Value);
+                    if (prod != null) {
+                        prod.PrintTypeId = printType.Id;
+                    }
+                    ctx.SaveChanges();
+                }
 
                 return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }

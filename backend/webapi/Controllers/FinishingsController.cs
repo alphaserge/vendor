@@ -14,6 +14,7 @@ namespace chiffon_back.Controllers
             {
                 cfg.CreateMap<Models.Finishings, Context.Finishing>();
                 cfg.CreateMap<Context.Finishing, Models.Finishings>();
+                cfg.CreateMap<Models.PostFinishings, Context.Finishing>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
@@ -36,7 +37,7 @@ namespace chiffon_back.Controllers
         }
 
         [HttpPost(Name = "Finishings")]
-        public ActionResult<Models.Finishings> Post(Models.Finishings finishing)
+        public ActionResult<Models.Finishings> Post(Models.PostFinishings finishing)
         {
             try
             {
@@ -45,6 +46,16 @@ namespace chiffon_back.Controllers
 
                 ctx.Finishings.Add(item);
                 ctx.SaveChanges();
+
+                if (finishing.ProductId != null)
+                {
+                    Context.Product? prod = ctx.Products.FirstOrDefault(x => x.Id == finishing.ProductId.Value);
+                    if (prod != null)
+                    {
+                        prod.FinishingId = finishing.Id;
+                    }
+                    ctx.SaveChanges();
+                }
 
                 return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }

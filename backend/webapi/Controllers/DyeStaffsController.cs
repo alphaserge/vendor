@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using chiffon_back.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ namespace chiffon_back.Controllers
             {
                 cfg.CreateMap<Models.DyeStaff, Context.DyeStaff>();
                 cfg.CreateMap<Context.DyeStaff, Models.DyeStaff>();
+                cfg.CreateMap<Models.PostDyeStaff, Context.DyeStaff>();
             });
 
         private readonly chiffon_back.Context.ChiffonDbContext ctx = Code.ContextHelper.ChiffonContext();
@@ -37,12 +39,11 @@ namespace chiffon_back.Controllers
                         .Map<Models.DyeStaff>(x))
             .ToList();
 
-            //!!list.Add(new Models.DyeStaff() { Id = -2, DyeStaffName = "ADD NEW" });
             return list.AsEnumerable();
         }
 
         [HttpPost(Name = "DyeStaffs")]
-        public ActionResult<Models.DyeStaff> Post(Models.DyeStaff dyeStaff)
+        public ActionResult<Models.DyeStaff> Post(Models.PostDyeStaff dyeStaff)
         {
             try
             {
@@ -51,6 +52,16 @@ namespace chiffon_back.Controllers
 
                 ctx.DyeStaffs.Add(item);
                 ctx.SaveChanges();
+
+                if (dyeStaff.ProductId != null)
+                {
+                    Context.Product? prod = ctx.Products.FirstOrDefault(x => x.Id == dyeStaff.ProductId.Value);
+                    if (prod != null)
+                    {
+                        prod.DyeStaffId = dyeStaff.Id;
+                    }
+                    ctx.SaveChanges();
+                }
 
                 return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
             }

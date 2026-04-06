@@ -14,7 +14,7 @@ export const getTextileTypes = (setFn) => {
     })
   }
   
-  /* productId - not required, if not null, then backend
+  /* productId - not required, if not null - then backend
      adding record to ProductsInDesignTypes with productId value */
   export const postTextileType = async (name, productId) => {
 
@@ -27,8 +27,6 @@ export const getTextileTypes = (setFn) => {
         productId: parseInt(productId)
       })
     })
-
-    console.log(responce);
 
     return {
       ok: true,

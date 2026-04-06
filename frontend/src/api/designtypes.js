@@ -14,13 +14,16 @@ export const getDesignTypes = (setFn) => {
     })
   }
   
-  export const postDesignType = async (name) => {
+  /* productId - not required, if not null, then backend
+     adding record to ProductsInDesignTypes with productId value */
+  export const postDesignType = async (name, productId) => {
 
     const responce = await fetch(config.api + '/DesignTypes', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         designName: name,
+        productId: parseInt(productId)
       })
     })
 
