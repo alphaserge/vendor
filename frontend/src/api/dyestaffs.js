@@ -5,7 +5,7 @@ export const getDyeStaffs = (setFn) => {
     axios.get(config.api + '/DyeStaffs')
     .then(function (res) {
         let items = res.data
-        items.push({ id:-2, value:"Add new.." })
+        items.unshift({ id:-2, value:"add custom value" })
         setFn(items)
     })
     .catch (error => {

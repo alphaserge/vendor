@@ -707,7 +707,14 @@ namespace chiffon_back.Models
 
         }
 
+        public static IEnumerable<string> ItemNames()
+        {
+            ChiffonDbContext ctx = ContextHelper.ChiffonContext();
 
+            var query = from p in ctx.Products orderby p.ItemName select p.ItemName;
+            var itemNames = query.ToList();
+            return itemNames;
+        }
 
     }
 }

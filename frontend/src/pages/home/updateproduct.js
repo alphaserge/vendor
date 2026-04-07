@@ -200,7 +200,6 @@ export default function UpdateProduct(props) {
     const [photoPath, setPhotoPath] = useState("")
 
     let loc = useLocation()
-    const id = idFromUrl()
 
     const idFromUrl = () => {
       const search = window.location.search
@@ -680,28 +679,31 @@ const setProduct = (prod) => {
   return comps
 }
 
-useEffect(() => {
+  useEffect(() => {
 
-  getColors(setColors)
-  getDesignTypes(setDesignTypes)
-  getOverworkTypes(setOverworkTypes)
-  getProductStyles(setProductStyles)
-  getProductTypes(setProductTypes)
-  getSeasons(setSeasons)
-  getDyeStaffs(setDyeStaffs)
-  getFinishings(setFinishings)
-  getPlainDyedTypes(setPlainDyedTypes)
-  getPrintTypes(setPrintTypes)
-  getTextileTypes(setTextileTypes)
+    getColors(setColors)
+    getDesignTypes(setDesignTypes)
+    getOverworkTypes(setOverworkTypes)
+    getProductStyles(setProductStyles)
+    getProductTypes(setProductTypes)
+    getSeasons(setSeasons)
+    getDyeStaffs(setDyeStaffs)
+    getFinishings(setFinishings)
+    getPlainDyedTypes(setPlainDyedTypes)
+    getPrintTypes(setPrintTypes)
+    getTextileTypes(setTextileTypes)
 
   }, []);
 
-useEffect(() => {
+  useEffect(() => {
 
-  let id = idFromUrl()
-  loadProduct(id, setProduct)
+    let id = idFromUrl()
+    loadProduct(id, setProduct)
 
   }, [textileTypes]);
+
+  const id = idFromUrl()
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
