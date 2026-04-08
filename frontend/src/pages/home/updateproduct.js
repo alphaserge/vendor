@@ -24,6 +24,7 @@ import { v4 as uuid } from 'uuid'
 import config from "../../config.json"
 import ColorVariant from './colorvariant';
 import MySelect from '../../components/myselect';
+import SimpleCombo from '../../components/simplecombo';
 import Composition from '../../components/composition';
 import { getColors, postColor } from '../../api/colors'
 import { getDesignTypes, postDesignType } from '../../api/designtypes'
@@ -57,6 +58,7 @@ import DoneIcon from '@mui/icons-material/Done'
 import { styled } from '@mui/material/styles'
 import { non, toFixed2, fined } from '../../functions/helper'
 import axios from "axios"
+import { getItemNames, postItemName } from "../../api/itemnames";
 
 const defaultTheme = createTheme()
 const textStyle = { m: 0, mr: 1 }
@@ -168,6 +170,7 @@ export default function UpdateProduct(props) {
     const [newValue, setNewValue] = useState("")
     const [newColorRgb, setNewColorRgb] = useState("")
 
+    const [itemNames, setItemNames] = useState([])
     const [colors, setColors] = useState([])
     const [seasons, setSeasons] = useState([])
     const [designTypes, setDesignTypes] = useState([])
@@ -692,6 +695,7 @@ const setProduct = (prod) => {
     getPlainDyedTypes(setPlainDyedTypes)
     getPrintTypes(setPrintTypes)
     getTextileTypes(setTextileTypes)
+    getItemNames(setItemNames)
 
   }, []);
 
@@ -703,7 +707,6 @@ const setProduct = (prod) => {
   }, [textileTypes]);
 
   const id = idFromUrl()
-
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -927,7 +930,25 @@ const setProduct = (prod) => {
           <AccordionDetails sx={accordionDetailsStyle}>
           <Grid container spacing={2} >
           <Grid item xs={12} md={6} >
-            <TextField
+            
+              <SimpleCombo 
+                id="updateproduct-itemname"
+                url="ItemNames"
+                title="Item name"
+                new = {true}
+                labelStyle={labelStyle}
+                itemStyle={itemStyle1}
+                MenuProps={MySelectProps}
+                value={itemName}
+                setValue={setItemName}
+                values={itemNames}
+                addNewValue={ async (value) => { 
+                  await postItemName(value, id) 
+                  getItemNames(setItemNames)
+                  loadProduct(id, setProduct) }}                
+              />
+             
+            {/* <TextField
                 margin="normal"
                 size="small" 
                 id="itemName"
@@ -936,7 +957,7 @@ const setProduct = (prod) => {
                 sx = {itemStyle1}
                 value={itemName}
                 onChange={ev => setItemName(ev.target.value)}
-              />
+              /> */}
             </Grid>
             <Grid item xs={12} md={6}  >
             <TextField
@@ -1553,7 +1574,7 @@ const setProduct = (prod) => {
                   MenuProps={MySelectProps}
                   value={finishingId}
                   setValue={setFinishingId}
-                  values={finishings.map(e => { return e.finishingName})}
+                  values={finishings.map(e => { return e.value})}
                   keys={finishings.map(e => { return e.id})} 
                   addNewValue={ async (value) => { 
                     await postFinishing(value, id) 

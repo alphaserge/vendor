@@ -57,7 +57,7 @@ namespace chiffon_back.Controllers
                         new Context.ProductsInOverWorkTypes()
                         {
                             ProductId = overwork.ProductId.Value,
-                            OverWorkTypeId = overwork.Id
+                            OverWorkTypeId = item.Id
                         });
                     ctx.SaveChanges();
                 }

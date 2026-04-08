@@ -377,5 +377,25 @@ namespace chiffon_back.Controllers
             return new List<string>();
         }
 
+        [HttpPost("ItemName")]
+        public ActionResult<int> SetItemName([FromBody] Models.PostItemName data)
+        {
+            try
+            {
+                var prod = ctx.Products.FirstOrDefault(x => x.Id == data.ProductId);
+                if (prod != null)
+                {
+                    prod.ItemName = data.ItemName;
+                    ctx.SaveChanges();
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

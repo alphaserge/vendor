@@ -4,7 +4,7 @@ import config from "../config.json"
 export const getFinishings= (setFn) => {
     axios.get(config.api + '/Finishings')
     .then(function (res) {
-        let items = res.data
+        let items = res.data.map((item)=>({ id:item.id, value:item.finishingName }))
         items.unshift({ id:-2, value:"add custom value" })
         setFn(items)
     })

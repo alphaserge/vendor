@@ -56,7 +56,7 @@ namespace chiffon_back.Controllers
                         new Context.ProductsInDesignTypes()
                         {
                             ProductId = designType.ProductId.Value,
-                            DesignTypeId = designType.Id
+                            DesignTypeId = item.Id
                         });
                     ctx.SaveChanges();
                 }

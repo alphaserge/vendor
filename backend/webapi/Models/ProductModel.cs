@@ -10,6 +10,12 @@ using System.Linq;
 
 namespace chiffon_back.Models
 {
+    public class PostItemName
+    {
+        public int ProductId { get; set; }
+        public string? ItemName { get; set; }
+    }
+
     public class ProductFilter
     {
         public int? VendorId { get; set; }
@@ -711,7 +717,7 @@ namespace chiffon_back.Models
         {
             ChiffonDbContext ctx = ContextHelper.ChiffonContext();
 
-            var query = from p in ctx.Products orderby p.ItemName select p.ItemName;
+            var query = (from p in ctx.Products orderby p.ItemName select p.ItemName).Distinct();
             var itemNames = query.ToList();
             return itemNames;
         }

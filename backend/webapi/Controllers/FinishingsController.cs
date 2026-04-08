@@ -52,7 +52,7 @@ namespace chiffon_back.Controllers
                     Context.Product? prod = ctx.Products.FirstOrDefault(x => x.Id == finishing.ProductId.Value);
                     if (prod != null)
                     {
-                        prod.FinishingId = finishing.Id;
+                        prod.FinishingId = item.Id;
                     }
                     ctx.SaveChanges();
                 }

@@ -56,7 +56,7 @@ namespace chiffon_back.Controllers
                 {
                     Context.Product? prod = ctx.Products.FirstOrDefault(x => x.Id == printType.ProductId.Value);
                     if (prod != null) {
-                        prod.PrintTypeId = printType.Id;
+                        prod.PrintTypeId = item.Id;
                     }
                     ctx.SaveChanges();
                 }
