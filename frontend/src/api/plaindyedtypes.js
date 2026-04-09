@@ -4,7 +4,7 @@ import config from "../config.json"
 export const getPlainDyedTypes = (setFn) => {
     axios.get(config.api + '/PlainDyedTypes')
     .then(function (res) {
-        let items = res.data
+        let items = res.data.map((item)=>({ id:item.id, value:item.plainDyedTypeName }))        
         items.unshift({ id:-2, value:"add custom value" })
         setFn(items)
     })

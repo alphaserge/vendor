@@ -17,12 +17,9 @@ const buttonStyle = { mt: "auto", ml: "3px", mr: 0, mb: "auto", pt: 0, pl: 0, pr
 
 export default function MySelect(props) {
 
-    let multiple = props.multiple;
-    const [selectedValue, setSelectedValue] = useState([])
     const [newValue, setNewValue] = useState(null)
     const [openNew, setOpenNew] = useState(false)
     const theme = useTheme();
-
 
     const dataChange = (event, i) => {
         const { target: { id, value } } = event;
@@ -30,29 +27,21 @@ export default function MySelect(props) {
         // processing of 'ALL' (-1) item (select all items)
         if (Array.isArray(value) && value.indexOf(-1) != -1) {
           let all = props.data.map(x => x.id).filter(x => x > -1)
-          setSelectedValue(all)
           props.setValue(all)
           return
         }
 
         if (Array.isArray(value) && value && value.indexOf(-2) != -1) {
           setOpenNew(true)
-          /* if (props.addNewValue) {
-            props.addNewValue()
-          } */
           return
         }
 
         if (!Array.isArray(value) && value == -2) {
           setOpenNew(true)
-          /* if (props.addNewValue) {
-            props.addNewValue()
-          } */
           return
         }
 
-        setSelectedValue(value);
-        props.setValue(value, props.option);
+        props.setValue(value);
       };
 
     useEffect(() => {

@@ -4,8 +4,8 @@ import config from "../config.json"
 export const getProductStyles = (setFn) => {
     axios.get(config.api + '/ProductStyles')
     .then(function (res) {
-        let items = res.data
-        items.push({ id:-2, value:"Add new.." })
+        let items = res.data.map((item)=>({ id:item.id, value:item.styleName }))
+        items.unshift({ id:-2, value:"add custom value" })
         setFn(items)
     })
     .catch (error => {

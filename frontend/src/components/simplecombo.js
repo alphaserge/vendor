@@ -17,29 +17,25 @@ const buttonStyle = { mt: "auto", ml: "3px", mr: 0, mb: "auto", pt: 0, pl: 0, pr
 
 export default function SimpleCombo(props) {
 
-    const [selectedValue, setSelectedValue] = useState(null)
     const [newValue, setNewValue] = useState(null)
     const [openNew, setOpenNew] = useState(false)
 
-
     const dataChange = (event, i) => {
         const { target: { id, value } } = event;
+        const selectedIndex = i.props;//.getAttribute('data-index')
+        const ind = i.props.index;
 
         if (value && value.indexOf(-2) != -1) {
           setOpenNew(true)
           return
         }
 
-        setSelectedValue(value);
-        props.setValue(value, props.option);
+        props.setValue(value, ind)
       };
 
     useEffect(() => {
-      var a = 0;
+      
     }, []);
-
-    console.log('props.values')
-    console.log(props.values)
 
 return (
   <>
@@ -117,7 +113,10 @@ return (
     { props.values && props.values.map((value, index) => (
         <MenuItem sx = {{}}
             key={"key_"+index} 
-            value={value}>{value}
+            value={value}
+            data-index={index}
+            index={index}>
+              {value}
         </MenuItem>
     ))}
     </Select>

@@ -360,7 +360,7 @@ namespace chiffon_back.Controllers
 
         // временно [Authorize]
         [HttpGet("ItemNames")]
-        public IEnumerable<string> ItemNames()
+        public IEnumerable<ProductItemName> ItemNames()
         {
             try
             {
@@ -374,7 +374,7 @@ namespace chiffon_back.Controllers
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ItemNames: {1}", DateTime.Now, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ItemNames: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
             }
-            return new List<string>();
+            return new List<ProductItemName>();
         }
 
         [HttpPost("ItemName")]

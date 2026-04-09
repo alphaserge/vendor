@@ -16,6 +16,13 @@ namespace chiffon_back.Models
         public string? ItemName { get; set; }
     }
 
+    public class ProductItemName
+    {
+        public int ProductId { get; set; }
+        public string? ItemName { get; set; }
+        public required CompositionValue[] Composition { get; set; }
+    }
+
     public class ProductFilter
     {
         public int? VendorId { get; set; }
@@ -713,12 +720,27 @@ namespace chiffon_back.Models
 
         }
 
-        public static IEnumerable<string> ItemNames()
+        public static IEnumerable<ProductItemName> ItemNames()
         {
             ChiffonDbContext ctx = ContextHelper.ChiffonContext();
 
-            var query = (from p in ctx.Products orderby p.ItemName select p.ItemName).Distinct();
-            var itemNames = query.ToList();
+            List<ProductItemName> itemNames = new List<ProductItemName>();
+
+            var list = (from p in ctx.Products orderby p.ItemName select p.ItemName).Distinct().ToList();
+
+            foreach (var itemName in list)
+            {
+                var product = ctx.Products.FirstOrDefault(x => x.ItemName == itemName);
+                if (product != null) {
+                    itemNames.Add(new ProductItemName()
+                    {
+                        ProductId = product.Id,
+                        ItemName = itemName,
+                        Composition = ctx.ProductsInTextileTypes.Where(x => x.ProductId == product.Id).Select(x => new CompositionValue { TextileTypeId = x.TextileTypeId, Value = x.Value }).ToArray(),
+                    });
+                }
+            }
+
             return itemNames;
         }
 

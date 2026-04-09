@@ -680,7 +680,12 @@ const setProduct = (prod) => {
   }
 
   return comps
-}
+ }
+
+ const handleItemName = (value, index) => {
+  setItemName(value)
+  console.log( itemNames[index] )
+ }
 
   useEffect(() => {
 
@@ -940,24 +945,13 @@ const setProduct = (prod) => {
                 itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
                 value={itemName}
-                setValue={setItemName}
-                values={itemNames}
+                setValue={handleItemName}
+                values={itemNames.map( e => e.itemName )}
                 addNewValue={ async (value) => { 
                   await postItemName(value, id) 
                   getItemNames(setItemNames)
                   loadProduct(id, setProduct) }}                
               />
-             
-            {/* <TextField
-                margin="normal"
-                size="small" 
-                id="itemName"
-                label="Item name"
-                name="itemName"
-                sx = {itemStyle1}
-                value={itemName}
-                onChange={ev => setItemName(ev.target.value)}
-              /> */}
             </Grid>
             <Grid item xs={12} md={6}  >
             <TextField
@@ -1092,16 +1086,14 @@ const setProduct = (prod) => {
                   id="addproduct-productstyle"
                   url="ProductStyles"
                   title="Plain or Print"
-                  valueName="styleName"
                   labelStyle={labelStyle1}
                   itemStyle = {halfItemStyle}
                   sx={itemStyle1}
                   MenuProps={MySelectProps1}
                   value={productStyleId}
                   setValue={setProductStyleId}
-                  values={productStyles.map(e => { return e.styleName})}
+                  values={productStyles.map(e => { return e.value})}
                   keys={productStyles.map(e => { return e.id})}/>
-
                 </Grid>
               </Grid>
 
@@ -1398,13 +1390,12 @@ const setProduct = (prod) => {
                   id="addproduct-producttype"
                   url="ProductTypes"
                   title="Fabric type"
-                  valueName="typeName"
                   labelStyle={labelStyle1}
                   itemStyle = {itemStyle1}
                   MenuProps={MySelectProps1}
                   value={productTypeId}
                   setValue={setProductTypeId}
-                  values={productTypes.map(e => { return e.typeName})}
+                  values={productTypes.map(e => { return e.value})}
                   keys={productTypes.map(e => { return e.id})}
                   addNewValue={ async (value) => { 
                     await postProductType(value, id) 
@@ -1418,7 +1409,6 @@ const setProduct = (prod) => {
                   id="addproduct-season"
                   url="Seasons"
                   title="Season"
-                  valueName="seasonName"
                   labelStyle={labelStyle}
                   itemStyle={itemStyle1}
                   MenuProps={MySelectProps}
@@ -1434,13 +1424,12 @@ const setProduct = (prod) => {
                   id="addproduct-designtype"
                   url="DesignTypes"
                   title="Design type"
-                  valueName="designName"
                   labelStyle={labelStyle}
                   itemStyle={itemStyle1}
                   MenuProps={MySelectProps}
                   value={designType}
                   setValue={setDesignType}
-                  values={designTypes.map(e => { return e.designName})}
+                  values={designTypes.map(e => { return e.value})}
                   keys={designTypes.map(e => { return e.id})} />
                   addNewValue={ async (value) => { 
                     await postDesignType(value, id) 
@@ -1454,13 +1443,12 @@ const setProduct = (prod) => {
                   id="addproduct-plaindyedtype"
                   url="PlainDyedTypes"
                   title="Plain Dyed Type"
-                  valueName="plainDyedTypeName"
                   labelStyle={labelStyle}
                   itemStyle={halfItemStyle}
                   MenuProps={MySelectProps}
                   value={plainDyedTypeId}
                   setValue={setPlainDyedTypeId}
-                  values={plainDyedTypes.map(e => { return e.plainDyedTypeName})}
+                  values={plainDyedTypes.map(e => { return e.value})}
                   keys={plainDyedTypes.map(e => { return e.id})}
                   addNewValue={ async (value) => { 
                     await postPlainDyedType(value, id) 
@@ -1473,13 +1461,12 @@ const setProduct = (prod) => {
                   id="addproduct-overworktype"
                   url="OverWorkTypes"
                   title="Overwork type"
-                  valueName="overWorkName"
                   labelStyle={labelStyle}
                   itemStyle={itemStyle1}
                   MenuProps={MySelectProps}
                   value={overworkType}
                   setValue={setOverworkType}
-                  values={overworkTypes.map(e => { return e.overWorkName})}
+                  values={overworkTypes.map(e => { return e.value})}
                   keys={overworkTypes.map(e => { return e.id})}
                   addNewValue={ async (value) => { 
                     await postOverworkType(value, id) 
@@ -1568,7 +1555,6 @@ const setProduct = (prod) => {
                   id="addproduct-finishing"
                   url="Finishings"
                   title="Finishing"
-                  valueName="finishingName"
                   labelStyle={labelStyle}
                   itemStyle={itemStyle2}
                   MenuProps={MySelectProps}
@@ -1604,13 +1590,12 @@ const setProduct = (prod) => {
                 id="addproduct-printtype"
                 url="PrintTypes"
                 title="Print Type"
-                valueName="typeName"
                 labelStyle={labelStyle}
                 itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
                 value={printTypeId}
                 setValue={setPrintTypeId}
-                values={printTypes.map(e => { return e.typeName})}
+                values={printTypes.map(e => { return e.value})}
                 keys={printTypes.map(e => { return e.id})} 
                 addNewValue={ async (value) => { 
                   await postPrintType(value, id) 
@@ -1624,13 +1609,12 @@ const setProduct = (prod) => {
                 id="addproduct-dyestaff"
                 url="DyeStaffs"
                 title="Dye Stuff"
-                valueName="dyeStaffName"
                 labelStyle={labelStyle}
                 itemStyle={itemStyle1}
                 MenuProps={MySelectProps}
                 value={dyeStaffId}
                 setValue={setDyeStaffId}
-                values={dyeStaffs.map(e => { return e.dyeStaffName})}
+                values={dyeStaffs.map(e => { return e.value})}
                 keys={dyeStaffs.map(e => { return e.id})} 
                 addNewValue={ async (value) => { 
                   await postDyeStaff(value, id) 

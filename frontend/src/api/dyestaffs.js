@@ -4,7 +4,7 @@ import config from "../config.json"
 export const getDyeStaffs = (setFn) => {
     axios.get(config.api + '/DyeStaffs')
     .then(function (res) {
-        let items = res.data
+        let items = res.data.map((item)=>({ id:item.id, value:item.dyeStaffName }))
         items.unshift({ id:-2, value:"add custom value" })
         setFn(items)
     })
@@ -31,4 +31,4 @@ export const getDyeStaffs = (setFn) => {
       ok: true,
       message: "The new dye staff has been added"
     }
-};
+}
