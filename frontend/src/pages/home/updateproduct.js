@@ -73,7 +73,7 @@ const labelStyle = { m: 0, ml: 0, mr: 4 }
 const labelStyle1 = { m: 0, ml: 0, mr: 4 }
 const buttonStyle = { backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "5px 10px", width: 130, height: "40px", textTransform: "none", borderRadius: "0" }
 const smallButtonStyle = { backgroundColor: APPEARANCE.BUTTON_BG, color: APPEARANCE.BUTTON, margin: "5px 10px 5px 0", width: 150, height: "30px", textTransform: "none", borderRadius: "0" }
-const accordionStyle = { textAlign: "center", margin: "15px auto", justifyContent:"center", boxShadow: "none", border: "none", width: "100%" }
+const accordionStyle = { textAlign: "center", margin: "25px auto", justifyContent:"center", boxShadow: "none", border: "none", width: "100%" }
 const accordionSummaryStyle = { maxWidth: "744px", margin: "0 auto 20px auto", padding: "0 10px",  backgroundColor: "#e4e4e4", textTransform: "none", border: "1px #ddd solid", borderRadius: "4px" }
 const accordionDetailsStyle = { maxWidth: "744px", margin: "0 auto", padding: "0 0px" }
 const accordionCaption = { width: "100%", fontWeight: "bold", fontSize: "11pt" };
@@ -684,6 +684,7 @@ const setProduct = (prod) => {
 
  const handleItemName = (value, index) => {
   setItemName(value)
+  console.log( 'handleItemName' )
   console.log( itemNames[index] )
  }
 

@@ -218,9 +218,9 @@ export const collectProductPhotos = (product) => {
         allPhotos = allPhotos.concat(product.colorPhotos)
     }
 
-    if (Array.isArray(product.productVideos)) {
+    /*if (Array.isArray(product.productVideos)) {
         allPhotos = allPhotos.concat(product.productVideos)
-    }
+    }*/
 
     return allPhotos
 }

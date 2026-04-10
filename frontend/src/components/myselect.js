@@ -41,7 +41,7 @@ export default function MySelect(props) {
           return
         }
 
-        props.setValue(value);
+        props.setValue(value, props.option);
       };
 
     useEffect(() => {

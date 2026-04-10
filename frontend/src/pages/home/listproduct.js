@@ -31,8 +31,10 @@ import Footer from './footer';
 
 import ItemProduct from './itemproduct';
 import ItemProductRow from './itemproductrow';
+import SimpleCombo from '../../components/simplecombo';
 import MySelect from '../../components/myselect';
 import { postProduct, productsImport } from '../../api/products'
+import { getItemNames, postItemName } from "../../api/itemnames";
 
 import { APPEARANCE } from '../../appearance';
 import { Button } from "@mui/material";
@@ -63,6 +65,15 @@ const MenuProps = {
   },
 };
 
+const MySelectProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+}
+
 const fromUrl = (name) => {
   const search = window.location.search
   const params = new URLSearchParams(search)
@@ -72,7 +83,6 @@ const fromUrl = (name) => {
 const Input = styled('input')({
   display: 'none',
 });
-
 
 export default function ListProduct(props) {
 
@@ -103,7 +113,9 @@ export default function ListProduct(props) {
     const [design, setDesign] = useState("")
     const [view, setView] = useState("grid")
     
+    const [itemNames, setItemNames] = useState([])
     const [addItemName, setAddItemName] = useState("")
+    const [existingItemName, setExistingItemName] = useState("")
     const [addRefNo, setAddRefNo] = useState("")
     const [addArtNo, setAddArtNo] = useState("")
     const [addDesign, setAddDesign] = useState("")
@@ -322,7 +334,11 @@ export default function ListProduct(props) {
       }
     }
   
-  
+    const handleItemName = (value, index) => {
+      setExistingItemName(value)
+      console.log( 'handleItemName' )
+      console.log( itemNames[index] )
+    }
 
     useEffect(() => {
       loadProducts()
@@ -332,6 +348,7 @@ export default function ListProduct(props) {
       loadOverworkTypes()
       loadProductTypes()
       loadProductStyles()
+      getItemNames(setItemNames)
 
       if (fromUrl("new")==1) {
         setAddProduct(true)
@@ -391,22 +408,39 @@ export default function ListProduct(props) {
           display: "flex",
           flexDirection: 'column', 
           alignItems: 'left' }}>
-          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{textAlign: "center"}} >
+          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{textAlign: "center", mb: "20px"}} >
             Adding a new product
           </Typography>
 
           {/* General */}
+              <SimpleCombo 
+                id="listproduct-itemname"
+                title="Existing item name"
+                new = {false}
+                sx={itemStyle}
+                MenuProps={MySelectProps}
+                value={existingItemName}
+                setValue={handleItemName}
+                values={itemNames.map( e => e.itemName )}
+                addNewValue={ async (value) => { 
+                  await postItemName(value, null) 
+                  getItemNames(setItemNames)
+                  //loadProduct(id, setProduct) 
+                }}
+              />
+
             <TextField
                 margin="normal"
                 size="small" 
                 id="itemName"
-                label="Item name"
+                label="New item name"
                 name="itemName"
                 sx = {itemStyle}
                 value={addItemName}
                 onChange={ev => setAddItemName(ev.target.value)}
               />
-            <TextField
+
+              <TextField
                 margin="normal"
                 size="small" 
                 id="design"

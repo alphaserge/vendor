@@ -127,55 +127,55 @@ namespace chiffon_back.Models
 
             //var query = from p in ctx.Products select p;
             var query = from p in ctx.Products.Where(x => filter.ShowNullPrice == true ? true : x.Price != null)
-                        select new Models.Product
-                        {
-                            Id = p.Id,
-                            RefNo = p.RefNo,
-                            ArtNo = p.ArtNo,
-                            ItemName = p.ItemName,
-                            Design = p.Design,
-                            //ColorNo = p.ColorNo,
-                            //ColorName = p.ColorName,
-                            PhotoDir = p.PhotoDir,
-                            Price = p.Price,
-                            Price1 = Helper.Round(p.Price * 1.05m, 2),
-                            Price2 = Helper.Round(p.Price * 1.10m, 2),
-                            Stock = p.Stock,
-                            RollLength = p.RollLength,
-                            Weight = p.Weight,
-                            Width = p.Width,
-                            ProductStyleId = p.ProductStyleId,
-                            ProductTypeId = p.ProductTypeId,
-                            PrintTypeId = p.PrintTypeId,
-                            DyeStaffId = p.DyeStaffId,
-                            PlainDyedTypeId = p.PlainDyedTypeId,
-                            FinishingId = p.FinishingId,
-                            VendorId = p.VendorId,
-                            Uuid = p.Uuid,
-                            PhotoUuids = p.PhotoUuids,
-                            VideoUuids = p.VideoUuids,
-                            Vendor = p.Vendor!.VendorName,
-                            ProductStyle = p.ProductStyle!.StyleName,
-                            ProductType = p.ProductType!.TypeName,
-                            PrintType = p.PrintType!.TypeName,
-                            DyeStaff = p.DyeStaff!.DyeStaffName,
-                            Finishing = p.Finishing!.FinishingName,
-                            PlainDyedType = p.PlainDyedType!.PlainDyedTypeName,
-                            Findings = p.Findings,
-                            GSM = p.GSM,
-                            MetersInKG = p.MetersInKG,
-                            FabricConstruction = p.FabricConstruction,
-                            FabricYarnCount = p.FabricYarnCount,
-                            ColorFastness = p.ColorFastness,
-                            TextileTypes = p.ProductsInTextileTypes!.Select(x => new Models.TextileType { Id = x.TextileTypeId, TextileTypeName = x.TextileType.TextileTypeName, TextileTypeNameRu = x.TextileType.TextileTypeNameRu }).ToArray(),
-                            DesignTypes = p.ProductsInDesignTypes!.Select(x => new Models.DesignType { Id = x.DesignTypeId, DesignName = x.DesignType.DesignName }).ToArray(),
-                            OverWorkTypes = p.ProductsInOverWorkTypes!.Select(x => new Models.OverWorkType { Id = x.OverWorkTypeId, OverWorkName = x.OverWorkType.OverWorkName }).ToArray(),
-                            Seasons = p.ProductsInSeasons!.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
-                            ColorPhotos = new List<ProductColor>(),
-                            ProductPhotos = new List<ProductColor>(),
-                            ProductVideos = new List<ProductColor>(),
-                            //Composition = p.Composition
-                        };
+                select new Models.Product
+                {
+                    Id = p.Id,
+                    RefNo = p.RefNo,
+                    ArtNo = p.ArtNo,
+                    ItemName = p.ItemName,
+                    Design = p.Design,
+                    //ColorNo = p.ColorNo,
+                    //ColorName = p.ColorName,
+                    PhotoDir = p.PhotoDir,
+                    Price = p.Price,
+                    Price1 = Helper.Round(p.Price * 1.05m, 2),
+                    Price2 = Helper.Round(p.Price * 1.10m, 2),
+                    Stock = p.Stock,
+                    RollLength = p.RollLength,
+                    Weight = p.Weight,
+                    Width = p.Width,
+                    ProductStyleId = p.ProductStyleId,
+                    ProductTypeId = p.ProductTypeId,
+                    PrintTypeId = p.PrintTypeId,
+                    DyeStaffId = p.DyeStaffId,
+                    PlainDyedTypeId = p.PlainDyedTypeId,
+                    FinishingId = p.FinishingId,
+                    VendorId = p.VendorId,
+                    Uuid = p.Uuid,
+                    PhotoUuids = p.PhotoUuids,
+                    VideoUuids = p.VideoUuids,
+                    Vendor = p.Vendor!.VendorName,
+                    ProductStyle = p.ProductStyle!.StyleName,
+                    ProductType = p.ProductType!.TypeName,
+                    PrintType = p.PrintType!.TypeName,
+                    DyeStaff = p.DyeStaff!.DyeStaffName,
+                    Finishing = p.Finishing!.FinishingName,
+                    PlainDyedType = p.PlainDyedType!.PlainDyedTypeName,
+                    Findings = p.Findings,
+                    GSM = p.GSM,
+                    MetersInKG = p.MetersInKG,
+                    FabricConstruction = p.FabricConstruction,
+                    FabricYarnCount = p.FabricYarnCount,
+                    ColorFastness = p.ColorFastness,
+                    TextileTypes = p.ProductsInTextileTypes!.Select(x => new Models.TextileType { Id = x.TextileTypeId, TextileTypeName = x.TextileType.TextileTypeName, TextileTypeNameRu = x.TextileType.TextileTypeNameRu }).ToArray(),
+                    DesignTypes = p.ProductsInDesignTypes!.Select(x => new Models.DesignType { Id = x.DesignTypeId, DesignName = x.DesignType.DesignName }).ToArray(),
+                    OverWorkTypes = p.ProductsInOverWorkTypes!.Select(x => new Models.OverWorkType { Id = x.OverWorkTypeId, OverWorkName = x.OverWorkType.OverWorkName }).ToArray(),
+                    Seasons = p.ProductsInSeasons!.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
+                    ColorPhotos = new List<ProductColor>(),
+                    ProductPhotos = new List<ProductColor>(),
+                    ProductVideos = new List<ProductColor>(),
+                    //Composition = p.Composition
+                };
 
             if (filter.VendorId > 2)
             {
@@ -340,7 +340,7 @@ namespace chiffon_back.Models
                     });
                 }
 
-                /*if (p.ColorPhotos.Count == 0)
+                if (p.ProductPhotos.Count + p.ColorPhotos.Count == 0)
                 {
                     p.ColorPhotos.Add(new ProductColor()
                     {
@@ -349,7 +349,7 @@ namespace chiffon_back.Models
                         ColorNo = null,
                         ImagePath = new List<string>() { @"colors\nopicture.png" }
                     });
-                }*/
+                }
             }
 
             return prods;
