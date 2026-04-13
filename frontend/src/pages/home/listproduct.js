@@ -122,6 +122,7 @@ export default function ListProduct(props) {
 
     const [savingError, setSavingError] = useState(false)
     const [waiting, setWaiting] = useState(false)
+    const [itemNameNewFocus, setItemNameNewFocus] = useState(false)
     
     const headStyle = { maxWidth: "744px", width: "auto", margin: "0", padding: "0 10px" }
 
@@ -418,10 +419,12 @@ export default function ListProduct(props) {
                 title="Existing item name"
                 new = {false}
                 sx={itemStyle}
+                customStyle = {itemNameNewFocus ? { ...itemStyle, ...{ backgroundColor: "#ccc", color: "#aaa",  m: 0 }} : itemStyle }
                 MenuProps={MySelectProps}
                 value={existingItemName}
                 setValue={handleItemName}
                 values={itemNames.map( e => e.itemName )}
+                onSelect={ev => setItemNameNewFocus(false)}
                 addNewValue={ async (value) => { 
                   await postItemName(value, null) 
                   getItemNames(setItemNames)
@@ -435,9 +438,10 @@ export default function ListProduct(props) {
                 id="itemName"
                 label="New item name"
                 name="itemName"
-                sx = {itemStyle}
+                sx = {!itemNameNewFocus ? {...itemStyle, ...{ marginTop: "20px"}, ...{backgroundColor: "#ccc", color: "#aaa!important"}} : {...itemStyle, ...{ marginTop: "20px"}}}
                 value={addItemName}
                 onChange={ev => setAddItemName(ev.target.value)}
+                onSelect={ev => setItemNameNewFocus(true)}
               />
 
               <TextField

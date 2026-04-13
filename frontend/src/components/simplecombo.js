@@ -37,6 +37,11 @@ export default function SimpleCombo(props) {
       
     }, []);
 
+    var selectStyle = { height: "37px", padding: "0", margin: "0" }
+    if ( !!props.customStyle ) {
+      selectStyle = props.customStyle 
+    }
+
 return (
   <>
   <Modal
@@ -100,7 +105,8 @@ return (
         multiple = {false}
         disabled={props.disabled ? props.disabled : false}
         value={ !!props.value ? props.value : "" }
-        sx = {{ height: "37px", padding: "0", margin: "0" }}
+        sx = {selectStyle}
+        onSelect={props.onSelect}
         onChange={dataChange}
         MenuProps={props.MenuProps} >
 
