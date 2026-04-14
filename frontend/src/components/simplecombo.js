@@ -39,8 +39,10 @@ export default function SimpleCombo(props) {
 
     var selectStyle = { height: "37px", padding: "0", margin: "0" }
     if ( !!props.customStyle ) {
-      selectStyle = props.customStyle 
+      selectStyle = { ...props.customStyle, ...selectStyle }
     }
+
+    const labelId = props.id + "-label"
 
 return (
   <>
@@ -90,15 +92,16 @@ return (
     </Box>
   </Modal>
 
-  <FormControl error={ false } required sx={{ ...props.itemStyle,  ...{width: "100%", display: "flex" } }} > 
+  <FormControl error={false} size="small" required sx={{ ...props.itemStyle,  ...{width: "100%", display: "flex" } }} > 
     {!props.hideLabel && <InputLabel 
-        id={props.id + "-label"}
+        id={labelId}
         size="small" 
-        sx={props.labelStyle} >
+        sx={props.labelStyle}
+         >
         {props.title}
     </InputLabel>}
     <Select
-        labelId={props.id + "-label"}
+        labelId={labelId}
         id={props.id}
         size="small" 
         label={props.title}
@@ -106,7 +109,7 @@ return (
         disabled={props.disabled ? props.disabled : false}
         value={ !!props.value ? props.value : "" }
         sx = {selectStyle}
-        onSelect={props.onSelect}
+        onFocus={props.onFocus}
         onChange={dataChange}
         MenuProps={props.MenuProps} >
 

@@ -42,7 +42,7 @@ import { styled } from '@mui/material/styles'
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
-const itemStyle = { width: 330, m: 1, ml: 0 }
+const itemStyle = { width: 330, mt: 2 }
 const smallItemStyle = { width: 161, m: 1, ml: 0 }
 const labelStyle1 = { m: 0, mt: 1, ml: 0, mr: 4 }
 const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, m: 1 }
@@ -52,6 +52,11 @@ const findTextStyle = { width: "100%", border: "none" }
 //const findTextStyle = { width: "100%", border: "none", border: "solid 1px #888", borderRadius: 1 }
 const toolButtonStyle = { width: "26px", height: "26px", marginTop: "5px" }
 const flexStyle = { display: "flex", flexDirection: "row", alignItems : "center", justifyContent: "space-between" }
+
+const itemStyleActive = {...itemStyle, ...{ color: "#222", "& .MuiInputBase-input": {color: "#222"} }}
+const itemStyleDisable = {...itemStyle, ...{ color: "#ccc", "& .MuiInputBase-input": {color: "#ccc"} }}
+const inputPropsActive={ style: { color: '#222' } } 
+const inputPropsDisable={ style: { color: '#ccc' } } 
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -361,7 +366,7 @@ export default function ListProduct(props) {
   if (!props.user || props.user.Id == 0) {
     navigate("/")
   }
-    
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
@@ -419,12 +424,14 @@ export default function ListProduct(props) {
                 title="Existing item name"
                 new = {false}
                 sx={itemStyle}
-                customStyle = {itemNameNewFocus ? { ...itemStyle, ...{ backgroundColor: "#ccc", color: "#aaa",  m: 0 }} : itemStyle }
+                labelStyle={null}
+                customStyle = {itemNameNewFocus ? itemStyleDisable : itemStyleActive }
                 MenuProps={MySelectProps}
                 value={existingItemName}
                 setValue={handleItemName}
                 values={itemNames.map( e => e.itemName )}
-                onSelect={ev => setItemNameNewFocus(false)}
+                onFocus={(ev) => {setItemNameNewFocus(false); console.log('false!')}}
+                //onChange={(ev) => {setItemNameNewFocus(false); console.log('false!!')}}
                 addNewValue={ async (value) => { 
                   await postItemName(value, null) 
                   getItemNames(setItemNames)
@@ -438,10 +445,12 @@ export default function ListProduct(props) {
                 id="itemName"
                 label="New item name"
                 name="itemName"
-                sx = {!itemNameNewFocus ? {...itemStyle, ...{ marginTop: "20px"}, ...{backgroundColor: "#ccc", color: "#aaa!important"}} : {...itemStyle, ...{ marginTop: "20px"}}}
+                //sx = {{ input: {color: "#ccd !important"}}}
+                sx={ itemNameNewFocus ? itemStyleActive : itemStyleDisable }
+                //inputProps={{ style: { color: '#ccc !important' } }} 
                 value={addItemName}
                 onChange={ev => setAddItemName(ev.target.value)}
-                onSelect={ev => setItemNameNewFocus(true)}
+                onFocus={(ev) => {setItemNameNewFocus(true); console.log('true!')}}
               />
 
               <TextField
