@@ -17,6 +17,7 @@
     {
         public int? TextileTypeId { get; set; }
         public int? Value { get; set; }
+        public string? TextileName { get; set; }
     }
     public class ProductComposition
     {

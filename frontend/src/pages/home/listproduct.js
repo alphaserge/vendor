@@ -12,7 +12,6 @@ import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import TuneIcon from '@mui/icons-material/Tune';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import BorderClearIcon from '@mui/icons-material/BorderClear';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import InputAdornment from '@mui/material/InputAdornment';
 import Link from '@mui/material/Link';
@@ -21,6 +20,9 @@ import GridViewIcon from '@mui/icons-material/GridView';
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import Tooltip from '@mui/material/Tooltip';
 import Modal from '@mui/material/Modal';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
 
 import axios from 'axios'
 
@@ -32,18 +34,21 @@ import Footer from './footer';
 import ItemProduct from './itemproduct';
 import ItemProductRow from './itemproductrow';
 import SimpleCombo from '../../components/simplecombo';
+import StyledSelect from '../../components/styledselect';
 import MySelect from '../../components/myselect';
+import StTextField from '../../components/sttextfield';
 import { postProduct, productsImport } from '../../api/products'
 import { getItemNames, postItemName } from "../../api/itemnames";
 
 import { APPEARANCE } from '../../appearance';
 import { Button } from "@mui/material";
 import { styled } from '@mui/material/styles'
+import { Label } from "@mui/icons-material";
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme()
-const itemStyle = { width: 330, mt: 2 }
-const smallItemStyle = { width: 161, m: 1, ml: 0 }
+const itemStyle = { width: 330, mt: 0 }
+const smallItemStyle = { width: 161, m: 0, mr: 1 }
 const labelStyle1 = { m: 0, mt: 1, ml: 0, mr: 4 }
 const buttonStyle = { width: 90, height: 40, backgroundColor: APPEARANCE.BLACK3, m: 1 }
 const outboxStyle = { maxWidth: "744px", margin: "80px auto 20px auto", padding: "0 10px" }
@@ -52,11 +57,6 @@ const findTextStyle = { width: "100%", border: "none" }
 //const findTextStyle = { width: "100%", border: "none", border: "solid 1px #888", borderRadius: 1 }
 const toolButtonStyle = { width: "26px", height: "26px", marginTop: "5px" }
 const flexStyle = { display: "flex", flexDirection: "row", alignItems : "center", justifyContent: "space-between" }
-
-const itemStyleActive = {...itemStyle, ...{ color: "#222", "& .MuiInputBase-input": {color: "#222"} }}
-const itemStyleDisable = {...itemStyle, ...{ color: "#ccc", "& .MuiInputBase-input": {color: "#ccc"} }}
-const inputPropsActive={ style: { color: '#222' } } 
-const inputPropsDisable={ style: { color: '#ccc' } } 
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -120,7 +120,7 @@ export default function ListProduct(props) {
     
     const [itemNames, setItemNames] = useState([])
     const [addItemName, setAddItemName] = useState("")
-    const [existingItemName, setExistingItemName] = useState("")
+    const [existingItemName, setExistingItemName] = useState(null)
     const [addRefNo, setAddRefNo] = useState("")
     const [addArtNo, setAddArtNo] = useState("")
     const [addDesign, setAddDesign] = useState("")
@@ -128,6 +128,8 @@ export default function ListProduct(props) {
     const [savingError, setSavingError] = useState(false)
     const [waiting, setWaiting] = useState(false)
     const [itemNameNewFocus, setItemNameNewFocus] = useState(false)
+    const [compositionText, setCompositionText] = useState("")
+    const [composition, setComposition] = useState("")
     
     const headStyle = { maxWidth: "744px", width: "auto", margin: "0", padding: "0 10px" }
 
@@ -137,7 +139,6 @@ export default function ListProduct(props) {
       loadProducts();
       showWaiting(false)
     };
-
 
     const showWaiting = (show) => {
       setWaiting(show)
@@ -314,13 +315,7 @@ export default function ListProduct(props) {
     const saveProduct = async (e) => {
     
       let vendorId = props.user ? props.user.vendorId : -1;
-  /*
-    const [addItemName, setAddItemName] = useState("")
-    const [addRefNo, setAddRefNo] = useState("")
-    const [addArtNo, setAddArtNo] = useState("")
-    const [addDesign, setAddDesign] = useState("")
-
-  */
+  
       let prod = {
         vendorId: vendorId,
         artNo: addArtNo,
@@ -329,6 +324,7 @@ export default function ListProduct(props) {
         refNo: addRefNo,
       }
   
+      let pr = {...prod, ...{composition: composition.map( c => { return { textileTypeId: c.textileTypeId, value: c.value}})}}
       let r = await postProduct(prod, "ProductAdd")
   
       if (r && r.status == true) {
@@ -340,12 +336,6 @@ export default function ListProduct(props) {
       }
     }
   
-    const handleItemName = (value, index) => {
-      setExistingItemName(value)
-      console.log( 'handleItemName' )
-      console.log( itemNames[index] )
-    }
-
     useEffect(() => {
       loadProducts()
       loadColors()
@@ -419,38 +409,56 @@ export default function ListProduct(props) {
           </Typography>
 
           {/* General */}
-              <SimpleCombo 
-                id="listproduct-itemname"
+          <FormControl error={false} size="small" sx={{ ...itemStyle,  ...{width: "100%", display: "flex" } }} > 
+          <InputLabel id="iname-lab" size="small" > Existing item name </InputLabel>
+              <StyledSelect 
+                id="iname"
+                labelId="iname-lab"
+                size="small"
                 title="Existing item name"
-                new = {false}
-                sx={itemStyle}
-                labelStyle={null}
-                customStyle = {itemNameNewFocus ? itemStyleDisable : itemStyleActive }
+                sx={{...itemStyle, ...{ m: 0}}}
                 MenuProps={MySelectProps}
                 value={existingItemName}
-                setValue={handleItemName}
-                values={itemNames.map( e => e.itemName )}
-                onFocus={(ev) => {setItemNameNewFocus(false); console.log('false!')}}
-                //onChange={(ev) => {setItemNameNewFocus(false); console.log('false!!')}}
-                addNewValue={ async (value) => { 
-                  await postItemName(value, null) 
-                  getItemNames(setItemNames)
-                  //loadProduct(id, setProduct) 
+                onFocus={() => { setAddItemName(""); setItemNameNewFocus(false); }}
+                onChange={ (event, i) => {
+                  const { target: { id, value } } = event;
+                  const ind = i.props.index;
+                  setExistingItemName(value)
+                  setItemNameNewFocus(false)
+                  console.log( 'itemNames[ind]:' )
+                  console.log( itemNames[ind] )
+                  setComposition(itemNames[ind].composition)
+                  setCompositionText(itemNames[ind].composition.map(a => a.value + '% ' + a.textileName).join(', '))
                 }}
-              />
+                values={itemNames.map( e => e.itemName )}
+                fontColor={ itemNameNewFocus==true ? '#ccc' : '#222' } >
+                { itemNames && itemNames.map((it, index) => (
+                    <MenuItem sx = {{}}
+                        key={"mi_"+index} 
+                        value={it.itemName}
+                        data-index={index}
+                        index={index}>
+                          {it.itemName}
+                    </MenuItem>
+                ))}
+              </StyledSelect>
+              </FormControl>
 
-            <TextField
+              { itemNameNewFocus==false && <Typography noWrap={false}
+                sx={{ fontSize: "12px", width: "330px", wordBreak: "break-word", whiteSpace: 'normal', mt: "3px", color: "#084"}}>
+                {compositionText}
+              </Typography> }
+
+            <StTextField
                 margin="normal"
                 size="small" 
                 id="itemName"
                 label="New item name"
                 name="itemName"
-                //sx = {{ input: {color: "#ccd !important"}}}
-                sx={ itemNameNewFocus ? itemStyleActive : itemStyleDisable }
-                //inputProps={{ style: { color: '#ccc !important' } }} 
+                sx={{ ...itemStyle, ...{ mt: 1}}}
+                fontColor={ itemNameNewFocus==true ? '#222' : '#ccc' }
                 value={addItemName}
-                onChange={ev => setAddItemName(ev.target.value)}
-                onFocus={(ev) => {setItemNameNewFocus(true); console.log('true!')}}
+                onChange={(ev) => {setAddItemName(ev.target.value); setItemNameNewFocus(true);}}
               />
 
               <TextField

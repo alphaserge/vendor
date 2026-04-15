@@ -726,6 +726,8 @@ namespace chiffon_back.Models
 
             List<ProductItemName> itemNames = new List<ProductItemName>();
 
+            var textiles = ctx.TextileTypes.ToDictionary(u => u.Id, u => u.TextileTypeName);
+
             var list = (from p in ctx.Products orderby p.ItemName select p.ItemName).Distinct().ToList();
 
             foreach (var itemName in list)
@@ -736,7 +738,9 @@ namespace chiffon_back.Models
                     {
                         ProductId = product.Id,
                         ItemName = itemName,
-                        Composition = ctx.ProductsInTextileTypes.Where(x => x.ProductId == product.Id).Select(x => new CompositionValue { TextileTypeId = x.TextileTypeId, Value = x.Value }).ToArray(),
+                        Composition = ctx.ProductsInTextileTypes.Where(x => x.ProductId == product.Id)
+                            .Select(x => new CompositionValue { TextileTypeId = x.TextileTypeId, Value = x.Value, TextileName = textiles[x.TextileTypeId] })
+                            .ToArray(),
                     });
                 }
             }
