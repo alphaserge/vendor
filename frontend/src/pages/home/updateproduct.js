@@ -147,6 +147,7 @@ export default function UpdateProduct(props) {
     const [artNo, setArtNo] = useState("")
     const [design, setDesign] = useState("")
     const [gsm, setGsm] = useState("")
+    const [sampleNo, setSampleNo] = useState("")
     const [rollLength, setRollLength] = useState("")
     const [itemName, setItemName] = useState("")
     const [price, setPrice] = useState("")
@@ -570,6 +571,7 @@ const setProduct = (prod) => {
   setStock(non(prod.stock))
   setWidth(non(prod.width))
   setGsm(non(prod.gsm))
+  setSampleNo(non(prod.sampleNo))
   setRollLength(non(prod.rollLength))
   setWeight(non(prod.weight))
   setColorFastness(non(prod.colorFastness))
@@ -1079,6 +1081,16 @@ const setProduct = (prod) => {
                   sx = {halfItemStyle}
                   value={rollLength}
                   onChange={ev => setRollLength(ev.target.value)}
+                />
+                <TextField
+                  margin="normal"
+                  size="small" 
+                  id="sampleNo"
+                  label="Sample No"
+                  name="sampleno"
+                  sx = {halfItemStyle}
+                  value={sampleNo}
+                  readOnly
                 />
                 </Grid>
 

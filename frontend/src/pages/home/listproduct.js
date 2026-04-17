@@ -128,7 +128,7 @@ export default function ListProduct(props) {
     const [savingError, setSavingError] = useState(false)
     const [waiting, setWaiting] = useState(false)
     const [itemNameNewFocus, setItemNameNewFocus] = useState(false)
-    const [compositionText, setCompositionText] = useState("")
+    const [compositionText, setCompositionText] = useState([])
     const [composition, setComposition] = useState("")
     
     const headStyle = { maxWidth: "744px", width: "auto", margin: "0", padding: "0 10px" }
@@ -319,12 +319,13 @@ export default function ListProduct(props) {
       let prod = {
         vendorId: vendorId,
         artNo: addArtNo,
-        itemName: addItemName,
+        itemName: itemNameNewFocus==true ? addItemName : existingItemName,
         design: addDesign,
         refNo: addRefNo,
+        compositionValues: itemNameNewFocus==true ? [] : composition.map( c => { return { textileTypeId: c.textileTypeId, value: c.value}})
       }
   
-      let pr = {...prod, ...{composition: composition.map( c => { return { textileTypeId: c.textileTypeId, value: c.value}})}}
+      //let pr = {...prod, ...{composition: composition.map( c => { return { textileTypeId: c.textileTypeId, value: c.value}})}}
       let r = await postProduct(prod, "ProductAdd")
   
       if (r && r.status == true) {
@@ -356,6 +357,9 @@ export default function ListProduct(props) {
   if (!props.user || props.user.Id == 0) {
     navigate("/")
   }
+
+  console.log('compositionText:')
+  console.log(compositionText)
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -410,12 +414,13 @@ export default function ListProduct(props) {
 
           {/* General */}
           <FormControl error={false} size="small" sx={{ ...itemStyle,  ...{width: "100%", display: "flex" } }} > 
-          <InputLabel id="iname-lab" size="small" > Existing item name </InputLabel>
+           <InputLabel id="iname-lab" size="small" > Existing item name </InputLabel> 
               <StyledSelect 
                 id="iname"
                 labelId="iname-lab"
                 size="small"
-                title="Existing item name"
+                //title="Existing item name"
+                label="Existing item name"
                 sx={{...itemStyle, ...{ m: 0}}}
                 MenuProps={MySelectProps}
                 value={existingItemName}
@@ -428,7 +433,7 @@ export default function ListProduct(props) {
                   console.log( 'itemNames[ind]:' )
                   console.log( itemNames[ind] )
                   setComposition(itemNames[ind].composition)
-                  setCompositionText(itemNames[ind].composition.map(a => a.value + '% ' + a.textileName).join(', '))
+                  setCompositionText(itemNames[ind].composition)//.map(a => a.value + '% ' + a.textileName))
                 }}
                 values={itemNames.map( e => e.itemName )}
                 fontColor={ itemNameNewFocus==true ? '#ccc' : '#222' } >
@@ -444,12 +449,7 @@ export default function ListProduct(props) {
               </StyledSelect>
               </FormControl>
 
-              { itemNameNewFocus==false && <Typography noWrap={false}
-                sx={{ fontSize: "12px", width: "330px", wordBreak: "break-word", whiteSpace: 'normal', mt: "3px", color: "#084"}}>
-                {compositionText}
-              </Typography> }
-
-            <StTextField
+             <StTextField
                 margin="normal"
                 size="small" 
                 id="itemName"
@@ -495,7 +495,17 @@ export default function ListProduct(props) {
                     value={addArtNo}
                     onChange={ev => setAddArtNo(ev.target.value)}
                   />
+                  
                   </Box>
+
+                 { itemNameNewFocus==false && <Typography noWrap={false}
+                   sx={{ lineHeight: "14px", fontSize: "14px", width: "330px", wordBreak: "break-word", whiteSpace: 'normal', mt: "8px", color: "#222"}}>
+                    <p><b>{existingItemName} composition:</b></p>
+                      {compositionText.map((c, index) => (  
+                                <p>&nbsp;&nbsp;{c.value + "% " + c.textileName}</p>
+                                ))}
+                   </Typography> }
+
 
                   { savingError && 
                     <Box sx={{ textAlign: "center", marginTop: 2, fontSize: "12pt", color: "red" }}>

@@ -130,6 +130,7 @@ namespace chiffon_back.Models
                 select new Models.Product
                 {
                     Id = p.Id,
+                    SampleNo = p.SampleNo,
                     RefNo = p.RefNo,
                     ArtNo = p.ArtNo,
                     ItemName = p.ItemName,
@@ -364,6 +365,7 @@ namespace chiffon_back.Models
                         select new Models.Product
                         {
                             Id = p.Id,
+                            SampleNo = p.SampleNo,
                             RefNo = p.RefNo,
                             ArtNo = p.ArtNo,
                             ItemName = p.ItemName,
@@ -484,9 +486,14 @@ namespace chiffon_back.Models
 
             try
             {
+                int? sampleNo = ctx.Products.Max(x => x.SampleNo);
+                if (sampleNo == null)
+                    sampleNo = 300000;
+                
                 Context.Product prod = config.CreateMapper()
                     .Map<Context.Product>(product);
 
+                prod.SampleNo = sampleNo+1;
                 prod.Created = DateTime.Now;
                 ctx.Products.Add(prod);
                 ctx.SaveChanges();
@@ -562,6 +569,23 @@ namespace chiffon_back.Models
                         ctx.SaveChanges(true);
                     }
                 }
+
+                if (product.CompositionValues != null)
+                {
+                    foreach (var item in product.CompositionValues)
+                    {
+                        Context.ProductsInTextileTypes pt = new Context.ProductsInTextileTypes()
+                        {
+                            ProductId = prod.Id,
+                            TextileTypeId = item.TextileTypeId.Value,
+                            Value = item.Value.Value
+                        };
+
+                        ctx.ProductsInTextileTypes.Add(pt);
+                        ctx.SaveChanges(true);
+                    }
+                }
+
                 return prod.Id;
             }
             catch (Exception ex)
