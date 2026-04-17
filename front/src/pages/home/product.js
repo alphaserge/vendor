@@ -543,6 +543,7 @@ console.log(allPhotos)
               pr: "0px" }}>
           <ItemName label="Item name" value={product.itemName} />
           <div style={{height: "15px"}}>&nbsp;</div>
+          <PropertyItem label="Sample no" value={fined(product.sampleNo)} />
           <PropertyItem label="Art no" value={fined(product.artNo)} />
           <PropertyItem label="Ref no" value={fined(product.refNo)} />
           <PropertyItem label="Design" value={fined(product.design)} />

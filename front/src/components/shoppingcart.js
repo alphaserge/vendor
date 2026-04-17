@@ -143,7 +143,7 @@ return <>
       <tr style={{ height : "100px", cursor: "pointer"}} onClick={(e) => { navigate("/product?id=" + data.product.id) }}>
         <td>
           <img 
-            src={data.product.colors.length>0 && data.product.colors[0].imagePath ? (config.api + "/" + data.product.colors[0].imagePath[0]) : ""}
+            src={!!data.product.colors && data.product.colors.length>0 && data.product.colors[0].imagePath ? (config.api + "/" + data.product.colors[0].imagePath[0]) : ""}
             alt={"photo_"+data.product.id}
             style={{ borderRadius: "6px", maxWidth: "90px" }} />
         </td>

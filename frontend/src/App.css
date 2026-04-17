@@ -200,7 +200,11 @@ img.product-img {
 }
 
 .width100 {
-  width: 90px;
+  width: 100px;
+}
+
+.width110 {
+  width: 110px;
 }
 
 .marginleft20 {
