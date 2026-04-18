@@ -498,7 +498,7 @@ export default function ListProduct(props) {
                   
                   </Box>
 
-                 { itemNameNewFocus==false && <Typography noWrap={false}
+                 { itemNameNewFocus==false && compositionText.length>0 && <Typography noWrap={false}
                    sx={{ lineHeight: "14px", fontSize: "14px", width: "330px", wordBreak: "break-word", whiteSpace: 'normal', mt: "8px", color: "#222"}}>
                     <p><b>{existingItemName} composition:</b></p>
                       {compositionText.map((c, index) => (  

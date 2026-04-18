@@ -49,6 +49,7 @@
         public virtual ICollection<ProductsInSeasons>? ProductsInSeasons { get; set; }
         public virtual ICollection<ProductsInOverWorkTypes>? ProductsInOverWorkTypes { get; set; }
         public virtual ICollection<ProductsInDesignTypes>? ProductsInDesignTypes { get; set; }
+        public virtual ICollection<ProductsInDressGroups>? ProductsInDressGroups { get; set; }
         public virtual ICollection<ProductsInTextileTypes>? ProductsInTextileTypes { get; set; }
         public virtual ICollection<ProductsInColors>? ProductsInColors { get; set; }
     }

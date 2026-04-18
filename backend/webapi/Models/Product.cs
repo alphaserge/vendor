@@ -62,11 +62,13 @@ namespace chiffon_back.Models
 
         public CompositionValue[]? CompositionValues { get; set; }
         public int[]? DesignTypeIds { get; set; }
+        public int[]? DressGroupIds { get; set; }
         public int[]? OverWorkTypeIds { get; set; }
         public int[]? SeasonIds { get; set; }
 
         public TextileType[]? TextileTypes { get; set; }
         public DesignType[]? DesignTypes { get; set; }
+        public DressGroup[]? DressGroups { get; set; }
         public OverWorkType[]? OverWorkTypes { get; set; }
         public Season[]? Seasons { get; set; }
     }
@@ -137,6 +139,7 @@ namespace chiffon_back.Models
         public string? ProductType { get; set; }
         public string? Uuid { get; set; }
         public int[]? DesignTypes { get; set; }
+        public int[]? DressGroups { get; set; }
         public int[]? OverWorkTypes { get; set; }
         public int []? Seasons { get; set; }
         public CompositionValue[]? CompositionValues { get; set; }

@@ -555,7 +555,7 @@ console.log(allPhotos)
 
           <PropertyItem label="Meters in roll" value={fined(product.rollLength)} />
           <PropertyItem label="Stock available" value={!!onStock ? onStock + " (meters)" : "no information, please contact us"} />
-          <PropertyItem label="Price" value={"from"} valueBold={" $" + price} valueEnd ={" per meter"} />
+          { Number.isFinite(price) && !Number.isNaN(price) && price > 0 && <PropertyItem label="Price" value={"from"} valueBold={" $" + price} valueEnd ={" per meter"} /> }
           {!showColorEditor && <PropertyItem label="Color no." value={colorVar.colorNo} /> }
           {/* {!!manualColor && <PropertyItem label="Color no." value={manualColor} /> } */}
           {/* <PropertyItem label="Price" value={"from <b>$" + price + "</b> per meter"} /> */}

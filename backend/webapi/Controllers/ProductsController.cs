@@ -36,9 +36,11 @@ namespace chiffon_back.Controllers
                 cfg.CreateMap<Models.Color, Context.Color>();
                 cfg.CreateMap<Models.Season, Context.Season>();
                 cfg.CreateMap<Models.DesignType, Context.DesignType>();
+                cfg.CreateMap<Models.DressGroup, Context.DressGroup>();
                 cfg.CreateMap<Models.OverWorkType, Context.OverWorkType>();
                 cfg.CreateMap<Models.ProductsInColors, Context.ProductsInColors>();
                 cfg.CreateMap<Models.ProductsInDesignTypes, Context.ProductsInDesignTypes>();
+                cfg.CreateMap<Models.ProductsInDressGroups, Context.ProductsInDressGroups>();
                 cfg.CreateMap<Models.ProductsInOverWorkTypes, Context.ProductsInOverWorkTypes>();
                 cfg.CreateMap<Models.ProductsInSeasons, Context.ProductsInSeasons>();
                 cfg.CreateMap<Models.ProductStyle, Context.ProductStyle>();
@@ -48,9 +50,11 @@ namespace chiffon_back.Controllers
                 cfg.CreateMap<Context.Color, Models.Color>();
                 cfg.CreateMap<Context.Season, Models.Season>();
                 cfg.CreateMap<Context.DesignType, Models.DesignType>();
+                cfg.CreateMap<Context.DressGroup, Models.DressGroup>();
                 cfg.CreateMap<Context.OverWorkType, Models.OverWorkType>();
                 cfg.CreateMap<Context.ProductsInColors, Models.ProductsInColors>();
                 cfg.CreateMap<Context.ProductsInDesignTypes, Models.ProductsInDesignTypes>();
+                cfg.CreateMap<Context.ProductsInDressGroups, Models.ProductsInDressGroups>();
                 cfg.CreateMap<Context.ProductsInOverWorkTypes, Models.ProductsInOverWorkTypes>();
                 cfg.CreateMap<Context.ProductsInSeasons, Models.ProductsInSeasons>();
                 cfg.CreateMap<Context.ProductStyle, Models.ProductStyle>();
@@ -112,6 +116,7 @@ namespace chiffon_back.Controllers
                     Seasons = HttpContext.Request.Query["seasons"].ToString(),
                     Overworks = HttpContext.Request.Query["overworks"].ToString(),
                     DesignTypes = HttpContext.Request.Query["designtypes"].ToString(),
+                    DressGroups = HttpContext.Request.Query["dressgroups"].ToString(),
                     PrintTypes = HttpContext.Request.Query["printypes"].ToString(),
                     ProductTypes = HttpContext.Request.Query["producttypes"].ToString(),
                     TextileTypes = HttpContext.Request.Query["textiletypes"].ToString(),
