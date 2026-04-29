@@ -23,7 +23,7 @@ import Modal from '@mui/material/Modal';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-
+import Autocomplete from '@mui/material/Autocomplete';
 import axios from 'axios'
 
 import config from "../../config.json"
@@ -37,8 +37,11 @@ import SimpleCombo from '../../components/simplecombo';
 import StyledSelect from '../../components/styledselect';
 import MySelect from '../../components/myselect';
 import StTextField from '../../components/sttextfield';
+import MyAutocomplete from '../../components/myautocomplete';
+import AddProductModal from '../../components/AddProductModal';
 import { postProduct, productsImport } from '../../api/products'
 import { getItemNames, postItemName } from "../../api/itemnames";
+import { getTextileTypes, postTextileType } from '../../api/textiletypes'
 
 import { APPEARANCE } from '../../appearance';
 import { Button } from "@mui/material";
@@ -57,6 +60,10 @@ const findTextStyle = { width: "100%", border: "none" }
 //const findTextStyle = { width: "100%", border: "none", border: "solid 1px #888", borderRadius: 1 }
 const toolButtonStyle = { width: "26px", height: "26px", marginTop: "5px" }
 const flexStyle = { display: "flex", flexDirection: "row", alignItems : "center", justifyContent: "space-between" }
+
+const itemStyle1 = { width: "calc( 100% - 0px )", mt: 0, ml: 0, mr: 0  }
+const labelStyle = { m: 0, ml: 0, mr: 4 }
+
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -124,12 +131,34 @@ export default function ListProduct(props) {
     const [addRefNo, setAddRefNo] = useState("")
     const [addArtNo, setAddArtNo] = useState("")
     const [addDesign, setAddDesign] = useState("")
+    const [existingDyeStaff, setExistingDyeStaff] = useState("")
+    const [existingFabricConstruction, setExistingFabricConstruction] = useState("")
+    const [existingFabricShrinkage, setExistingFabricShrinkage] = useState("")
+    const [existingFabricYarnCount, setExistingFabricYarnCount] = useState("")
+    const [existingFindings, setExistingFindings] = useState("")
+    const [existingGsm, setExistingGsm] = useState(null)
+    const [existingHsCode, setExistingHsCode] = useState("")
+    const [existingProductStyle, setExistingProductStyle] = useState("")
+    const [existingProductType, setExistingProductType] = useState("")
+    const [existingPlainDyedType, setExistingPlainDyedType] = useState("")
+    const [existingSeason, setExistingSeason] = useState("")
+    const [existingWeight, setExistingWeight] = useState(null)
+    const [existingWidth, setExistingWidth] = useState(null)
+    const [existingColorFastness, setExistingColorFastness] = useState(null)
+    const [existingProductStyleId, setExistingProductStyleId] = useState(null)
+    const [existingProductTypeId, setExistingProductTypeId] = useState(null)
+    const [existingPlainDyedTypeId, setExistingPlainDyedTypeId] = useState(null)
+    const [existingSeasonsId, setExistingSeasonsId] = useState([])
+    const [existingDyeStaffId, setExistingDyeStaffId] = useState(null)
+    const [existingFinishingId, setExistingFinishingId] = useState(null)
 
     const [savingError, setSavingError] = useState(false)
     const [waiting, setWaiting] = useState(false)
     const [itemNameNewFocus, setItemNameNewFocus] = useState(false)
     const [compositionText, setCompositionText] = useState([])
     const [composition, setComposition] = useState("")
+    const [textileType, setTextileType] = useState("")
+    const [textileTypes, setTextileTypes] = useState([])
     
     const headStyle = { maxWidth: "744px", width: "auto", margin: "0", padding: "0 10px" }
 
@@ -184,6 +213,7 @@ export default function ListProduct(props) {
   const handleAddProductSave = (event) => {
     saveProduct()
     setAddProduct(false)
+    setItemNameNewFocus(true)
   };
 
   const handleAddProductCancel = (event) => {
@@ -322,6 +352,21 @@ export default function ListProduct(props) {
         itemName: itemNameNewFocus==true ? addItemName : existingItemName,
         design: addDesign,
         refNo: addRefNo,
+        dyeStaffId: itemNameNewFocus==true ? null : existingDyeStaffId,
+        fabricConstruction: itemNameNewFocus==true ? null : existingFabricConstruction,
+        fabricShrinkage: itemNameNewFocus==true ? null : existingFabricShrinkage,
+        fabricYarnCount: itemNameNewFocus==true ? null : existingFabricYarnCount,
+        fabricYarnCount: itemNameNewFocus==true ? null : existingFabricYarnCount,
+        finishingId: itemNameNewFocus==true ? null : existingFindings,
+        gsm: itemNameNewFocus==true ? null : existingGsm,
+        hsCode: itemNameNewFocus==true ? null : existingHsCode,
+        productStyleId: itemNameNewFocus==true ? null : existingProductStyleId,
+        productTypeId: itemNameNewFocus==true ? null : existingProductTypeId,
+        plainDyedTypeId: itemNameNewFocus==true ? null : existingPlainDyedTypeId,
+        seasonsId: itemNameNewFocus==true ? null : existingSeasonsId,
+        weight: itemNameNewFocus==true ? null : existingWeight,
+        width: itemNameNewFocus==true ? null : existingWidth,
+        colorFastness: itemNameNewFocus==true ? null : existingColorFastness,
         compositionValues: itemNameNewFocus==true ? [] : composition.map( c => { return { textileTypeId: c.textileTypeId, value: c.value}})
       }
   
@@ -346,6 +391,7 @@ export default function ListProduct(props) {
       loadProductTypes()
       loadProductStyles()
       getItemNames(setItemNames)
+      getTextileTypes(setTextileTypes)
 
       if (fromUrl("new")==1) {
         setAddProduct(true)
@@ -388,6 +434,11 @@ export default function ListProduct(props) {
         </Box>
       </Modal>
 
+      {/* <AddProductModal 
+        open={addProduct}
+        onClose={function() { setAddProduct(false) }}
+        user={props.user} /> */}
+
       <Modal
         open={addProduct}
         onClose={function() { setAddProduct(false) }}
@@ -404,23 +455,26 @@ export default function ListProduct(props) {
           bgcolor: 'background.paper', 
           border: '2px solid #000', 
           boxShadow: 24, 
-          p: 4,
+          p: "20px",
           display: "flex",
-          flexDirection: 'column', 
-          alignItems: 'left' }}>
-          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{textAlign: "center", mb: "20px"}} >
+          flexDirection: 'column' }}>
+          <Box id="modal-modal-title" component="h3" sx={{textAlign: "center", mb: "25px"}} >
             Adding a new product
-          </Typography>
+          </Box>
 
-          {/* General */}
+          <Box sx={{display:'grid', gridTemplateColumns: itemNameNewFocus==false && !!existingItemName ? '1fr 1fr' : '1fr 0', p:0, m:0}}>
+
+          <Box sx={{ display: "flex", flexDirection: 'column', alignItems: 'left' }}>
+
+          <Typography sx={{mt: "10px", mb: "6px"}}>Select existing name:</Typography>
           <FormControl error={false} size="small" sx={{ ...itemStyle,  ...{width: "100%", display: "flex" } }} > 
-           <InputLabel id="iname-lab" size="small" > Existing item name </InputLabel> 
+           {/* <InputLabel id="iname-lab" size="small" > Existing item name </InputLabel>  */}
               <StyledSelect 
                 id="iname"
                 labelId="iname-lab"
                 size="small"
                 //title="Existing item name"
-                label="Existing item name"
+                //label="Existing item name"
                 sx={{...itemStyle, ...{ m: 0}}}
                 MenuProps={MySelectProps}
                 value={existingItemName}
@@ -429,6 +483,27 @@ export default function ListProduct(props) {
                   const { target: { id, value } } = event;
                   const ind = i.props.index;
                   setExistingItemName(value)
+                  if (itemNames[ind] != null) {
+                    setExistingDyeStaff(itemNames[ind].dyeStaff)
+                    setExistingFabricConstruction(itemNames[ind].fabricConstruction)
+                    setExistingFabricShrinkage(itemNames[ind].fabricShrinkage)
+                    setExistingFabricYarnCount(itemNames[ind].fabricYarnCount)
+                    setExistingFindings(itemNames[ind].findings)
+                    setExistingGsm(itemNames[ind].gsm)
+                    setExistingHsCode(itemNames[ind].hsCode)
+                    setExistingProductStyle(itemNames[ind].productStyle)
+                    setExistingProductType(itemNames[ind].productType)
+                    setExistingPlainDyedType(itemNames[ind].plainDyedType)
+                    setExistingSeason(itemNames[ind].season)
+                    setExistingWeight(itemNames[ind].weight)
+                    setExistingWidth(itemNames[ind].width)
+                    setExistingColorFastness(itemNames[ind].colorFastness)
+                    setExistingSeasonsId(itemNames[ind].seasonsId)
+                    setExistingProductStyleId(itemNames[ind].productStyleId)
+                    setExistingProductTypeId(itemNames[ind].productTypeId)
+                    setExistingPlainDyedTypeId(itemNames[ind].plainDyedTypeId)
+                    setExistingFinishingId(itemNames[ind].finishingId)
+                  }
                   setItemNameNewFocus(false)
                   console.log( 'itemNames[ind]:' )
                   console.log( itemNames[ind] )
@@ -449,70 +524,113 @@ export default function ListProduct(props) {
               </StyledSelect>
               </FormControl>
 
+            <Typography sx={{mt: "10px", mb: "0px"}}>or enter new name:</Typography>
              <StTextField
                 margin="normal"
                 size="small" 
                 id="itemName"
-                label="New item name"
+                //label="New item name"
                 name="itemName"
                 sx={{ ...itemStyle, ...{ mt: 1}}}
                 fontColor={ itemNameNewFocus==true ? '#222' : '#ccc' }
                 value={addItemName}
-                onChange={(ev) => {setAddItemName(ev.target.value); setItemNameNewFocus(true);}}
+                onChange={(ev) => {setAddItemName(ev.target.value); setExistingItemName(""); setItemNameNewFocus(true);}}
               />
 
-              <TextField
+              {/* <MyAutocomplete
+                  title="Composition1"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle1}
+                  MenuProps={MySelectProps}
+                  valueVariable={textileType}
+                  setValueFn={setTextileType}
+                  //addNewFn={(e) => { setNewValueEntity("textile type"); setOpenedNewValue(true); }}
+                  data={ textileTypes.map((e) => { return e.value }) }
+                /> */}
+
+                {/* <Autocomplete
+                  size="small" 
+                  disablePortal
+                  options={textileTypes.map((e) => { return e.value })}
+                  sx={{ ...itemStyle, ...{ mt: 1}}}
+                  renderInput={(params) => <TextField {...params} label="Movie" />} /> */}
+
+              <Typography sx={{mt: "10px", mb: "6px"}}>Design:</Typography>
+                <TextField
                 margin="normal"
                 size="small" 
                 id="design"
-                label="Design"
+                //label="Design"
                 name="design"
                 sx = {itemStyle}
                 value={addDesign}
-                onChange={ev => setAddDesign(ev.target.value)}
-              />
+                onChange={ev => setAddDesign(ev.target.value)} />
               <Box sx={{ 
                 display: "flex",
                 flexDirection: 'row', 
                 alignItems: 'left' }}>
-                <TextField
+                  <Box sx={{display: 'flex', flexDirection: 'column'}}>
+                  <Typography sx={{mt: "10px", mb: "6px"}}>Ref no:</Typography>
+                  <TextField
                     margin="normal"
                     size="small" 
                     id="refNo"
-                    label="Ref No"
+                    //label="Ref No"
                     name="refNo"
                     value={addRefNo}
                     sx = {smallItemStyle}
-                    onChange={ev => setAddRefNo(ev.target.value)}
-                  />
-                <TextField
+                    onChange={ev => setAddRefNo(ev.target.value)} />
+                  </Box>
+                  <Box sx={{display: 'flex', flexDirection: 'column'}}>
+                  <Typography sx={{mt: "10px", mb: "6px"}}>Art no:</Typography>
+                  <TextField
                     margin="normal"
                     size="small" 
                     id="artNo"
-                    label="Art No"
+                    //label="Art No"
                     name="artNo"
                     sx = {smallItemStyle}
                     value={addArtNo}
-                    onChange={ev => setAddArtNo(ev.target.value)}
-                  />
-                  
+                    onChange={ev => setAddArtNo(ev.target.value)} />
                   </Box>
-
-                 { itemNameNewFocus==false && compositionText.length>0 && <Typography noWrap={false}
-                   sx={{ lineHeight: "14px", fontSize: "14px", width: "330px", wordBreak: "break-word", whiteSpace: 'normal', mt: "8px", color: "#222"}}>
-                    <p><b>{existingItemName} composition:</b></p>
-                      {compositionText.map((c, index) => (  
-                                <p>&nbsp;&nbsp;{c.value + "% " + c.textileName}</p>
-                                ))}
-                   </Typography> }
-
+                  </Box>
 
                   { savingError && 
                     <Box sx={{ textAlign: "center", marginTop: 2, fontSize: "12pt", color: "red" }}>
                     An error has occurred. Please check that all fields are filled in correctly and completely and try saving again.
                     </Box> }
 
+            </Box>
+          { itemNameNewFocus==false && !!existingItemName && <Box sx={{ display: "flex", flexDirection: 'column', alignItems: 'left' }}>
+            <Box sx={{ml: 3}}>
+                        <Box sx={{display: "grid", gridTemplateColumns:"137px 10px 150px", rowGap: "8px"}}>
+                        {!!existingProductType        && <><div>Product type       </div><div>:</div><div>{existingProductType} </div></>}
+                        {!!existingProductStyle       && <><div>Product style      </div><div>:</div><div>{existingProductStyle} </div></>}
+                        {!!existingPlainDyedType      && <><div>Product style      </div><div>:</div><div>{existingPlainDyedType} </div></>}
+                        {!!existingWeight             && <><div>Weight             </div><div>:</div><div>{existingWeight} </div></>}
+                        {!!existingWidth              && <><div>Width              </div><div>:</div><div>{existingWidth} </div></>}
+                        {!!existingGsm                && <><div>Gsm                </div><div>:</div><div>{existingGsm} </div></>}
+                        {!!existingSeason             && <><div>Season             </div><div>:</div><div>{existingSeason} </div></>}
+                        {!!existingDyeStaff           && <><div>DyeStaff           </div><div>:</div><div>{existingDyeStaff} </div></>}
+                        {!!existingFindings           && <><div>Finishing          </div><div>:</div><div>{existingFindings} </div></>}
+                        {!!existingFabricConstruction && <><div>Fabric construction</div><div>:</div><div>{existingFabricConstruction} </div></>}
+                        {!!existingFabricShrinkage    && <><div>Fabric shrinkage   </div><div>:</div><div>{existingFabricShrinkage} </div></>}
+                        {!!existingFabricYarnCount    && <><div>Fabric yarn count  </div><div>:</div><div>{existingFabricYarnCount} </div></>}
+                        {!!existingColorFastness      && <><div>Gsm                </div><div>:</div><div>{existingColorFastness} </div></>}
+                        {!!existingHsCode             && <><div>Hs code            </div><div>:</div><div>{existingHsCode} </div></>}
+
+                      {compositionText.map((c, index) => (  
+                        <React.Fragment>
+                        <div>{index==0 ? "Fabric composition" : ""}</div><div>{index==0 ? ":":""}</div><div>{c.value + "% " + c.textileName}</div>
+                        </React.Fragment>
+                        ))}
+                   </Box>
+            </Box>
+          </Box> }
+        </Box>
+
                   <Box sx={{ 
+                    mt: "10px",
                     display: "flex",
                     flexDirection: 'row', 
                     justifyContent: 'center' }}>
@@ -530,7 +648,10 @@ export default function ListProduct(props) {
                               Cancel
                       </Button>
                   </Box>
+
+
         </Box>
+        
       </Modal>
 
       <Container sx={{padding: 0 }} className="header-container" >

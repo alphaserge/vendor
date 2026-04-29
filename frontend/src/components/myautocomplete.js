@@ -1,3 +1,4 @@
+import zIndex from '@mui/material/styles/zIndex';
 import React, { useState, useEffect } from 'react';
 
 //const possibleValues = ["ANGORA", "ACRYLIC", "COTTON", "CHIFFON"]
@@ -93,8 +94,6 @@ export default function MyAutocomplete(props)
     <div className="autocomplete-wrapper"  >
       <label>{props.title}</label>
       <input
-        ////key="my-autocomp"
-        ////id="my-autocomp"
         type="text"
         value={inputValue}
         onChange={handleInputChange}
@@ -102,7 +101,7 @@ export default function MyAutocomplete(props)
         aria-autocomplete="list"
         aria-controls="autocomplete-list"
         className="autocomplete-input"
-        sx={{ ...props.itemStyle,  ...{  } }}
+        sx={{ ...props.itemStyle,  ...{ zIndex: -10 } }}
         />
       {suggestions.length > 0 && (
         <ul id="autocomplete-list" className="suggestions-list" role="listbox">
@@ -110,8 +109,9 @@ export default function MyAutocomplete(props)
             <li
               key={index}
               onClick={() => handleSuggestionClick(suggestion)}
-              role="option"
-            >
+              role="option" 
+              
+              >
               {suggestion}
             </li>
           ))}

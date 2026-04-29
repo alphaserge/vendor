@@ -302,12 +302,10 @@ a.no-link {
   position: relative; 
   display: flex;
   flex-wrap: wrap;
-
   padding: 9px 14px;
   border: 1px #bbb solid;
   border-radius: 4px;
-  /* margin:10px;  
-   width: 300px; */
+  z-index: 2;
 }
 
 .autocomplete-wrapper > label{
@@ -437,6 +435,15 @@ a.no-link {
     /* min-width: 70px; */
 }
 
+.w10 {
+  width: 10px;
+}
+.w20 {
+  width: 20px;
+}
+.w30 {
+  width: 30px;
+}
 .w40 {
   width: 40px;
 }
