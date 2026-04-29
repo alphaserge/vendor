@@ -29,6 +29,7 @@ import Composition from '../../components/composition';
 import { getColors, postColor } from '../../api/colors'
 import { getDesignTypes, postDesignType } from '../../api/designtypes'
 import { getDyeStaffs, postDyeStaff } from '../../api/dyestaffs'
+import { getDressGroups, postDressGroup } from '../../api/dressgroups'
 import { getFinishings, postFinishing } from '../../api/finishings'
 import { getOverworkTypes, postOverworkType } from '../../api/overworktypes'
 import { getPlainDyedTypes, postPlainDyedType } from '../../api/plaindyedtypes'
@@ -142,6 +143,7 @@ export default function UpdateProduct(props) {
     const [designType, setDesignType] = useState([])
     const [overworkType, setOverworkType] = useState([])
     const [season, setSeason] = useState([])
+    const [dressGroup, setDressGroup] = useState([])
     const [compositionValues, setCompositionValues] = useState([])
 
     const [artNo, setArtNo] = useState("")
@@ -179,6 +181,7 @@ export default function UpdateProduct(props) {
     const [productTypes, setProductTypes] = useState([])
     const [productStyles, setProductStyles] = useState([])
     const [dyeStaffs, setDyeStaffs] = useState([])
+    const [dressGroups, setDressGroups] = useState([])
     const [finishings, setFinishings] = useState([])
     const [plainDyedTypes, setPlainDyedTypes] = useState([])
     const [printTypes, setPrintTypes] = useState([])
@@ -412,6 +415,7 @@ export default function UpdateProduct(props) {
       uuid: uid,
       designType: designType,
       overworkType: overworkType,
+      dressGroup: dressGroup,
       productStyleId: productStyleId,
       productTypeId: productTypeId,
       printTypeId: printTypeId,
@@ -589,6 +593,7 @@ const setProduct = (prod) => {
   setSeason(non(prod.seasonIds))
   setOverworkType(non(prod.overWorkTypeIds))
   setDesignType(non(prod.designTypeIds))
+  setDressGroup(non(prod.dressGroupIds))
   setCompositionSamples(non(prod.compositionsSamples))
 
   if (!!gsm) {
@@ -699,6 +704,7 @@ const setProduct = (prod) => {
     getProductTypes(setProductTypes)
     getSeasons(setSeasons)
     getDyeStaffs(setDyeStaffs)
+    getDressGroups(setDressGroups)
     getFinishings(setFinishings)
     getPlainDyedTypes(setPlainDyedTypes)
     getPrintTypes(setPrintTypes)
@@ -715,6 +721,9 @@ const setProduct = (prod) => {
   }, [textileTypes]);
 
   const id = idFromUrl()
+
+  console.log('dressGroups')
+  console.log(dressGroups)
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -1469,7 +1478,7 @@ const setProduct = (prod) => {
                     loadProduct(id, setProduct) }}
                 /> </Grid> )}
 
-                <Grid item xs={12} md={6}  >
+                <Grid item xs={12} md={6} >
                 <MySelect 
                   id="addproduct-overworktype"
                   url="OverWorkTypes"
@@ -1484,9 +1493,28 @@ const setProduct = (prod) => {
                   addNewValue={ async (value) => { 
                     await postOverworkType(value, id) 
                     getOverworkTypes(setOverworkTypes)
-                    loadProduct(id, setProduct) }}
-                />
-            </Grid>
+                    loadProduct(id, setProduct) }} />
+                </Grid>
+
+                <Grid item xs={12} md={6} >
+                <MySelect 
+                  id="addproduct-dressgroup"
+                  url="DressGroups"
+                  title="Dress group"
+                  labelStyle={labelStyle}
+                  itemStyle={itemStyle1}
+                  MenuProps={MySelectProps}
+                  value={dressGroup}
+                  setValue={setDressGroup}
+                  values={dressGroups.map(e => { return e.value})}
+                  keys={dressGroups.map(e => { return e.id})}
+                  addNewValue={ async (value) => { 
+                    await postDressGroup(value, id) 
+                    getOverworkTypes(setDressGroups)
+                    loadProduct(id, setProduct) 
+                    }} />
+                </Grid>
+
           </Grid>
           </AccordionDetails>
 
