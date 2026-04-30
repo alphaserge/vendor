@@ -415,7 +415,7 @@ export default function UpdateProduct(props) {
       uuid: uid,
       designType: designType,
       overworkType: overworkType,
-      dressGroup: dressGroup,
+      dressGroups: dressGroup,
       productStyleId: productStyleId,
       productTypeId: productTypeId,
       printTypeId: printTypeId,
