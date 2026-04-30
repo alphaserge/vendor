@@ -72,6 +72,7 @@ export default function Home(props) {
 
     const [selectedTextileType, setSelectedTextileType] = useState([])
     const [selectedDesignType, setSelectedDesignType] = useState([])
+    const [selectedDressGroup, setSelectedDressGroup] = useState([])
     const [selectedSeason, setSelectedSeason] = useState([])
     const [selectedColor, setSelectedColor] = useState([])
     const [selectedPrintType, setSelectedPrintType] = useState([])
@@ -219,7 +220,7 @@ export default function Home(props) {
           setFilter = {(value, entity)=>{ setFilter(value, entity)}} />
 
         <Box sx={{ alignContent: "left", display: "flex", flexDirection: "row" }} className="center-content" >
-          <Box display={{ xs: 'none', md: 'flex' }} sx={{ flexDirection: "column", minWidth: "200px", marginTop: "4px" }}  >
+          <Box display={{ xs: 'none', md: 'flex' }} sx={{ flexDirection: "column", minWidth: "250px", marginTop: "4px" }}  >
             {/* <Box className="subtitle" >Shopping options</Box> */}
             {/* <strong role="heading" aria-level="2" class="subtitle underline">Shopping Options</strong> */}
             <CheckboxList
@@ -231,9 +232,18 @@ export default function Home(props) {
               padding="20px 0 0 0"
             />
             <CheckboxList
+              list={!props.data.dressGroups ? [] : props.data.dressGroups.map((it) => ({ key: it.id, name: it.value }))}
+              title="Dress group"
+              //height={120}
+              expanded={false}
+              setValueFn={setSelectedDressGroup }
+              value={selectedDressGroup}
+              padding="10px 0 0 0"
+            />
+            <CheckboxList
               list={!props.data.designTypes ? [] : props.data.designTypes.map((it) => ({ key: it.id, name: it.value }))}
               title="Design types"
-              expanded={true}
+              expanded={false}
               setValueFn={setSelectedDesignType}
               value={selectedDesignType}
               padding="20px 0 0 0"
@@ -242,7 +252,7 @@ export default function Home(props) {
               list={!props.data.productTypes ? [] : props.data.productTypes.map((it) => ({ key: it.id, name: it.value }))}
               title="Product types"
               //height={80}
-              expanded={true}
+              expanded={false}
               setValueFn={setSelectedProductType}
               value={selectedProductType}
               padding="10px 0 0 0"
@@ -250,7 +260,7 @@ export default function Home(props) {
             <CheckboxList
               list={!props.data.printTypes ? [] : props.data.printTypes.map((it) => ({ key: it.id, name: it.value }))}
               title="Print types"
-              expanded={true}
+              expanded={false}
               setValueFn={setSelectedPrintType}
               value={selectedPrintType}
               padding="10px 0 0 0"
@@ -274,7 +284,7 @@ export default function Home(props) {
               padding="10px 0 0 0"
             />
             <CheckboxList
-              list={!props.data.seasons ? [] : props.data.seasons.map((it) => ({ key: it.id, name: it.value }))}
+              list={!props.data.overworkTypes ? [] : props.data.overworkTypes.map((it) => ({ key: it.id, name: it.value }))}
               title="Overwork type"
               //height={120}
               expanded={false}

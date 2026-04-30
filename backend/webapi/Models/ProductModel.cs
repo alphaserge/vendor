@@ -27,6 +27,7 @@ namespace chiffon_back.Models
         public string? ProductType { get; set; }
         public string? PlainDyedType { get; set; }
         public string? Season { get; set; }
+        public string? DressGroup { get; set; }
         public string? DyeStaff { get; set; }
         public int? ColorFastness { get; set; }
         public decimal? FabricShrinkage { get; set; }
@@ -41,6 +42,8 @@ namespace chiffon_back.Models
         public int? ProductStyleId { get; set; }
         public int? ProductTypeId { get; set; }
         public int[]? SeasonsId { get; set; }
+        public int[]? DressGroupsId { get; set; }
+        
 
         public required CompositionValue[] Composition { get; set; }
     }
@@ -533,6 +536,27 @@ namespace chiffon_back.Models
 
                 prod.SampleNo = sampleNo+1;
                 prod.Created = DateTime.Now;
+                prod.Weight = product.Weight;
+                prod.Width = product.Width;
+                prod.MetersInKG = product.MetersInKG;
+                //prod.PlainDyedTypeId = product.PlainDyedTypeId;
+                prod.ProductTypeId = product.ProductTypeId;
+                prod.ColorFastness = product.ColorFastness;
+                prod.FabricConstruction = product.FabricConstruction;
+                prod.FabricShrinkage = product.FabricShrinkage;
+                prod.FabricYarnCount = product.FabricYarnCount;
+                prod.Findings = product.Findings;
+                prod.HSCode = product.HSCode;
+                prod.DyeStaffId = product.DyeStaffId;
+
+                //prod.ProductStyleId = product.ProductStyleId;
+
+                prod.VendorId = product.VendorId != null ? product.VendorId.Value : -1;
+                //prod.RollLength = product.RollLength;
+                //prod.GSM = product.GSM;
+                //prod.PrintTypeId = product.PrintTypeId;
+                prod.FinishingId = product.FinishingId;
+
                 ctx.Products.Add(prod);
                 ctx.SaveChanges();
 
@@ -828,19 +852,23 @@ namespace chiffon_back.Models
                 var product = ctx.Products.FirstOrDefault(x => x.ItemName == itemName);
                 if (product != null) {
                     int[] seasonId = ctx.ProductsInSeasons.Where(x => x.ProductId == product.Id).Select(x => x.SeasonId).ToArray();
+                    int[] dressGroupsId = ctx.ProductsInDressGroups.Where(x => x.ProductId == product.Id).Select(x => x.DressGroupId).ToArray();
                     itemNames.Add(new ProductItemName()
                     {
                         ProductId = product.Id,
                         ItemName = itemName,
                         ColorFastness = product.ColorFastness,
                         DyeStaff = product.DyeStaffId == null ? "" : ctx.DyeStaffs.FirstOrDefault(x=>x.Id==product.DyeStaffId).DyeStaffName,
+                        DyeStaffId = product.DyeStaffId,
                         FabricConstruction = product.FabricConstruction,
                         FabricShrinkage = product.FabricShrinkage,
                         FabricYarnCount = product.FabricYarnCount,
                         Findings = product.Findings,
+                        FinishingId = product.FinishingId,
                         GSM = product.GSM,
                         HSCode = product.HSCode,
                         SeasonsId = seasonId,
+                        DressGroupsId = dressGroupsId,
                         ProductStyleId = product.ProductStyleId,
                         ProductTypeId = product.ProductTypeId,
                         PlainDyedTypeId = product.PlainDyedTypeId,
@@ -850,6 +878,7 @@ namespace chiffon_back.Models
                         Weight = product.Weight,
                         Width = product.Width,
                         Season = String.Join(", ", ctx.Seasons.Where(x => seasonId.Contains(x.Id)).Select(x => x.SeasonName)),
+                        DressGroup = String.Join(", ", ctx.DressGroups.Where(x => dressGroupsId.Contains(x.Id)).Select(x => x.DressGroupName)),
                         Composition = ctx.ProductsInTextileTypes.Where(x => x.ProductId == product.Id)
                             .Select(x => new CompositionValue { TextileTypeId = x.TextileTypeId, Value = x.Value, TextileName = textiles[x.TextileTypeId] })
                             .ToArray(),

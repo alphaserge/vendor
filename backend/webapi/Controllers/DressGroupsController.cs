@@ -30,7 +30,8 @@ namespace chiffon_back.Controllers
         [HttpGet(Name = "DressGroups")]
         public IEnumerable<Models.DressGroup> Get()
         {
-            return ctx.DressGroups.OrderBy(x => x.ParentDressGroupId).ThenBy(x => x.DressGroupName)
+            //return ctx.DressGroups.OrderBy(x => x.ParentDressGroupId).ThenBy(x => x.DressGroupName)
+            return ctx.DressGroups.Where(x => x.ParentDressGroupId != null).OrderBy(x => x.DressGroupName)
                 .Select(x =>
                     config.CreateMapper()
                         .Map<Models.DressGroup>(x))

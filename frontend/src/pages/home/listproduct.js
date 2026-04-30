@@ -142,6 +142,7 @@ export default function ListProduct(props) {
     const [existingProductType, setExistingProductType] = useState("")
     const [existingPlainDyedType, setExistingPlainDyedType] = useState("")
     const [existingSeason, setExistingSeason] = useState("")
+    const [existingDressGroup, setExistingDressGroup] = useState("")
     const [existingWeight, setExistingWeight] = useState(null)
     const [existingWidth, setExistingWidth] = useState(null)
     const [existingColorFastness, setExistingColorFastness] = useState(null)
@@ -149,6 +150,7 @@ export default function ListProduct(props) {
     const [existingProductTypeId, setExistingProductTypeId] = useState(null)
     const [existingPlainDyedTypeId, setExistingPlainDyedTypeId] = useState(null)
     const [existingSeasonsId, setExistingSeasonsId] = useState([])
+    const [existingDressGroupsId, setExistingDressGroupsId] = useState("")
     const [existingDyeStaffId, setExistingDyeStaffId] = useState(null)
     const [existingFinishingId, setExistingFinishingId] = useState(null)
 
@@ -363,7 +365,8 @@ export default function ListProduct(props) {
         productStyleId: itemNameNewFocus==true ? null : existingProductStyleId,
         productTypeId: itemNameNewFocus==true ? null : existingProductTypeId,
         plainDyedTypeId: itemNameNewFocus==true ? null : existingPlainDyedTypeId,
-        seasonsId: itemNameNewFocus==true ? null : existingSeasonsId,
+        seasons: itemNameNewFocus==true ? null : existingSeasonsId,
+        dressGroups: itemNameNewFocus==true ? null : existingDressGroupsId,
         weight: itemNameNewFocus==true ? null : existingWeight,
         width: itemNameNewFocus==true ? null : existingWidth,
         colorFastness: itemNameNewFocus==true ? null : existingColorFastness,
@@ -484,6 +487,7 @@ export default function ListProduct(props) {
                   const ind = i.props.index;
                   setExistingItemName(value)
                   if (itemNames[ind] != null) {
+                    setExistingDyeStaffId(itemNames[ind].dyeStaffId)
                     setExistingDyeStaff(itemNames[ind].dyeStaff)
                     setExistingFabricConstruction(itemNames[ind].fabricConstruction)
                     setExistingFabricShrinkage(itemNames[ind].fabricShrinkage)
@@ -495,14 +499,17 @@ export default function ListProduct(props) {
                     setExistingProductType(itemNames[ind].productType)
                     setExistingPlainDyedType(itemNames[ind].plainDyedType)
                     setExistingSeason(itemNames[ind].season)
+                    setExistingSeasonsId(itemNames[ind].seasonsId)
+                    setExistingDressGroup(itemNames[ind].dressGroup)
+                    setExistingDressGroupsId(itemNames[ind].dressGroupsId)
                     setExistingWeight(itemNames[ind].weight)
                     setExistingWidth(itemNames[ind].width)
                     setExistingColorFastness(itemNames[ind].colorFastness)
-                    setExistingSeasonsId(itemNames[ind].seasonsId)
                     setExistingProductStyleId(itemNames[ind].productStyleId)
                     setExistingProductTypeId(itemNames[ind].productTypeId)
                     setExistingPlainDyedTypeId(itemNames[ind].plainDyedTypeId)
                     setExistingFinishingId(itemNames[ind].finishingId)
+                    setExistingFindings(itemNames[ind].finishingId)
                   }
                   setItemNameNewFocus(false)
                   console.log( 'itemNames[ind]:' )
@@ -611,6 +618,7 @@ export default function ListProduct(props) {
                         {!!existingWidth              && <><div>Width              </div><div>:</div><div>{existingWidth} </div></>}
                         {!!existingGsm                && <><div>Gsm                </div><div>:</div><div>{existingGsm} </div></>}
                         {!!existingSeason             && <><div>Season             </div><div>:</div><div>{existingSeason} </div></>}
+                        {!!existingDressGroup         && <><div>Dress group        </div><div>:</div><div>{existingDressGroup} </div></>}
                         {!!existingDyeStaff           && <><div>DyeStaff           </div><div>:</div><div>{existingDyeStaff} </div></>}
                         {!!existingFindings           && <><div>Finishing          </div><div>:</div><div>{existingFindings} </div></>}
                         {!!existingFabricConstruction && <><div>Fabric construction</div><div>:</div><div>{existingFabricConstruction} </div></>}

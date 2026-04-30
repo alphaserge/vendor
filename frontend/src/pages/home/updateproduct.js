@@ -401,7 +401,7 @@ export default function UpdateProduct(props) {
       stock: stock,
       refNo: refNo,
       compositionValues: compositionValues.map((i) => { return {textileTypeId: i.id, value: parseInt(i.value)}}),
-      season: season,
+      seasons: season,
       weight: weight,
       width: width,
       rollLength: rollLength,

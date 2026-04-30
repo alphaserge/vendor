@@ -39,7 +39,7 @@ import Selector from '../../components/selector';
 import StyledButton from '../../components/styledbutton';
 import StyledTextField from '../../components/styledtextfield';
 
-import { fined, collectProductPhotos, computePrice, calculatePrice } from "../../functions/helper"
+import { fined, collectProductPhotosAndVideos, computePrice, calculatePrice } from "../../functions/helper"
 import Styledtextfield from "../../components/styledtextfield";
 
 const useStyles = makeStyles((theme) => ({
@@ -483,7 +483,7 @@ if (!!shopCart && !!colorVar) {
     (x.colorVar.colorNo == colorVar.colorNo || x.colorVar.colorNo == manualColor)) >= 0;
 }
 
-const allPhotos  =  collectProductPhotos(product)
+const allPhotos  =  collectProductPhotosAndVideos(product)
 
 console.log('allPhotos::')
 console.log(allPhotos)

@@ -4,6 +4,7 @@ import config from "../config.json"
 export const getDressGroups = (setFn) => {
     axios.get(config.api + '/DressGroups')
     .then(function (res) {
+        //res.data.filter(i => !!i.parentDressGroupId)
         let items = res.data.map((item)=>({ id:item.id, value:item.dressGroupName }))
         items.unshift({ id:-2, value:"add custom value" })
         setFn(items)

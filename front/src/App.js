@@ -122,6 +122,15 @@ function App() {
       console.log(error)
     })
     //--
+    axios.get(config.api + '/DressGroups')
+    .then(function (res) {
+      //res.data.filter(i => !!i.parentDressGroupId)
+      d.dressGroups = res.data.map((item)=>({ id:item.id, value:item.dressGroupName }))
+    })
+    .catch (error => {
+      console.log(error)
+    })
+    //--
     axios.get(config.api + '/ProductTypes')
     .then(function (res) {
         d.productTypes = res.data.map((item)=>({ id:item.id, value:item.typeName }))

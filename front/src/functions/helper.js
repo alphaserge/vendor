@@ -208,9 +208,25 @@ export const collectProductPhotos = (product) => {
         allPhotos = allPhotos.concat(product.colorPhotos)
     }
 
+    /*if (Array.isArray(product.productVideos)) {
+        allPhotos = allPhotos.concat(product.productVideos)
+    }*/
+
+    return allPhotos
+}
+
+export const collectProductPhotosAndVideos = (product) => {
+    
+    var allPhotos =  Array.isArray(product.productPhotos) ? [...product.productPhotos] : []
+
+    if (Array.isArray(product.colorPhotos)) {
+        allPhotos = allPhotos.concat(product.colorPhotos)
+    }
+
     if (Array.isArray(product.productVideos)) {
         allPhotos = allPhotos.concat(product.productVideos)
     }
 
     return allPhotos
 }
+

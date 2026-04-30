@@ -51,8 +51,8 @@ const makeProduct = (prod)  => {
 
     DesignTypes: prod.designType,
     OverWorkTypes: prod.overworkType,
-    DressGroups: prod.dressGroup,
-    Seasons: prod.season,
+    DressGroups: prod.dressGroups,
+    Seasons: prod.seasons,
 
     ProductStyleId: getInt(prod.productStyleId),
     ProductTypeId: getInt(prod.productTypeId),

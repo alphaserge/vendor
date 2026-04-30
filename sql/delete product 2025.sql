@@ -35,10 +35,11 @@ SELECT TOP (1000) [Id]
       ,[RollLength]
   FROM [chiffon].[dbo].[Products]
 
-  declare @id int = 175
+  declare @id int = 146
   delete FROM ColorVariantsInColors where ColorVariantId in (select Id FROM ColorVariants where ProductId>=@id)
   delete FROM ColorVariants where ProductId>=@id
 
+  delete FROM ProductsInDressGroups where ProductId>=@id
   delete FROM ProductsInDesignTypes where ProductId>=@id
   delete FROM ProductsInOverWorkTypes where ProductId>=@id
   delete FROM ProductsInSeasons where ProductId>=@id
