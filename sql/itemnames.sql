@@ -18,4 +18,8 @@ CREATE TABLE [dbo].[ItemNames](
 ) ON [PRIMARY]
 GO
 
-
+alter table Products drop column ColorNo
+alter table Products drop column ColorName
+alter table Products drop column PhotoDir
+alter table Products drop column [FileName]
+alter table Products drop column [Findings]
