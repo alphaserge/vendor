@@ -52,10 +52,10 @@ namespace chiffon_back.Controllers
 
                 if (designType.ProductId != null)
                 {
-                    ctx.ProductsInDesignTypes.Add(
-                        new Context.ProductsInDesignTypes()
+                    ctx.ProductDesignsInDesignTypes.Add(
+                        new Context.ProductDesignsInDesignTypes()
                         {
-                            ProductId = designType.ProductId.Value,
+                            ProductDesignId = designType.ProductId.Value,
                             DesignTypeId = item.Id
                         });
                     ctx.SaveChanges();

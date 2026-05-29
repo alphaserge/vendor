@@ -39,7 +39,7 @@ namespace chiffon_back.Controllers
                 cfg.CreateMap<Models.DressGroup, Context.DressGroup>();
                 cfg.CreateMap<Models.OverWorkType, Context.OverWorkType>();
                 cfg.CreateMap<Models.ProductsInColors, Context.ProductsInColors>();
-                cfg.CreateMap<Models.ProductsInDesignTypes, Context.ProductsInDesignTypes>();
+                cfg.CreateMap<Models.ProductDesignsInDesignTypes, Context.ProductDesignsInDesignTypes>();
                 cfg.CreateMap<Models.ProductsInDressGroups, Context.ProductsInDressGroups>();
                 cfg.CreateMap<Models.ProductsInOverWorkTypes, Context.ProductsInOverWorkTypes>();
                 cfg.CreateMap<Models.ProductsInSeasons, Context.ProductsInSeasons>();
@@ -53,7 +53,7 @@ namespace chiffon_back.Controllers
                 cfg.CreateMap<Context.DressGroup, Models.DressGroup>();
                 cfg.CreateMap<Context.OverWorkType, Models.OverWorkType>();
                 cfg.CreateMap<Context.ProductsInColors, Models.ProductsInColors>();
-                cfg.CreateMap<Context.ProductsInDesignTypes, Models.ProductsInDesignTypes>();
+                cfg.CreateMap<Context.ProductDesignsInDesignTypes, Models.ProductDesignsInDesignTypes>();
                 cfg.CreateMap<Context.ProductsInDressGroups, Models.ProductsInDressGroups>();
                 cfg.CreateMap<Context.ProductsInOverWorkTypes, Models.ProductsInOverWorkTypes>();
                 cfg.CreateMap<Context.ProductsInSeasons, Models.ProductsInSeasons>();

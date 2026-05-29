@@ -18,5 +18,16 @@ namespace chiffon_back.Code
             ss = ss.Where(val => val != uuid).ToArray();
             return string.Join(',', ss);
         }
+
+        public static string AppendPhotoUuid(string? uuids, string uuid)
+        {
+            string? s = uuids;
+            if (s == null)
+                s = string.Empty;
+
+            s = s.Trim();
+
+            return s + (s != string.Empty ? "," : "") + uuid;
+        }
     }
 }

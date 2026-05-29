@@ -9,9 +9,7 @@ namespace chiffon_back.Context
     {
         public ChiffonDbContext(DbContextOptions<ChiffonDbContext> options) : base(options)
         {
-            int a = 0;
-            //this.Configuration.ProxyCreationEnabled = true;
-            //LazyLoadingEnabled = true;
+
         }
 
         public DbSet<Color> Colors { get; set; }
@@ -29,8 +27,9 @@ namespace chiffon_back.Context
         public DbSet<PlainDyedType> PlainDyedTypes { get; set; }
         public DbSet<PrintType> PrintTypes { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ProductDesign> ProductDesigns { get; set; }
         public DbSet<ProductsInColors> ProductsInColors { get; set; }
-        public DbSet<ProductsInDesignTypes> ProductsInDesignTypes { get; set; }
+        public DbSet<ProductDesignsInDesignTypes> ProductDesignsInDesignTypes { get; set; }
         public DbSet<ProductsInDressGroups> ProductsInDressGroups { get; set; }
         public DbSet<ProductsInTextileTypes> ProductsInTextileTypes { get; set; }
         public DbSet<ProductsInOverWorkTypes> ProductsInOverWorkTypes { get; set; }
@@ -60,8 +59,9 @@ namespace chiffon_back.Context
             modelBuilder.Entity<PlainDyedType>().ToTable("PlainDyedTypes");
             modelBuilder.Entity<PrintType>().ToTable("PrintTypes");
             modelBuilder.Entity<Product>().ToTable("Products");
+            modelBuilder.Entity<ProductDesign>().ToTable("ProductDesigns");
             modelBuilder.Entity<ProductsInColors>().ToTable("ProductsInColors");
-            modelBuilder.Entity<ProductsInDesignTypes>().ToTable("ProductsInDesignTypes");
+            modelBuilder.Entity<ProductDesignsInDesignTypes>().ToTable("ProductsInDesignTypes");
             modelBuilder.Entity<ProductsInDressGroups>().ToTable("ProductsInDressGroups");
             modelBuilder.Entity<ProductsInTextileTypes>().ToTable("ProductsInTextileTypes");
             modelBuilder.Entity<ProductsInOverWorkTypes>().ToTable("ProductsInOverWorkTypes");

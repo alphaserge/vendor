@@ -127,7 +127,7 @@ namespace chiffon_back.Models
             cfg.CreateMap<Models.DressGroup, Context.DressGroup>();
             cfg.CreateMap<Models.OverWorkType, Context.OverWorkType>();
             cfg.CreateMap<Models.ProductsInColors, Context.ProductsInColors>();
-            cfg.CreateMap<Models.ProductsInDesignTypes, Context.ProductsInDesignTypes>();
+            cfg.CreateMap<Models.ProductDesignsInDesignTypes, Context.ProductDesignsInDesignTypes>();
             cfg.CreateMap<Models.ProductsInDressGroups, Context.ProductsInDressGroups>();
             cfg.CreateMap<Models.ProductsInOverWorkTypes, Context.ProductsInOverWorkTypes>();
             cfg.CreateMap<Models.ProductsInSeasons, Context.ProductsInSeasons>();
@@ -141,7 +141,7 @@ namespace chiffon_back.Models
             cfg.CreateMap<Context.DressGroup, Models.DressGroup>();
             cfg.CreateMap<Context.OverWorkType, Models.OverWorkType>();
             cfg.CreateMap<Context.ProductsInColors, Models.ProductsInColors>();
-            cfg.CreateMap<Context.ProductsInDesignTypes, Models.ProductsInDesignTypes>();
+            cfg.CreateMap<Context.ProductDesignsInDesignTypes, Models.ProductDesignsInDesignTypes>();
             cfg.CreateMap<Context.ProductsInDressGroups, Models.ProductsInDressGroups>();
             cfg.CreateMap<Context.ProductsInOverWorkTypes, Models.ProductsInOverWorkTypes>();
             cfg.CreateMap<Context.ProductsInSeasons, Models.ProductsInSeasons>();
@@ -273,7 +273,7 @@ namespace chiffon_back.Models
                 int[]? idesignTypes = JsonConvert.DeserializeObject<int[]>(filter.DesignTypes);
                 if (idesignTypes != null && idesignTypes!.Length > 0)
                 {
-                    designTypesIds = (from ps in ctx.ProductsInDesignTypes where idesignTypes.Contains(ps.DesignTypeId) select ps.ProductId as int?).Distinct().ToList();
+                    designTypesIds = (from ps in ctx.ProductDesignsInDesignTypes where idesignTypes.Contains(ps.DesignTypeId) select ps.ProductDesignId as int?).Distinct().ToList();
                     query = query.Where(x => designTypesIds.Contains(x.Id));
                 }
 
@@ -587,24 +587,24 @@ namespace chiffon_back.Models
                     }
                 }
 
-                if (product.DesignTypes != null)
+                if (product.DesignTypeId != null)
                 {
-                    foreach (var item in product.DesignTypes)
+                    foreach (var item in product.DesignTypeId)
                     {
-                        Context.ProductsInDesignTypes cv = new Context.ProductsInDesignTypes()
+                        Context.ProductDesignsInDesignTypes cv = new Context.ProductDesignsInDesignTypes()
                         {
-                            ProductId = prod.Id,
+                            ProductDesignId = prod.Id,
                             DesignTypeId = item
                         };
 
-                        ctx.ProductsInDesignTypes.Add(cv);
+                        ctx.ProductDesignsInDesignTypes.Add(cv);
                         ctx.SaveChanges(true);
                     }
                 }
 
-                if (product.DressGroups != null)
+                if (product.DressGroupId != null)
                 {
-                    foreach (var item in product.DressGroups)
+                    foreach (var item in product.DressGroupId)
                     {
                         Context.ProductsInDressGroups cv = new Context.ProductsInDressGroups()
                         {
@@ -617,9 +617,9 @@ namespace chiffon_back.Models
                     }
                 }
 
-                if (product.Seasons != null)
+                if (product.SeasonId != null)
                 {
-                    foreach (var item in product.Seasons)
+                    foreach (var item in product.SeasonId)
                     {
                         Context.ProductsInSeasons cv = new Context.ProductsInSeasons()
                         {
@@ -632,9 +632,9 @@ namespace chiffon_back.Models
                     }
                 }
 
-                if (product.OverWorkTypes != null)
+                if (product.OverWorkTypeId != null)
                 {
-                    foreach (var item in product.OverWorkTypes)
+                    foreach (var item in product.OverWorkTypeId)
                     {
                         Context.ProductsInOverWorkTypes cv = new Context.ProductsInOverWorkTypes()
                         {
@@ -742,26 +742,26 @@ namespace chiffon_back.Models
                         }
                     }
 
-                    ctx.ProductsInDesignTypes.RemoveRange(ctx.ProductsInDesignTypes.Where(x => x.ProductId == prod.Id));
-                    if (product.DesignTypes != null)
+                    ctx.ProductDesignsInDesignTypes.RemoveRange(ctx.ProductDesignsInDesignTypes.Where(x => x.ProductDesignId == prod.Id));
+                    if (product.DesignTypeId != null)
                     {
-                        foreach (var item in product.DesignTypes)
+                        foreach (var item in product.DesignTypeId)
                         {
-                            Context.ProductsInDesignTypes pdt = new Context.ProductsInDesignTypes()
+                            Context.ProductDesignsInDesignTypes pdt = new Context.ProductDesignsInDesignTypes()
                             {
-                                ProductId = prod.Id,
+                                ProductDesignId = prod.Id,
                                 DesignTypeId = item
                             };
 
-                            ctx.ProductsInDesignTypes.Add(pdt);
+                            ctx.ProductDesignsInDesignTypes.Add(pdt);
                             ctx.SaveChanges(true);
                         }
                     }
 
                     ctx.ProductsInDressGroups.RemoveRange(ctx.ProductsInDressGroups.Where(x => x.ProductId == prod.Id));
-                    if (product.DressGroups != null)
+                    if (product.DressGroupId != null)
                     {
-                        foreach (var item in product.DressGroups)
+                        foreach (var item in product.DressGroupId)
                         {
                             Context.ProductsInDressGroups pdg = new Context.ProductsInDressGroups()
                             {
@@ -775,9 +775,9 @@ namespace chiffon_back.Models
                     }
 
                     ctx.ProductsInSeasons.RemoveRange(ctx.ProductsInSeasons.Where(x => x.ProductId == prod.Id));
-                    if (product.Seasons != null)
+                    if (product.SeasonId != null)
                     {
-                        foreach (var item in product.Seasons)
+                        foreach (var item in product.SeasonId)
                         {
                             Context.ProductsInSeasons cv = new Context.ProductsInSeasons()
                             {
@@ -791,9 +791,9 @@ namespace chiffon_back.Models
                     }
 
                     ctx.ProductsInOverWorkTypes.RemoveRange(ctx.ProductsInOverWorkTypes.Where(x => x.ProductId == prod.Id));
-                    if (product.OverWorkTypes != null)
+                    if (product.OverWorkTypeId != null)
                     {
-                        foreach (var item in product.OverWorkTypes)
+                        foreach (var item in product.OverWorkTypeId)
                         {
                             Context.ProductsInOverWorkTypes cv = new Context.ProductsInOverWorkTypes()
                             {

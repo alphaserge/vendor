@@ -292,7 +292,7 @@ namespace chiffon_back.Code
                     prod.FinishingId = null;
                     prod.RollLength = null;
 
-                    ctx.ProductsInDesignTypes.RemoveRange(ctx.ProductsInDesignTypes.Where(x => x.ProductId == prod.Id));
+                    ctx.ProductDesignsInDesignTypes.RemoveRange(ctx.ProductDesignsInDesignTypes.Where(x => x.ProductDesignId == prod.Id));
                     ctx.ProductsInOverWorkTypes.RemoveRange(ctx.ProductsInOverWorkTypes.Where(x => x.ProductId == prod.Id));
                     ctx.ProductsInSeasons.RemoveRange(ctx.ProductsInSeasons.Where(x => x.ProductId == prod.Id));
                     ctx.SaveChanges();
@@ -397,7 +397,7 @@ namespace chiffon_back.Code
                         var data = ctx.DesignTypes.FirstOrDefault(x => x.DesignName.ToLower() == designType);
                         if (data != null)
                         {
-                            ctx.ProductsInDesignTypes.Add(new Context.ProductsInDesignTypes() { DesignTypeId = data.Id, ProductId = prod.Id });
+                            ctx.ProductDesignsInDesignTypes.Add(new Context.ProductDesignsInDesignTypes() { DesignTypeId = data.Id, ProductDesignId = prod.Id });
                         }
                     }
                     ctx.SaveChanges();

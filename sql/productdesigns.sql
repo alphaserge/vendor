@@ -8,6 +8,10 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
+alter table Products drop DF__Products__Create__619B8048
+alter table Products drop column Created
+alter table Products drop column ArtNo
+alter table Products drop column RefNo
 alter table Products drop column ColorNo
 alter table Products drop column ColorName
 alter table Products drop column PhotoDir
@@ -22,16 +26,12 @@ alter table Products drop column [VideoUuids]
 alter table Products drop column [PhotoUuids]
 alter table Products drop column [Price]
 
-
-USE [chiffon]
-GO
-alter table [dbo].[Products] add [PhotoUuid] [varchar](40) NULL
-
+alter table [dbo].[Products] add [PhotoUuids] [varchar](240) NULL
+alter table [dbo].[Products] add [VideoUuids] [varchar](240) NULL
 
 CREATE TABLE [dbo].[ProductDesigns](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[ProductId] [int] NULL,
-	[Created] [datetime] NOT NULL,
+	[ProductId] [int] NOT NULL,
 	[RefNo] [varchar](50) NULL,
 	[ArtNo] [varchar](50) NULL,
 	[Design] [varchar](50) NULL,
@@ -41,7 +41,7 @@ CREATE TABLE [dbo].[ProductDesigns](
 	[Uuid] [varchar](36) NULL,
 	[AllColorsPhotoUuid] [varchar](240) NULL,
 	[PhotoUuids] [varchar](240) NULL,
-	[VideoUuids] [varchar](100) NULL,
+	[VideoUuids] [varchar](240) NULL,
 	[SampleNo] [int] NULL,
  CONSTRAINT [PK_productdesigns] PRIMARY KEY CLUSTERED 
 (
