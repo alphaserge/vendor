@@ -126,7 +126,6 @@ namespace chiffon_back.Models
             cfg.CreateMap<Models.DesignType, Context.DesignType>();
             cfg.CreateMap<Models.DressGroup, Context.DressGroup>();
             cfg.CreateMap<Models.OverWorkType, Context.OverWorkType>();
-            cfg.CreateMap<Models.ProductsInColors, Context.ProductsInColors>();
             cfg.CreateMap<Models.ProductDesignsInDesignTypes, Context.ProductDesignsInDesignTypes>();
             cfg.CreateMap<Models.ProductsInDressGroups, Context.ProductsInDressGroups>();
             cfg.CreateMap<Models.ProductsInOverWorkTypes, Context.ProductsInOverWorkTypes>();
@@ -140,7 +139,6 @@ namespace chiffon_back.Models
             cfg.CreateMap<Context.DesignType, Models.DesignType>();
             cfg.CreateMap<Context.DressGroup, Models.DressGroup>();
             cfg.CreateMap<Context.OverWorkType, Models.OverWorkType>();
-            cfg.CreateMap<Context.ProductsInColors, Models.ProductsInColors>();
             cfg.CreateMap<Context.ProductDesignsInDesignTypes, Models.ProductDesignsInDesignTypes>();
             cfg.CreateMap<Context.ProductsInDressGroups, Models.ProductsInDressGroups>();
             cfg.CreateMap<Context.ProductsInOverWorkTypes, Models.ProductsInOverWorkTypes>();
@@ -152,63 +150,39 @@ namespace chiffon_back.Models
         });
 
 
-        public static IEnumerable<Models.Product> Get(ProductFilter filter)
+        public static IEnumerable<Models.ProductJoinDesign> GetProductsJoinedDesigns(ProductFilter filter, bool shortFiltered)
         {
             ChiffonDbContext ctx = ContextHelper.ChiffonContext();
 
-            //var query = from p in ctx.Products select p;
-            var query = from p in ctx.Products.Where(x => filter.ShowNullPrice == true ? true : x.Price != null)
-                select new Models.Product
+            var query = ctx.Products.Join(
+                ctx.ProductDesigns,
+                prod => prod.Id,
+                des => des.ProductId,
+                (prod, des) => new Models.ProductJoinDesign
                 {
-                    Id = p.Id,
-                    SampleNo = p.SampleNo,
-                    RefNo = p.RefNo,
-                    ArtNo = p.ArtNo,
-                    ItemName = p.ItemName,
-                    Design = p.Design,
-                    //ColorNo = p.ColorNo,
-                    //ColorName = p.ColorName,
-                    PhotoDir = p.PhotoDir,
-                    Price = p.Price,
-                    Price1 = Helper.Round(p.Price * 1.05m, 2),
-                    Price2 = Helper.Round(p.Price * 1.10m, 2),
-                    Stock = p.Stock,
-                    RollLength = p.RollLength,
-                    Weight = p.Weight,
-                    Width = p.Width,
-                    ProductStyleId = p.ProductStyleId,
-                    ProductTypeId = p.ProductTypeId,
-                    PrintTypeId = p.PrintTypeId,
-                    DyeStaffId = p.DyeStaffId,
-                    PlainDyedTypeId = p.PlainDyedTypeId,
-                    FinishingId = p.FinishingId,
-                    VendorId = p.VendorId,
-                    Uuid = p.Uuid,
-                    PhotoUuids = p.PhotoUuids,
-                    VideoUuids = p.VideoUuids,
-                    Vendor = p.Vendor!.VendorName,
-                    ProductStyle = p.ProductStyle!.StyleName,
-                    ProductType = p.ProductType!.TypeName,
-                    PrintType = p.PrintType!.TypeName,
-                    DyeStaff = p.DyeStaff!.DyeStaffName,
-                    Finishing = p.Finishing!.FinishingName,
-                    PlainDyedType = p.PlainDyedType!.PlainDyedTypeName,
-                    Findings = p.Findings,
-                    GSM = p.GSM,
-                    MetersInKG = p.MetersInKG,
-                    FabricConstruction = p.FabricConstruction,
-                    FabricYarnCount = p.FabricYarnCount,
-                    ColorFastness = p.ColorFastness,
-                    TextileTypes = p.ProductsInTextileTypes!.Select(x => new Models.TextileType { Id = x.TextileTypeId, TextileTypeName = x.TextileType.TextileTypeName, TextileTypeNameRu = x.TextileType.TextileTypeNameRu }).ToArray(),
-                    DesignTypes = p.ProductsInDesignTypes!.Select(x => new Models.DesignType { Id = x.DesignTypeId, DesignName = x.DesignType.DesignName }).ToArray(),
-                    DressGroups = p.ProductsInDressGroups!.Select(x => new Models.DressGroup{ Id = x.DressGroupId, DressGroupName = x.DressGroup.DressGroupName}).ToArray(),
-                    OverWorkTypes = p.ProductsInOverWorkTypes!.Select(x => new Models.OverWorkType { Id = x.OverWorkTypeId, OverWorkName = x.OverWorkType.OverWorkName }).ToArray(),
-                    Seasons = p.ProductsInSeasons!.Select(x => new Models.Season { Id = x.SeasonId, SeasonName = x.Season.SeasonName }).ToArray(),
-                    ColorPhotos = new List<ProductColor>(),
-                    ProductPhotos = new List<ProductColor>(),
-                    ProductVideos = new List<ProductColor>(),
-                    //Composition = p.Composition
-                };
+                    ProductId = prod.Id,
+                    ItemName = prod.ItemName,
+                    RollLength = prod.RollLength,
+                    Weight = prod.Weight,
+                    Width = prod.Width,
+                    ProductStyleId = prod.ProductStyleId,
+                    ProductTypeId = prod.ProductTypeId,
+                    DyeStaffId = prod.DyeStaffId,
+                    FinishingId = prod.FinishingId,
+                    Uuid = prod.Uuid,
+                    GSM = prod.GSM,
+                    MetersInKG = prod.MetersInKG,
+                    FabricConstruction = prod.FabricConstruction,
+                    FabricYarnCount = prod.FabricYarnCount,
+                    ColorFastness = prod.ColorFastness,
+                    ProductDesignId = des.Id,
+                    SampleNo = des.SampleNo,
+                    ArtNo = des.ArtNo,
+                    RefNo = des.RefNo,
+                    Price = des.Price,
+                    PrintTypeId = des.PrintTypeId,
+                    PlainDyedTypeId = des.PlainDyedTypeId,
+                });
 
             if (filter.VendorId > 2)
             {
@@ -242,542 +216,163 @@ namespace chiffon_back.Models
                     query = query.Where(x => x.Design!.ToLower().Contains(filter.Design.ToLower()));
                 }
 
-                List<int?> colorsIds = new List<int?>();
-                int[]? icolors = JsonConvert.DeserializeObject<int[]>(filter.Colors);
-                if (icolors!=null && icolors!.Length>0)
+                if (!shortFiltered)
                 {
-                    colorsIds = (from cv in ctx.ColorVariants
-                                    join cc in ctx.ColorVariantsInColors on cv.Id equals cc.ColorVariantId
-                                    where icolors.Contains(cc.ColorId)
-                                    select cv.ProductId as int?).Distinct().ToList();
-                    query = query.Where(x => colorsIds.Contains(x.Id));
+                    int[]? icolors = JsonConvert.DeserializeObject<int[]>(filter.Colors);
+                    if (icolors != null && icolors!.Length > 0)
+                    {
+                        List<int?> productDesignIds = (from cv in ctx.ColorVariants
+                                                       join cc in ctx.ColorVariantsInColors on cv.Id equals cc.ColorVariantId
+                                                       where icolors.Contains(cc.ColorId)
+                                                       select cv.ProductDesignId as int?).Distinct().ToList();
+                        query = query.Where(x => productDesignIds.Contains(x.ProductDesignId));
+                    }
+
+                    int[]? iseasons = JsonConvert.DeserializeObject<int[]>(filter.Seasons);
+                    if (iseasons != null && iseasons!.Length > 0)
+                    {
+                        List<int?> productIds = (from ps in ctx.ProductsInSeasons where iseasons.Contains(ps.SeasonId) select ps.ProductId as int?).Distinct().ToList();
+                        query = query.Where(x => productIds.Contains(x.ProductId));
+                    }
+
+                    int[]? ioverworks = JsonConvert.DeserializeObject<int[]>(filter.Overworks);
+                    if (ioverworks != null && ioverworks!.Length > 0)
+                    {
+                        List<int?> productIds = (from po in ctx.ProductsInOverWorkTypes where ioverworks.Contains(po.OverWorkTypeId) select po.ProductId as int?).Distinct().ToList();
+                        query = query.Where(x => productIds.Contains(x.ProductId));
+                    }
+
+                    int[]? idesignTypes = JsonConvert.DeserializeObject<int[]>(filter.DesignTypes);
+                    if (idesignTypes != null && idesignTypes!.Length > 0)
+                    {
+                        List<int?> designIds = (from ps in ctx.ProductDesignsInDesignTypes where idesignTypes.Contains(ps.DesignTypeId) select ps.ProductDesignId as int?).Distinct().ToList();
+                        query = query.Where(x => designIds.Contains(x.ProductDesignId));
+                    }
+
+                    int[]? idressGroups = JsonConvert.DeserializeObject<int[]>(filter.DressGroups);
+                    if (idesignTypes != null && idesignTypes!.Length > 0)
+                    {
+                        List<int?> productIds = (from ps in ctx.ProductsInDressGroups where idressGroups.Contains(ps.DressGroupId) select ps.ProductId as int?).Distinct().ToList();
+                        query = query.Where(x => productIds.Contains(x.ProductId));
+                    }
+
+                    int[]? itextileTypes = JsonConvert.DeserializeObject<int[]>(filter.TextileTypes);
+                    if (itextileTypes != null && itextileTypes != null && itextileTypes!.Length > 0)
+                    {
+                        List<int?> productIds = (from ps in ctx.ProductsInTextileTypes where itextileTypes!.Contains(ps.TextileTypeId) select ps.ProductId as int?).Distinct().ToList();
+                        query = query.Where(x => productIds.Contains(x.ProductId));
+                    }
+
+                    int[]? iprintTypes = JsonConvert.DeserializeObject<int[]>(filter.PrintTypes);
+                    if (iprintTypes != null && iprintTypes != null && iprintTypes!.Length > 0)
+                    {
+                        query = query.Where(x => x.PrintTypeId == iprintTypes[0]);
+                    }
+
+                    int[]? iproductTypes = JsonConvert.DeserializeObject<int[]>(filter.ProductTypes);
+                    if (iproductTypes != null && iproductTypes != null && iproductTypes!.Length > 0)
+                    {
+                        query = query.Where(x => x.ProductTypeId == iproductTypes[0]);
+                    }
                 }
-
-                List<int?> seasonsIds = new List<int?>();
-                int[]? iseasons = JsonConvert.DeserializeObject<int[]>(filter.Seasons);
-                if (iseasons != null && iseasons!.Length>0)
-                {
-                    seasonsIds = (from ps in ctx.ProductsInSeasons where iseasons.Contains(ps.SeasonId) select ps.ProductId as int?).Distinct().ToList();
-                    query = query.Where(x => seasonsIds.Contains(x.Id));
-                }
-
-                List<int?> overworkIds = new List<int?>();
-                int[]? ioverworks = JsonConvert.DeserializeObject<int[]>(filter.Overworks);
-                if (ioverworks != null && ioverworks!.Length>0)
-                {
-                    overworkIds = (from po in ctx.ProductsInOverWorkTypes where ioverworks.Contains(po.OverWorkTypeId) select po.ProductId as int?).Distinct().ToList();
-                    query = query.Where(x => overworkIds.Contains(x.Id));
-                }
-
-                List<int?> designTypesIds = new List<int?>();
-                int[]? idesignTypes = JsonConvert.DeserializeObject<int[]>(filter.DesignTypes);
-                if (idesignTypes != null && idesignTypes!.Length > 0)
-                {
-                    designTypesIds = (from ps in ctx.ProductDesignsInDesignTypes where idesignTypes.Contains(ps.DesignTypeId) select ps.ProductDesignId as int?).Distinct().ToList();
-                    query = query.Where(x => designTypesIds.Contains(x.Id));
-                }
-
-                List<int?> dressGroupsIds = new List<int?>();
-                int[]? idressGroups = JsonConvert.DeserializeObject<int[]>(filter.DressGroups);
-                if (idesignTypes != null && idesignTypes!.Length > 0)
-                {
-                    dressGroupsIds = (from ps in ctx.ProductsInDressGroups where idressGroups.Contains(ps.DressGroupId) select ps.ProductId as int?).Distinct().ToList();
-                    query = query.Where(x => dressGroupsIds.Contains(x.Id));
-                }
-
-                List<int?> textileTypesIds = new List<int?>();
-                int[]? itextileTypes = JsonConvert.DeserializeObject<int[]>(filter.TextileTypes);
-                if (itextileTypes != null && itextileTypes != null && itextileTypes!.Length > 0)
-                {
-                    //!!!??????
-                    textileTypesIds = (from ps in ctx.ProductsInTextileTypes where itextileTypes!.Contains(ps.TextileTypeId) select ps.ProductId as int?).Distinct().ToList();
-                    query = query.Where(x => textileTypesIds.Contains(x.Id));
-                }
-
-                List<int?> printTypesIds = new List<int?>();
-                int[]? iprintTypes = JsonConvert.DeserializeObject<int[]>(filter.PrintTypes);
-                if (iprintTypes != null && iprintTypes != null && iprintTypes!.Length > 0)
-                {
-                    query = query.Where(x => x.PrintTypeId == iprintTypes[0]);
-                }
-
-                List<int?> productTypesIds = new List<int?>();
-                int[]? iproductTypes = JsonConvert.DeserializeObject<int[]>(filter.ProductTypes);
-                if (iproductTypes != null && iproductTypes != null && iproductTypes!.Length > 0)
-                {
-                    query = query.Where(x => x.ProductTypeId == iproductTypes[0]);
-                }
-
-                //List<int?> ids = colorsIds.Union(seasonsIds).Union(overworkIds).Union(designTypesIds).Distinct().ToList();
-                //if (ids.Count > 0)
-                //    query = query.Where(x => ids.Contains(x.Id));
-
             }
 
             var prods = query.ToList();
 
             foreach (var p in prods)
             {
-                // 1) ALL COLORS
-                int id = 1;
-                if (!String.IsNullOrEmpty(p.PhotoUuids))
-                {
-                    foreach (string uuid in PhotoHelper.GetPhotoUuids(p.PhotoUuids))
-                    {
-                        var imageFiles = DirectoryHelper.GetImageFiles(uuid);
-                        p.ProductPhotos.Add(new ProductColor()
-                        {
-                            ColorNames = "ALL COLORS",
-                            ColorVariantId = -id,
-                            ColorNo = null,
-                            ImagePath = imageFiles,
-                            IsProduct = true,
-                            IsVideo = false,
-
-                        });
-                        id++;
-                    }
-                }
-
-                // VIDEO
-                if (!String.IsNullOrEmpty(p.VideoUuids))
-                {
-                    foreach (string uuid in PhotoHelper.GetPhotoUuids(p.VideoUuids))
-                    {
-                        var imageFiles = DirectoryHelper.GetImageFiles(uuid);
-                        p.ProductVideos.Add(new ProductColor()
-                        {
-                            ColorNames = "VIDEO",
-                            ColorVariantId = -id,
-                            ColorNo = null,
-                            ImagePath = imageFiles,
-                            IsProduct = false,
-                            IsVideo = true,
-                        });
-                        id++;
-                    }
-                }
-
-                // 2) COLOR VARIANTS
-                foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == p.Id).ToList())
-                {
-                    var imageFiles = DirectoryHelper.GetImageFiles(cv.Uuid!);
-                    var colorsIds = ctx.ColorVariantsInColors.Where(cvc => cvc.ColorVariantId == cv.Id).Select(x => (int?)x.ColorId).ToList();
-                    var colors = ctx.Colors.Where(x => colorsIds.Contains(x.Id)).OrderBy(x => x.ColorName).ToList();
-                    string colorNames = String.Join(", ", colors.Select(col => col.ColorName));
-
-                    p.ColorPhotos.Add(new ProductColor()
-                    {
-                        ColorNames = colorNames,
-                        ColorVariantId = cv.Id,
-                        ColorNo = cv.Num,
-                        Quantity = cv.Quantity,
-                        ProductId = p.Id,
-                        IsProduct = false,
-                        IsVideo = false,
-                        ColorIds = colorsIds,
-                        ImagePath = imageFiles,
-                        Uuid = cv.Uuid,
-                    });
-                }
-
-                if (p.ProductPhotos.Count + p.ColorPhotos.Count == 0)
-                {
-                    p.ColorPhotos.Add(new ProductColor()
-                    {
-                        ColorNames = "ALL COLORS",
-                        ColorVariantId = -id,
-                        ColorNo = null,
-                        ImagePath = new List<string>() { @"colors\nopicture.png" }
-                    });
-                }
+                p.VideoPath = DirectoryHelper.GetImageFile(p.VideoUuid);
+                p.PhotoPath = DirectoryHelper.GetImageFile(p.PhotoUuid);
             }
 
             return prods;
         }
 
-        public static Models.Product? Get(string id)
+        public static Models.Product? Get(int id)
         {
             ChiffonDbContext ctx = ContextHelper.ChiffonContext();
 
-            var query = from p in ctx.Products
-                        where p.Id.ToString() == id
-                        select new Models.Product
-                        {
-                            Id = p.Id,
-                            SampleNo = p.SampleNo,
-                            RefNo = p.RefNo,
-                            ArtNo = p.ArtNo,
-                            ItemName = p.ItemName,
-                            Design = p.Design,
-                            //Composition = p.Composition,
-                            Price = p.Price,
-                            Stock = p.Stock,
-                            RollLength = p.RollLength,
-                            Weight = p.Weight,
-                            Width = p.Width,
-                            Uuid = p.Uuid,
-                            PhotoUuids = p.PhotoUuids,
-                            VideoUuids = p.VideoUuids,
-                            ProductStyleId = p.ProductStyleId,
-                            ProductTypeId = p.ProductTypeId,
-                            PrintTypeId = p.PrintTypeId,
-                            DyeStaffId = p.DyeStaffId,
-                            PlainDyedTypeId = p.PlainDyedTypeId,
-                            FinishingId = p.FinishingId,
-                            VendorId = p.VendorId,
-                            Vendor = p.Vendor!.VendorName,
-                            ProductStyle = ctx.ProductStyles.FirstOrDefault(x => x.Id == p.ProductStyleId).StyleName,
-                            ProductType = ctx.ProductTypes.FirstOrDefault(x => x.Id == p.ProductTypeId).TypeName,
-                            PrintType = ctx.PrintTypes.FirstOrDefault(x => x.Id == p.PrintTypeId).TypeName,
-                            DyeStaff = ctx.DyeStaffs.FirstOrDefault(x => x.Id == p.DyeStaffId).DyeStaffName,
-                            Finishing = ctx.Finishings.FirstOrDefault(x => x.Id == p.FinishingId).FinishingName,
-                            PlainDyedType = ctx.PlainDyedTypes.FirstOrDefault(x => x.Id == p.PlainDyedTypeId).PlainDyedTypeName,
-                            DesignTypeIds = p.ProductsInDesignTypes!.Select(x => x.DesignTypeId).ToArray(),
-                            DressGroupIds = p.ProductsInDressGroups!.Select(x => x.DressGroupId).ToArray(),
-                            CompositionValues = p.ProductsInTextileTypes!.Select(x => new CompositionValue { TextileTypeId = x.TextileTypeId, Value = x.Value }).ToArray(),
-                            OverWorkTypeIds = p.ProductsInOverWorkTypes!.Select(x => x.OverWorkTypeId).ToArray(),
-                            SeasonIds = p.ProductsInSeasons!.Select(x => x.SeasonId).ToArray(),
-
-                            ColorPhotos = new List<ProductColor>(),
-                            ProductPhotos = new List<ProductColor>(),
-                            ProductVideos = new List<ProductColor>(),
-
-                            Findings = p.Findings,
-                            GSM = p.GSM,
-                            MetersInKG = p.MetersInKG,
-                            FabricConstruction = p.FabricConstruction,
-                            FabricYarnCount = p.FabricYarnCount,
-                            FabricShrinkage = p.FabricShrinkage,
-                            ColorFastness = p.ColorFastness,
-                            HSCode = p.HSCode,
-                        };
-
-            var prod = query.FirstOrDefault();
-
-            if (prod != null)
+            Models.Product prod = new Models.Product();
+            var product = ctx.Products.FirstOrDefault(x => x.Id == id);
+            if (product != null)
             {
-                // 1) ALL COLORS
-                int colorId = 1;
-                foreach (string uuid in PhotoHelper.GetPhotoUuids(prod.PhotoUuids))
-                {
-                    var imageFiles = DirectoryHelper.GetImageFiles(uuid);
-                    prod.ProductPhotos.Add(new ProductColor()
-                    {
-                        ColorNames = "PRODUCT",
-                        ColorVariantId = -colorId,
-                        ColorNo = null,
-                        Uuid = uuid,
-                        ProductId = prod.Id,
-                        Price = prod.Price,
-                        IsProduct = true,
-                        IsVideo = false,
-                        ImagePath = imageFiles
-                    });
-                    colorId++;
-                }
-
-                // VIDEO
-                foreach (string uuid in PhotoHelper.GetPhotoUuids(prod.VideoUuids))
-                {
-                    var imageFiles = DirectoryHelper.GetImageFiles(uuid);
-                    prod.ProductVideos.Add(new ProductColor()
-                    {
-                        ColorNames = "VIDEO",
-                        ColorVariantId = -colorId,
-                        ColorNo = null,
-                        Uuid = uuid,
-                        ProductId = prod.Id,
-                        IsProduct = false,
-                        IsVideo = true,
-                        ImagePath = imageFiles
-                    });
-                    colorId++;
-                }
-
-                // 2) COLOR VARIANTS
-                foreach (var cv in ctx.ColorVariants.Where(x => x.ProductId == prod.Id).ToList())
-                {
-                    var colorsIds = ctx.ColorVariantsInColors.Where(cvc => cvc.ColorVariantId == cv.Id).Select(x => (int?)x.ColorId).ToList();
-                    var colors = ctx.Colors.Where(x=>colorsIds.Contains(x.Id)).OrderBy(x => x.ColorName).ToList();
-                    string colorNames = String.Join(", ", colors.Select(col => col.ColorName));
-                    prod!.ColorPhotos.Add(new ProductColor()
-                    {
-                        ColorNames = colorNames,
-                        ColorVariantId = cv.Id,
-                        ColorNo = cv.Num,
-                        ColorIds = colorsIds,
-                        Quantity = cv.Quantity,
-                        ProductId = prod.Id,
-                        Price = cv.Price,
-                        IsProduct = false,
-                        IsVideo = false,
-                        Uuid = cv.Uuid,
-                        ImagePath = DirectoryHelper.GetImageFiles(cv.Uuid!)
-                    });
-                }
+                prod = config.CreateMapper().Map<Models.Product>(product);
             }
 
             return prod;
         }
-   
-        public static int? Post(Models.PostProduct product)
+
+        public static int? Post(Models.PostProduct post)
         {
-            ChiffonDbContext ctx = ContextHelper.ChiffonContext();
-
-            try
-            {
-                int? sampleNo = ctx.Products.Max(x => x.SampleNo);
-                if (sampleNo == null)
-                    sampleNo = 2600000;
-                
-                Context.Product prod = config.CreateMapper()
-                    .Map<Context.Product>(product);
-
-                prod.SampleNo = sampleNo+1;
-                prod.Created = DateTime.Now;
-                prod.Weight = product.Weight;
-                prod.Width = product.Width;
-                prod.MetersInKG = product.MetersInKG;
-                //prod.PlainDyedTypeId = product.PlainDyedTypeId;
-                prod.ProductTypeId = product.ProductTypeId;
-                prod.ColorFastness = product.ColorFastness;
-                prod.FabricConstruction = product.FabricConstruction;
-                prod.FabricShrinkage = product.FabricShrinkage;
-                prod.FabricYarnCount = product.FabricYarnCount;
-                prod.Findings = product.Findings;
-                prod.HSCode = product.HSCode;
-                prod.DyeStaffId = product.DyeStaffId;
-
-                //prod.ProductStyleId = product.ProductStyleId;
-
-                prod.VendorId = product.VendorId != null ? product.VendorId.Value : -1;
-                //prod.RollLength = product.RollLength;
-                //prod.GSM = product.GSM;
-                //prod.PrintTypeId = product.PrintTypeId;
-                prod.FinishingId = product.FinishingId;
-
-                ctx.Products.Add(prod);
-                ctx.SaveChanges();
-
-                if (product.ColorVariants != null)
-                {
-                    foreach (var item in product.ColorVariants.Where(x => x.ColorNo != null && x.Quantity != null))
-                    {
-                        Context.ColorVariant cv = new Context.ColorVariant()
-                        {
-                            ProductId = prod.Id,
-                            Uuid = item.Uuid,
-                            Num = item.ColorNo == null ? 0 : item.ColorNo.Value,
-                            Quantity = item.Quantity,
-                        };
-
-                        ctx.ColorVariants.Add(cv);
-                        ctx.SaveChanges(true);
-
-                        foreach (var colorId in item.ColorIds != null ? item.ColorIds : [])
-                        {
-                            ctx.ColorVariantsInColors.Add(new Context.ColorVariantsInColors()
-                            {
-                                ColorVariantId = cv.Id,
-                                ColorId = colorId,
-                            });
-                        }
-                        ctx.SaveChanges(true);
-                    }
-                }
-
-                if (product.DesignTypeId != null)
-                {
-                    foreach (var item in product.DesignTypeId)
-                    {
-                        Context.ProductDesignsInDesignTypes cv = new Context.ProductDesignsInDesignTypes()
-                        {
-                            ProductDesignId = prod.Id,
-                            DesignTypeId = item
-                        };
-
-                        ctx.ProductDesignsInDesignTypes.Add(cv);
-                        ctx.SaveChanges(true);
-                    }
-                }
-
-                if (product.DressGroupId != null)
-                {
-                    foreach (var item in product.DressGroupId)
-                    {
-                        Context.ProductsInDressGroups cv = new Context.ProductsInDressGroups()
-                        {
-                            ProductId = prod.Id,
-                            DressGroupId = item
-                        };
-
-                        ctx.ProductsInDressGroups.Add(cv);
-                        ctx.SaveChanges(true);
-                    }
-                }
-
-                if (product.SeasonId != null)
-                {
-                    foreach (var item in product.SeasonId)
-                    {
-                        Context.ProductsInSeasons cv = new Context.ProductsInSeasons()
-                        {
-                            ProductId = prod.Id,
-                            SeasonId = item
-                        };
-
-                        ctx.ProductsInSeasons.Add(cv);
-                        ctx.SaveChanges(true);
-                    }
-                }
-
-                if (product.OverWorkTypeId != null)
-                {
-                    foreach (var item in product.OverWorkTypeId)
-                    {
-                        Context.ProductsInOverWorkTypes cv = new Context.ProductsInOverWorkTypes()
-                        {
-                            ProductId = prod.Id,
-                            OverWorkTypeId = item
-                        };
-
-                        ctx.ProductsInOverWorkTypes.Add(cv);
-                        ctx.SaveChanges(true);
-                    }
-                }
-
-                if (product.CompositionValues != null)
-                {
-                    foreach (var item in product.CompositionValues)
-                    {
-                        Context.ProductsInTextileTypes pt = new Context.ProductsInTextileTypes()
-                        {
-                            ProductId = prod.Id,
-                            TextileTypeId = item.TextileTypeId.Value,
-                            Value = item.Value.Value
-                        };
-
-                        ctx.ProductsInTextileTypes.Add(pt);
-                        ctx.SaveChanges(true);
-                    }
-                }
-
-                return prod.Id;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-
+            return SaveProduct(post);
         }
 
-        public static int? Update(Models.PostProduct product)
+        public static int? Update(Models.PostProduct post)
+        {
+            if (post.Product.Id != null)
+            {
+                return SaveProduct(post);
+            }
+            return -1;
+        }
+        
+        public static int SaveProduct(Models.PostProduct post)
         {
             ChiffonDbContext ctx = ContextHelper.ChiffonContext();
 
             try
             {
-                Context.Product? prod = ctx.Products.Where(x => x.Id == product.Id).FirstOrDefault();
+                Context.Product? prod = null;
+
+                if (post.Product.Id != null)
+                {
+                    prod = ctx.Products.FirstOrDefault(x => x.Id == post.Product.Id);
+                }
+                else
+                {
+                    prod = config.CreateMapper().Map<Context.Product>(post.Product);
+                    ctx.Products.Add(prod);
+                }
+
                 if (prod != null)
                 {
-                    prod.ArtNo = product.ArtNo;
-                    prod.RefNo = product.RefNo;
-                    prod.Design = product.Design;
-                    prod.ItemName = product.ItemName;
-                    prod.Price = product.Price;
-                    prod.Stock = product.Stock;
-                    prod.RollLength = product.RollLength;
-                    prod.ProductStyleId = product.ProductStyleId;
-                    prod.ProductTypeId = product.ProductTypeId;
-                    prod.VendorId = product.VendorId != null ? product.VendorId.Value : -1;
-                    prod.Weight = product.Weight;
-                    prod.Width = product.Width;
-                    prod.RollLength = product.RollLength;
-                    prod.GSM = product.GSM;
-                    prod.MetersInKG = product.MetersInKG;
-                    prod.ColorFastness = product.ColorFastness;
-                    prod.FabricConstruction = product.FabricConstruction;
-                    prod.FabricShrinkage = product.FabricShrinkage;
-                    prod.FabricYarnCount = product.FabricYarnCount;
-                    prod.Findings = product.Findings;
-                    prod.HSCode = product.HSCode;
-                    prod.PrintTypeId = product.PrintTypeId;
-                    prod.PlainDyedTypeId = product.PlainDyedTypeId;
-                    prod.DyeStaffId = product.DyeStaffId;
-                    prod.FinishingId = product.FinishingId;
-                    //prod.Composition = product.Composition != null ? product.Composition.ToLower() : null;
+                    prod.Weight = post.Product.Weight;
+                    prod.Width = post.Product.Width;
+                    prod.MetersInKG = post.Product.MetersInKG;
+                    prod.ProductTypeId = post.Product.ProductTypeId;
+                    prod.ColorFastness = post.Product.ColorFastness;
+                    prod.FabricConstruction = post.Product.FabricConstruction;
+                    prod.FabricShrinkage = post.Product.FabricShrinkage;
+                    prod.FabricYarnCount = post.Product.FabricYarnCount;
+                    prod.HSCode = post.Product.HSCode;
+                    prod.DyeStaffId = post.Product.DyeStaffId;
+                    prod.ProductStyleId = post.Product.ProductStyleId;
+                    prod.RollLength = post.Product.RollLength;
+                    prod.GSM = post.Product.GSM;
+                    prod.FinishingId = post.Product.FinishingId;
+                    ctx.Products.Add(prod);
                     ctx.SaveChanges();
 
-                    if (product.ColorVariants != null)
-                    {
-                        foreach (var item in product.ColorVariants.Where(x => x.ColorNo != null)) //&& x.Quantity != null))
-                        {
-                            Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.ColorVariantId);
-                            if (cv == null)
-                            {
-                                cv = new Context.ColorVariant()
-                                {
-                                    ProductId = prod.Id,
-                                };
-                                ctx.ColorVariants.Add(cv);
-                            }
-                            cv.Uuid = item.Uuid;
-                            cv.Num = item.ColorNo == null ? 0 : item.ColorNo.Value;
-                            cv.Quantity = item.Quantity;
-                            cv.Price = item.Price;
-                            ctx.SaveChanges(true);
-
-                            ctx.ColorVariantsInColors.RemoveRange(ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == cv.Id));
-                            foreach (var colorId in item.ColorIds != null ? item.ColorIds : [])
-                            {
-                                Context.ColorVariantsInColors? colVarInColors = new Context.ColorVariantsInColors()
-                                {
-                                    ColorVariantId = cv.Id,
-                                    ColorId = colorId,
-                                };
-                                ctx.ColorVariantsInColors.Add(colVarInColors);
-                            }
-                            ctx.SaveChanges(true);
-                        }
-                    }
-
-                    ctx.ProductDesignsInDesignTypes.RemoveRange(ctx.ProductDesignsInDesignTypes.Where(x => x.ProductDesignId == prod.Id));
-                    if (product.DesignTypeId != null)
-                    {
-                        foreach (var item in product.DesignTypeId)
-                        {
-                            Context.ProductDesignsInDesignTypes pdt = new Context.ProductDesignsInDesignTypes()
-                            {
-                                ProductDesignId = prod.Id,
-                                DesignTypeId = item
-                            };
-
-                            ctx.ProductDesignsInDesignTypes.Add(pdt);
-                            ctx.SaveChanges(true);
-                        }
-                    }
-
                     ctx.ProductsInDressGroups.RemoveRange(ctx.ProductsInDressGroups.Where(x => x.ProductId == prod.Id));
-                    if (product.DressGroupId != null)
+                    if (post.DressGroupId != null)
                     {
-                        foreach (var item in product.DressGroupId)
+                        foreach (var item in post.DressGroupId)
                         {
-                            Context.ProductsInDressGroups pdg = new Context.ProductsInDressGroups()
+                            Context.ProductsInDressGroups cv = new Context.ProductsInDressGroups()
                             {
                                 ProductId = prod.Id,
                                 DressGroupId = item
                             };
 
-                            ctx.ProductsInDressGroups.Add(pdg);
+                            ctx.ProductsInDressGroups.Add(cv);
                             ctx.SaveChanges(true);
                         }
                     }
 
                     ctx.ProductsInSeasons.RemoveRange(ctx.ProductsInSeasons.Where(x => x.ProductId == prod.Id));
-                    if (product.SeasonId != null)
+                    if (post.SeasonId != null)
                     {
-                        foreach (var item in product.SeasonId)
+                        foreach (var item in post.SeasonId)
                         {
                             Context.ProductsInSeasons cv = new Context.ProductsInSeasons()
                             {
@@ -791,9 +386,9 @@ namespace chiffon_back.Models
                     }
 
                     ctx.ProductsInOverWorkTypes.RemoveRange(ctx.ProductsInOverWorkTypes.Where(x => x.ProductId == prod.Id));
-                    if (product.OverWorkTypeId != null)
+                    if (post.OverWorkTypeId != null)
                     {
-                        foreach (var item in product.OverWorkTypeId)
+                        foreach (var item in post.OverWorkTypeId)
                         {
                             Context.ProductsInOverWorkTypes cv = new Context.ProductsInOverWorkTypes()
                             {
@@ -807,87 +402,31 @@ namespace chiffon_back.Models
                     }
 
                     ctx.ProductsInTextileTypes.RemoveRange(ctx.ProductsInTextileTypes.Where(x => x.ProductId == prod.Id));
-                    if (product.CompositionValues != null)
+                    if (post.CompositionValues != null)
                     {
-                        foreach (var item in product.CompositionValues)
+                        var values = post.CompositionValues.Where(x => x.TextileTypeId != null && x.Value != null);
+                        foreach (var item in values)
                         {
-                            if (item.TextileTypeId != null && item.Value != null)
+                            Context.ProductsInTextileTypes pt = new Context.ProductsInTextileTypes()
                             {
-                                Context.ProductsInTextileTypes cv = new Context.ProductsInTextileTypes()
-                                {
-                                    ProductId = prod.Id,
-                                    TextileTypeId = item.TextileTypeId.Value,
-                                    Value = item.Value.Value
-                                };
+                                ProductId = prod.Id,
+                                TextileTypeId = item.TextileTypeId!.Value,
+                                Value = item.Value!.Value
+                            };
 
-                                ctx.ProductsInTextileTypes.Add(cv);
-                                ctx.SaveChanges(true);
-                            }
+                            ctx.ProductsInTextileTypes.Add(pt);
+                            ctx.SaveChanges(true);
                         }
                     }
-
+                    return prod.Id;
                 }
-
-                return product.Id;
+                return -1;
             }
             catch (Exception ex)
             {
-                return null;
+                return -1;
             }
 
         }
-
-        public static IEnumerable<ProductItemName> ItemNames()
-        {
-            ChiffonDbContext ctx = ContextHelper.ChiffonContext();
-
-            List<ProductItemName> itemNames = new List<ProductItemName>();
-
-            var textiles = ctx.TextileTypes.ToDictionary(u => u.Id, u => u.TextileTypeName);
-
-            var list = (from p in ctx.Products orderby p.ItemName select p.ItemName).Distinct().ToList();
-
-            foreach (var itemName in list)
-            {
-                var product = ctx.Products.FirstOrDefault(x => x.ItemName == itemName);
-                if (product != null) {
-                    int[] seasonId = ctx.ProductsInSeasons.Where(x => x.ProductId == product.Id).Select(x => x.SeasonId).ToArray();
-                    int[] dressGroupsId = ctx.ProductsInDressGroups.Where(x => x.ProductId == product.Id).Select(x => x.DressGroupId).ToArray();
-                    itemNames.Add(new ProductItemName()
-                    {
-                        ProductId = product.Id,
-                        ItemName = itemName,
-                        ColorFastness = product.ColorFastness,
-                        DyeStaff = product.DyeStaffId == null ? "" : ctx.DyeStaffs.FirstOrDefault(x=>x.Id==product.DyeStaffId).DyeStaffName,
-                        DyeStaffId = product.DyeStaffId,
-                        FabricConstruction = product.FabricConstruction,
-                        FabricShrinkage = product.FabricShrinkage,
-                        FabricYarnCount = product.FabricYarnCount,
-                        Findings = product.Findings,
-                        FinishingId = product.FinishingId,
-                        GSM = product.GSM,
-                        HSCode = product.HSCode,
-                        SeasonsId = seasonId,
-                        DressGroupsId = dressGroupsId,
-                        ProductStyleId = product.ProductStyleId,
-                        ProductTypeId = product.ProductTypeId,
-                        PlainDyedTypeId = product.PlainDyedTypeId,
-                        ProductStyle = product.ProductStyleId == null ? "" : ctx.ProductStyles.FirstOrDefault(x => x.Id == product.ProductStyleId).StyleName,
-                        ProductType = product.ProductTypeId == null ? "" : ctx.ProductTypes.FirstOrDefault(x => x.Id == product.ProductTypeId).TypeName,
-                        PlainDyedType = product.PlainDyedTypeId == null ? "" : ctx.PlainDyedTypes.FirstOrDefault(x => x.Id == product.PlainDyedTypeId).PlainDyedTypeName,
-                        Weight = product.Weight,
-                        Width = product.Width,
-                        Season = String.Join(", ", ctx.Seasons.Where(x => seasonId.Contains(x.Id)).Select(x => x.SeasonName)),
-                        DressGroup = String.Join(", ", ctx.DressGroups.Where(x => dressGroupsId.Contains(x.Id)).Select(x => x.DressGroupName)),
-                        Composition = ctx.ProductsInTextileTypes.Where(x => x.ProductId == product.Id)
-                            .Select(x => new CompositionValue { TextileTypeId = x.TextileTypeId, Value = x.Value, TextileName = textiles[x.TextileTypeId] })
-                            .ToArray(),
-                    });
-                }
-            }
-
-            return itemNames;
-        }
-
     }
 }

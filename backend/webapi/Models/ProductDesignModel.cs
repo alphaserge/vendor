@@ -137,47 +137,29 @@ namespace chiffon_back.Models
             }
 
         }
-/*
-        public static int? Update(Models.PostProduct product)
+
+        public static int? Update(Models.PostProductDesign productDesign)
         {
             ChiffonDbContext ctx = ContextHelper.ChiffonContext();
 
             try
             {
-                Context.Product? prod = ctx.Products.Where(x => x.Id == product.Id).FirstOrDefault();
+                Context.ProductDesign? prod = ctx.ProductDesigns.Where(x => x.Id == productDesign.Id).FirstOrDefault();
                 if (prod != null)
                 {
-                    prod.ArtNo = product.ArtNo;
-                    prod.RefNo = product.RefNo;
-                    prod.Design = product.Design;
-                    prod.ItemName = product.ItemName;
-                    prod.Price = product.Price;
-                    prod.Stock = product.Stock;
-                    prod.RollLength = product.RollLength;
-                    prod.ProductStyleId = product.ProductStyleId;
-                    prod.ProductTypeId = product.ProductTypeId;
-                    prod.VendorId = product.VendorId != null ? product.VendorId.Value : -1;
-                    prod.Weight = product.Weight;
-                    prod.Width = product.Width;
-                    prod.RollLength = product.RollLength;
-                    prod.GSM = product.GSM;
-                    prod.MetersInKG = product.MetersInKG;
-                    prod.ColorFastness = product.ColorFastness;
-                    prod.FabricConstruction = product.FabricConstruction;
-                    prod.FabricShrinkage = product.FabricShrinkage;
-                    prod.FabricYarnCount = product.FabricYarnCount;
-                    prod.Findings = product.Findings;
-                    prod.HSCode = product.HSCode;
-                    prod.PrintTypeId = product.PrintTypeId;
-                    prod.PlainDyedTypeId = product.PlainDyedTypeId;
-                    prod.DyeStaffId = product.DyeStaffId;
-                    prod.FinishingId = product.FinishingId;
+                    prod.ArtNo = productDesign.ArtNo;
+                    prod.RefNo = productDesign.RefNo;
+                    prod.Design = productDesign.Design;
+                    prod.Price = productDesign.Price;
+                    prod.VendorId = productDesign.VendorId != null ? productDesign.VendorId.Value : -1;
+                    prod.PrintTypeId = productDesign.PrintTypeId;
+                    prod.PlainDyedTypeId = productDesign.PlainDyedTypeId;
                     //prod.Composition = product.Composition != null ? product.Composition.ToLower() : null;
                     ctx.SaveChanges();
 
-                    if (product.ColorVariants != null)
+/*                    if (productDesign.ColorVariants != null)
                     {
-                        foreach (var item in product.ColorVariants.Where(x => x.ColorNo != null)) //&& x.Quantity != null))
+                        foreach (var item in productDesign.ColorVariants.Where(x => x.ColorNo != null)) //&& x.Quantity != null))
                         {
                             Context.ColorVariant? cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == item.ColorVariantId);
                             if (cv == null)
@@ -207,11 +189,13 @@ namespace chiffon_back.Models
                             ctx.SaveChanges(true);
                         }
                     }
-
+*/
+                    
+               
                     ctx.ProductDesignsInDesignTypes.RemoveRange(ctx.ProductDesignsInDesignTypes.Where(x => x.ProductDesignId == prod.Id));
-                    if (product.DesignTypeId != null)
+                    if (productDesign.DesignTypeId != null)
                     {
-                        foreach (var item in product.DesignTypeId)
+                        foreach (var item in productDesign.DesignTypeId)
                         {
                             Context.ProductDesignsInDesignTypes pdt = new Context.ProductDesignsInDesignTypes()
                             {
@@ -224,84 +208,16 @@ namespace chiffon_back.Models
                         }
                     }
 
-                    ctx.ProductsInDressGroups.RemoveRange(ctx.ProductsInDressGroups.Where(x => x.ProductId == prod.Id));
-                    if (product.DressGroupId != null)
-                    {
-                        foreach (var item in product.DressGroupId)
-                        {
-                            Context.ProductsInDressGroups pdg = new Context.ProductsInDressGroups()
-                            {
-                                ProductId = prod.Id,
-                                DressGroupId = item
-                            };
-
-                            ctx.ProductsInDressGroups.Add(pdg);
-                            ctx.SaveChanges(true);
-                        }
-                    }
-
-                    ctx.ProductsInSeasons.RemoveRange(ctx.ProductsInSeasons.Where(x => x.ProductId == prod.Id));
-                    if (product.SeasonId != null)
-                    {
-                        foreach (var item in product.SeasonId)
-                        {
-                            Context.ProductsInSeasons cv = new Context.ProductsInSeasons()
-                            {
-                                ProductId = prod.Id,
-                                SeasonId = item
-                            };
-
-                            ctx.ProductsInSeasons.Add(cv);
-                            ctx.SaveChanges(true);
-                        }
-                    }
-
-                    ctx.ProductsInOverWorkTypes.RemoveRange(ctx.ProductsInOverWorkTypes.Where(x => x.ProductId == prod.Id));
-                    if (product.OverWorkTypeId != null)
-                    {
-                        foreach (var item in product.OverWorkTypeId)
-                        {
-                            Context.ProductsInOverWorkTypes cv = new Context.ProductsInOverWorkTypes()
-                            {
-                                ProductId = prod.Id,
-                                OverWorkTypeId = item
-                            };
-
-                            ctx.ProductsInOverWorkTypes.Add(cv);
-                            ctx.SaveChanges(true);
-                        }
-                    }
-
-                    ctx.ProductsInTextileTypes.RemoveRange(ctx.ProductsInTextileTypes.Where(x => x.ProductId == prod.Id));
-                    if (product.CompositionValues != null)
-                    {
-                        foreach (var item in product.CompositionValues)
-                        {
-                            if (item.TextileTypeId != null && item.Value != null)
-                            {
-                                Context.ProductsInTextileTypes cv = new Context.ProductsInTextileTypes()
-                                {
-                                    ProductId = prod.Id,
-                                    TextileTypeId = item.TextileTypeId.Value,
-                                    Value = item.Value.Value
-                                };
-
-                                ctx.ProductsInTextileTypes.Add(cv);
-                                ctx.SaveChanges(true);
-                            }
-                        }
-                    }
-
                 }
 
-                return product.Id;
+                return productDesign.Id;
             }
             catch (Exception ex)
             {
                 return null;
             }
 
-        }*/
+        }
 
 
     }

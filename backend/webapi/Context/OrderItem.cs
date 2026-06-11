@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public int OrderId { get; set; }
-        public int ProductId { get; set; }
+        public int ProductDesignId { get; set; }
         public int? StockId { get; set; }
         public decimal Quantity { get; set; }
         public string? Details { get; set; }
@@ -15,9 +15,9 @@
         public string? Unit { get; set; }
         public DateTime? Shipped { get; set; }
         public DateTime? Delivered { get; set; }
-        public string? DeliveryNo { get; set; }
-        public string? DeliveryCompany { get; set; }
+        public string? VendorDeliveryNo { get; set; }
         public string? ClientDeliveryNo { get; set; }
-        public string? ClientDeliveryCompany { get; set; }
+        public int? VendorDeliveryCompanyId { get; set; }
+        public int? ClientDeliveryCompanyId { get; set; }
     }
 }

@@ -101,10 +101,9 @@ namespace chiffon_back.Controllers
             }
         }
 
-        [HttpPost("ImportFile")]
-        public /*async*/ ActionResult ImportFile([FromForm] IFormFile formFile, [FromForm] string uid, [FromForm] int? productDesinId)
+        [HttpPost("LoadPhoto")]
+        public /*async*/ ActionResult LoadPhoto([FromForm] IFormFile formFile, [FromForm] string uid, [FromForm] int? productDesignId)
         {
-            int id = -1;
             try
             {
                 string name = formFile.FileName;
@@ -114,7 +113,6 @@ namespace chiffon_back.Controllers
                 {
                     var dirPath = Code.DirectoryHelper.ComputeDirectory(@"colors", uid);
                     Code.DirectoryHelper.CreateDirectoryIfMissing(dirPath);
-                    //var fileNumber = Directory.GetFiles(dirPath, "*.*").Count() + 1;
                     string fileName = $"{formFile.FileName}{extension}"; //$"{fileNumber}{extension}";
                     string filePath = Path.Combine(dirPath, fileName);
 
@@ -131,15 +129,14 @@ namespace chiffon_back.Controllers
                         formFile.CopyTo(stream);
                     }
 
-                    var productDesign = ctx.ProductDesigns.FirstOrDefault(x => x.Id == productDesinId);
+                    var productDesign = ctx.ProductDesigns.FirstOrDefault(x => x.Id == productDesignId);
                     if (productDesign != null)
                     {
-                        id = productDesign.Id;
                         productDesign.PhotoUuids = PhotoHelper.AppendPhotoUuid(productDesign.PhotoUuids, uid);
                         ctx.SaveChanges();
                     }
                 }
-                return CreatedAtAction(nameof(Models.ProductDesign), new { Id = id }); ;
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -148,91 +145,115 @@ namespace chiffon_back.Controllers
                 Console.WriteLine();
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/ImportFile: {1}", DateTime.Now, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/ImportFile: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
-                return CreatedAtAction(nameof(Models.ProductDesign), new { id = id }, false);
-            }
-        }
-
-        [HttpPost("Update")]
-        public ActionResult ProductUpdate(Models.PostProductDesign product)
-        {
-            try
-            {
-                int? id = ProductModel.Update(product);
-                return CreatedAtAction(nameof(Product), new { Id = id });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine();
-                Console.WriteLine("-----------------------------------------------------------");
-                Console.WriteLine();
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/ProductUpdate: {1}", DateTime.Now, ex.Message));
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/ProductUpdate: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
                 return BadRequest(ex);
             }
         }
 
-        [HttpPost("ProductRemoveCV")]
-        public ActionResult RemoveColorVariant(Models.PostCV c)
+        [HttpPost("LoadColorPhoto")]
+        public /*async*/ ActionResult LoadColorPhoto([FromForm] IFormFile formFile, [FromForm] int? colorVariantId)
         {
             try
             {
-                if (c.IsProduct)
+                string name = formFile.FileName;
+                string extension = Path.GetExtension(formFile.FileName);
+
+                if (formFile.Length > 0)
                 {
-                    var prod = ctx.Products.FirstOrDefault(x => x.Id == c.ProductId);
-                    prod.PhotoUuids = PhotoHelper.RemovePhotoUuid(prod.PhotoUuids, c.Uuid);
-                    ctx.SaveChanges();
-                }
-                else if (c.IsVideo)
-                {
-                    var prod = ctx.Products.FirstOrDefault(x => x.Id == c.ProductId);
-                    prod.VideoUuids = PhotoHelper.RemovePhotoUuid(prod.VideoUuids, c.Uuid);
-                    ctx.SaveChanges();
-                }
-                else
-                {
-                    var cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == c.Id);// && x.Num == c.Num);
-                    if (cv != null)
+                    var colorVariant = ctx.ColorVariants.FirstOrDefault(x => x.Id == colorVariantId);
+                    if (colorVariant != null)
                     {
-                        var productsInCv = ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == cv.Id);
-                        ctx.ColorVariantsInColors.RemoveRange(productsInCv);
-                        ctx.SaveChanges();
-                        if (cv != null)
+                        var dirPath = Code.DirectoryHelper.ComputeDirectory(@"colors", colorVariant.Uuid);
+                        Code.DirectoryHelper.CreateDirectoryIfMissing(dirPath);
+                        string fileName = $"{formFile.FileName}{extension}"; //$"{fileNumber}{extension}";
+                        string filePath = Path.Combine(dirPath, fileName);
+
+                        // first remove all existing files in directory
+                        System.IO.DirectoryInfo di = new DirectoryInfo(dirPath);
+                        foreach (FileInfo file in di.EnumerateFiles())
                         {
-                            ctx.ColorVariants.RemoveRange(cv);
+                            file.Delete();
                         }
-                        ctx.SaveChanges();
+                        // add picture file
+                        using (var stream = System.IO.File.Create(filePath))
+                        {
+                            //await formFile.CopyToAsync(stream);
+                            formFile.CopyTo(stream);
+                        }
                     }
                 }
-
-                return CreatedAtAction(nameof(Product), new { id = c.Id }, "");
+                return Ok();
             }
             catch (Exception ex)
             {
                 Console.WriteLine();
                 Console.WriteLine("-----------------------------------------------------------");
                 Console.WriteLine();
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/RemoveColorVariant: {1}", DateTime.Now, ex.Message));
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/RemoveColorVariant: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
-                return CreatedAtAction(nameof(Product), new { id = -1 }, null);
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/ImportFile: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/ImportFile: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+                return BadRequest();
             }
         }
 
-        [HttpPost("ProductAddCV")]
-        public ActionResult AddColorVariant(Models.PostCV c)
+        [HttpPost("Update")]
+        public ActionResult ProductDesignUpdate(Models.PostProductDesign productDesign)
+        {
+            try
+            {
+                int? id = ProductDesignModel.Update(productDesign);
+                return CreatedAtAction(nameof(Models.ProductDesign), new { Id = id });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/Update: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/Update: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpPost("RemovePhoto")]
+        public ActionResult RemovePhoto(int? productDesignId, string uuid)
+        {
+            try
+            {
+                var productDesign = ctx.ProductDesigns.FirstOrDefault(x => x.Id == productDesignId);
+                if (productDesign != null) { 
+                    productDesign.PhotoUuids = PhotoHelper.RemovePhotoUuid(productDesign.PhotoUuids, uuid);
+                    ctx.SaveChanges();
+                    //todo: need delete file
+                }
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine();
+                Console.WriteLine("-----------------------------------------------------------");
+                Console.WriteLine();
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/RemovePhoto: {1}", DateTime.Now, ex.Message));
+                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/RemovePhoto: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpPost("AddColorVariant")]
+        public ActionResult AddColorVariant(Models.AddColorVariant c)
         {
             try
             {
                 Context.ColorVariant cv = new Context.ColorVariant()
                 {
-                    Num = c.Num.Value,
-                    ProductId = c.ProductId.Value,
-                    Uuid = c.Uuid
+                    ColorNo = c.ColorNo,
+                    Price = c.Price,
+                    Uuid = c.Uuid,
+                    ProductDesignId = c.ProductDesignId,
                 };
 
                 ctx.ColorVariants.Add(cv);
                 ctx.SaveChanges();
 
-                return CreatedAtAction(nameof(Product), new { id = cv.Id }, "");
+                return Ok(cv.Id);
             }
             catch (Exception ex)
             {
@@ -241,48 +262,10 @@ namespace chiffon_back.Controllers
                 Console.WriteLine();
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/AddColorVariant: {1}", DateTime.Now, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/AddColorVariant: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
-                return CreatedAtAction(nameof(Product), new { id = -1 }, null);
+                return BadRequest(ex);
             }
         }
 
-        // временно [Authorize]
-        [HttpGet("ItemNames")]
-        public IEnumerable<ProductItemName> ItemNames()
-        {
-            try
-            {
-                return ProductModel.ItemNames();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine();
-                Console.WriteLine("-----------------------------------------------------------");
-                Console.WriteLine();
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/ItemNames: {1}", DateTime.Now, ex.Message));
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductDesignsController/ItemNames: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
-            }
-            return new List<ProductItemName>();
-        }
-
-        [HttpPost("ItemName")]
-        public ActionResult<int> SetItemName([FromBody] Models.PostItemName data)
-        {
-            try
-            {
-                var prod = ctx.Products.FirstOrDefault(x => x.Id == data.ProductId);
-                if (prod != null)
-                {
-                    prod.ItemName = data.ItemName;
-                    ctx.SaveChanges();
-                }
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
 
     }
 }

@@ -191,6 +191,7 @@ namespace chiffon_back.Code
             Context.Product? prod = null;
             while (!eof)
             {
+                /* 04/06/2026 need to update:
                 Context.Product? existed = ctx.Products.FirstOrDefault(x =>
                     x.VendorId == vendorId &&
                     ((!String.IsNullOrWhiteSpace(x.ArtNo) && !String.IsNullOrWhiteSpace(artNo) && x.ArtNo.ToLower() == artNo.Trim().ToLower()) || (String.IsNullOrWhiteSpace(x.ArtNo) && String.IsNullOrWhiteSpace(artNo))) &&
@@ -231,25 +232,25 @@ namespace chiffon_back.Code
                                 }
                                 ctx.SaveChanges();
                             }
-                            /* nothing to do..
-                            else
-                            {
-                                foreach (string colorName in colorNames)
-                                {
-                                    int? colorId = ctx.ColorPhotos.FirstOrDefault(x => x.ColorName != null && x.ColorName.ToLower() == colorName).Id;
-                                    if (colorId != null)
-                                    {
-                                        ColorVariantsInColors? colVarInColors = ctx.ColorVariantsInColors.FirstOrDefault(x => x.ColorVariantId == existedColorVar.Id && x.ColorId == colorId);
-                                        if (colVarInColors != null)
-                                        {
-                                            colVarInColors.qu
-                                        }
-
-                                            //.Add(new ColorVariantsInColors() { ColorId = colorId.Value, ColorVariantId = newColorVar.Id });
-                                    }
-                                }
-                                ctx.SaveChanges();
-                            }*/
+                            // nothing to do..
+                            //else
+                            //{
+                            //    foreach (string colorName in colorNames)
+                            //    {
+                            //        int? colorId = ctx.ColorPhotos.FirstOrDefault(x => x.ColorName != null && x.ColorName.ToLower() == colorName).Id;
+                            //        if (colorId != null)
+                            //        {
+                            //            ColorVariantsInColors? colVarInColors = ctx.ColorVariantsInColors.FirstOrDefault(x => x.ColorVariantId == existedColorVar.Id && x.ColorId == colorId);
+                            //            if (colVarInColors != null)
+                            //            {
+                            //                colVarInColors.qu
+                            //            }
+                            //
+                            //                //.Add(new ColorVariantsInColors() { ColorId = colorId.Value, ColorVariantId = newColorVar.Id });
+                            //        }
+                            //    }
+                            //    ctx.SaveChanges();
+                            //}
                         }
                         else
                         {
@@ -271,8 +272,7 @@ namespace chiffon_back.Code
                                     ctx.ColorVariantsInColors.Add(new Context.ColorVariantsInColors() { ColorId = colorId.Value, ColorVariantId = newColorVar.Id });
                                 }
                             }
-                            ctx.SaveChanges();
-
+                            ctx.SaveChanges(); 
                         }
                     }
 
@@ -296,8 +296,6 @@ namespace chiffon_back.Code
                     ctx.ProductsInOverWorkTypes.RemoveRange(ctx.ProductsInOverWorkTypes.Where(x => x.ProductId == prod.Id));
                     ctx.ProductsInSeasons.RemoveRange(ctx.ProductsInSeasons.Where(x => x.ProductId == prod.Id));
                     ctx.SaveChanges();
-
-
                 }
                 else
                 {
@@ -489,6 +487,7 @@ namespace chiffon_back.Code
                 qtyR = -1;
                 if (!int.TryParse(sqtyM, out qtyM)) { qtyM = -1; }
                 if (!int.TryParse(sqtyR, out qtyR)) { qtyR = -1; }
+                */
             }
         }
     }

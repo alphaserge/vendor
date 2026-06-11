@@ -28,7 +28,6 @@ namespace chiffon_back.Context
         public DbSet<PrintType> PrintTypes { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductDesign> ProductDesigns { get; set; }
-        public DbSet<ProductsInColors> ProductsInColors { get; set; }
         public DbSet<ProductDesignsInDesignTypes> ProductDesignsInDesignTypes { get; set; }
         public DbSet<ProductsInDressGroups> ProductsInDressGroups { get; set; }
         public DbSet<ProductsInTextileTypes> ProductsInTextileTypes { get; set; }

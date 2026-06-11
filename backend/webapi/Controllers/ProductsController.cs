@@ -38,7 +38,6 @@ namespace chiffon_back.Controllers
                 cfg.CreateMap<Models.DesignType, Context.DesignType>();
                 cfg.CreateMap<Models.DressGroup, Context.DressGroup>();
                 cfg.CreateMap<Models.OverWorkType, Context.OverWorkType>();
-                cfg.CreateMap<Models.ProductsInColors, Context.ProductsInColors>();
                 cfg.CreateMap<Models.ProductDesignsInDesignTypes, Context.ProductDesignsInDesignTypes>();
                 cfg.CreateMap<Models.ProductsInDressGroups, Context.ProductsInDressGroups>();
                 cfg.CreateMap<Models.ProductsInOverWorkTypes, Context.ProductsInOverWorkTypes>();
@@ -52,7 +51,6 @@ namespace chiffon_back.Controllers
                 cfg.CreateMap<Context.DesignType, Models.DesignType>();
                 cfg.CreateMap<Context.DressGroup, Models.DressGroup>();
                 cfg.CreateMap<Context.OverWorkType, Models.OverWorkType>();
-                cfg.CreateMap<Context.ProductsInColors, Models.ProductsInColors>();
                 cfg.CreateMap<Context.ProductDesignsInDesignTypes, Models.ProductDesignsInDesignTypes>();
                 cfg.CreateMap<Context.ProductsInDressGroups, Models.ProductsInDressGroups>();
                 cfg.CreateMap<Context.ProductsInOverWorkTypes, Models.ProductsInOverWorkTypes>();
@@ -94,17 +92,16 @@ namespace chiffon_back.Controllers
 
         // временно [Authorize]
         [HttpGet("Products")]
-        public IEnumerable<Models.Product> Products([FromQuery] string id)
+        public IEnumerable<Models.ProductJoinDesign> Products([FromQuery] string id)
         {
             try
             {
                 var user = ctx.Users.FirstOrDefault(x => x.Id.ToString() == id);
                 int? vendorId = user != null ? user.VendorId : 0;
 
-                //if (vendorId <= 0) vendorId = 1;
                 if (vendorId < 0) vendorId = 0;
 
-                var prods = ProductModel.Get(new ProductFilter()
+                var prods = ProductModel.ProductJoinDesign(new ProductFilter()
                 {
                     VendorId = vendorId,
                     ItemName = HttpContext.Request.Query["name"].ToString(),
@@ -121,7 +118,7 @@ namespace chiffon_back.Controllers
                     ProductTypes = HttpContext.Request.Query["producttypes"].ToString(),
                     TextileTypes = HttpContext.Request.Query["textiletypes"].ToString(),
                     ShowNullPrice = HttpContext.Request.Query["shownullprice"].ToString().ToLower()=="true",
-                });
+                }, true);
 
                 return prods;
             }
@@ -133,11 +130,12 @@ namespace chiffon_back.Controllers
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/Products: {1}", DateTime.Now, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/Products: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
             }
-            return new List<Models.Product>();
+
+            return new List<Models.ProductJoinDesign>();
         }
 
-        [HttpPost("ImportFile")]
-        public /*async*/ ActionResult ImportFile([FromForm] IFormFile formFile, [FromForm] string uid, [FromForm] string? productId, [FromForm] string type)
+        [HttpPost("LoadMedia")]
+        public /*async*/ ActionResult LoadMedia([FromForm] IFormFile formFile, [FromForm] string? productId, [FromForm] string type)
         {
             try
             {
@@ -146,46 +144,43 @@ namespace chiffon_back.Controllers
 
                 if (formFile.Length > 0)
                 {
-                    var dirPath = Code.DirectoryHelper.ComputeDirectory(@"colors", uid);
-                    Code.DirectoryHelper.CreateDirectoryIfMissing(dirPath);
-                    var fileNumber = Directory.GetFiles(dirPath, "*.*").Count() + 1;
-                    string fileName = $"{fileNumber}{extension}";
-                    string filePath = Path.Combine(dirPath, fileName);
+                    
+                    var product = ctx.Products.FirstOrDefault(x => x.Id.ToString() == productId);
 
-                    // first remove all existing files in directory
-                    System.IO.DirectoryInfo di = new DirectoryInfo(dirPath);
-                    foreach (FileInfo file in di.EnumerateFiles())
+                    if (product != null)
                     {
-                        file.Delete();
-                    }
-                    // add picture file
-                    using (var stream = System.IO.File.Create(filePath))
-                    {
-                        //await formFile.CopyToAsync(stream);
-                        formFile.CopyTo(stream);
-                    }
-                    if (type.ToUpper() == "PRODUCT")
-                    {
-                        var product = ctx.Products.FirstOrDefault(x => x.Id.ToString() == productId);
-                        if (product != null)
+                        string? uid = product.Uuid;
+                        if (uid != null)                        
                         {
-                            product.PhotoUuids =
-                                String.IsNullOrEmpty(product.PhotoUuids) ? uid : product.PhotoUuids + "," + uid;
-                            ctx.SaveChanges();
+                            uid = Guid.NewGuid().ToString();
                         }
-                    }
-                    if (type.ToUpper() == "VIDEO")
-                    {
-                        var product = ctx.Products.FirstOrDefault(x => x.Id.ToString() == productId);
-                        if (product != null)
+
+                        var dirPath = Code.DirectoryHelper.ComputeDirectory(@"colors", uid!);
+                        Code.DirectoryHelper.CreateDirectoryIfMissing(dirPath);
+                        var fileNumber = Directory.GetFiles(dirPath, "*.*").Count() + 1;
+                        string fileName = $"{fileNumber}{extension}";
+                        string filePath = Path.Combine(dirPath, fileName);
+
+                        // first remove all existing files in directory
+                        System.IO.DirectoryInfo di = new DirectoryInfo(dirPath);
+                        foreach (FileInfo file in di.EnumerateFiles())
                         {
-                            product.VideoUuids =
-                                String.IsNullOrEmpty(product.VideoUuids) ? uid : product.VideoUuids + "," + uid;
-                            ctx.SaveChanges();
+                            file.Delete();
+                        }
+                        // add picture file
+                        using (var stream = System.IO.File.Create(filePath))
+                        {
+                            //await formFile.CopyToAsync(stream);
+                            formFile.CopyTo(stream);
+                        }
+                        switch (type.ToUpper())
+                        {
+                            case "photo": product.PhotoUuid = uid; break;
+                            case "video": product.VideoUuid = uid; break;
                         }
                     }
                 }
-                return CreatedAtAction(nameof(Product), new { id = -1 }, true);
+                return Ok();
 
             }
             catch(Exception ex)
@@ -195,7 +190,7 @@ namespace chiffon_back.Controllers
                 Console.WriteLine();
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ImportFile: {1}", DateTime.Now, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ImportFile: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
-                return CreatedAtAction(nameof(Product), new { id = -1 }, false);
+                return BadRequest(ex);
             }
         }
 
@@ -286,119 +281,6 @@ namespace chiffon_back.Controllers
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ProductUpdate: {1}", DateTime.Now, ex.Message));
                 Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ProductUpdate: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
                 return BadRequest(ex);
-            }
-        }
-
-        [HttpPost("ProductRemoveCV")]
-        public ActionResult RemoveColorVariant(Models.PostCV c)
-        {
-            try
-            {
-                if (c.IsProduct)
-                {
-                    var prod = ctx.Products.FirstOrDefault(x => x.Id == c.ProductId);
-                    prod.PhotoUuids = PhotoHelper.RemovePhotoUuid(prod.PhotoUuids, c.Uuid);
-                    ctx.SaveChanges();
-                }
-                else if (c.IsVideo)
-                {
-                    var prod = ctx.Products.FirstOrDefault(x => x.Id == c.ProductId);
-                    prod.VideoUuids = PhotoHelper.RemovePhotoUuid(prod.VideoUuids, c.Uuid);
-                    ctx.SaveChanges();
-                }
-                else
-                {
-                    var cv = ctx.ColorVariants.FirstOrDefault(x => x.Id == c.Id);// && x.Num == c.Num);
-                    if (cv != null)
-                    {
-                        var productsInCv = ctx.ColorVariantsInColors.Where(x => x.ColorVariantId == cv.Id);
-                        ctx.ColorVariantsInColors.RemoveRange(productsInCv);
-                        ctx.SaveChanges();
-                        if (cv != null)
-                        {
-                            ctx.ColorVariants.RemoveRange(cv);
-                        }
-                        ctx.SaveChanges();
-                    }
-                }
-
-                return CreatedAtAction(nameof(Product), new { id = c.Id }, "");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine();
-                Console.WriteLine("-----------------------------------------------------------");
-                Console.WriteLine();
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/RemoveColorVariant: {1}", DateTime.Now, ex.Message));
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/RemoveColorVariant: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
-                return CreatedAtAction(nameof(Product), new { id = -1 }, null);
-            }
-        }
-
-        [HttpPost("ProductAddCV")]
-        public ActionResult AddColorVariant(Models.PostCV c)
-        {
-            try
-            {
-                Context.ColorVariant cv = new Context.ColorVariant()
-                {
-                    Num = c.Num.Value,
-                    ProductId = c.ProductId.Value,
-                    Uuid = c.Uuid
-                };
-
-                ctx.ColorVariants.Add(cv);
-                ctx.SaveChanges();
-
-                return CreatedAtAction(nameof(Product), new { id = cv.Id }, "");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine();
-                Console.WriteLine("-----------------------------------------------------------");
-                Console.WriteLine();
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/AddColorVariant: {1}", DateTime.Now, ex.Message));
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/AddColorVariant: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
-                return CreatedAtAction(nameof(Product), new { id = -1 }, null);
-            }
-        }
-
-        // временно [Authorize]
-        [HttpGet("ItemNames")]
-        public IEnumerable<ProductItemName> ItemNames()
-        {
-            try
-            {
-                return ProductModel.ItemNames();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine();
-                Console.WriteLine("-----------------------------------------------------------");
-                Console.WriteLine();
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ItemNames: {1}", DateTime.Now, ex.Message));
-                Console.WriteLine(String.Format("{0:dd.MM.yyyy HH:mm:ss} ProductsController/ItemNames: {1}", DateTime.Now, ex.InnerException != null ? ex.InnerException.Message : ""));
-            }
-            return new List<ProductItemName>();
-        }
-
-        [HttpPost("ItemName")]
-        public ActionResult<int> SetItemName([FromBody] Models.PostItemName data)
-        {
-            try
-            {
-                var prod = ctx.Products.FirstOrDefault(x => x.Id == data.ProductId);
-                if (prod != null)
-                {
-                    prod.ItemName = data.ItemName;
-                    ctx.SaveChanges();
-                }
-
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
             }
         }
 

@@ -81,6 +81,15 @@ namespace chiffon_back.Controllers
         [HttpGet("Order")]
         public Models.Order Order([FromQuery] string uuid)
         {
+            Dictionary<int, string?> stocks = ctx.Stocks.ToDictionary(s => s.Id, s => s.StockName);
+            Dictionary<int, string?> vendors = ctx.Vendors.ToDictionary(s => s.Id, s => s.VendorName);
+            Dictionary<int, string?> printTypes = ctx.PrintTypes.ToDictionary(s => s.Id, s => s.TypeName);
+            Dictionary<int, string?> plainDyedTypes = ctx.PlainDyedTypes.ToDictionary(s => s.Id, s => s.PlainDyedTypeName);
+            Dictionary<int, string?> designTypes = ctx.DesignTypes.ToDictionary(s => s.Id, s => s.DesignName);
+
+
+            ctx.Stocks.FirstOrDefault(x => x.Id == item.oi.StockId)?.StockName
+
             System.Data.DataTable dt = new System.Data.DataTable();
             try
             {
@@ -91,7 +100,75 @@ namespace chiffon_back.Controllers
 
                 Models.Order o = config.CreateMapper().Map<Models.Order>(ctx.Orders.FirstOrDefault(x => x.Uuid == uuid));
 
-                var items = (from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
+                var query = ctx.OrderItems.Where(x => x.OrderId == o.Id).Join(
+                    ctx.ProductDesigns,
+                    oi => oi.ProductDesignId,
+                    des => des.Id,
+                    (oi, des) => new
+                    {
+                        Quantity = oi.Quantity,
+                        Price = oi.Price,
+                        Details = oi.Details,
+                        ColorVariantId = oi.ColorVariantId,
+                        ColorNames = oi.ColorNames,
+                        ColorNo = oi.ColorNo,
+                        Unit = oi.Unit,
+                        Shipped = oi.Shipped,
+                        Delivered = oi.Delivered,
+                        StockId = oi.StockId,
+                        VendorDeliveryNo = oi.VendorDeliveryNo,
+                        VendorDeliveryCompanyId = oi.VendorDeliveryCompanyId,
+                        ClientDeliveryNo = oi.ClientDeliveryNo,
+                        ClientDeliveryCompanyId = oi.ClientDeliveryCompanyId,
+                        ProductDesignId = oi.ProductDesignId,
+                        ProductId = des.ProductId,
+                        ArtNo = des.ArtNo,
+                        RefNo = des.RefNo,
+                        Design = des.Design,
+                        PhotoUuids = des.PhotoUuids,
+                        SampleNo = des.SampleNo,
+                        PlainDyedTypeId = des.PlainDyedTypeId,
+                        ProductDesignPrice = des.Price,
+                        PrintTypeId = des.PrintTypeId,
+                        VendorId = des.VendorId,
+                    });
+
+                var items = query.Join(
+                    ctx.Products,
+                    it => it.ProductId,
+                    prod => prod.Id,
+                    (it, prod) => new 
+                    {
+                        Quantity = it.Quantity,
+                        Price = it.Price,
+                        Details = it.Details,
+                        ColorVariantId = it.ColorVariantId,
+                        ColorNames = it.ColorNames,
+                        ColorNo = it.ColorNo,
+                        Unit = it.Unit,
+                        Shipped = it.Shipped,
+                        Delivered = it.Delivered,
+                        StockId = it.StockId,
+                        VendorDeliveryNo = it.VendorDeliveryNo,
+                        VendorDeliveryCompanyId = it.VendorDeliveryCompanyId,
+                        ClientDeliveryNo = it.ClientDeliveryNo,
+                        ClientDeliveryCompanyId = it.ClientDeliveryCompanyId,
+                        ProductDesignId = it.ProductDesignId,
+                        ProductId = it.ProductId,
+                        ArtNo = it.ArtNo,
+                        RefNo = it.RefNo,
+                        Design = it.Design,
+                        PhotoUuids = it.PhotoUuids,
+                        SampleNo = it.SampleNo,
+                        PlainDyedTypeId = it.PlainDyedTypeId,
+                        ProductDesignPrice = it.Price,
+                        PrintTypeId = it.PrintTypeId,
+                        VendorId = it.VendorId,
+                        StockName = ,
+                    });
+
+
+                var items1 = (from oi in ctx.OrderItems.Where(x => x.OrderId == o.Id)
                             join p in ctx.Products on oi.ProductId equals p.Id into jointable
                             from j in jointable.DefaultIfEmpty()
                             join v in ctx.Vendors on j.VendorId equals v.Id into joinvendors
@@ -1403,8 +1480,8 @@ namespace chiffon_back.Controllers
                 Context.OrderItem oi = ctx.OrderItems.FirstOrDefault(x => x.Id == di.Id);
                 if (oi != null)
                 {
-                    oi.DeliveryNo = di.DeliveryNo;
-                    oi.DeliveryCompany = di.DeliveryCompany;
+                    oi.VendorDeliveryNo = di.VendorDeliveryNo;
+                    oi.VendorDeliveryCompany = di.VendorDeliveryCompany;
                     oi.ClientDeliveryNo = di.ClientDeliveryNo;
                     oi.ClientDeliveryCompany = di.ClientDeliveryCompany;
                     oi.StockId = di.StockId;

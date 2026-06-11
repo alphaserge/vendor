@@ -19,7 +19,6 @@ namespace chiffon_back.Models
         public int? ColorFastness { get; set; }
         public string? FabricConstruction { get; set; }
         public string? FabricYarnCount { get; set; }
-        public string? Composition { get; set; }
         public decimal? FabricShrinkage { get; set; }
         public string? Uuid { get; set; }
         public string? PhotoUuid { get; set; }
@@ -28,22 +27,42 @@ namespace chiffon_back.Models
         public int? FinishingId { get; set; }
         public int? ProductStyleId { get; set; }
         public int? ProductTypeId { get; set; }
-        public string? ProductStyle { get; set; }
-        public string? ProductType { get; set; }
-        public string? DyeStaff { get; set; }
-        public string? Finishing { get; set; }
+    }
 
-        public required List<string> Photos { get; set; }
-        public required List<string> Videos { get; set; }
-        public required List<ProductDesign> Designs { get; set; }
-
-        public CompositionValue[]? CompositionValues { get; set; }
-
-        public TextileType[]? TextileTypes { get; set; }
-        public DesignType[]? DesignTypes { get; set; }
-        public DressGroup[]? DressGroups { get; set; }
-        public OverWorkType[]? OverWorkTypes { get; set; }
-        public Season[]? Seasons { get; set; }
+    public class ProductJoinDesign
+    {
+        public int? ProductId { get; set; }
+        public int? ProductDesignId { get; set; }
+        public string? ArtNo { get; set; }
+        public string? RefNo { get; set; }
+        public string? Design { get; set; }
+        public int? SampleNo { get; set; }
+        public decimal? Price { get; set; }
+        public decimal? Stock { get; set; }
+        public string? ItemName { get; set; }
+        public string? HSCode { get; set; }
+        public int? Weight { get; set; }
+        public int? Width { get; set; }
+        public int? GSM { get; set; }
+        public decimal? MetersInKG { get; set; }
+        public decimal? RollLength { get; set; }
+        public int? ColorFastness { get; set; }
+        public string? FabricConstruction { get; set; }
+        public string? FabricYarnCount { get; set; }
+        public decimal? FabricShrinkage { get; set; }
+        public string? Uuid { get; set; }
+        public string? PhotoUuid { get; set; }
+        public string? VideoUuid { get; set; }
+        public string? PhotoPath { get; set; }
+        public string? VideoPath { get; set; }
+        public string? DesignPhotoUuids { get; set; }
+        public int? DyeStaffId { get; set; }
+        public int? FinishingId { get; set; }
+        public int? ProductStyleId { get; set; }
+        public int? ProductTypeId { get; set; }
+        public int? PlainDyedTypeId { get; set; }
+        public int? PrintTypeId { get; set; }
+        public int VendorId { get; set; }
     }
 
     public class CompositionSample
@@ -52,14 +71,12 @@ namespace chiffon_back.Models
         public string? Composition { get; set; }
     }
 
-    public class PostCV
+    public class AddColorVariant
     {
-        public int? Num { get; set; }
-        public int? Id { get; set; }
-        public string? Uuid { get; set; }
-        public int? ProductId { get; set; }
-        public bool IsProduct { get; set; }
-        public bool IsVideo { get; set; }
+        public int ColorNo { get; set; }
+        public decimal? Price { get; set; }
+        public string Uuid { get; set; }
+        public int ProductDesignId { get; set; }
     }
 
     public class ProductPhotos
@@ -69,33 +86,16 @@ namespace chiffon_back.Models
 
     public class PostProduct
     {
-        public int? Id { get; set; }
-        public string? ItemName { get; set; }
-        public string? FabricConstruction { get; set; }
-        public string? FabricYarnCount { get; set; }
-        public decimal? FabricShrinkage { get; set; }
-        public string? HSCode { get; set; }
-
-        public int? Weight { get; set; }
-        public int? Width { get; set; }
-        public int? GSM { get; set; }
-        public int? ColorFastness { get; set; }
-        public decimal? MetersInKG { get; set; }
-        public decimal? RollLength { get; set; }
-
-        public int? DyeStaffId { get; set; }
-        public int? FinishingId { get; set; }
-        public int? ProductStyleId { get; set; }
-        public int? ProductTypeId { get; set; }
-
-        public string? Uuid { get; set; }
+        public Product Product { get; set; }
         public int[]? DressGroupId { get; set; }
         public int[]? OverWorkTypeId { get; set; }
         public int[]? SeasonId { get; set; }
         public CompositionValue[]? CompositionValues { get; set; }
         public PostColorVariant[]? ColorVariants { get; set; }
-        public string? PhotoUuids { get; set; }
-        public string? VideoUuids { get; set; }
+        public PostProduct()
+        {
+            Product = new Product();
+        }
 
     }
 

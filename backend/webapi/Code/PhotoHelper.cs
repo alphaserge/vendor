@@ -12,7 +12,7 @@ namespace chiffon_back.Code
              return uuids!.Split(',');
         }
 
-        public static string RemovePhotoUuid(string uuids, string uuid)
+        public static string RemovePhotoUuid(string? uuids, string uuid)
         {
             string[] ss = uuids!.Split(',');
             ss = ss.Where(val => val != uuid).ToArray();

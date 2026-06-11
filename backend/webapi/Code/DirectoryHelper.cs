@@ -55,7 +55,7 @@ namespace chiffon_back.Code
             }
         }
 
-        public static string GetImageFile(string uid)
+        public static string GetImageFile(string? uid)
         {
             if (uid == null || String.IsNullOrWhiteSpace(uid))
             {
